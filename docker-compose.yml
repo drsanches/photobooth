@@ -1,0 +1,33 @@
+# BEFORE RUN:
+# gradlew clean
+# gradlew bootJar
+#
+# RUN:
+# docker-compose build
+# docker-compose up
+
+version: '3'
+
+services:
+  photobooth:
+    build: .
+    restart: always
+    environment:
+      PORT: ${PORT}
+      JDBC_DATABASE_URL: ${JDBC_DATABASE_URL}
+      JDBC_DATABASE_USERNAME: ${JDBC_DATABASE_USERNAME}
+      JDBC_DATABASE_PASSWORD: ${JDBC_DATABASE_PASSWORD}
+    depends_on:
+        - database
+    ports:
+        - ${PORT}:${PORT}
+
+  database:
+    image: postgres:14.0
+    restart: always
+    #    volumes:
+    #      - ./db/data/:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${JDBC_DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${JDBC_DATABASE_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}

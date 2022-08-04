@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PhotoBooth</title>
+        <link rel="stylesheet" type="text/css" href="/ui/css/header.css"/>
+        <link rel="stylesheet" type="text/css" href="/ui/css/admin_content.css"/>
+        <script src="/ui/js/lib/vue.js"></script>
+        <script src="/ui/js/lib/js.cookie.m.js"></script>
+        <script src="/ui/js/lib/sha1.js"></script>
+        <script type="module" src="/ui/js/utils/common.js"></script>
+        <script type="module" src="/ui/js/header.js"></script>
+        <script type="module" src="/ui/js/admin_content.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            <custom-header></custom-header>
+            <admin-content></admin-content>
+        </div>
+
+        <script type="module">
+            import {header} from '/ui/js/header.js';
+            import {adminContent} from '/ui/js/admin_content.js';
+
+            var app = Vue.createApp({});
+            app.component('custom-header', header);
+            app.component('admin-content', adminContent);
+            app.mount("#app");
+        </script>
+    </body>
+</html>

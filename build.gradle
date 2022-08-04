@@ -1,0 +1,34 @@
+plugins {
+    id 'java'
+    id 'groovy'
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
+}
+
+group 'ru.drsanches.photobooth'
+version '1.0'
+
+sourceCompatibility = JavaVersion.VERSION_11
+
+repositories {
+    mavenCentral()
+    maven { url "http://repository.codehaus.org/" }
+}
+
+dependencies {
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.3.3.RELEASE'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '2.3.4.RELEASE'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.3.4.RELEASE'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.3.4.RELEASE'
+    implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final' //Validation
+    implementation group: 'org.hibernate', name: 'hibernate-validator', version: '5.2.4.Final' //Validation
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.16'
+    implementation 'org.glassfish.jaxb:jaxb-runtime' //For DB
+    implementation group: 'com.h2database', name: 'h2', version: '1.4.200' //For H2-console
+
+    testCompile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.11'
+    testCompile group: 'org.spockframework', name: 'spock-core', version: '1.1-groovy-2.4'
+    testCompile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.5.0'
+    testCompile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.13' //For multipart
+
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.4.8' //Swagger
+}

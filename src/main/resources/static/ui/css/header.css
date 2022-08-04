@@ -1,0 +1,24 @@
+.header {
+    display: flow-root;
+}
+.header .logo {
+    font-weight: bold;
+    font-size: 200%;
+    margin-right: 10px;
+    margin-left: 10px;
+    display: inline-block;
+    cursor: pointer;
+}
+.header .auth {
+    display: inline-block;
+    float: right;
+}
+.header .auth .greetings {
+    font-size: 20px;
+    font-weight: bold;
+}
+.header .auth button {
+    width: 100px;
+    margin-right: 10px;
+    margin-left: 10px;
+}
