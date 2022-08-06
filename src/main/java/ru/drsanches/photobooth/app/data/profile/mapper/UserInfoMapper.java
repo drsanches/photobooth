@@ -16,8 +16,8 @@ public class UserInfoMapper {
         userInfoDTO.setId(userProfile.getId());
         if (userProfile.isEnabled()) {
             userInfoDTO.setUsername(userProfile.getUsername());
-            userInfoDTO.setFirstName(userProfile.getFirstName());
-            userInfoDTO.setLastName(userProfile.getLastName());
+            userInfoDTO.setName(userProfile.getName());
+            userInfoDTO.setStatus(userProfile.getStatus());
             userInfoDTO.setImagePath(userProfile.getImageId() == null ?
                     PATH + DEFAULT_ID : PATH + userProfile.getImageId());
         }

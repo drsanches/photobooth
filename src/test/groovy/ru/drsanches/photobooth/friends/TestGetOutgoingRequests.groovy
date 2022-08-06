@@ -27,9 +27,9 @@ class TestGetOutgoingRequests extends Specification {
         def token1 = RequestUtils.getToken(username1, password1)
         def token2 = RequestUtils.getToken(username2, password2)
 
-        def firstName2 = DataGenerator.createValidFirstName()
-        def lastName2 = DataGenerator.createValidLastName()
-        RequestUtils.changeUserProfile(token2, firstName2, lastName2)
+        def name2 = DataGenerator.createValidName()
+        def status2 = DataGenerator.createValidStatus()
+        RequestUtils.changeUserProfile(token2, name2, status2)
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
@@ -42,8 +42,8 @@ class TestGetOutgoingRequests extends Specification {
         assert body.size() == 1
         assert body.get(0)["id"] == userId2
         assert body.get(0)["username"] == username2
-        assert body.get(0)["firstName"] == firstName2
-        assert body.get(0)["lastName"] == lastName2
+        assert body.get(0)["name"] == name2
+        assert body.get(0)["status"] == status2
     }
 
     def "success empty outgoing requests getting"() {
@@ -102,8 +102,8 @@ class TestGetOutgoingRequests extends Specification {
         assert body.size() == 1
         assert body.get(0)["id"] == userId2
         assert body.get(0)["username"] == JSONNull.getInstance()
-        assert body.get(0)["firstName"] == JSONNull.getInstance()
-        assert body.get(0)["lastName"] == JSONNull.getInstance()
+        assert body.get(0)["name"] == JSONNull.getInstance()
+        assert body.get(0)["status"] == JSONNull.getInstance()
     }
 
     def "get outgoing requests with invalid token"() {

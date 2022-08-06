@@ -14,11 +14,11 @@ class DataGenerator {
         return "email-" + UUID.randomUUID().toString()
     }
 
-    static String createValidFirstName() {
-        return "firstName-" + UUID.randomUUID().toString()
+    static String createValidName() {
+        return "name-" + UUID.randomUUID().toString()
     }
 
-    static String createValidLastName() {
-        return "lastName-" + UUID.randomUUID().toString()
+    static String createValidStatus() {
+        return "status-" + UUID.randomUUID().toString()
     }
 }

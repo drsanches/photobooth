@@ -26,13 +26,12 @@ public class UserProfile {
     @Column(nullable = false)
     private boolean enabled;
 
-    //TODO: name
     @Column
-    private String firstName;
+    private String name;
 
-    //TODO: status
+    //TODO: May be use enum
     @Column
-    private String lastName;
+    private String status;
 
     @Column
     private String imageId;

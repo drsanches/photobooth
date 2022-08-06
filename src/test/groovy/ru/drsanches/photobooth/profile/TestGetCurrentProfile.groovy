@@ -17,10 +17,10 @@ class TestGetCurrentProfile extends Specification {
         def username = DataGenerator.createValidUsername()
         def password = DataGenerator.createValidPassword()
         def userId = RequestUtils.registerUser(username, password, null)
-        def firstName = DataGenerator.createValidFirstName()
-        def lastName = DataGenerator.createValidLastName()
+        def name = DataGenerator.createValidName()
+        def status = DataGenerator.createValidStatus()
         def token = RequestUtils.getToken(username, password)
-        RequestUtils.changeUserProfile(token, firstName, lastName)
+        RequestUtils.changeUserProfile(token, name, status)
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
@@ -32,8 +32,8 @@ class TestGetCurrentProfile extends Specification {
         assert response.status == 200
         assert response.getData()["id"] == userId
         assert response.getData()["username"] == username
-        assert response.getData()["firstName"] == firstName
-        assert response.getData()["lastName"] == lastName
+        assert response.getData()["name"] == name
+        assert response.getData()["status"] == status
         assert response.getData()["imagePath"] == Utils.getDefaultImagePath()
     }
 

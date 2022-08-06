@@ -79,12 +79,12 @@ class RequestUtils {
         }
     }
 
-    static void changeUserProfile(String token, String firstName, String lastName) {
+    static void changeUserProfile(String token, String name, String status) {
         getRestClient().put(
                 path: '/api/v1/profile',
                 headers: ["Authorization": "Bearer $token"],
-                body: [firstName: firstName,
-                       lastName: lastName],
+                body: [name: name,
+                       status: status],
                 requestContentType: ContentType.JSON)
     }
 

@@ -72,8 +72,8 @@ class TestDeleteUser extends Specification {
         assert friends.size() == 1
         assert friends.get(0)["id"] == userId
         assert friends.get(0)["username"] == JSONNull.getInstance()
-        assert friends.get(0)["firstName"] == JSONNull.getInstance()
-        assert friends.get(0)["lastName"] == JSONNull.getInstance()
+        assert friends.get(0)["name"] == JSONNull.getInstance()
+        assert friends.get(0)["status"] == JSONNull.getInstance()
 
         and: "incoming user relationships is correct"
         assert RequestUtils.getIncomingRequests(incomingUsername, incomingPassword) == new JSONArray()
@@ -82,8 +82,8 @@ class TestDeleteUser extends Specification {
         assert outgoing.size() == 1
         assert outgoing.get(0)["id"] == userId
         assert outgoing.get(0)["username"] == JSONNull.getInstance()
-        assert outgoing.get(0)["firstName"] == JSONNull.getInstance()
-        assert outgoing.get(0)["lastName"] == JSONNull.getInstance()
+        assert outgoing.get(0)["name"] == JSONNull.getInstance()
+        assert outgoing.get(0)["status"] == JSONNull.getInstance()
 
         and: "outgoing user relationships is correct"
         assert RequestUtils.getOutgoingRequests(outgoingUsername, outgoingPassword) == new JSONArray()
@@ -92,8 +92,8 @@ class TestDeleteUser extends Specification {
         assert incoming.size() == 1
         assert incoming.get(0)["id"] == userId
         assert incoming.get(0)["username"] == JSONNull.getInstance()
-        assert incoming.get(0)["firstName"] == JSONNull.getInstance()
-        assert incoming.get(0)["lastName"] == JSONNull.getInstance()
+        assert incoming.get(0)["name"] == JSONNull.getInstance()
+        assert incoming.get(0)["status"] == JSONNull.getInstance()
     }
 
     def "user deleting without password"() {

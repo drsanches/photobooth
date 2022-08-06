@@ -19,15 +19,15 @@ class TestChangeCurrentProfile extends Specification {
         def password = DataGenerator.createValidPassword()
         def userId = RequestUtils.registerUser(username, password, null)
         def token = RequestUtils.getToken(username, password)
-        def firstName = DataGenerator.createValidFirstName()
-        def lastName = DataGenerator.createValidLastName()
+        def name = DataGenerator.createValidName()
+        def status = DataGenerator.createValidStatus()
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: ["Authorization": "Bearer $token"],
-                body:  [firstName: firstName,
-                        lastName: lastName],
+                body:  [name: name,
+                        status: status],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
@@ -37,8 +37,8 @@ class TestChangeCurrentProfile extends Specification {
         JSONObject userProfile = RequestUtils.getUserProfile(username, password)
         userProfile['id'] == userId
         userProfile['username'] == username
-        userProfile['firstName'] == firstName
-        userProfile['lastName'] == lastName
+        userProfile['name'] == name
+        userProfile['status'] == status
         userProfile['imagePath'] == Utils.getDefaultImagePath()
     }
 
@@ -48,15 +48,15 @@ class TestChangeCurrentProfile extends Specification {
         def password = DataGenerator.createValidPassword()
         RequestUtils.registerUser(username, password,  null)
         def token = UUID.randomUUID().toString()
-        def firstName = DataGenerator.createValidFirstName()
-        def lastName = DataGenerator.createValidLastName()
+        def name = DataGenerator.createValidName()
+        def status = DataGenerator.createValidStatus()
 
         when: "request is sent"
         RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: ["Authorization": "Bearer $token"],
-                body:  [firstName: firstName,
-                        lastName: lastName],
+                body:  [name: name,
+                        status: status],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"

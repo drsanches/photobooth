@@ -25,9 +25,9 @@ class TestGetProfile extends Specification {
         def token1 = RequestUtils.getToken(username1, password1)
         def token2 = RequestUtils.getToken(username2, password2)
 
-        def firstName2 = DataGenerator.createValidFirstName()
-        def lastName2 = DataGenerator.createValidLastName()
-        RequestUtils.changeUserProfile(token2, firstName2, lastName2)
+        def name2 = DataGenerator.createValidName()
+        def status2 = DataGenerator.createValidStatus()
+        RequestUtils.changeUserProfile(token2, name2, status2)
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
@@ -39,8 +39,8 @@ class TestGetProfile extends Specification {
         assert response.status == 200
         assert response.getData()["id"] == userId2
         assert response.getData()["username"] == username2
-        assert response.getData()["firstName"] == firstName2
-        assert response.getData()["lastName"] == lastName2
+        assert response.getData()["name"] == name2
+        assert response.getData()["status"] == status2
         assert response.getData()["imagePath"] == Utils.getDefaultImagePath()
     }
 

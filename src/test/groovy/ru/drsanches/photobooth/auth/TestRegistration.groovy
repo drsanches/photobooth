@@ -41,8 +41,8 @@ class TestRegistration extends Specification {
         def userProfile = RequestUtils.getUserProfile(username, password)
         assert userProfile['id'] == response.getData()['id']
         assert userProfile['username'] == username
-        assert userProfile['firstName'] == JSONNull.getInstance()
-        assert userProfile['lastName'] == JSONNull.getInstance()
+        assert userProfile['status'] == JSONNull.getInstance()
+        assert userProfile['name'] == JSONNull.getInstance()
         assert userProfile['imagePath'] == Utils.getDefaultImagePath()
     }
 

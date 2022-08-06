@@ -11,8 +11,8 @@ import lombok.ToString;
 public class ChangeUserProfileDTO {
 
     @Schema
-    private String firstName;
+    private String name;
 
     @Schema
-    private String lastName;
+    private String status;
 }

@@ -44,8 +44,8 @@ public class UserProfileWebService {
     public void changeCurrentProfile(ChangeUserProfileDTO changeUserProfileDTO) {
         String userId = tokenSupplier.get().getUserId();
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
-        userProfile.setFirstName(changeUserProfileDTO.getFirstName());
-        userProfile.setLastName(changeUserProfileDTO.getLastName());
+        userProfile.setName(changeUserProfileDTO.getName());
+        userProfile.setStatus(changeUserProfileDTO.getStatus());
         userProfileDomainService.save(userProfile);
         LOG.info("User with id '{}' updated his profile", userId);
     }

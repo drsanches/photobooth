@@ -19,12 +19,12 @@ class TestSendFriendRequest extends Specification {
         given: "two users"
         def username1 = DataGenerator.createValidUsername()
         def password1 = DataGenerator.createValidPassword()
-        def firstName1 = DataGenerator.createValidFirstName()
-        def lastName1 = DataGenerator.createValidLastName()
+        def name1 = DataGenerator.createValidName()
+        def status1 = DataGenerator.createValidStatus()
         def username2 = DataGenerator.createValidUsername()
         def password2 = DataGenerator.createValidPassword()
-        def firstName2 = DataGenerator.createValidFirstName()
-        def lastName2 = DataGenerator.createValidLastName()
+        def name2 = DataGenerator.createValidName()
+        def status2 = DataGenerator.createValidStatus()
 
         def userId1 = RequestUtils.registerUser(username1, password1, null)
         def userId2 = RequestUtils.registerUser(username2, password2, null)
@@ -32,8 +32,8 @@ class TestSendFriendRequest extends Specification {
         def token1 = RequestUtils.getToken(username1, password1)
         def token2 = RequestUtils.getToken(username2, password2)
 
-        RequestUtils.changeUserProfile(token1, firstName1, lastName1)
-        RequestUtils.changeUserProfile(token2, firstName2, lastName2)
+        RequestUtils.changeUserProfile(token1, name1, status1)
+        RequestUtils.changeUserProfile(token2, name2, status2)
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().post(
@@ -52,8 +52,8 @@ class TestSendFriendRequest extends Specification {
         assert outgoingRequests.size() == 1
         assert outgoingRequests.get(0)["id"] == userId2
         assert outgoingRequests.get(0)["username"] == username2
-        assert outgoingRequests.get(0)["firstName"] == firstName2
-        assert outgoingRequests.get(0)["lastName"] == lastName2
+        assert outgoingRequests.get(0)["name"] == name2
+        assert outgoingRequests.get(0)["status"] == status2
 
         and: "the second user has correct relationships"
         assert RequestUtils.getOutgoingRequests(username2, password2) == new JSONArray()
@@ -62,8 +62,8 @@ class TestSendFriendRequest extends Specification {
         assert incomingRequests.size() == 1
         assert incomingRequests.get(0)["id"] == userId1
         assert incomingRequests.get(0)["username"] == username1
-        assert incomingRequests.get(0)["firstName"] == firstName1
-        assert incomingRequests.get(0)["lastName"] == lastName1
+        assert incomingRequests.get(0)["name"] == name1
+        assert incomingRequests.get(0)["status"] == status1
     }
 
     /**
@@ -74,12 +74,12 @@ class TestSendFriendRequest extends Specification {
         given: "two users"
         def username1 = DataGenerator.createValidUsername()
         def password1 = DataGenerator.createValidPassword()
-        def firstName1 = DataGenerator.createValidFirstName()
-        def lastName1 = DataGenerator.createValidLastName()
+        def name1 = DataGenerator.createValidName()
+        def status1 = DataGenerator.createValidStatus()
         def username2 = DataGenerator.createValidUsername()
         def password2 = DataGenerator.createValidPassword()
-        def firstName2 = DataGenerator.createValidFirstName()
-        def lastName2 = DataGenerator.createValidLastName()
+        def name2 = DataGenerator.createValidName()
+        def status2 = DataGenerator.createValidStatus()
 
         def userId1 = RequestUtils.registerUser(username1, password1, null)
         def userId2 = RequestUtils.registerUser(username2, password2, null)
@@ -89,8 +89,8 @@ class TestSendFriendRequest extends Specification {
         def token1 = RequestUtils.getToken(username1, password1)
         def token2 = RequestUtils.getToken(username2, password2)
 
-        RequestUtils.changeUserProfile(token1, firstName1, lastName1)
-        RequestUtils.changeUserProfile(token2, firstName2, lastName2)
+        RequestUtils.changeUserProfile(token1, name1, status1)
+        RequestUtils.changeUserProfile(token2, name2, status2)
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().post(
@@ -109,8 +109,8 @@ class TestSendFriendRequest extends Specification {
         assert friends1.size() == 1
         assert friends1.get(0)["id"] == userId2
         assert friends1.get(0)["username"] == username2
-        assert friends1.get(0)["firstName"] == firstName2
-        assert friends1.get(0)["lastName"] == lastName2
+        assert friends1.get(0)["name"] == name2
+        assert friends1.get(0)["status"] == status2
 
         and: "the second user has correct relationships"
         assert RequestUtils.getIncomingRequests(username2, password2) == new JSONArray()
@@ -119,8 +119,8 @@ class TestSendFriendRequest extends Specification {
         assert friends2.size() == 1
         assert friends2.get(0)["id"] == userId1
         assert friends2.get(0)["username"] == username1
-        assert friends2.get(0)["firstName"] == firstName1
-        assert friends2.get(0)["lastName"] == lastName1
+        assert friends2.get(0)["name"] == name1
+        assert friends2.get(0)["status"] == status1
     }
 
     /**
@@ -131,12 +131,12 @@ class TestSendFriendRequest extends Specification {
         given: "two users with one side friend request"
         def username1 = DataGenerator.createValidUsername()
         def password1 = DataGenerator.createValidPassword()
-        def firstName1 = DataGenerator.createValidFirstName()
-        def lastName1 = DataGenerator.createValidLastName()
+        def name1 = DataGenerator.createValidName()
+        def status1 = DataGenerator.createValidStatus()
         def username2 = DataGenerator.createValidUsername()
         def password2 = DataGenerator.createValidPassword()
-        def firstName2 = DataGenerator.createValidFirstName()
-        def lastName2 = DataGenerator.createValidLastName()
+        def name2 = DataGenerator.createValidName()
+        def status2 = DataGenerator.createValidStatus()
 
         def userId1 = RequestUtils.registerUser(username1, password1, null)
         def userId2 = RequestUtils.registerUser(username2, password2, null)
@@ -144,8 +144,8 @@ class TestSendFriendRequest extends Specification {
         def token1 = RequestUtils.getToken(username1, password1)
         def token2 = RequestUtils.getToken(username2, password2)
 
-        RequestUtils.changeUserProfile(token1, firstName1, lastName1)
-        RequestUtils.changeUserProfile(token2, firstName2, lastName2)
+        RequestUtils.changeUserProfile(token1, name1, status1)
+        RequestUtils.changeUserProfile(token2, name2, status2)
 
         RequestUtils.sendFriendRequest(username1, password1, userId2)
 
@@ -166,8 +166,8 @@ class TestSendFriendRequest extends Specification {
         assert outgoingRequests.size() == 1
         assert outgoingRequests.get(0)["id"] == userId2
         assert outgoingRequests.get(0)["username"] == username2
-        assert outgoingRequests.get(0)["firstName"] == firstName2
-        assert outgoingRequests.get(0)["lastName"] == lastName2
+        assert outgoingRequests.get(0)["name"] == name2
+        assert outgoingRequests.get(0)["status"] == status2
 
         and: "the second user relationship has not changed"
         assert RequestUtils.getOutgoingRequests(username2, password2) == new JSONArray()
@@ -176,8 +176,8 @@ class TestSendFriendRequest extends Specification {
         assert incomingRequests.size() == 1
         assert incomingRequests.get(0)["id"] == userId1
         assert incomingRequests.get(0)["username"] == username1
-        assert incomingRequests.get(0)["firstName"] == firstName1
-        assert incomingRequests.get(0)["lastName"] == lastName1
+        assert incomingRequests.get(0)["name"] == name1
+        assert incomingRequests.get(0)["status"] == status1
     }
 
     /**
@@ -187,12 +187,12 @@ class TestSendFriendRequest extends Specification {
         given: "two users with one side friend request"
         def username1 = DataGenerator.createValidUsername()
         def password1 = DataGenerator.createValidPassword()
-        def firstName1 = DataGenerator.createValidFirstName()
-        def lastName1 = DataGenerator.createValidLastName()
+        def name1 = DataGenerator.createValidName()
+        def status1 = DataGenerator.createValidStatus()
         def username2 = DataGenerator.createValidUsername()
         def password2 = DataGenerator.createValidPassword()
-        def firstName2 = DataGenerator.createValidFirstName()
-        def lastName2 = DataGenerator.createValidLastName()
+        def name2 = DataGenerator.createValidName()
+        def status2 = DataGenerator.createValidStatus()
 
         def userId1 = RequestUtils.registerUser(username1, password1, null)
         def userId2 = RequestUtils.registerUser(username2, password2, null)
@@ -200,8 +200,8 @@ class TestSendFriendRequest extends Specification {
         def token1 = RequestUtils.getToken(username1, password1)
         def token2 = RequestUtils.getToken(username2, password2)
 
-        RequestUtils.changeUserProfile(token1, firstName1, lastName1)
-        RequestUtils.changeUserProfile(token2, firstName2, lastName2)
+        RequestUtils.changeUserProfile(token1, name1, status1)
+        RequestUtils.changeUserProfile(token2, name2, status2)
 
         RequestUtils.sendFriendRequest(username2, password2, userId1)
         RequestUtils.sendFriendRequest(username1, password1, userId2)
@@ -223,8 +223,8 @@ class TestSendFriendRequest extends Specification {
         assert friends1.size() == 1
         assert friends1.get(0)["id"] == userId2
         assert friends1.get(0)["username"] == username2
-        assert friends1.get(0)["firstName"] == firstName2
-        assert friends1.get(0)["lastName"] == lastName2
+        assert friends1.get(0)["name"] == name2
+        assert friends1.get(0)["status"] == status2
 
         and: "the second user relationship has not changed"
         assert RequestUtils.getIncomingRequests(username2, password2) == new JSONArray()
@@ -233,8 +233,8 @@ class TestSendFriendRequest extends Specification {
         assert friends2.size() == 1
         assert friends2.get(0)["id"] == userId1
         assert friends2.get(0)["username"] == username1
-        assert friends2.get(0)["firstName"] == firstName1
-        assert friends2.get(0)["lastName"] == lastName1
+        assert friends2.get(0)["name"] == name1
+        assert friends2.get(0)["status"] == status1
     }
 
     def "send friend request without userId"() {

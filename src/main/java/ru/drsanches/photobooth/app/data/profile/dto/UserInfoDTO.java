@@ -17,10 +17,10 @@ public class UserInfoDTO {
     private String username;
 
     @Schema(description = "null for deleted user")
-    private String firstName;
+    private String name;
 
     @Schema(description = "null for deleted user")
-    private String lastName;
+    private String status;
 
     @Schema(description = "null for deleted user")
     private String imagePath;
