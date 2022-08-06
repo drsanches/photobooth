@@ -47,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterAfter(new TokenFilter(tokenService, PUBLIC_URI), BasicAuthenticationFilter.class);
         http.addFilterAfter(new AdminFilter(tokenSupplier, ADMIN_URI), TokenFilter.class);
         http.addFilterAfter(new LogFilter(tokenSupplier, LOG_URI), AdminFilter.class);
-        http.csrf().disable()
+        http.cors().and().csrf().disable()
                 .headers().frameOptions().disable()
                 .addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "SAMEORIGIN"))
                 .and()
