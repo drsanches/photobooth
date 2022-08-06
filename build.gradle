@@ -22,8 +22,10 @@ dependencies {
     implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final' //Validation
     implementation group: 'org.hibernate', name: 'hibernate-validator', version: '5.2.4.Final' //Validation
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.16'
-    implementation 'org.glassfish.jaxb:jaxb-runtime' //For DB
+    implementation group: 'org.glassfish.jaxb', name:'jaxb-runtime' //For DB
     implementation group: 'com.h2database', name: 'h2', version: '1.4.200' //For H2-console
+    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 
     testCompile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.11'
     testCompile group: 'org.spockframework', name: 'spock-core', version: '1.1-groovy-2.4'

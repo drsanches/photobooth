@@ -1,10 +1,21 @@
 package ru.drsanches.photobooth.app.data.image.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Entity
 @Table(name="image")
 public class Image {
@@ -14,36 +25,11 @@ public class Image {
     private String id;
 
     @Column(nullable = false)
+    @ToString.Exclude
     private byte[] data;
 
-    public Image() {}
-
-    public Image(String id, byte[] data) {
-        this.id = id;
-        this.data = data;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
-    }
-
-    @Override
-    public String toString() {
-        return "Image{" +
-                "id='" + id + '\'' +
-                ", length='" + data.length + '\'' +
-                '}';
+    @ToString.Include
+    private int length() {
+        return data.length;
     }
 }

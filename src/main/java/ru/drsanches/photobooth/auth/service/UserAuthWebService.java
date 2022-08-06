@@ -57,10 +57,9 @@ public class UserAuthWebService {
     private UserAuthInfoMapper userAuthInfoMapper;
 
     public UserAuthInfoDTO registration(@Valid RegistrationDTO registrationDTO) {
-        registrationDTO.setUsername(registrationDTO.getUsername().toLowerCase());
         UserAuth userAuth = new UserAuth();
         userAuth.setId(UUID.randomUUID().toString());
-        userAuth.setUsername(registrationDTO.getUsername());
+        userAuth.setUsername(registrationDTO.getUsername().toLowerCase());
         userAuth.setPassword(credentialsHelper.encodePassword(registrationDTO.getPassword()));
         userAuth.setEmail(registrationDTO.getEmail());
         userAuth.setEnabled(true);

@@ -1,8 +1,14 @@
 package ru.drsanches.photobooth.auth.data.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.NotEmpty;
 
+@Getter
+@Setter
+@ToString
 public class ChangeUsernameDTO {
 
     @NotEmpty
@@ -10,21 +16,7 @@ public class ChangeUsernameDTO {
     private String newUsername;
 
     @NotEmpty
-    @Schema(required = true, description = "current user password hash")
+    @ToString.Exclude
+    @Schema(required = true, description = "current user password hash ASH1")
     private String password;
-
-    public String getNewUsername() {
-        return newUsername;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String toString() {
-        return "ChangeUsernameDTO{" +
-                ", newUsername='" + newUsername + '\'' +
-                '}';
-    }
 }
