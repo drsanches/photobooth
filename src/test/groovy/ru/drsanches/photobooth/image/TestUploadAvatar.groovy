@@ -1,9 +1,8 @@
 package ru.drsanches.photobooth.image
 
-import org.apache.http.client.methods.CloseableHttpResponse
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.entity.mime.MultipartEntityBuilder
-import org.apache.http.impl.client.HttpClients
+import groovyx.net.http.ContentType
+import groovyx.net.http.HttpResponseDecorator
+import groovyx.net.http.HttpResponseException
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.Utils
@@ -20,16 +19,17 @@ class TestUploadAvatar extends Specification {
         def password = DataGenerator.createValidPassword()
         RequestUtils.registerUser(username, password, null)
         def token = RequestUtils.getToken(username, password)
-        def entity = Utils.createTestImageMultipart()
+        def base64Image = Utils.createTestBase64Image()
 
         when: "request is sent"
-        def httpPost = new HttpPost("$RequestUtils.SERVER_URL:$RequestUtils.PORT$PATH")
-        httpPost.addHeader("Authorization", "Bearer $token")
-        httpPost.setEntity(entity)
-        def response = HttpClients.createDefault().execute(httpPost) as CloseableHttpResponse
+        def response = RequestUtils.getRestClient().post(
+                path: PATH,
+                headers: ["Authorization": "Bearer $token"],
+                body:  [file: base64Image],
+                requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
-        assert response.getStatusLine().getStatusCode() == 201
+        assert response.status == 201
 
         and: "user profile contains new image path"
         def imagePath = RequestUtils.getUserProfile(username, password)['imagePath'] as String
@@ -41,49 +41,30 @@ class TestUploadAvatar extends Specification {
         assert Utils.checkTestImage(image)
     }
 
-    def "upload avatar with text multipart"() {
-        given: "user with token and text"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-        def token = RequestUtils.getToken(username, password)
-
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create()
-        builder.addTextBody("file", UUID.randomUUID().toString())
-        def entity = builder.build()
-
-        when: "request is sent"
-        def httpPost = new HttpPost("$RequestUtils.SERVER_URL:$RequestUtils.PORT$PATH")
-        httpPost.addHeader("Authorization", "Bearer $token")
-        httpPost.setEntity(entity)
-        def response = HttpClients.createDefault().execute(httpPost) as CloseableHttpResponse
-
-        then: "response is correct"
-        assert response.getStatusLine().getStatusCode() == 400
-
-        and: "user profile does not change"
-        def imagePath = RequestUtils.getUserProfile(username, password)['imagePath'] as String
-        assert imagePath == Utils.getDefaultImagePath()
-    }
-
-    def "upload avatar without file"() {
-        given: "user with token"
+    def "upload avatar with invalid data"() {
+        given: "user with token and inavlid data"
         def username = DataGenerator.createValidUsername()
         def password = DataGenerator.createValidPassword()
         RequestUtils.registerUser(username, password, null)
         def token = RequestUtils.getToken(username, password)
 
         when: "request is sent"
-        def httpPost = new HttpPost("$RequestUtils.SERVER_URL:$RequestUtils.PORT$PATH")
-        httpPost.addHeader("Authorization", "Bearer $token")
-        def response = HttpClients.createDefault().execute(httpPost) as CloseableHttpResponse
+        RequestUtils.getRestClient().post(
+                path: PATH,
+                headers: ["Authorization": "Bearer $token"],
+                body:  [file: invalidData],
+                requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
-        assert response.getStatusLine().getStatusCode() == 400
+        HttpResponseException e = thrown(HttpResponseException)
+        assert e.response.status == 400
 
         and: "user profile does not change"
         def imagePath = RequestUtils.getUserProfile(username, password)['imagePath'] as String
         assert imagePath == Utils.getDefaultImagePath()
+
+        where:
+        invalidData << [null, "", ";"]
     }
 
     def "upload avatar with invalid token"() {
@@ -92,15 +73,17 @@ class TestUploadAvatar extends Specification {
         def password = DataGenerator.createValidPassword()
         RequestUtils.registerUser(username, password, null)
         def token = UUID.randomUUID().toString()
-        def entity = Utils.createTestImageMultipart()
+        def base64Image = Utils.createTestBase64Image()
 
         when: "request is sent"
-        def httpPost = new HttpPost("$RequestUtils.SERVER_URL:$RequestUtils.PORT$PATH")
-        httpPost.addHeader("Authorization", "Bearer $token")
-        httpPost.setEntity(entity)
-        def response = HttpClients.createDefault().execute(httpPost) as CloseableHttpResponse
+        RequestUtils.getRestClient().post(
+                path: PATH,
+                headers: ["Authorization": "Bearer $token"],
+                body:  [file: base64Image],
+                requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
-        response.getStatusLine().getStatusCode() == 401
+        HttpResponseException e = thrown(HttpResponseException)
+        assert e.response.status == 401
     }
 }

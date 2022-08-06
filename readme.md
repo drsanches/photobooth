@@ -35,6 +35,7 @@
 - Separate architecture into domain and web layers (may be use different modules)
 
 ##### UI:
+- Fix expired token logout
 
 ##### Tests:
 - Check errors response body

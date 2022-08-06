@@ -1,16 +1,10 @@
 package ru.drsanches.photobooth.utils
 
-import org.apache.http.HttpEntity
-import org.apache.http.entity.ContentType
-import org.apache.http.entity.mime.MultipartEntityBuilder
-
 class Utils {
 
-    static HttpEntity createTestImageMultipart() {
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create()
+    static String createTestBase64Image() {
         File file = new File(getTestImageFilename())
-        builder.addBinaryBody("file", new FileInputStream(file), ContentType.APPLICATION_OCTET_STREAM, file.getName())
-        return builder.build()
+        return Base64.getEncoder().encodeToString(file.getBytes())
     }
 
     static boolean checkDefaultImage(Object data) {

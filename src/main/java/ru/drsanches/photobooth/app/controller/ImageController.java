@@ -7,13 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import ru.drsanches.photobooth.app.data.image.dto.UploadAvatarDTO;
 import ru.drsanches.photobooth.app.service.web.ImageWebService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/image")
@@ -26,9 +30,8 @@ public class ImageController {
     @Operation(summary = "Adds new avatar")
     @Parameter(name = "Authorization", description = "Access token", in = ParameterIn.HEADER, required = true)
     @ResponseStatus(HttpStatus.CREATED)
-    public void uploadAvatar(@Parameter(required = true, description = "Multipart file with image") //TODO: Fix data type in swagger
-                             @RequestParam(value = "file", required = false) MultipartFile file) {
-        imageWebService.uploadAvatar(file);
+    public void uploadAvatar(@RequestBody UploadAvatarDTO uploadAvatarDTO) {
+        imageWebService.uploadAvatar(uploadAvatarDTO);
     }
 
     @RequestMapping(path = "/{imageId}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
