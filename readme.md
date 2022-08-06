@@ -23,6 +23,12 @@
 - delete for a friend - removes both requests
 - delete for not friend - does nothing
 
+##### Send a photo:
+- only to enabled friends
+
+##### Get photo by id:
+- without permissions and deletion check? //TODO
+
 -------------------------------------------------------
 #### Backlog:
 

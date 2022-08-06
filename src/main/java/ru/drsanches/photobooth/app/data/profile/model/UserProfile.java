@@ -26,9 +26,11 @@ public class UserProfile {
     @Column(nullable = false)
     private boolean enabled;
 
+    //TODO: name
     @Column
     private String firstName;
 
+    //TODO: status
     @Column
     private String lastName;
 

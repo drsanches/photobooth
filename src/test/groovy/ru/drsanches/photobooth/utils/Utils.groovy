@@ -1,5 +1,10 @@
 package ru.drsanches.photobooth.utils
 
+import ru.drsanches.photobooth.common.utils.GregorianCalendarConvertor
+
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
 class Utils {
 
     static String createTestBase64Image() {
@@ -35,5 +40,11 @@ class Utils {
 
     static String getTestImageFilename() {
         return "src/test/resources/test.jpg"
+    }
+
+    static boolean checkTimestamp(Date dateBefore, String timestamp, Date dateAfter) {
+        DateFormat df = new SimpleDateFormat(GregorianCalendarConvertor.PATTERN)
+        Date date = df.parse(timestamp)
+        return dateBefore.before(date) && dateAfter.after(date)
     }
 }
