@@ -1,16 +1,21 @@
 package ru.drsanches.photobooth.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ru.drsanches.photobooth.config.filter.AdminFilter;
 import ru.drsanches.photobooth.config.filter.LogFilter;
 import ru.drsanches.photobooth.config.filter.TokenFilter;
 import ru.drsanches.photobooth.common.token.TokenService;
 import ru.drsanches.photobooth.common.token.TokenSupplier;
+
 import java.util.function.Predicate;
 import static java.util.function.Predicate.not;
 
@@ -53,5 +58,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .anyRequest().permitAll();
+    }
+
+    @Bean
+    protected CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        return source;
     }
 }
