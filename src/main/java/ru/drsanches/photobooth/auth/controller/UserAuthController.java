@@ -31,7 +31,7 @@ public class UserAuthController {
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     @Operation(summary = "Registers new user account and returns user information")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserAuthInfoDTO registration(@RequestBody RegistrationDTO registrationDTO) {
+    public TokenDTO registration(@RequestBody RegistrationDTO registrationDTO) {
         return userAuthWebService.registration(registrationDTO);
     }
 

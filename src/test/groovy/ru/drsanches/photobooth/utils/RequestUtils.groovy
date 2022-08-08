@@ -16,6 +16,7 @@ class RequestUtils {
         return new RESTClient( "$SERVER_URL:$PORT")
     }
 
+    //TODO: Refactor
     /**
      * Registers user and returns user id
      * @return user id
@@ -28,7 +29,7 @@ class RequestUtils {
                            password: password,
                            email: email],
                     requestContentType: ContentType.JSON) as HttpResponseDecorator
-            return response.status == 201 ? response.getData()["id"] : null
+            return getUserProfile(response.data["accessToken"] as String)["id"]
         } catch(Exception e) {
             e.printStackTrace()
             return null
@@ -68,6 +69,18 @@ class RequestUtils {
         if (token == null) {
             return null
         }
+        try {
+            HttpResponseDecorator response = getRestClient().get(
+                    path: "/api/v1/profile",
+                    headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
+            return response.status == 200 ? response.getData() as JSONObject : null
+        } catch(Exception e) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    static JSONObject getUserProfile(String token) {
         try {
             HttpResponseDecorator response = getRestClient().get(
                     path: "/api/v1/profile",

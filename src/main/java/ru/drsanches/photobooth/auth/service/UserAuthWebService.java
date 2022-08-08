@@ -56,7 +56,7 @@ public class UserAuthWebService {
     @Autowired
     private UserAuthInfoMapper userAuthInfoMapper;
 
-    public UserAuthInfoDTO registration(@Valid RegistrationDTO registrationDTO) {
+    public TokenDTO registration(@Valid RegistrationDTO registrationDTO) {
         UserAuth userAuth = new UserAuth();
         userAuth.setId(UUID.randomUUID().toString());
         userAuth.setUsername(registrationDTO.getUsername().toLowerCase());
@@ -65,15 +65,15 @@ public class UserAuthWebService {
         userAuth.setEnabled(true);
         userAuth.setRole(Role.USER);
         userIntegrationService.createUser(userAuth);
+        Token token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
         LOG.info("New user with id '{}' has been created", userAuth.getId());
-        return userAuthInfoMapper.convert(userAuth);
+        return tokenMapper.convert(token);
     }
 
     public TokenDTO login(@Valid LoginDTO loginDTO) {
-        loginDTO.setUsername(loginDTO.getUsername().toLowerCase());
         UserAuth userAuth;
         try {
-            userAuth = userAuthDomainService.getEnabledByUsername(loginDTO.getUsername());
+            userAuth = userAuthDomainService.getEnabledByUsername(loginDTO.getUsername().toLowerCase());
             credentialsHelper.checkPassword(loginDTO.getPassword(), userAuth.getPassword());
         } catch (NoUsernameException | WrongPasswordException e) {
             throw new WrongUsernamePasswordException(e);

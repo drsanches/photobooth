@@ -29,17 +29,24 @@ class TestRegistration extends Specification {
 
         then: "response is correct"
         assert response.status == 201
-        assert response.getData()['id'] != null
-        assert response.getData()['id'] != JSONNull.getInstance()
-        assert response.getData()['username'] == username
-        assert response.getData()['email'] == email
+        def token = response.getData()["accessToken"]
+        assert token != JSONNull.getInstance()
+        assert response.getData()["refreshToken"] != JSONNull.getInstance()
+        assert response.getData()["tokenType"] == "Bearer"
+        assert response.getData()["expiresAt"] != JSONNull.getInstance()
+
+        and: "token is valid"
+        def authInfo = RequestUtils.getAuthInfo(token as String)
+        assert authInfo != null
 
         and: "correct user was created"
-        assert response.getData() == RequestUtils.getAuthInfo(username, password)
+        assert authInfo["id"] != JSONNull.getInstance()
+        assert authInfo["username"] == username
+        assert authInfo["email"] == email
 
         and: "user profile was created"
         def userProfile = RequestUtils.getUserProfile(username, password)
-        assert userProfile['id'] == response.getData()['id']
+        assert userProfile['id'] == authInfo["id"]
         assert userProfile['username'] == username
         assert userProfile['status'] == JSONNull.getInstance()
         assert userProfile['name'] == JSONNull.getInstance()
