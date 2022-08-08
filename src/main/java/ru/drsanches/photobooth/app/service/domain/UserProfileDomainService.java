@@ -51,6 +51,16 @@ public class UserProfileDomainService {
         return userProfileRepository.existsById(userId);
     }
 
+    public List<UserProfile> getEnabledByIds(Collection<String> userIds) {
+        List<UserProfile> profiles = new LinkedList<>();
+        userProfileRepository.findAllById(userIds).forEach(profile -> {
+            if (profile.isEnabled()) {
+                profiles.add(profile);
+            }
+        });
+        return profiles;
+    }
+
     public List<UserProfile> getAllByIds(Collection<String> userIds) {
         List<UserProfile> profiles = new LinkedList<>();
         userProfileRepository.findAllById(userIds).forEach(profiles::add);

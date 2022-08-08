@@ -206,9 +206,29 @@ class RequestUtils {
                 requestContentType: ContentType.JSON)
     }
 
-    static void deleteAvatar(String token) {
-        getRestClient().delete(
-                path: "/api/v1/image/avatar",
-                headers: ["Authorization": "Bearer $token"])
+    static JSONArray getAllImagesInfo(String username, String password) {
+        String token = getToken(username, password)
+        if (token == null) {
+            return null
+        }
+        try {
+            HttpResponseDecorator response = getRestClient().get(
+                    path: "/api/v1/image/all",
+                    headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
+            return response.status == 200 ? response.getData() as JSONArray : null
+        } catch(Exception e) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    static void sendTestPhoto(String username, String password, List<String> userIds) {
+        String token = getToken(username, password)
+        getRestClient().post(
+                path: '/api/v1/image/photo',
+                headers: ["Authorization": "Bearer $token"],
+                body:  [file: Utils.createTestBase64Image(),
+                        userIds: userIds],
+                requestContentType : ContentType.JSON)
     }
 }

@@ -92,7 +92,7 @@ class TestGetImageInfo extends Specification {
 
         when: "request is sent"
         RequestUtils.getRestClient().get(
-                path: Utils.getDefaultImagePath(),
+                path: PATH + "default/info",
                 headers: ["Authorization": "Bearer $token"],
                 requestContentType : ContentType.JSON)
 

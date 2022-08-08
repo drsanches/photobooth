@@ -7,7 +7,12 @@ import org.springframework.stereotype.Service;
 import ru.drsanches.photobooth.app.data.image.model.Image;
 import ru.drsanches.photobooth.app.data.image.repository.ImageRepository;
 import ru.drsanches.photobooth.exception.application.NoImageException;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ImageDomainService {
@@ -28,6 +33,20 @@ public class ImageDomainService {
             throw new NoImageException(imageId);
         }
         return image.get();
+    }
+
+    public List<Image> getImages(Collection<String> imageIds) {
+        List<Image> images = new ArrayList<>(imageIds.size());
+        imageRepository.findAllById(imageIds).forEach(images::add);
+        if (images.size() != imageIds.size()) {
+            List<String> foundIds = images.stream()
+                    .map(Image::getId)
+                    .collect(Collectors.toList());
+            LOG.warn("Images were not found: {}", imageIds.stream()
+                    .filter(x -> !foundIds.contains(x))
+                    .collect(Collectors.toList()));
+        }
+        return images;
     }
 
     public boolean exists(String imageId) {

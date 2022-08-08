@@ -30,7 +30,6 @@ dependencies {
     testCompile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.11'
     testCompile group: 'org.spockframework', name: 'spock-core', version: '1.1-groovy-2.4'
     testCompile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.5.0'
-    testCompile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.13' //For multipart
 
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.4.8' //Swagger
 }

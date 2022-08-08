@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.drsanches.photobooth.app.data.image.dto.ImageInfoDTO;
 import ru.drsanches.photobooth.app.data.image.dto.UploadAvatarDTO;
+import ru.drsanches.photobooth.app.data.image.dto.UploadPhotoDTO;
 import ru.drsanches.photobooth.app.service.web.ImageWebService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/image")
@@ -43,6 +46,21 @@ public class ImageController {
     @Parameter(name = "Authorization", description = "Access token", in = ParameterIn.HEADER, required = true)
     public byte[] getImage(@PathVariable String imageId) {
         return imageWebService.getImage(imageId);
+    }
+
+    @RequestMapping(path = "/photo", method = RequestMethod.POST)
+    @Operation(summary = "Sends a photo to users")
+    @Parameter(name = "Authorization", description = "Access token", in = ParameterIn.HEADER, required = true)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void uploadPhoto(@RequestBody UploadPhotoDTO uploadPhotoDTO) {
+        imageWebService.uploadPhoto(uploadPhotoDTO);
+    }
+
+    @RequestMapping(path = "/all", method = RequestMethod.GET)
+    @Operation(summary = "Returns all images info that are available to the user")
+    @Parameter(name = "Authorization", description = "Access token", in = ParameterIn.HEADER, required = true)
+    public List<ImageInfoDTO> getAllInfo() {
+        return imageWebService.getAllInfo();
     }
 
     @RequestMapping(path = "/avatar", method = RequestMethod.DELETE)
