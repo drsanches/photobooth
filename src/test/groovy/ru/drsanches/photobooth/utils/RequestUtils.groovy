@@ -198,7 +198,8 @@ class RequestUtils {
         }
     }
 
-    static void uploadTestAvatar(String token) {
+    static void uploadTestAvatar(String username, String password) {
+        String token = getToken(username, password)
         getRestClient().post(
                 path: '/api/v1/image/avatar',
                 headers: ["Authorization": "Bearer $token"],

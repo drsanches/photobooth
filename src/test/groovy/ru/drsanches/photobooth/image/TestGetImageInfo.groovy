@@ -43,9 +43,8 @@ class TestGetImageInfo extends Specification {
         RequestUtils.registerUser(username1, password1, null)
         def userId2 = RequestUtils.registerUser(username2, password2, null)
         def token1 = RequestUtils.getToken(username1, password1)
-        def token2 = RequestUtils.getToken(username2, password2)
         def dateBefore = new Date()
-        RequestUtils.uploadTestAvatar(token2)
+        RequestUtils.uploadTestAvatar(username2, password2)
         def dateAfter = new Date()
         def imagePath = RequestUtils.getUserProfile(username2, password2)["imagePath"]
         def imageId = (imagePath as String).substring(PATH.length())

@@ -38,7 +38,7 @@ class TestDeleteAvatar extends Specification {
         def password = DataGenerator.createValidPassword()
         RequestUtils.registerUser(username, password, null)
         def token = RequestUtils.getToken(username, password)
-        RequestUtils.uploadTestAvatar(token)
+        RequestUtils.uploadTestAvatar(username, password)
         def imagePath = RequestUtils.getUserProfile(username, password)["imagePath"] as String
 
         when: "request is sent"

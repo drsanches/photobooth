@@ -23,10 +23,14 @@ import static java.util.function.Predicate.not;
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final String IMAGE_ID_PATTERN = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+
     private final Predicate<String> PUBLIC_URI = ((Predicate<String>)
             x -> x.matches("/api/v1/auth/registration.*"))
             .or(x -> x.matches("/api/v1/auth/login.*"))
             .or(x -> x.matches("/api/v1/auth/refreshToken.*"))
+            .or(x -> x.matches("/api/v1/image/default"))
+            .or(x -> x.matches("/api/v1/image/" + IMAGE_ID_PATTERN))
             .or(x -> x.matches("/actuator/health.*"))
             .or(x -> x.matches("/ui.*"))
             .or(x -> x.matches("/favicon.ico"));
