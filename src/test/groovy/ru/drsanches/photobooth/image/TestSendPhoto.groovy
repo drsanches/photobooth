@@ -67,6 +67,27 @@ class TestSendPhoto extends Specification {
         assert RequestUtils.getAllImagesInfo(friendUsername2, friendPassword2).size() == 0
     }
 
+    def "send a photo to yourself"() {
+        given: "user"
+        def username = DataGenerator.createValidUsername()
+        def password = DataGenerator.createValidPassword()
+        def userId = RequestUtils.registerUser(username, password, null)
+        def token = RequestUtils.getToken(username, password)
+        def base64Image = Utils.createTestBase64Image()
+
+        when: "request is sent"
+        RequestUtils.getRestClient().post(
+                path: PATH,
+                headers: ["Authorization": "Bearer $token"],
+                body:  [file: base64Image,
+                        userIds: [userId]],
+                requestContentType : ContentType.JSON) as HttpResponseDecorator
+
+        then: "response is correct"
+        HttpResponseException e = thrown(HttpResponseException)
+        assert e.response.status == 400
+    }
+
     def "photo send to friend with deleted profile"() {
         given: "user with friend with deleted profile"
         def username = DataGenerator.createValidUsername()
