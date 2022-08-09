@@ -36,8 +36,7 @@ public class ImageDomainService {
     }
 
     public List<Image> getImages(Collection<String> imageIds) {
-        List<Image> images = new ArrayList<>(imageIds.size());
-        imageRepository.findAllById(imageIds).forEach(images::add);
+        List<Image> images = imageRepository.findAllByIdInOrderByCreatedTimeDesc(imageIds);
         if (images.size() != imageIds.size()) {
             List<String> foundIds = images.stream()
                     .map(Image::getId)
