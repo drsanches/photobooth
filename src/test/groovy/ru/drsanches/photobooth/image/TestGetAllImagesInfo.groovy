@@ -5,8 +5,8 @@ import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONArray
 import net.sf.json.JSONNull
-import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
+import ru.drsanches.photobooth.utils.TestUser
 import ru.drsanches.photobooth.utils.Utils
 import spock.lang.Specification
 
@@ -17,16 +17,13 @@ class TestGetAllImagesInfo extends Specification {
     String IMAGE_PATH_PREFIX = "/api/v1/image/"
 
     def "successful empty image list info getting"() {
-        given: "user with friend"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-        def token = RequestUtils.getToken(username, password)
+        given: "user"
+        def user = new TestUser().register()
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
+                headers: ["Authorization": "Bearer $user.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
@@ -35,26 +32,21 @@ class TestGetAllImagesInfo extends Specification {
     }
 
     def "successful all images info getting"() {
-        given: "user with friend"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        def friendUsername = DataGenerator.createValidUsername()
-        def friendPassword = DataGenerator.createValidPassword()
-        def userId = RequestUtils.registerUser(username, password, null)
-        def friendId = RequestUtils.registerUser(friendUsername, friendPassword, null)
-        RequestUtils.sendFriendRequest(username, password, friendId)
-        RequestUtils.sendFriendRequest(friendUsername, friendPassword, userId)
+        given: "two friends"
+        def user1 = new TestUser().register()
+        def user2 = new TestUser().register()
+        user1.sendFriendRequest(user2.id)
+        user2.sendFriendRequest(user1.id)
         def date1 = new Date()
-        RequestUtils.sendTestPhoto(username, password, [friendId])
+        user1.sendTestPhoto([user2.id])
         def date2 = new Date()
-        RequestUtils.sendTestPhoto(friendUsername, friendPassword, [userId])
+        user2.sendTestPhoto([user1.id])
         def date3 = new Date()
-        def token = RequestUtils.getToken(username, password)
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
+                headers: ["Authorization": "Bearer $user1.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
@@ -63,23 +55,20 @@ class TestGetAllImagesInfo extends Specification {
         assert data.size() == 2
         assert data.get(0)["id"] != JSONNull.getInstance()
         assert data.get(0)["path"] == IMAGE_PATH_PREFIX + data.get(0)["id"]
-        assert data.get(0)["ownerId"] == userId
+        assert data.get(0)["ownerId"] == user1.id
         assert Utils.checkTimestamp(date1, data.get(0)["createdTime"] as String, date2)
         assert data.get(1)["id"] != JSONNull.getInstance()
         assert data.get(1)["path"] == IMAGE_PATH_PREFIX + data.get(1)["id"]
-        assert data.get(1)["ownerId"] == friendId
+        assert data.get(1)["ownerId"] == user2.id
         assert Utils.checkTimestamp(date2, data.get(1)["createdTime"] as String, date3)
 
         and: "images are correct"
-        assert Utils.checkTestImage(RequestUtils.getImage(username, password, IMAGE_PATH_PREFIX + data.get(0)["id"]))
-        assert Utils.checkTestImage(RequestUtils.getImage(username, password, IMAGE_PATH_PREFIX + data.get(1)["id"]))
+        assert Utils.checkTestImage(RequestUtils.getImage(user1.username, user1.password, IMAGE_PATH_PREFIX + data.get(0)["id"]))
+        assert Utils.checkTestImage(RequestUtils.getImage(user1.username, user1.password, IMAGE_PATH_PREFIX + data.get(1)["id"]))
     }
 
     def "all images info getting with invalid token"() {
-        given: "user and invalid token"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
+        given: "invalid token"
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"

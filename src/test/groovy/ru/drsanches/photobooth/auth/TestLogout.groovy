@@ -4,6 +4,7 @@ import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
+import ru.drsanches.photobooth.utils.TestUser
 import spock.lang.Specification
 
 class TestLogout extends Specification {
@@ -11,12 +12,10 @@ class TestLogout extends Specification {
     String PATH = "/api/v1/auth/logout"
 
     def "successful logout"() {
-        given: "user after login"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-        def oldToken = RequestUtils.getToken(username, password)
-        def token = RequestUtils.getToken(username, password)
+        given: "user"
+        def user = new TestUser().register()
+        def oldToken = RequestUtils.getToken(user.username, user.password)
+        def token = RequestUtils.getToken(user.username, user.password)
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
@@ -27,7 +26,7 @@ class TestLogout extends Specification {
         assert response.status == 200
 
         and: "new token is correct"
-        def newToken = RequestUtils.getToken(username, password)
+        def newToken = RequestUtils.getToken(user.username, user.password)
         assert RequestUtils.getAuthInfo(newToken as String) != null
 
         and: "new token is different"
@@ -42,10 +41,7 @@ class TestLogout extends Specification {
     }
 
     def "logout with invalid token"() {
-        given: "user after login"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
+        given: "invalid token"
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"

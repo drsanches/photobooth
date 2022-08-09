@@ -6,6 +6,7 @@ import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
+import ru.drsanches.photobooth.utils.TestUser
 import spock.lang.Specification
 
 class TestChangeEmail extends Specification {
@@ -13,69 +14,57 @@ class TestChangeEmail extends Specification {
     String PATH = "/api/v1/auth/changeEmail"
 
     def "success email change"() {
-        given: "registered user, password, token and new email"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        def email = DataGenerator.createValidEmail()
-        RequestUtils.registerUser(username, password, email)
-        def token = RequestUtils.getToken(username, password)
+        given: "user and new email"
+        def user = new TestUser().register()
         def newEmail = DataGenerator.createValidEmail()
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().put(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
+                headers: ["Authorization": "Bearer $user.token"],
                 body:  [newEmail: newEmail,
-                        password: password],
+                        password: user.password],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
 
         and: "user was updated"
-        assert RequestUtils.getAuthInfo(username, password)['email'] == newEmail
+        assert user.getAuthInfo()['email'] == newEmail
     }
 
     def "success email change without newEmail"() {
-        given: "registered user, password, token"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        def email = DataGenerator.createValidEmail()
-        RequestUtils.registerUser(username, password, email)
-        def token = RequestUtils.getToken(username, password)
+        given: "user"
+        def user = new TestUser().register()
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().put(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
+                headers: ["Authorization": "Bearer $user.token"],
                 body:  [newEmail: empty,
-                        password: password],
+                        password: user.password],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
 
         and: "user was updated"
-        assert RequestUtils.getAuthInfo(username, password)['email'] == result
+        assert user.getAuthInfo()['email'] == result
 
         where:
         empty << [null, ""]
         result << [JSONNull.getInstance(), ""]
     }
 
-    def "success email change without password"() {
-        given: "registered user, password, token"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        def email = DataGenerator.createValidEmail()
+    def "email change without password"() {
+        given: "user"
+        def user = new TestUser().register()
         def newEmail = DataGenerator.createValidEmail()
-        RequestUtils.registerUser(username, password, email)
-        def token = RequestUtils.getToken(username, password)
 
         when: "request is sent"
         RequestUtils.getRestClient().put(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
+                headers: ["Authorization": "Bearer $user.token"],
                 body:  [newEmail: newEmail,
                         password: empty],
                 requestContentType : ContentType.JSON)
@@ -89,19 +78,15 @@ class TestChangeEmail extends Specification {
     }
 
     def "email change with old email"() {
-        given: "registered user, password, token"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        def email = DataGenerator.createValidEmail()
-        RequestUtils.registerUser(username, password, email)
-        def token = RequestUtils.getToken(username, password)
+        given: "user"
+        def user = new TestUser().register()
 
         when: "request is sent"
         RequestUtils.getRestClient().put(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
-                body:  [newEmail: email,
-                        password: password],
+                headers: ["Authorization": "Bearer $user.token"],
+                body:  [newEmail: user.email,
+                        password: user.password],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
@@ -110,19 +95,15 @@ class TestChangeEmail extends Specification {
     }
 
     def "email change with invalid password"() {
-        given: "registered user, new email, token and invalid password"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        def email = DataGenerator.createValidEmail()
+        given: "user and invalid password"
+        def user = new TestUser().register()
         def newEmail = DataGenerator.createValidEmail()
         def invalidPassword = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, email)
-        def token = RequestUtils.getToken(username, password)
 
         when: "request is sent"
         RequestUtils.getRestClient().put(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
+                headers: ["Authorization": "Bearer $user.token"],
                 body:  [newEmail: newEmail,
                         password: invalidPassword],
                 requestContentType : ContentType.JSON)
@@ -133,20 +114,13 @@ class TestChangeEmail extends Specification {
     }
 
     def "email change with invalid token"() {
-        given: "registered user, new email and invalid token"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        def email = DataGenerator.createValidEmail()
-        RequestUtils.registerUser(username, password,  email)
+        given: "invalid token"
         def token = UUID.randomUUID().toString()
-        def newEmail = DataGenerator.createValidEmail()
 
         when: "request is sent"
         RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: ["Authorization": "Bearer $token"],
-                body:  [newEmail: newEmail,
-                        password: password],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"

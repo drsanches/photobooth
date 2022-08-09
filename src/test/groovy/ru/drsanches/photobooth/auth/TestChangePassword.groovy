@@ -5,6 +5,7 @@ import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
+import ru.drsanches.photobooth.utils.TestUser
 import spock.lang.Specification
 
 class TestChangePassword extends Specification {
@@ -12,19 +13,17 @@ class TestChangePassword extends Specification {
     String PATH = "/api/v1/auth/changePassword"
 
     def "success password change"() {
-        given: "registered user, old and new passwords and token"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-        def oldToken = RequestUtils.getToken(username, password)
-        def token = RequestUtils.getToken(username, password)
+        given: "user, two tokens and new password"
+        def user = new TestUser().register()
+        def oldToken = RequestUtils.getToken(user.username, user.password)
+        def token = RequestUtils.getToken(user.username, user.password)
         def newPassword = DataGenerator.createValidPassword()
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: ["Authorization": "Bearer $token"],
-                body:  [oldPassword: password,
+                body:  [oldPassword: user.password,
                         newPassword: newPassword],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
@@ -38,25 +37,22 @@ class TestChangePassword extends Specification {
         assert RequestUtils.getAuthInfo(oldToken) == null
 
         and: "password was updated"
-        assert RequestUtils.getAuthInfo(username, newPassword) != null
+        assert RequestUtils.getAuthInfo(user.username, newPassword) != null
 
         and: "new token is different"
-        assert RequestUtils.getToken(username, password) != token
+        assert RequestUtils.getToken(user.username, newPassword) != token
     }
 
     def "password change with equal password"() {
-        given: "registered user, password, token"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-        def token = RequestUtils.getToken(username, password)
+        given: "user"
+        def user = new TestUser().register()
 
         when: "request is sent"
         RequestUtils.getRestClient().put(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
-                body:  [oldPassword: password,
-                        newPassword: password],
+                headers: ["Authorization": "Bearer $user.token"],
+                body:  [oldPassword: user.password,
+                        newPassword: user.password],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
@@ -65,18 +61,15 @@ class TestChangePassword extends Specification {
     }
 
     def "password change with invalid odlPassword"() {
-        given: "registered user, new password, token and invalid password"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
+        given: "user and invalid password"
+        def user = new TestUser().register()
         def invalidPassword = DataGenerator.createValidPassword()
         def newPassword = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-        def token = RequestUtils.getToken(username, password)
 
         when: "request is sent"
         RequestUtils.getRestClient().put(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
+                headers: ["Authorization": "Bearer $user.token"],
                 body:  [oldPassword: invalidPassword,
                         newPassword: newPassword],
                 requestContentType : ContentType.JSON)
@@ -87,17 +80,14 @@ class TestChangePassword extends Specification {
     }
 
     def "password change without odlPassword"() {
-        given: "registered user"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
+        given: "user and new password"
+        def user = new TestUser().register()
         def newPassword = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-        def token = RequestUtils.getToken(username, password)
 
         when: "request is sent"
         RequestUtils.getRestClient().put(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
+                headers: ["Authorization": "Bearer $user.token"],
                 body:  [oldPassword: empty,
                         newPassword: newPassword],
                 requestContentType : ContentType.JSON)
@@ -111,17 +101,14 @@ class TestChangePassword extends Specification {
     }
 
     def "password change without newPassword"() {
-        given: "registered user"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-        def token = RequestUtils.getToken(username, password)
+        given: "user"
+        def user = new TestUser().register()
 
         when: "request is sent"
         RequestUtils.getRestClient().put(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
-                body:  [oldPassword: password,
+                headers: ["Authorization": "Bearer $user.token"],
+                body:  [oldPassword: user.password,
                         newPassword: empty],
                 requestContentType : ContentType.JSON)
 
@@ -134,19 +121,13 @@ class TestChangePassword extends Specification {
     }
 
     def "password change with invalid token"() {
-        given: "registered user, old and new password and invalid token"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password,  null)
+        given: "invalid token"
         def token = UUID.randomUUID().toString()
-        def newPassword = DataGenerator.createValidPassword()
 
         when: "request is sent"
         RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: ["Authorization": "Bearer $token"],
-                body:  [oldPassword: password,
-                        newPassword: newPassword],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"

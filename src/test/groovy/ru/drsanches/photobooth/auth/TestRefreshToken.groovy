@@ -3,8 +3,8 @@ package ru.drsanches.photobooth.auth
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
-import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
+import ru.drsanches.photobooth.utils.TestUser
 import spock.lang.Specification
 
 class TestRefreshToken extends Specification {
@@ -13,11 +13,9 @@ class TestRefreshToken extends Specification {
 
     def "successful token refresh"() {
         given: "user"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-        def oldToken = RequestUtils.getToken(username, password)
-        def refreshToken = RequestUtils.getRefreshToken(username, password)
+        def user = new TestUser().register()
+        def oldToken = RequestUtils.getToken(user.username, user.password)
+        def refreshToken = RequestUtils.getRefreshToken(user.username, user.password)
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
@@ -37,11 +35,7 @@ class TestRefreshToken extends Specification {
     }
 
     def "refresh token with invalid refreshToken"() {
-        given: "user"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-        RequestUtils.getToken(username, password)
+        given: "invalid refresh token"
         def invalidRefreshToken = UUID.randomUUID().toString()
 
         when: "request is sent"

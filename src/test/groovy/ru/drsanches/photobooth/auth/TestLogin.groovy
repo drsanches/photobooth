@@ -3,8 +3,10 @@ package ru.drsanches.photobooth.auth
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
+import net.sf.json.JSONNull
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
+import ru.drsanches.photobooth.utils.TestUser
 import spock.lang.Specification
 
 class TestLogin extends Specification {
@@ -26,9 +28,13 @@ class TestLogin extends Specification {
 
         then: "response is correct"
         assert response.status == 200
+        def token = response.getData()["accessToken"]
+        token != JSONNull.getInstance()
+        response.getData()["refreshToken"] != JSONNull.getInstance()
+        response.getData()["tokenType"] == "Bearer"
+        response.getData()["expiresAt"] != JSONNull.getInstance()
 
         and: "token is correct"
-        def token = response.getData()["accessToken"]
         assert RequestUtils.getAuthInfo(token as String) != null
     }
 

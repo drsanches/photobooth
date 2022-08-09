@@ -2,8 +2,8 @@ package ru.drsanches.photobooth.image
 
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
-import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
+import ru.drsanches.photobooth.utils.TestUser
 import ru.drsanches.photobooth.utils.Utils
 import spock.lang.Specification
 
@@ -13,57 +13,45 @@ class TestDeleteAvatar extends Specification {
 
     def "successful default avatar deletion"() {
         given: "user"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-        def token = RequestUtils.getToken(username, password)
+        def user = new TestUser().register()
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().delete(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
+                headers: ["Authorization": "Bearer $user.token"]) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert RequestUtils.getUserProfile(username, password)["imagePath"] == Utils.getDefaultImagePath()
+        assert user.getUserProfile()["imagePath"] == Utils.getDefaultImagePath()
 
         and: "image does not change"
-        def imageData = RequestUtils.getImage(username, password, Utils.getDefaultImagePath())
-        assert Utils.checkDefaultImage(imageData)
+        assert Utils.checkDefaultImage(user.getImageData())
     }
 
     def "successful avatar deletion"() {
         given: "user"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-        def token = RequestUtils.getToken(username, password)
-        RequestUtils.uploadTestAvatar(username, password)
-        def imagePath = RequestUtils.getUserProfile(username, password)["imagePath"] as String
+        def user = new TestUser().register().uploadTestAvatar()
+        def oldImagePath = user.imagePath
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().delete(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
+                headers: ["Authorization": "Bearer $user.token"]) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert RequestUtils.getUserProfile(username, password)["imagePath"] == Utils.getDefaultImagePath()
+        assert user.getUserProfile()["imagePath"] == Utils.getDefaultImagePath()
 
         and: "image is correct"
-        def imageData = RequestUtils.getImage(username, password, Utils.getDefaultImagePath())
-        assert Utils.checkDefaultImage(imageData)
+        assert Utils.checkDefaultImage(user.getImageData())
 
         and: "the old image is available"
-        def oldImageData = RequestUtils.getImage(username, password, imagePath)
+        def oldImageData = RequestUtils.getImage(user.username, user.password, oldImagePath)
         assert Utils.checkTestImage(oldImageData)
     }
 
     def "delete avatar with invalid token"() {
-        given: "user and invalid token"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
+        given: "invalid token"
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"

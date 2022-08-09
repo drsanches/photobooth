@@ -3,8 +3,8 @@ package ru.drsanches.photobooth.profile
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
-import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
+import ru.drsanches.photobooth.utils.TestUser
 import ru.drsanches.photobooth.utils.Utils
 import spock.lang.Specification
 
@@ -13,55 +13,34 @@ class TestGetProfile extends Specification {
     String PATH = "/api/v1/profile/"
 
     def "successful user profile getting"() {
-        given: "user with token and another user"
-        def username1 = DataGenerator.createValidUsername()
-        def password1 = DataGenerator.createValidPassword()
-        def username2 = DataGenerator.createValidUsername()
-        def password2 = DataGenerator.createValidPassword()
-
-        RequestUtils.registerUser(username1, password1, null)
-        def userId2 = RequestUtils.registerUser(username2, password2, null)
-
-        def token1 = RequestUtils.getToken(username1, password1)
-        def token2 = RequestUtils.getToken(username2, password2)
-
-        def name2 = DataGenerator.createValidName()
-        def status2 = DataGenerator.createValidStatus()
-        RequestUtils.changeUserProfile(token2, name2, status2)
+        given: "two users"
+        def user1 = new TestUser().register()
+        def user2 = new TestUser().register().fillProfile()
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
-                path: PATH + userId2,
-                headers: ["Authorization": "Bearer $token1"],
+                path: PATH + user2.id,
+                headers: ["Authorization": "Bearer $user1.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert response.getData()["id"] == userId2
-        assert response.getData()["username"] == username2
-        assert response.getData()["name"] == name2
-        assert response.getData()["status"] == status2
+        assert response.getData()["id"] == user2.id
+        assert response.getData()["username"] == user2.username
+        assert response.getData()["name"] == user2.name
+        assert response.getData()["status"] == user2.status
         assert response.getData()["imagePath"] == Utils.getDefaultImagePath()
     }
 
     def "get deleted user profile"() {
-        given: "user, token and deleted user"
-        def username1 = DataGenerator.createValidUsername()
-        def password1 = DataGenerator.createValidPassword()
-        def username2 = DataGenerator.createValidUsername()
-        def password2 = DataGenerator.createValidPassword()
-
-        RequestUtils.registerUser(username1, password1, null)
-        def userId2 = RequestUtils.registerUser(username2, password2, null)
-
-        def token = RequestUtils.getToken(username1, password1)
-
-        RequestUtils.deleteUser(username2, password2)
+        given: "user and deleted user"
+        def user1 = new TestUser().register()
+        def user2 = new TestUser().register().delete()
 
         when: "request is sent"
         RequestUtils.getRestClient().get(
-                path: PATH + userId2,
-                headers: ["Authorization": "Bearer $token"],
+                path: PATH + user2.id,
+                headers: ["Authorization": "Bearer $user1.token"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
@@ -70,17 +49,14 @@ class TestGetProfile extends Specification {
     }
 
     def "get nonexistent user profile"() {
-        given: "user, token and nonexistent id"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-        def token = RequestUtils.getToken(username, password)
+        given: "user and nonexistent user id"
+        def user = new TestUser().register()
         def nonexistentId = UUID.randomUUID().toString()
 
         when: "request is sent"
         RequestUtils.getRestClient().get(
                 path: PATH + nonexistentId,
-                headers: ["Authorization": "Bearer $token"],
+                headers: ["Authorization": "Bearer $user.token"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
@@ -89,10 +65,8 @@ class TestGetProfile extends Specification {
     }
 
     def "get user profile with invalid token"() {
-        given: "user and invalid token"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        def userId = RequestUtils.registerUser(username, password, null)
+        given: "user id and invalid token"
+        def userId = UUID.randomUUID().toString()
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"

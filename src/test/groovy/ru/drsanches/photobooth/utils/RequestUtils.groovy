@@ -16,11 +16,6 @@ class RequestUtils {
         return new RESTClient( "$SERVER_URL:$PORT")
     }
 
-    //TODO: Refactor
-    /**
-     * Registers user and returns user id
-     * @return user id
-     */
     static String registerUser(String username, String password, String email) {
         try {
             HttpResponseDecorator response = getRestClient().post(
@@ -29,7 +24,7 @@ class RequestUtils {
                            password: password,
                            email: email],
                     requestContentType: ContentType.JSON) as HttpResponseDecorator
-            return getUserProfile(response.data["accessToken"] as String)["id"]
+            return response.data["accessToken"]
         } catch(Exception e) {
             e.printStackTrace()
             return null
@@ -195,6 +190,18 @@ class RequestUtils {
         }
     }
 
+    static byte[] getImage(String token, String path) {
+        try {
+            HttpResponseDecorator response = getRestClient().get(
+                    path: path,
+                    headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
+            return response.status == 200 ? (response.getData() as ByteArrayInputStream).getBytes() as byte[] : null
+        } catch(Exception e) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
     static byte[] getImage(String username, String password, String path) {
         String token = getToken(username, password)
         if (token == null) {
@@ -211,8 +218,7 @@ class RequestUtils {
         }
     }
 
-    static void uploadTestAvatar(String username, String password) {
-        String token = getToken(username, password)
+    static void uploadTestAvatar(String token) {
         getRestClient().post(
                 path: '/api/v1/image/avatar',
                 headers: ["Authorization": "Bearer $token"],

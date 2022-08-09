@@ -6,6 +6,7 @@ import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
+import ru.drsanches.photobooth.utils.TestUser
 import ru.drsanches.photobooth.utils.Utils
 import spock.lang.Specification
 
@@ -92,17 +93,15 @@ class TestRegistration extends Specification {
     }
 
     def "already existing user registration"() {
-        given: "registered user"
-        def username = DataGenerator.createValidUsername()
-        def password1 = DataGenerator.createValidPassword()
-        def password2 = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password1, null)
+        given: "user"
+        def user = new TestUser().register()
+        def password = DataGenerator.createValidPassword()
 
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
-                body:  [username: username,
-                        password: password2],
+                body:  [username: user.username,
+                        password: password],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"

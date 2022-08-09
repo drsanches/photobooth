@@ -3,8 +3,8 @@ package ru.drsanches.photobooth.image
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
-import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
+import ru.drsanches.photobooth.utils.TestUser
 import ru.drsanches.photobooth.utils.Utils
 import spock.lang.Specification
 
@@ -13,11 +13,6 @@ class TestGetImage extends Specification {
     String PATH = "/api/v1/image/"
 
     def "successful default avatar getting"() {
-        given: "two users"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: Utils.getDefaultImagePath(),
@@ -29,19 +24,12 @@ class TestGetImage extends Specification {
     }
 
     def "successful avatar getting"() {
-        given: "two users"
-        def username1 = DataGenerator.createValidUsername()
-        def password1 = DataGenerator.createValidPassword()
-        def username2 = DataGenerator.createValidUsername()
-        def password2 = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username1, password1, null)
-        RequestUtils.registerUser(username2, password2, null)
-        RequestUtils.uploadTestAvatar(username2, password2)
-        def imagePath = RequestUtils.getUserProfile(username2, password2)["imagePath"]
+        given: "user with avatar"
+        def user = new TestUser().register().uploadTestAvatar()
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
-                path: imagePath,
+                path: user.imagePath,
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
@@ -50,10 +38,7 @@ class TestGetImage extends Specification {
     }
 
     def "get nonexistent image"() {
-        given: "user and nonexistent image id"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
+        given: "nonexistent image id"
         def nonexistentImageId = UUID.randomUUID().toString()
 
         when: "request is sent"
