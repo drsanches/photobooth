@@ -5,8 +5,11 @@ import ru.drsanches.photobooth.app.data.image.model.Image;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface ImageRepository extends CrudRepository<Image, String> {
+
+    Optional<Image> findTopByIdInOrderByCreatedTimeDesc(Collection<String> imageIds);
 
     List<Image> findAllByIdInOrderByCreatedTimeDesc(Collection<String> imageIds);
 }

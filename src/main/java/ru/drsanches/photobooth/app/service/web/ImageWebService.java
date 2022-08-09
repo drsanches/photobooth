@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -87,6 +88,13 @@ public class ImageWebService {
         return images.stream()
                 .map(imageInfoMapper::convert)
                 .collect(Collectors.toList());
+    }
+
+    public ImageInfoDTO getLastImageInfo() {
+        String currentUserId = tokenSupplier.get().getUserId();
+        Set<String> imageIds = imagePermissionDomainService.getImageIds(currentUserId);
+        Optional<Image> image = imageDomainService.getLastImage(imageIds);
+        return imageInfoMapper.convert(image.orElse(imageDomainService.getImage("no_photo")));
     }
 
     public void deleteAvatar() {

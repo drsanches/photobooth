@@ -63,6 +63,13 @@ public class ImageController {
         return imageWebService.getAllInfo();
     }
 
+    @RequestMapping(path = "/last", method = RequestMethod.GET)
+    @Operation(summary = "Returns the last images info that is available to the user")
+    @Parameter(name = "Authorization", description = "Access token", in = ParameterIn.HEADER, required = true)
+    public ImageInfoDTO getLastImageInfo() {
+        return imageWebService.getLastImageInfo();
+    }
+
     @RequestMapping(path = "/avatar", method = RequestMethod.DELETE)
     @Operation(summary = "Removes an avatar for user")
     @Parameter(name = "Authorization", description = "Access token", in = ParameterIn.HEADER, required = true)

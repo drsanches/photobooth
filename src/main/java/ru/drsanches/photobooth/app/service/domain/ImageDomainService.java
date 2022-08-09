@@ -8,7 +8,6 @@ import ru.drsanches.photobooth.app.data.image.model.Image;
 import ru.drsanches.photobooth.app.data.image.repository.ImageRepository;
 import ru.drsanches.photobooth.exception.application.NoImageException;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +32,10 @@ public class ImageDomainService {
             throw new NoImageException(imageId);
         }
         return image.get();
+    }
+
+    public Optional<Image> getLastImage(Collection<String> imageIds) {
+        return imageRepository.findTopByIdInOrderByCreatedTimeDesc(imageIds);
     }
 
     public List<Image> getImages(Collection<String> imageIds) {

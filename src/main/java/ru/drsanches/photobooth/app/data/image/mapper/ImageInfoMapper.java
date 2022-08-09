@@ -15,7 +15,7 @@ public class ImageInfoMapper {
         ImageInfoDTO imageInfoDTO = new ImageInfoDTO();
         imageInfoDTO.setId(image.getId());
         imageInfoDTO.setPath(PATH + image.getId());
-        if (!image.getId().equals("default")) {
+        if (!image.getOwnerId().equals("system")) {
             imageInfoDTO.setCreatedTime(GregorianCalendarConvertor.convert(image.getCreatedTime()));
             imageInfoDTO.setOwnerId(image.getOwnerId());
         }

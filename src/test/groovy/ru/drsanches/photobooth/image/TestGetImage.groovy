@@ -23,6 +23,17 @@ class TestGetImage extends Specification {
         assert Utils.checkDefaultImage(response.data)
     }
 
+    def "successful no photo image getting"() {
+        when: "request is sent"
+        def response = RequestUtils.getRestClient().get(
+                path: Utils.getNoPhotoPath(),
+                requestContentType : ContentType.JSON) as HttpResponseDecorator
+
+        then: "response is correct"
+        assert response.status == 200
+        assert Utils.checkNoPhotoImage(response.data)
+    }
+
     def "successful avatar getting"() {
         given: "user with avatar"
         def user = new TestUser().register().uploadTestAvatar()

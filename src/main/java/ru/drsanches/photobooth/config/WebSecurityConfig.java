@@ -30,6 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .or(x -> x.matches("/api/v1/auth/login.*"))
             .or(x -> x.matches("/api/v1/auth/refreshToken.*"))
             .or(x -> x.matches("/api/v1/image/default"))
+            .or(x -> x.matches("/api/v1/image/no_photo"))
             .or(x -> x.matches("/api/v1/image/" + IMAGE_ID_PATTERN))
             .or(x -> x.matches("/actuator/health.*"))
             .or(x -> x.matches("/ui.*"))

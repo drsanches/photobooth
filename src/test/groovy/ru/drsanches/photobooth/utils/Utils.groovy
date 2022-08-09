@@ -16,6 +16,10 @@ class Utils {
         return checkImage(data, getDefaultImageFilename())
     }
 
+    static boolean checkNoPhotoImage(Object data) {
+        return checkImage(data, getNoPhotoFilename())
+    }
+
     static boolean checkTestImage(Object data) {
         return checkImage(data, getTestImageFilename())
     }
@@ -34,8 +38,16 @@ class Utils {
         return "/api/v1/image/default"
     }
 
+    static String getNoPhotoPath() {
+        return "/api/v1/image/no_photo"
+    }
+
     static String getDefaultImageFilename() {
         return "src/main/resources/default.jpg"
+    }
+
+    static String getNoPhotoFilename() {
+        return "src/main/resources/no_photo.jpg"
     }
 
     static String getTestImageFilename() {
