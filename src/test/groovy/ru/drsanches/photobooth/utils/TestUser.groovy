@@ -45,17 +45,17 @@ class TestUser {
     }
 
     TestUser sendFriendRequest(String userId) {
-        RequestUtils.sendFriendRequest(username, password, userId)
+        RequestUtils.sendFriendRequest(token, userId)
         return this
     }
 
     TestUser sendTestPhoto(List<String> userIds) {
-        RequestUtils.sendTestPhoto(username, password, userIds)
+        RequestUtils.sendTestPhoto(token, userIds)
         return this
     }
 
     TestUser delete() {
-        RequestUtils.deleteUser(username, password)
+        RequestUtils.deleteUser(token, password)
         return this
     }
 
@@ -73,18 +73,18 @@ class TestUser {
     }
 
     JSONArray getIncomingFriendRequests() {
-        return RequestUtils.getIncomingRequests(username, password)
+        return RequestUtils.getIncomingRequests(token)
     }
 
     JSONArray getOutgoingFriendRequests() {
-        return RequestUtils.getOutgoingRequests(username, password)
+        return RequestUtils.getOutgoingRequests(token)
     }
 
     JSONArray getFriends() {
-        return RequestUtils.getFriends(username, password)
+        return RequestUtils.getFriends(token)
     }
 
     JSONArray getAllImagesInfo() {
-        return RequestUtils.getAllImagesInfo(username, password)
+        return RequestUtils.getAllImagesInfo(token)
     }
 }

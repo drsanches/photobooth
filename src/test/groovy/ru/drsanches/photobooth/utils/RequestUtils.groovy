@@ -36,15 +36,7 @@ class RequestUtils {
         if (token == null) {
             return null
         }
-        try {
-            HttpResponseDecorator response = getRestClient().get(
-                    path: "/api/v1/auth/info",
-                    headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
-            return response.status == 200 ? response.getData() as JSONObject : null
-        } catch(Exception e) {
-            e.printStackTrace()
-            return null
-        }
+        return getAuthInfo(token)
     }
 
     static JSONObject getAuthInfo(String token) {
@@ -64,15 +56,7 @@ class RequestUtils {
         if (token == null) {
             return null
         }
-        try {
-            HttpResponseDecorator response = getRestClient().get(
-                    path: "/api/v1/profile",
-                    headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
-            return response.status == 200 ? response.getData() as JSONObject : null
-        } catch(Exception e) {
-            e.printStackTrace()
-            return null
-        }
+        return getUserProfile(token)
     }
 
     static JSONObject getUserProfile(String token) {
@@ -96,8 +80,7 @@ class RequestUtils {
                 requestContentType: ContentType.JSON)
     }
 
-    static void sendFriendRequest(String username, String password, String userId) {
-        String token = getToken(username, password)
+    static void sendFriendRequest(String token, String userId) {
         getRestClient().post(
                 path: "/api/v1/friends/manage/add",
                 headers: ["Authorization": "Bearer $token"],
@@ -105,11 +88,7 @@ class RequestUtils {
                 requestContentType: ContentType.JSON)
     }
 
-    static JSONArray getIncomingRequests(String username, String password) {
-        String token = getToken(username, password)
-        if (token == null) {
-            return null
-        }
+    static JSONArray getIncomingRequests(String token) {
         try {
             HttpResponseDecorator response = getRestClient().get(
                     path: "/api/v1/friends/requests/incoming",
@@ -121,11 +100,7 @@ class RequestUtils {
         }
     }
 
-    static JSONArray getOutgoingRequests(String username, String password) {
-        String token = getToken(username, password)
-        if (token == null) {
-            return null
-        }
+    static JSONArray getOutgoingRequests(String token) {
         try {
             HttpResponseDecorator response = getRestClient().get(
                     path: "/api/v1/friends/requests/outgoing",
@@ -137,11 +112,7 @@ class RequestUtils {
         }
     }
 
-    static JSONArray getFriends(String username, String password) {
-        String token = getToken(username, password)
-        if (token == null) {
-            return null
-        }
+    static JSONArray getFriends(String token) {
         try {
             HttpResponseDecorator response = getRestClient().get(
                     path: "/api/v1/friends",
@@ -153,8 +124,7 @@ class RequestUtils {
         }
     }
 
-    static void deleteUser(String username, String password) {
-        String token = getToken(username, password)
+    static void deleteUser(String token, String password) {
         getRestClient().post(
                 path: "/api/v1/auth/deleteUser",
                 headers: ["Authorization": "Bearer $token"],
@@ -226,11 +196,7 @@ class RequestUtils {
                 requestContentType: ContentType.JSON)
     }
 
-    static JSONArray getAllImagesInfo(String username, String password) {
-        String token = getToken(username, password)
-        if (token == null) {
-            return null
-        }
+    static JSONArray getAllImagesInfo(String token) {
         try {
             HttpResponseDecorator response = getRestClient().get(
                     path: "/api/v1/image/all",
@@ -242,8 +208,7 @@ class RequestUtils {
         }
     }
 
-    static void sendTestPhoto(String username, String password, List<String> userIds) {
-        String token = getToken(username, password)
+    static void sendTestPhoto(String token, List<String> userIds) {
         getRestClient().post(
                 path: '/api/v1/image/photo',
                 headers: ["Authorization": "Bearer $token"],
