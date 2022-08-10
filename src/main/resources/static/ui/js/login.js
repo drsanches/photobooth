@@ -16,7 +16,7 @@ export var login = {
             }
             var body = {
                 username: this.username,
-                password: this.password, //TODO: Correct hash
+                password: hash(this.password),
             }
             sendData("/auth/login", "POST", body, true, function(data) {
                 setToken(data.accessToken);

@@ -17,6 +17,6 @@ public class ChangeUsernameDTO {
 
     @NotEmpty
     @ToString.Exclude
-    @Schema(required = true, description = "current user password hash ASH1")
+    @Schema(required = true, description = "current user password SHA256 hash")
     private String password;
 }

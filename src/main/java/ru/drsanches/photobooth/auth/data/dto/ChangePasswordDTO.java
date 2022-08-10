@@ -13,11 +13,11 @@ public class ChangePasswordDTO {
 
     @NotEmpty
     @ToString.Exclude
-    @Schema(required = true, description = "current user password hash")
+    @Schema(required = true, description = "current user password SHA256 hash")
     private String oldPassword;
 
     @NotEmpty
     @ToString.Exclude
-    @Schema(required = true, description = "new password hash")
+    @Schema(required = true, description = "new password SHA256 hash")
     private String newPassword;
 }

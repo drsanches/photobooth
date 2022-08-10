@@ -13,6 +13,6 @@ public class DeleteUserDTO {
 
     @NotEmpty
     @ToString.Exclude
-    @Schema(required = true, description = "current user password hash")
+    @Schema(required = true, description = "current user password SHA256 hash")
     private String password;
 }

@@ -17,7 +17,7 @@ public class RegistrationDTO {
 
     @NotEmpty
     @ToString.Exclude
-    @Schema(required = true, description = "password hash")
+    @Schema(required = true, description = "password SHA256 hash")
     private String password;
 
     @Schema

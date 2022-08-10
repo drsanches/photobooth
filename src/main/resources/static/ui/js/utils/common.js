@@ -1,11 +1,11 @@
 import {getToken, deleteToken} from "/ui/js/utils/token.js"
-import Sha1 from '/ui/js/lib/sha1.js'
+import {sha256} from '/ui/js/lib/sha256.js'
 
 var BASE_URL = window.location.protocol + "//" + window.location.host;
 var API_BASE_URL = BASE_URL + "/api/v1";
 
 export function hash(password) {
-    return Sha1.hash(password);
+    return sha256(password);
 }
 
 export function followLink(path) {
