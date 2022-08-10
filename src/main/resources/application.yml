@@ -8,17 +8,11 @@ management: # http://localhost:8080/actuator
         include: "*"
 
 spring:
-  servlet:
-    multipart:
-      max-file-size: 5MB
-      max-request-size: 5MB
-
   h2: # http://localhost:8080/h2-console
     console:
       enabled: true
       settings:
         web-allow-others: true
-
   datasource:
     driverClassName: org.postgresql.Driver
     url: ${JDBC_DATABASE_URL}
