@@ -23,6 +23,8 @@ import java.util.List;
 @RequestMapping(value = "/api/v1/image")
 public class ImageController {
 
+    public static final String IMAGE_PATH_PREFIX = "/api/v1/image/";
+
     @Autowired
     private ImageWebService imageWebService;
 

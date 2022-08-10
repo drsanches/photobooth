@@ -1,13 +1,12 @@
 package ru.drsanches.photobooth.app.data.profile.mapper;
 
 import org.springframework.stereotype.Component;
+import ru.drsanches.photobooth.app.controller.ImageController;
 import ru.drsanches.photobooth.app.data.profile.dto.UserInfoDTO;
 import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
 
 @Component
 public class UserInfoMapper {
-
-    private static final String PATH = "/api/v1/image/";
 
     private static final String DEFAULT_ID = "default";
 
@@ -19,7 +18,8 @@ public class UserInfoMapper {
             userInfoDTO.setName(userProfile.getName());
             userInfoDTO.setStatus(userProfile.getStatus());
             userInfoDTO.setImagePath(userProfile.getImageId() == null ?
-                    PATH + DEFAULT_ID : PATH + userProfile.getImageId());
+                    ImageController.IMAGE_PATH_PREFIX + DEFAULT_ID :
+                    ImageController.IMAGE_PATH_PREFIX + userProfile.getImageId());
         }
         return userInfoDTO;
     }
