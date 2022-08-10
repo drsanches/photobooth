@@ -60,7 +60,8 @@ public class UserAuthWebService {
         UserAuth userAuth = new UserAuth();
         userAuth.setId(UUID.randomUUID().toString());
         userAuth.setUsername(registrationDTO.getUsername().toLowerCase());
-        userAuth.setPassword(credentialsHelper.encodePassword(registrationDTO.getPassword()));
+        userAuth.setSalt(UUID.randomUUID().toString());
+        userAuth.setPassword(credentialsHelper.encodePassword(registrationDTO.getPassword(), userAuth.getSalt()));
         userAuth.setEmail(registrationDTO.getEmail());
         userAuth.setEnabled(true);
         userAuth.setRole(Role.USER);
@@ -74,7 +75,7 @@ public class UserAuthWebService {
         UserAuth userAuth;
         try {
             userAuth = userAuthDomainService.getEnabledByUsername(loginDTO.getUsername().toLowerCase());
-            credentialsHelper.checkPassword(loginDTO.getPassword(), userAuth.getPassword());
+            credentialsHelper.checkPassword(loginDTO.getPassword(), userAuth.getPassword(), userAuth.getSalt());
         } catch (NoUsernameException | WrongPasswordException e) {
             throw new WrongUsernamePasswordException(e);
         }
@@ -91,7 +92,7 @@ public class UserAuthWebService {
     public void changeUsername(@Valid ChangeUsernameDTO changeUsernameDTO) {
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        credentialsHelper.checkPassword(changeUsernameDTO.getPassword(), current.getPassword());
+        credentialsHelper.checkPassword(changeUsernameDTO.getPassword(), current.getPassword(), current.getSalt());
         String oldUsername = current.getUsername();
         if (changeUsernameDTO.getNewUsername().equals(oldUsername)) {
             throw new ApplicationException("New username is equal to old");
@@ -105,11 +106,12 @@ public class UserAuthWebService {
     public void changePassword(@Valid ChangePasswordDTO changePasswordDTO) {
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        credentialsHelper.checkPassword(changePasswordDTO.getOldPassword(), current.getPassword());
+        credentialsHelper.checkPassword(changePasswordDTO.getOldPassword(), current.getPassword(), current.getSalt());
         if (changePasswordDTO.getOldPassword().equals(changePasswordDTO.getNewPassword())) {
             throw new ApplicationException("New password is equal to old");
         }
-        current.setPassword(credentialsHelper.encodePassword(changePasswordDTO.getNewPassword()));
+        current.setSalt(UUID.randomUUID().toString());
+        current.setPassword(credentialsHelper.encodePassword(changePasswordDTO.getNewPassword(), current.getSalt()));
         userAuthDomainService.save(current);
         tokenService.removeAllTokens(userId);
         LOG.info("User with id '{}' changed password", current.getId());
@@ -118,7 +120,7 @@ public class UserAuthWebService {
     public void changeEmail(@Valid ChangeEmailDTO changeEmailDTO) {
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        credentialsHelper.checkPassword(changeEmailDTO.getPassword(), current.getPassword());
+        credentialsHelper.checkPassword(changeEmailDTO.getPassword(), current.getPassword(), current.getSalt());
         if (current.getEmail().equals(changeEmailDTO.getNewEmail())) {
             throw new ApplicationException("New email is equal to old");
         }
@@ -138,7 +140,7 @@ public class UserAuthWebService {
     public void disableUser(@Valid DeleteUserDTO deleteUserDTO) {
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        credentialsHelper.checkPassword(deleteUserDTO.getPassword(), current.getPassword());
+        credentialsHelper.checkPassword(deleteUserDTO.getPassword(), current.getPassword(), current.getSalt());
         tokenService.removeAllTokens(userId);
         current.setEnabled(false);
         current.setUsername(UUID.randomUUID().toString() + "_" + current.getUsername());

@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import java.util.Collection;
 import java.util.List;
 
-//TODO: Add salt
+//TODO: Is it necessary to implement UserDetails?
 @Setter
 @ToString
 @Entity
@@ -30,6 +30,10 @@ public class UserAuth implements UserDetails {
     @Column(nullable = false)
     @ToString.Exclude
     private String password;
+
+    @Column(nullable = false)
+    @ToString.Exclude
+    private String salt;
 
     @Column
     private String email;
@@ -52,6 +56,10 @@ public class UserAuth implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    public String getSalt() {
+        return salt;
     }
 
     public String getEmail() {

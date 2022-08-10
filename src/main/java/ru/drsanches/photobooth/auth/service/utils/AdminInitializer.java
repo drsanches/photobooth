@@ -44,7 +44,8 @@ public class AdminInitializer implements Initializer {
             UserAuth userAuth = new UserAuth();
             userAuth.setId(UUID.randomUUID().toString());
             userAuth.setUsername(username);
-            userAuth.setPassword(new BCryptPasswordEncoder().encode(sha256(password)));
+            userAuth.setSalt(UUID.randomUUID().toString());
+            userAuth.setPassword(new BCryptPasswordEncoder().encode(sha256(password) + userAuth.getSalt()));
             userAuth.setEnabled(true);
             userAuth.setRole(Role.ADMIN);
             userIntegrationService.createUser(userAuth);
