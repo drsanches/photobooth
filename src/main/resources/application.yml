@@ -1,6 +1,11 @@
 server:
   port: ${PORT}
 
+application:
+  admin:
+    username: admin
+    password: ${ADMIN_PASSWORD}
+
 management: # http://localhost:8080/actuator
   endpoints:
     web:

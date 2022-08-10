@@ -34,7 +34,6 @@
 
 ##### Back:
 - Add pagination
-- May be add initial scripts for db
 - Refactor repositories (optimize)
 - Add cache? (on last images data)
 
