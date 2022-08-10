@@ -1,7 +1,6 @@
 package ru.drsanches.photobooth.app.service.domain;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
@@ -13,17 +12,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserProfileDomainService {
-
-    private final Logger LOG = LoggerFactory.getLogger(UserProfileDomainService.class);
 
     @Autowired
     private UserProfileRepository userProfileRepository;
 
     public void save(UserProfile userProfile) {
         userProfileRepository.save(userProfile);
-        LOG.info("UserProfile has been updated: {}", userProfile);
+        log.info("UserProfile has been updated: {}", userProfile);
     }
 
     public UserProfile getEnabledById(String userId) {

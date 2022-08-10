@@ -1,7 +1,6 @@
 package ru.drsanches.photobooth.common.integration;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -17,10 +16,9 @@ import java.util.Optional;
 /**
  * Service for updating UserAuth and UserProfile objects together
  */
+@Slf4j
 @Service
 public class UserIntegrationService {
-
-    private final Logger LOG = LoggerFactory.getLogger(UserIntegrationService.class);
 
     @Autowired
     private UserAuthRepository userAuthRepository;
@@ -42,7 +40,7 @@ public class UserIntegrationService {
         } catch(DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException(userAuth.getUsername(), e);
         }
-        LOG.info("UserAuth and UserProfile has been created: {}, {}", userAuth, userProfile);
+        log.info("UserAuth and UserProfile has been created: {}, {}", userAuth, userProfile);
     }
 
     /**
@@ -53,13 +51,13 @@ public class UserIntegrationService {
         UserProfile userProfile;
         if (optionalUserProfile.isEmpty()) {
             userProfile = new UserProfile();
-            LOG.error("User profile with id'" + userAuth.getId() + "' does not exist");
+            log.error("User profile with id'" + userAuth.getId() + "' does not exist");
         } else {
             userProfile = optionalUserProfile.get();
         }
         copy(userAuth, userProfile);
         save(userAuth, userProfile);
-        LOG.info("UserAuth and UserProfile has been updated: {}, {}", userAuth, userProfile);
+        log.info("UserAuth and UserProfile has been updated: {}, {}", userAuth, userProfile);
     }
 
     /**

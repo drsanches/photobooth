@@ -1,7 +1,6 @@
 package ru.drsanches.photobooth.config.filter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.GenericFilterBean;
 import ru.drsanches.photobooth.exception.auth.AuthException;
@@ -16,9 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.function.Predicate;
 
+@Slf4j
 public class TokenFilter extends GenericFilterBean {
-
-    private final static Logger LOG = LoggerFactory.getLogger(TokenFilter.class);
 
     private final TokenService TOKEN_SERVICE;
 
@@ -39,7 +37,7 @@ public class TokenFilter extends GenericFilterBean {
             TOKEN_SERVICE.validate(token);
         } catch (AuthException e) {
             if (!EXCLUDE_URI.test(uri)) {
-                LOG.info("Wrong token for uri '{}'", uri, e);
+                log.info("Wrong token for uri '{}'", uri, e);
                 httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
                 httpResponse.getOutputStream().flush();
                 httpResponse.getOutputStream().println(e.getMessage());

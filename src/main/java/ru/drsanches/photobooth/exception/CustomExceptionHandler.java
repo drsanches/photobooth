@@ -1,7 +1,6 @@
 package ru.drsanches.photobooth.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,14 +12,13 @@ import ru.drsanches.photobooth.exception.auth.AuthException;
 import ru.drsanches.photobooth.exception.server.ServerError;
 import javax.validation.ConstraintViolationException;
 
+@Slf4j
 @ControllerAdvice
 public class CustomExceptionHandler {
 
-    private final Logger LOG = LoggerFactory.getLogger(CustomExceptionHandler.class);
-
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<String> handleApplicationException(ApplicationException e) {
-        LOG.warn(e.getMessage(), e);
+        log.warn(e.getMessage(), e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
@@ -31,19 +29,19 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<String> handleAuthException(AuthException e) {
-        LOG.warn(e.getMessage(), e);
+        log.warn(e.getMessage(), e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({NoUserIdException.class, NoUsernameException.class})
     public ResponseEntity<String> handleNoUserException(ApplicationException e) {
-        LOG.warn(e.getMessage(), e);
+        log.warn(e.getMessage(), e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({ServerError.class})
     public ResponseEntity<String> handleServerError(ServerError e) {
-        LOG.error(e.getInfo(), e);
+        log.error(e.getInfo(), e);
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

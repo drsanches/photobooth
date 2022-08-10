@@ -1,7 +1,6 @@
 package ru.drsanches.photobooth.auth.service.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,10 +16,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
+@Slf4j
 @Component
 public class AdminInitializer implements Initializer {
-
-    private final Logger LOG = LoggerFactory.getLogger(AdminInitializer.class);
 
     @Value("${application.admin.username}")
     private String username;
@@ -37,7 +35,7 @@ public class AdminInitializer implements Initializer {
     @Override
     public void initialize() {
         if (userAuthRepository.findByUsername(username).isPresent()) {
-            LOG.info("Admin with username '{}' is already initialized", username);
+            log.info("Admin with username '{}' is already initialized", username);
             return;
         }
         try {
@@ -49,9 +47,9 @@ public class AdminInitializer implements Initializer {
             userAuth.setEnabled(true);
             userAuth.setRole(Role.ADMIN);
             userIntegrationService.createUser(userAuth);
-            LOG.info("Admin with id '{}' has been initialized", userAuth.getId());
+            log.info("Admin with id '{}' has been initialized", userAuth.getId());
         } catch (NoSuchAlgorithmException e) {
-            LOG.error("Failed to generate sha256 hash", e);
+            log.error("Failed to generate sha256 hash", e);
             System.exit(1);
         }
     }

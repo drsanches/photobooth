@@ -1,7 +1,6 @@
 package ru.drsanches.photobooth.auth.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -29,11 +28,10 @@ import ru.drsanches.photobooth.common.token.data.TokenMapper;
 import javax.validation.Valid;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @Validated
 public class UserAuthWebService {
-
-    private final Logger LOG = LoggerFactory.getLogger(UserAuthWebService.class);
 
     @Autowired
     private UserAuthDomainService userAuthDomainService;
@@ -67,7 +65,7 @@ public class UserAuthWebService {
         userAuth.setRole(Role.USER);
         userIntegrationService.createUser(userAuth);
         Token token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
-        LOG.info("New user with id '{}' has been created", userAuth.getId());
+        log.info("New user with id '{}' has been created", userAuth.getId());
         return tokenMapper.convert(token);
     }
 
@@ -100,7 +98,7 @@ public class UserAuthWebService {
         current.setUsername(changeUsernameDTO.getNewUsername());
         userIntegrationService.updateUser(current);
         tokenService.removeAllTokens(userId);
-        LOG.info("User with id '{}' changed username from '{}' to '{}'", current.getId(), oldUsername, current.getUsername());
+        log.info("User with id '{}' changed username from '{}' to '{}'", current.getId(), oldUsername, current.getUsername());
     }
 
     public void changePassword(@Valid ChangePasswordDTO changePasswordDTO) {
@@ -114,7 +112,7 @@ public class UserAuthWebService {
         current.setPassword(credentialsHelper.encodePassword(changePasswordDTO.getNewPassword(), current.getSalt()));
         userAuthDomainService.save(current);
         tokenService.removeAllTokens(userId);
-        LOG.info("User with id '{}' changed password", current.getId());
+        log.info("User with id '{}' changed password", current.getId());
     }
 
     public void changeEmail(@Valid ChangeEmailDTO changeEmailDTO) {
@@ -126,7 +124,7 @@ public class UserAuthWebService {
         }
         current.setEmail(changeEmailDTO.getNewEmail());
         userAuthDomainService.save(current);
-        LOG.info("User with id '{}' changed email", current.getId());
+        log.info("User with id '{}' changed email", current.getId());
     }
 
     public TokenDTO refreshToken(String refreshToken) {
@@ -145,6 +143,6 @@ public class UserAuthWebService {
         current.setEnabled(false);
         current.setUsername(UUID.randomUUID().toString() + "_" + current.getUsername());
         userIntegrationService.updateUser(current);
-        LOG.info("User with id '{}' has been disabled", current.getId());
+        log.info("User with id '{}' has been disabled", current.getId());
     }
 }

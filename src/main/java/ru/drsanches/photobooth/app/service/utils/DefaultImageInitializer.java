@@ -1,7 +1,6 @@
 package ru.drsanches.photobooth.app.service.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.drsanches.photobooth.app.data.image.model.Image;
@@ -11,10 +10,9 @@ import ru.drsanches.photobooth.common.utils.Initializer;
 import java.util.Base64;
 import java.util.GregorianCalendar;
 
+@Slf4j
 @Component
 public class DefaultImageInitializer implements Initializer {
-
-    private final Logger LOG = LoggerFactory.getLogger(DefaultImageInitializer.class);
 
     @Autowired
     private ImageDomainService imageDomainService;
@@ -31,10 +29,10 @@ public class DefaultImageInitializer implements Initializer {
 
     private void initialize(String imageId, String imageData) {
         if (imageDomainService.exists(imageId)) {
-            LOG.info("Image with id '{}' is already initialized", imageId);
+            log.info("Image with id '{}' is already initialized", imageId);
             return;
         }
         imageDomainService.saveImage(new Image(imageId, Base64.getDecoder().decode(imageData), new GregorianCalendar(), "system"));
-        LOG.info("Image with id '{}' has been initialized", imageId);
+        log.info("Image with id '{}' has been initialized", imageId);
     }
 }

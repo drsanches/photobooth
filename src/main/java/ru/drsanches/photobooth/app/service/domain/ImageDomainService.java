@@ -1,7 +1,6 @@
 package ru.drsanches.photobooth.app.service.domain;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.drsanches.photobooth.app.data.image.model.Image;
@@ -13,17 +12,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class ImageDomainService {
-
-    private final Logger LOG = LoggerFactory.getLogger(ImageDomainService.class);
 
     @Autowired
     private ImageRepository imageRepository;
 
     public void saveImage(Image image) {
         imageRepository.save(image);
-        LOG.info("New image has been saved: {}", image);
+        log.info("New image has been saved: {}", image);
     }
 
     public Image getImage(String imageId) {
@@ -44,7 +42,7 @@ public class ImageDomainService {
             List<String> foundIds = images.stream()
                     .map(Image::getId)
                     .collect(Collectors.toList());
-            LOG.warn("Images were not found: {}", imageIds.stream()
+            log.warn("Images were not found: {}", imageIds.stream()
                     .filter(x -> !foundIds.contains(x))
                     .collect(Collectors.toList()));
         }

@@ -1,7 +1,6 @@
 package ru.drsanches.photobooth.app.service.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -27,11 +26,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Validated
 public class ImageWebService {
-
-    private final Logger LOG = LoggerFactory.getLogger(ImageWebService.class);
 
     @Autowired
     private UserProfileDomainService userProfileDomainService;
@@ -57,7 +55,7 @@ public class ImageWebService {
         imageDomainService.saveImage(new Image(imageId, file, createdTime, userId));
         userProfile.setImageId(imageId);
         userProfileDomainService.save(userProfile);
-        LOG.info("User with id '{}' updated his profile image, new image id is '{}'", userId, imageId);
+        log.info("User with id '{}' updated his profile image, new image id is '{}'", userId, imageId);
     }
 
     public ImageInfoDTO getImageInfo(String imageId) {
@@ -78,7 +76,7 @@ public class ImageWebService {
         List<ImagePermission> imagePermissions = new ArrayList<>(uploadPhotoDTO.getUserIds().size());
         uploadPhotoDTO.getUserIds().forEach(userId -> imagePermissions.add(new ImagePermission(imageId, userId)));
         imagePermissionDomainService.savePermissions(imagePermissions);
-        LOG.info("Photo with id '{}' uploaded for users: {}", imageId, uploadPhotoDTO.getUserIds());
+        log.info("Photo with id '{}' uploaded for users: {}", imageId, uploadPhotoDTO.getUserIds());
     }
 
     public List<ImageInfoDTO> getAllInfo() {
@@ -102,6 +100,6 @@ public class ImageWebService {
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
         userProfile.setImageId(null);
         userProfileDomainService.save(userProfile);
-        LOG.info("User with id '{}' deleted his profile image", userId);
+        log.info("User with id '{}' deleted his profile image", userId);
     }
 }

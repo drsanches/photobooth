@@ -1,7 +1,6 @@
 package ru.drsanches.photobooth.app.service.domain;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -11,10 +10,9 @@ import ru.drsanches.photobooth.app.data.friends.repository.FriendRequestReposito
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class FriendsDomainService {
-
-    private final Logger LOG = LoggerFactory.getLogger(FriendsDomainService.class);
 
     @Autowired
     private FriendRequestRepository friendRequestRepository;
@@ -46,23 +44,23 @@ public class FriendsDomainService {
     public void saveFriendRequest(String fromUserId, String toUserId) {
         FriendRequest friendRequest = new FriendRequest(fromUserId, toUserId);
         friendRequestRepository.save(friendRequest);
-        LOG.info("New FriendRequest has been created: {}", friendRequest);
+        log.info("New FriendRequest has been created: {}", friendRequest);
     }
 
     public void removeFriendRequest(String fromUserId, String toUserId) {
         FriendRequestKey friendRequestKey = new FriendRequestKey(fromUserId, toUserId);
         try {
             friendRequestRepository.deleteById(friendRequestKey);
-            LOG.info("FriendRequest has been removed: {}", friendRequestKey);
+            log.info("FriendRequest has been removed: {}", friendRequestKey);
         } catch(EmptyResultDataAccessException e) {
-            LOG.warn("FriendRequest does not exist: " + friendRequestKey, e);
+            log.warn("FriendRequest does not exist: " + friendRequestKey, e);
         }
         FriendRequestKey reversedFriendRequestKey = new FriendRequestKey(toUserId, fromUserId);
         try {
             friendRequestRepository.deleteById(reversedFriendRequestKey);
-            LOG.info("Reversed FriendRequest has been removed: {}", reversedFriendRequestKey);
+            log.info("Reversed FriendRequest has been removed: {}", reversedFriendRequestKey);
         } catch(EmptyResultDataAccessException e) {
-            LOG.info("Reversed FriendRequest does not exist: " + reversedFriendRequestKey, e);
+            log.info("Reversed FriendRequest does not exist: " + reversedFriendRequestKey, e);
         }
     }
 

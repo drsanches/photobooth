@@ -1,7 +1,6 @@
 package ru.drsanches.photobooth.app.service.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.drsanches.photobooth.app.data.profile.dto.ChangeUserProfileDTO;
@@ -11,10 +10,9 @@ import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
 import ru.drsanches.photobooth.app.service.domain.UserProfileDomainService;
 import ru.drsanches.photobooth.common.token.TokenSupplier;
 
+@Slf4j
 @Service
 public class UserProfileWebService {
-
-    private final Logger LOG = LoggerFactory.getLogger(UserProfileWebService.class);
 
     @Autowired
     private UserProfileDomainService userProfileDomainService;
@@ -47,6 +45,6 @@ public class UserProfileWebService {
         userProfile.setName(changeUserProfileDTO.getName());
         userProfile.setStatus(changeUserProfileDTO.getStatus());
         userProfileDomainService.save(userProfile);
-        LOG.info("User with id '{}' updated his profile", userId);
+        log.info("User with id '{}' updated his profile", userId);
     }
 }

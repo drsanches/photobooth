@@ -1,7 +1,6 @@
 package ru.drsanches.photobooth.app.service.domain;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.drsanches.photobooth.app.data.image.model.ImagePermission;
@@ -11,17 +10,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class ImagePermissionDomainService {
-
-    private final Logger LOG = LoggerFactory.getLogger(ImagePermissionDomainService.class);
 
     @Autowired
     private ImagePermissionRepository imagePermissionRepository;
 
     public void savePermissions(List<ImagePermission> imagePermissions) {
         imagePermissionRepository.saveAll(imagePermissions);
-        LOG.info("New image permissions have been saved: {}", imagePermissions);
+        log.info("New image permissions have been saved: {}", imagePermissions);
     }
 
     public Set<String> getImageIds(String userId) {

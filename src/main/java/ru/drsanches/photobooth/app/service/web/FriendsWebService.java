@@ -1,7 +1,6 @@
 package ru.drsanches.photobooth.app.service.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -16,11 +15,10 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Validated
 public class FriendsWebService {
-
-    private final Logger LOG = LoggerFactory.getLogger(FriendsWebService.class);
 
     @Autowired
     private FriendsDomainService friendsDomainService;
@@ -61,12 +59,12 @@ public class FriendsWebService {
     public void sendRequest(@Valid SendRequestDTO sendRequestDTO) {
         String fromUserId = tokenSupplier.get().getUserId();
         friendsDomainService.saveFriendRequest(fromUserId, sendRequestDTO.getUserId());
-        LOG.info("User with id '{}' send friend request to user '{}'", fromUserId, sendRequestDTO.getUserId());
+        log.info("User with id '{}' send friend request to user '{}'", fromUserId, sendRequestDTO.getUserId());
     }
 
     public void removeRequest(@Valid RemoveRequestDTO removeRequestDTO) {
         String currentUserId = tokenSupplier.get().getUserId();
         friendsDomainService.removeFriendRequest(currentUserId, removeRequestDTO.getUserId());
-        LOG.info("User with id '{}' canceled friendship for user '{}'", currentUserId, removeRequestDTO.getUserId());
+        log.info("User with id '{}' canceled friendship for user '{}'", currentUserId, removeRequestDTO.getUserId());
     }
 }
