@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ImageRepository extends CrudRepository<Image, String> {
 
-    Optional<Image> findTopByIdInOrderByCreatedTimeDesc(Collection<String> imageIds);
+    Optional<Image> findTopByIdInAndOwnerIdNotOrderByCreatedTimeDesc(Collection<String> imageIds, String orderId);
 
     List<Image> findAllByIdInOrderByCreatedTimeDesc(Collection<String> imageIds);
 }

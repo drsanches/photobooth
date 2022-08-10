@@ -27,23 +27,19 @@
 - only to enabled friends
 
 ##### Get photo by id:
-- without permissions and deletion check? //TODO
+- without permissions and deletion check?
 
 -------------------------------------------------------
 #### Backlog:
 
 ##### Back:
-- Fix Swagger (response statuses)
-- Fix headers for swagger
-- Refactor pagination
+- Add pagination
 - May be add initial scripts for db
-- Add cache
-- Separate architecture into domain and web layers (may be use different modules)
+- Refactor repositories (optimize)
+- Add cache? (on last images data)
 
 ##### UI:
 - Fix expired token logout
 
 ##### Tests:
 - Check errors response body
-
-##### Business:

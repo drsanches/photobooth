@@ -33,7 +33,7 @@ class TestGetLastImageInfo extends Specification {
         assert response.getData()["ownerId"] == JSONNull.getInstance()
     }
 
-    def "successful last image info getting from friend"() {
+    def "successful last image info getting with last send by friend"() {
         given: "two friends"
         def user1 = new TestUser().register()
         def user2 = new TestUser().register()
@@ -61,16 +61,16 @@ class TestGetLastImageInfo extends Specification {
         assert Utils.checkTestImage(RequestUtils.getImage(user1.username, user1.password, IMAGE_PATH_PREFIX + response.getData()["id"]))
     }
 
-    def "successful last image info getting from yourself"() {
+    def "successful last image info getting with last send by yourself"() {
         given: "two friends"
         def user1 = new TestUser().register()
         def user2 = new TestUser().register()
         user1.sendFriendRequest(user2.id)
         user2.sendFriendRequest(user1.id)
-        user2.sendTestPhoto([user1.id])
         def date1 = new Date()
-        user1.sendTestPhoto([user2.id])
+        user2.sendTestPhoto([user1.id])
         def date2 = new Date()
+        user1.sendTestPhoto([user2.id])
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
@@ -82,7 +82,7 @@ class TestGetLastImageInfo extends Specification {
         assert response.status == 200
         assert response.getData()["id"] != JSONNull.getInstance()
         assert response.getData()["path"] == IMAGE_PATH_PREFIX + response.getData()["id"]
-        assert response.getData()["ownerId"] == user1.id
+        assert response.getData()["ownerId"] == user2.id
         assert Utils.checkTimestamp(date1, response.getData()["createdTime"] as String, date2)
 
         and: "image is correct"

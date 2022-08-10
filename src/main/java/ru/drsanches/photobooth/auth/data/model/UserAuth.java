@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import java.util.Collection;
 import java.util.List;
 
+//TODO: Add salt
 @Setter
 @ToString
 @Entity

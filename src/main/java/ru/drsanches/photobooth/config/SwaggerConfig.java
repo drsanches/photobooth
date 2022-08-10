@@ -5,6 +5,8 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+//TODO: Add more response statuses
+//TODO: Fix headers on UI
 @Configuration
 public class SwaggerConfig {
 

@@ -93,7 +93,7 @@ public class ImageWebService {
     public ImageInfoDTO getLastImageInfo() {
         String currentUserId = tokenSupplier.get().getUserId();
         Set<String> imageIds = imagePermissionDomainService.getImageIds(currentUserId);
-        Optional<Image> image = imageDomainService.getLastImage(imageIds);
+        Optional<Image> image = imageDomainService.getLastImage(imageIds, currentUserId);
         return imageInfoMapper.convert(image.orElse(imageDomainService.getImage("no_photo")));
     }
 

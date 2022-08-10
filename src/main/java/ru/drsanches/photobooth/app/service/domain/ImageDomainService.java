@@ -34,8 +34,8 @@ public class ImageDomainService {
         return image.get();
     }
 
-    public Optional<Image> getLastImage(Collection<String> imageIds) {
-        return imageRepository.findTopByIdInOrderByCreatedTimeDesc(imageIds);
+    public Optional<Image> getLastImage(Collection<String> imageIds, String ownerId) {
+        return imageRepository.findTopByIdInAndOwnerIdNotOrderByCreatedTimeDesc(imageIds, ownerId);
     }
 
     public List<Image> getImages(Collection<String> imageIds) {
