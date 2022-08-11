@@ -37,6 +37,7 @@
 - Refactor repositories (optimize)
 - Add cache? (on last images data)
 - Do not create UserProfile for admin
+- Add thumbnail images
 
 ##### UI:
 - Fix expired token logout

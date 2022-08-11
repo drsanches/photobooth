@@ -43,11 +43,11 @@ class Utils {
     }
 
     static String getDefaultImageFilename() {
-        return "src/main/resources/default.jpg"
+        return "src/test/resources/default.jpg"
     }
 
     static String getNoPhotoFilename() {
-        return "src/main/resources/no_photo.jpg"
+        return "src/test/resources/no_photo.jpg"
     }
 
     static String getTestImageFilename() {

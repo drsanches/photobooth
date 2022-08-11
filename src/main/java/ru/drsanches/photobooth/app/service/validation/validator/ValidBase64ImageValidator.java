@@ -2,6 +2,7 @@ package ru.drsanches.photobooth.app.service.validation.validator;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.drsanches.photobooth.app.service.validation.annotation.ValidBase64Image;
 
@@ -17,8 +18,8 @@ import java.util.Base64;
 @Component
 public class ValidBase64ImageValidator implements ConstraintValidator<ValidBase64Image, String> {
 
-    //TODO: Move to yaml
-    private static final int MAX_BYTES = 300 * 1000; //300kB
+    @Value("${application.max-photo-bytes}")
+    private int maxPhotoBytes;
 
     @Override
     public boolean isValid(String base64Image, ConstraintValidatorContext context) {
@@ -27,8 +28,8 @@ public class ValidBase64ImageValidator implements ConstraintValidator<ValidBase6
         }
 
         //The original data is less than base64 in 3/4
-        if (base64Image.getBytes().length * 3/4 > MAX_BYTES) {
-            customMessage(context, "base64 string is too long: max=" + MAX_BYTES);
+        if (base64Image.getBytes().length * 3/4 > maxPhotoBytes) {
+            customMessage(context, "base64 string is too long: max=" + maxPhotoBytes);
             log.error("Base64 string is too long: length={}", base64Image.length());
             return false;
         }
