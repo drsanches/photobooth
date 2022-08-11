@@ -92,7 +92,7 @@ public class ImageWebService {
         String currentUserId = tokenSupplier.get().getUserId();
         Set<String> imageIds = imagePermissionDomainService.getImageIds(currentUserId);
         Optional<Image> image = imageDomainService.getLastImage(imageIds, currentUserId);
-        return imageInfoMapper.convert(image.orElse(imageDomainService.getImage("no_photo")));
+        return imageInfoMapper.convert(image.orElse(imageDomainService.getImage(ImageInfoMapper.NO_PHOTO_IMAGE_ID)));
     }
 
     public void deleteAvatar() {

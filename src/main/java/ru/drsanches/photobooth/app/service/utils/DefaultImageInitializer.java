@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.drsanches.photobooth.app.data.image.mapper.ImageInfoMapper;
 import ru.drsanches.photobooth.app.data.image.model.Image;
 import ru.drsanches.photobooth.app.service.domain.ImageDomainService;
 import ru.drsanches.photobooth.common.utils.Initializer;
@@ -26,8 +27,8 @@ public class DefaultImageInitializer implements Initializer {
 
     @Override
     public void initialize() {
-        initialize("default", defaultImage);
-        initialize("no_photo", noPhotoImage);
+        initialize(ImageInfoMapper.DEFAULT_AVATAR_ID, defaultImage);
+        initialize(ImageInfoMapper.NO_PHOTO_IMAGE_ID, noPhotoImage);
     }
 
     private void initialize(String imageId, String imageData) {

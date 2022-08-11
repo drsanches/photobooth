@@ -39,6 +39,7 @@
 - Do not create UserProfile for admin
 - Add thumbnail images
 - Add more validations
+- Add a photo for deleted users
 
 ##### UI:
 - Fix expired token logout
