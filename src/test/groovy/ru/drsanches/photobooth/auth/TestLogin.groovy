@@ -127,6 +127,25 @@ class TestLogin extends Specification {
         password << [null, ""]
     }
 
+    def "login with nonexistent username"() {
+        given: "user"
+        def username = DataGenerator.createValidUsername()
+        def password = DataGenerator.createValidPassword()
+        RequestUtils.registerUser(username, password, null)
+        def nonexistentUsername = DataGenerator.createValidUsername()
+
+        when: "request is sent"
+        RequestUtils.getRestClient().post(
+                path: PATH,
+                body: [username: nonexistentUsername,
+                       password: password],
+                requestContentType : ContentType.JSON)
+
+        then: "response is correct"
+        HttpResponseException e = thrown(HttpResponseException)
+        assert e.response.status == 401
+    }
+
     def "login with invalid password"() {
         given: "user"
         def username = DataGenerator.createValidUsername()

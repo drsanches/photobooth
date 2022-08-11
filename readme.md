@@ -38,6 +38,7 @@
 - Add cache? (on last images data)
 - Do not create UserProfile for admin
 - Add thumbnail images
+- Add more validations
 
 ##### UI:
 - Fix expired token logout

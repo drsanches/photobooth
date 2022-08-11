@@ -1,5 +1,7 @@
 package ru.drsanches.photobooth.exception.application;
 
+import ru.drsanches.photobooth.exception.dto.ExceptionDTO;
+
 import java.util.UUID;
 
 public class ApplicationException extends RuntimeException {
@@ -19,6 +21,6 @@ public class ApplicationException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "{\"uuid\":\"" + uuid + "\",\"message\":\"" + message + "\"}";
+        return new ExceptionDTO(message, uuid).toString();
     }
 }

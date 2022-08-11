@@ -1,5 +1,7 @@
 package ru.drsanches.photobooth.exception.server;
 
+import ru.drsanches.photobooth.exception.dto.ExceptionDTO;
+
 import java.util.UUID;
 
 public class ServerError extends RuntimeException {
@@ -31,6 +33,6 @@ public class ServerError extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "{\"uuid\":\"" + uuid + "\",\"message\":\"" + message + "\"}";
+        return new ExceptionDTO(message, uuid).toString();
     }
 }
