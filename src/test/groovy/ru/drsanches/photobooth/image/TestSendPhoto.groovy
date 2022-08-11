@@ -178,7 +178,7 @@ class TestSendPhoto extends Specification {
         assert e.response.status == 400
 
         where:
-        invalidData << [null, "", ";"]
+        invalidData << [null, "", ";", Base64.getEncoder().encodeToString("test".getBytes())]
     }
 
     def "photo send with invalid token"() {

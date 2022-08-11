@@ -57,7 +57,7 @@ class TestUploadAvatar extends Specification {
         assert user.getUserProfile()['imagePath'] as String == Utils.getDefaultImagePath()
 
         where:
-        invalidData << [null, "", ";"]
+        invalidData << [null, "", ";", Base64.getEncoder().encodeToString("test".getBytes())]
     }
 
     def "upload avatar with invalid token"() {

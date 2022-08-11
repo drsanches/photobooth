@@ -10,6 +10,7 @@ import ru.drsanches.photobooth.app.data.friends.repository.FriendRequestReposito
 import java.util.List;
 import java.util.stream.Collectors;
 
+//TODO: Refactor - too many db requests
 @Slf4j
 @Service
 public class FriendsDomainService {
