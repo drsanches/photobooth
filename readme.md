@@ -36,10 +36,9 @@
 - Add pagination
 - Refactor repositories (optimize)
 - Add cache? (on last images data)
-- Do not create UserProfile for admin
+- Do not create UserProfile for admin?
 - Add thumbnail images
 - Add more validations
-- Add a photo for deleted users
 
 ##### UI:
 - Fix expired token logout

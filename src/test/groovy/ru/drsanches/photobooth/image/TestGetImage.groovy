@@ -34,6 +34,17 @@ class TestGetImage extends Specification {
         assert Utils.checkNoPhotoImage(response.data)
     }
 
+    def "successful deleted image getting"() {
+        when: "request is sent"
+        def response = RequestUtils.getRestClient().get(
+                path: Utils.getDeletedImagePath(),
+                requestContentType : ContentType.JSON) as HttpResponseDecorator
+
+        then: "response is correct"
+        assert response.status == 200
+        assert Utils.checkDeletedImage(response.data)
+    }
+
     def "successful avatar getting"() {
         given: "user with avatar"
         def user = new TestUser().register().uploadTestAvatar()
@@ -41,6 +52,43 @@ class TestGetImage extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: user.imagePath,
+                requestContentType : ContentType.JSON) as HttpResponseDecorator
+
+        then: "response is correct"
+        assert response.status == 200
+        assert Utils.checkTestImage(response.data)
+    }
+
+    def "successful friends image getting"() {
+        given: "two friends"
+        def user1 = new TestUser().register()
+        def user2 = new TestUser().register()
+        user1.sendFriendRequest(user2.id)
+        user2.sendFriendRequest(user1.id).sendTestPhoto([user1.id])
+        def imagePath = user1.getAllImagesInfo().get(0)["path"]
+
+        when: "request is sent"
+        def response = RequestUtils.getRestClient().get(
+                path: imagePath,
+                requestContentType : ContentType.JSON) as HttpResponseDecorator
+
+        then: "response is correct"
+        assert response.status == 200
+        assert Utils.checkTestImage(response.data)
+    }
+
+    def "successful current user image getting"() {
+        given: "two friends"
+        def user1 = new TestUser().register()
+        def user2 = new TestUser().register()
+        user1.sendFriendRequest(user2.id)
+        user2.sendFriendRequest(user1.id)
+        user1.sendTestPhoto([user2.id])
+        def imagePath = user1.getAllImagesInfo().get(0)["path"]
+
+        when: "request is sent"
+        def response = RequestUtils.getRestClient().get(
+                path: imagePath,
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"

@@ -20,6 +20,10 @@ class Utils {
         return checkImage(data, getNoPhotoFilename())
     }
 
+    static boolean checkDeletedImage(Object data) {
+        return checkImage(data, getDeletedImageFilename())
+    }
+
     static boolean checkTestImage(Object data) {
         return checkImage(data, getTestImageFilename())
     }
@@ -42,12 +46,20 @@ class Utils {
         return "/api/v1/image/no_photo"
     }
 
+    static String getDeletedImagePath() {
+        return "/api/v1/image/deleted"
+    }
+
     static String getDefaultImageFilename() {
         return "src/test/resources/default.jpg"
     }
 
     static String getNoPhotoFilename() {
         return "src/test/resources/no_photo.jpg"
+    }
+
+    static String getDeletedImageFilename() {
+        return "src/test/resources/deleted.jpg"
     }
 
     static String getTestImageFilename() {

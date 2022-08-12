@@ -8,6 +8,7 @@ import net.sf.json.JSONNull
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
+import ru.drsanches.photobooth.utils.Utils
 import spock.lang.Specification
 
 class TestDeleteUser extends Specification {
@@ -64,6 +65,7 @@ class TestDeleteUser extends Specification {
         assert friends.get(0)["username"] == JSONNull.getInstance()
         assert friends.get(0)["name"] == JSONNull.getInstance()
         assert friends.get(0)["status"] == JSONNull.getInstance()
+        assert friends.get(0)["imagePath"] == Utils.getDeletedImagePath()
 
         and: "incoming user relationships is correct"
         assert incoming.getIncomingFriendRequests() == new JSONArray()
@@ -74,6 +76,7 @@ class TestDeleteUser extends Specification {
         assert outgoingRequests.get(0)["username"] == JSONNull.getInstance()
         assert outgoingRequests.get(0)["name"] == JSONNull.getInstance()
         assert outgoingRequests.get(0)["status"] == JSONNull.getInstance()
+        assert outgoingRequests.get(0)["imagePath"] == Utils.getDeletedImagePath()
 
         and: "outgoing user relationships is correct"
         assert outgoing.getOutgoingFriendRequests() == new JSONArray()
@@ -84,6 +87,7 @@ class TestDeleteUser extends Specification {
         assert incomingRequests.get(0)["username"] == JSONNull.getInstance()
         assert incomingRequests.get(0)["name"] == JSONNull.getInstance()
         assert incomingRequests.get(0)["status"] == JSONNull.getInstance()
+        assert incomingRequests.get(0)["imagePath"] == Utils.getDeletedImagePath()
     }
 
     def "user deleting without password"() {

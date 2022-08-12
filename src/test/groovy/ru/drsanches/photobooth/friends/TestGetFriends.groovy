@@ -6,6 +6,7 @@ import net.sf.json.JSONArray
 import net.sf.json.JSONNull
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
+import ru.drsanches.photobooth.utils.Utils
 import spock.lang.Specification
 
 class TestGetFriends extends Specification {
@@ -32,6 +33,7 @@ class TestGetFriends extends Specification {
         assert body.get(0)["username"] == user2.username
         assert body.get(0)["name"] == user2.name
         assert body.get(0)["status"] == user2.status
+        assert body.get(0)["imagePath"] == Utils.getDefaultImagePath()
     }
 
     def "success empty friends getting"() {
@@ -73,6 +75,7 @@ class TestGetFriends extends Specification {
         assert body.get(0)["username"] == JSONNull.getInstance()
         assert body.get(0)["name"] == JSONNull.getInstance()
         assert body.get(0)["status"] == JSONNull.getInstance()
+        assert body.get(0)["imagePath"] == Utils.getDeletedImagePath()
     }
 
     def "get friends with invalid token"() {

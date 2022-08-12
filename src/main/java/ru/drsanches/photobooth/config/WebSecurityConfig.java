@@ -11,6 +11,7 @@ import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ru.drsanches.photobooth.app.data.image.mapper.ImageInfoMapper;
 import ru.drsanches.photobooth.config.filter.AdminFilter;
 import ru.drsanches.photobooth.config.filter.LogFilter;
 import ru.drsanches.photobooth.config.filter.TokenFilter;
@@ -29,8 +30,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             x -> x.matches("/api/v1/auth/registration.*"))
             .or(x -> x.matches("/api/v1/auth/login.*"))
             .or(x -> x.matches("/api/v1/auth/refreshToken.*"))
-            .or(x -> x.matches("/api/v1/image/default"))
-            .or(x -> x.matches("/api/v1/image/no_photo"))
+            .or(x -> x.matches("/api/v1/image/" + ImageInfoMapper.DEFAULT_AVATAR_ID))
+            .or(x -> x.matches("/api/v1/image/" + ImageInfoMapper.NO_PHOTO_IMAGE_ID))
+            .or(x -> x.matches("/api/v1/image/" + ImageInfoMapper.DELETED_AVATAR_ID))
             .or(x -> x.matches("/api/v1/image/" + IMAGE_ID_PATTERN))
             .or(x -> x.matches("/actuator/health.*"))
             .or(x -> x.matches("/ui.*"))

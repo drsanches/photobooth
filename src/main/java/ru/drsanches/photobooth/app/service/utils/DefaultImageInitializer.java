@@ -22,6 +22,9 @@ public class DefaultImageInitializer implements Initializer {
     @Value("${application.no-photo-image}")
     private String noPhotoImage;
 
+    @Value("${application.deleted-image}")
+    private String deletedImage;
+
     @Autowired
     private ImageDomainService imageDomainService;
 
@@ -29,6 +32,7 @@ public class DefaultImageInitializer implements Initializer {
     public void initialize() {
         initialize(ImageInfoMapper.DEFAULT_AVATAR_ID, defaultImage);
         initialize(ImageInfoMapper.NO_PHOTO_IMAGE_ID, noPhotoImage);
+        initialize(ImageInfoMapper.DELETED_AVATAR_ID, deletedImage);
     }
 
     private void initialize(String imageId, String imageData) {

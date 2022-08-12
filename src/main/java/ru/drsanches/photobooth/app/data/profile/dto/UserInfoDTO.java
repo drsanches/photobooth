@@ -22,6 +22,6 @@ public class UserInfoDTO {
     @Schema(description = "null for deleted user")
     private String status;
 
-    @Schema(description = "null for deleted user")
+    @Schema(required = true, description = "null for deleted user")
     private String imagePath;
 }

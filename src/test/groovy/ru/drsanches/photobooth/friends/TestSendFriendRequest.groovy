@@ -6,6 +6,7 @@ import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONArray
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
+import ru.drsanches.photobooth.utils.Utils
 import spock.lang.Specification
 
 class TestSendFriendRequest extends Specification {
@@ -39,6 +40,7 @@ class TestSendFriendRequest extends Specification {
         assert outgoingRequests.get(0)["username"] == user2.username
         assert outgoingRequests.get(0)["name"] == user2.name
         assert outgoingRequests.get(0)["status"] == user2.status
+        assert outgoingRequests.get(0)["imagePath"] == Utils.getDefaultImagePath()
 
         and: "the second user has correct relationships"
         assert user2.getOutgoingFriendRequests() == new JSONArray()
@@ -49,6 +51,7 @@ class TestSendFriendRequest extends Specification {
         assert incomingRequests.get(0)["username"] == user1.username
         assert incomingRequests.get(0)["name"] == user1.name
         assert incomingRequests.get(0)["status"] == user1.status
+        assert incomingRequests.get(0)["imagePath"] == Utils.getDefaultImagePath()
     }
 
     /**
@@ -79,6 +82,7 @@ class TestSendFriendRequest extends Specification {
         assert friends1.get(0)["username"] == user2.username
         assert friends1.get(0)["name"] == user2.name
         assert friends1.get(0)["status"] == user2.status
+        assert friends1.get(0)["imagePath"] == Utils.getDefaultImagePath()
 
         and: "the second user has correct relationships"
         assert user2.getIncomingFriendRequests() == new JSONArray()
@@ -89,6 +93,7 @@ class TestSendFriendRequest extends Specification {
         assert friends2.get(0)["username"] == user1.username
         assert friends2.get(0)["name"] == user1.name
         assert friends2.get(0)["status"] == user1.status
+        assert friends2.get(0)["imagePath"] == Utils.getDefaultImagePath()
     }
 
     /**
@@ -120,6 +125,7 @@ class TestSendFriendRequest extends Specification {
         assert outgoingRequests.get(0)["username"] == user2.username
         assert outgoingRequests.get(0)["name"] == user2.name
         assert outgoingRequests.get(0)["status"] == user2.status
+        assert outgoingRequests.get(0)["imagePath"] == Utils.getDefaultImagePath()
 
         and: "the second user relationship has not changed"
         assert user2.getOutgoingFriendRequests() == new JSONArray()
@@ -130,6 +136,7 @@ class TestSendFriendRequest extends Specification {
         assert incomingRequests.get(0)["username"] == user1.username
         assert incomingRequests.get(0)["name"] == user1.name
         assert incomingRequests.get(0)["status"] == user1.status
+        assert incomingRequests.get(0)["imagePath"] == Utils.getDefaultImagePath()
     }
 
     /**
@@ -161,6 +168,7 @@ class TestSendFriendRequest extends Specification {
         assert friends1.get(0)["username"] == user2.username
         assert friends1.get(0)["name"] == user2.name
         assert friends1.get(0)["status"] == user2.status
+        assert friends1.get(0)["imagePath"] == Utils.getDefaultImagePath()
 
         and: "the second user relationship has not changed"
         assert user2.getIncomingFriendRequests() == new JSONArray()
@@ -171,6 +179,7 @@ class TestSendFriendRequest extends Specification {
         assert friends2.get(0)["username"] == user1.username
         assert friends2.get(0)["name"] == user1.name
         assert friends2.get(0)["status"] == user1.status
+        assert friends2.get(0)["imagePath"] == Utils.getDefaultImagePath()
     }
 
     def "send friend request without userId"() {

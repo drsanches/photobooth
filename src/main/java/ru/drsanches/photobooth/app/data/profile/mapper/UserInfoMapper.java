@@ -15,10 +15,12 @@ public class UserInfoMapper {
             userInfoDTO.setUsername(userProfile.getUsername());
             userInfoDTO.setName(userProfile.getName());
             userInfoDTO.setStatus(userProfile.getStatus());
-            userInfoDTO.setImagePath(userProfile.getImageId() == null ?
-                    ImageInfoMapper.IMAGE_PATH_PREFIX + ImageInfoMapper.DEFAULT_AVATAR_ID :
-                    ImageInfoMapper.IMAGE_PATH_PREFIX + userProfile.getImageId());
         }
+        userInfoDTO.setImagePath(userProfile.isEnabled() ?
+                userProfile.getImageId() == null ?
+                        ImageInfoMapper.IMAGE_PATH_PREFIX + ImageInfoMapper.DEFAULT_AVATAR_ID :
+                        ImageInfoMapper.IMAGE_PATH_PREFIX + userProfile.getImageId() :
+                ImageInfoMapper.IMAGE_PATH_PREFIX + ImageInfoMapper.DELETED_AVATAR_ID);
         return userInfoDTO;
     }
 }
