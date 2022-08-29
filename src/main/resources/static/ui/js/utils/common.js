@@ -1,4 +1,5 @@
 import {getToken, deleteToken} from "/ui/js/utils/token.js"
+import {deleteUsername} from "/ui/js/utils/username.js"
 import {sha256} from '/ui/js/lib/sha256.js'
 
 var BASE_URL = window.location.protocol + "//" + window.location.host;
@@ -12,7 +13,7 @@ export function followLink(path) {
     window.location.href = BASE_URL + path;
 }
 
-export function sendData(path, method, body, needResponseData, onSuccess) {
+export function sendData(path, method, body, needResponseData, onSuccess, onError) {
     var response;
     if (body != null) {
         response = {
@@ -40,7 +41,12 @@ export function sendData(path, method, body, needResponseData, onSuccess) {
                 onSuccess();
             }
         } else {
-            response.json().then(data => processError(response.status, data));
+            if (onError != null) {
+                response.json().then(data => {
+                    processError(response.status, data);
+                    onError();
+                });
+            }
         }
     })
     .catch(error => console.error(error));
@@ -66,8 +72,7 @@ export function getData(path) {
 function processError(status, data) {
     if (status == 401) {
         deleteToken();
-        followLink("/ui/login.html");
+        deleteUsername();
     }
     console.error(JSON.stringify(data));
-    alert("ERROR:\n" + JSON.stringify(data));
 }

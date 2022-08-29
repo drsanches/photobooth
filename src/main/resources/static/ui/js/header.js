@@ -21,14 +21,16 @@ export var header = {
             }
         },
     mounted() {
+        getData("/auth/info").then(data => {
+            setUsername(data.username);
+        });
+
         this.authorized = isAuthorized();
-        if (isAuthorized() && !hasUsername()) {
-            getData("/auth/info").then(data => {
-                setUsername(data.username);
-                followLink("/ui/index.html");
-            });
-        }
         this.username = getUsername();
+
+        if (isAuthorized() && !hasUsername()) {
+            followLink("/ui/index.html");
+        }
     },
     template: `
         <div>

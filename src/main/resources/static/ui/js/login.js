@@ -21,6 +21,8 @@ export var login = {
             sendData("/auth/login", "POST", body, true, function(data) {
                 setToken(data.accessToken);
                 followLink("/ui/index.html");
+            }, function() {
+                alert("Login error!");
             });
         }
     },
