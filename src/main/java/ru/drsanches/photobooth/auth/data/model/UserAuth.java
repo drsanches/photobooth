@@ -7,6 +7,8 @@ import ru.drsanches.photobooth.common.token.data.Role;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -38,6 +40,7 @@ public class UserAuth {
     @Column(nullable = false)
     private boolean enabled;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 }

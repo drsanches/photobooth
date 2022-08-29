@@ -6,6 +6,8 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.GregorianCalendar;
@@ -36,6 +38,7 @@ public class Token {
     @Column(nullable = false)
     private String userId;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 }

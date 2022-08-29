@@ -23,7 +23,7 @@ dependencies {
 
     //DB
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.16'
-    implementation group: 'org.glassfish.jaxb', name:'jaxb-runtime' //For DB
+    implementation group: 'org.glassfish.jaxb', name:'jaxb-runtime', version: '2.3.1' //For DB
     implementation group: 'com.h2database', name: 'h2', version: '1.4.200' //For H2-console
 
     //Validation
