@@ -34,7 +34,6 @@ public class TokenFilter extends GenericFilterBean {
         String token = getAccessTokenFromRequest(httpRequest);
         String uri = httpRequest.getRequestURI();
         try {
-            //TODO: Throws WrongToken on refresh token, fix
             TOKEN_SERVICE.validate(token);
         } catch (AuthException e) {
             if (!EXCLUDE_URI.test(uri)) {
