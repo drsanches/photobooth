@@ -16,18 +16,23 @@
 - The user is taken from UserProfile, with `isEnabled` check
 
 ##### List of friends or friend requests:
-- All users are sent, even remote ones
+- All users are sent, even removed ones
 
 ##### Friend request:
 - send to friend - does nothing
-- delete for a friend - removes both requests
 - delete for not friend - does nothing
+- delete for a friend - removes both requests
 
 ##### Send a photo:
 - only to enabled friends
 
 ##### Get photo by id:
 - without permissions and deletion check?
+
+-------------------------------------------------------
+#### Database structure:
+
+![Alt text](doc/db_schema.png?raw=true "DB schema")
 
 -------------------------------------------------------
 #### Backlog:
@@ -40,9 +45,7 @@
 - Add thumbnail images
 - Add more validations
 - Do something with /error
-
-##### UI:
-- Fix expired token logout
+- Use 404 instead 401 for nonexistent urls
 
 ##### Tests:
 - Check errors response body
