@@ -44,7 +44,6 @@
 - Do not create UserProfile for admin?
 - Add thumbnail images
 - Add more validations
-- Do something with /error
 - Use 404 instead 401 for nonexistent urls
 
 ##### Tests:

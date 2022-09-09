@@ -36,7 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .or(x -> x.matches("/api/v1/image/" + IMAGE_ID_PATTERN))
             .or(x -> x.matches("/actuator/health.*"))
             .or(x -> x.matches("/ui.*"))
-            .or(x -> x.matches("/favicon.ico"));
+            .or(x -> x.matches("/favicon.ico"))
+            .or(x -> x.matches("/error")); //Not sent to client, and no extra 401 error in the logs
 
     private final Predicate<String> ADMIN_URI = ((Predicate<String>)
             x -> x.matches("/h2-console.*"))
