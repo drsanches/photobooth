@@ -1,44 +1,44 @@
-### PhotoBooth - a social network for sharing photos
+## PhotoBooth - a social network for sharing photos
 
-#### Key provisions for implementation:
+### Key provisions for implementation:
 
-##### Registration:
+#### Registration:
 - add UserAuth
 - add UserProfile
 
-##### Delete user:
+#### Delete user:
 - UserAuth.enable = false
 - UserAuth.username = UUID_username
 - UserProfile.enable = false
 - UserProfile.username = UUID_username
 
-##### Other operations:
+#### Other operations:
 - The user is taken from UserProfile, with `isEnabled` check
 
-##### List of friends or friend requests:
+#### List of friends or friend requests:
 - All users are sent, even removed ones
 
-##### Friend request:
+#### Friend request:
 - send to friend - does nothing
 - delete for not friend - does nothing
 - delete for a friend - removes both requests
 
-##### Send a photo:
+#### Send a photo:
 - only to enabled friends
 
-##### Get photo by id:
+#### Get photo by id:
 - without permissions and deletion check?
 
 -------------------------------------------------------
-#### Database structure:
+### Database structure:
 
 ![Alt text](doc/db_schema.png?raw=true "DB schema")
 
 -------------------------------------------------------
-#### Backlog:
+### Backlog:
 
-##### Back:
-- Add pagination
+#### Back:
+- Add sorting
 - Refactor repositories (optimize)
 - Add cache? (on last images data)
 - Do not create UserProfile for admin?
@@ -46,5 +46,7 @@
 - Add more validations
 - Use 404 instead 401 for nonexistent urls
 
-##### Tests:
+#### Tests:
 - Check errors response body
+- Test pagination
+- Test sorting

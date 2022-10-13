@@ -8,12 +8,15 @@ import ru.drsanches.photobooth.app.data.friends.dto.RemoveRequestDTO;
 import ru.drsanches.photobooth.app.data.friends.dto.SendRequestDTO;
 import ru.drsanches.photobooth.app.data.profile.dto.UserInfoDTO;
 import ru.drsanches.photobooth.app.data.profile.mapper.UserInfoMapper;
+import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
 import ru.drsanches.photobooth.app.service.domain.FriendsDomainService;
 import ru.drsanches.photobooth.app.service.domain.UserProfileDomainService;
+import ru.drsanches.photobooth.app.service.utils.PaginationService;
 import ru.drsanches.photobooth.common.token.TokenSupplier;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -27,31 +30,37 @@ public class FriendsWebService {
     private UserProfileDomainService userProfileDomainService;
 
     @Autowired
-    private UserInfoMapper userInfoMapper;
-
-    @Autowired
     private TokenSupplier tokenSupplier;
 
-    public List<UserInfoDTO> getFriends() {
+    @Autowired
+    private PaginationService<UserProfile> paginationService;
+
+    @Autowired
+    private UserInfoMapper userInfoMapper;
+
+    public List<UserInfoDTO> getFriends(Integer page, Integer size) {
         String userId = tokenSupplier.get().getUserId();
         List<String> friends = friendsDomainService.getFriendsIdList(userId);
-        return userProfileDomainService.getAllByIds(friends).stream()
+        Stream<UserProfile> result = userProfileDomainService.getAllByIds(friends).stream();
+        return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convert)
                 .collect(Collectors.toList());
     }
 
-    public List<UserInfoDTO> getIncomingRequests() {
+    public List<UserInfoDTO> getIncomingRequests(Integer page, Integer size) {
         String userId = tokenSupplier.get().getUserId();
         List<String> incoming = friendsDomainService.getIncomingRequestIdList(userId);
-        return userProfileDomainService.getAllByIds(incoming).stream()
+        Stream<UserProfile> result = userProfileDomainService.getAllByIds(incoming).stream();
+        return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convert)
                 .collect(Collectors.toList());
     }
 
-    public List<UserInfoDTO> getOutgoingRequests() {
+    public List<UserInfoDTO> getOutgoingRequests(Integer page, Integer size) {
         String userId = tokenSupplier.get().getUserId();
         List<String> outgoing = friendsDomainService.getOutgoingRequestIdList(userId);
-        return userProfileDomainService.getAllByIds(outgoing).stream()
+        Stream<UserProfile> result = userProfileDomainService.getAllByIds(outgoing).stream();
+        return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convert)
                 .collect(Collectors.toList());
     }

@@ -14,6 +14,7 @@ import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
 import ru.drsanches.photobooth.app.service.domain.ImageDomainService;
 import ru.drsanches.photobooth.app.service.domain.ImagePermissionDomainService;
 import ru.drsanches.photobooth.app.service.domain.UserProfileDomainService;
+import ru.drsanches.photobooth.app.service.utils.PaginationService;
 import ru.drsanches.photobooth.common.token.TokenSupplier;
 
 import javax.validation.Valid;
@@ -25,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -42,6 +44,9 @@ public class ImageWebService {
 
     @Autowired
     private TokenSupplier tokenSupplier;
+
+    @Autowired
+    private PaginationService<Image> paginationService;
 
     @Autowired
     private ImageInfoMapper imageInfoMapper;
@@ -79,11 +84,11 @@ public class ImageWebService {
         log.info("Photo with id '{}' uploaded for users: {}", imageId, uploadPhotoDTO.getUserIds());
     }
 
-    public List<ImageInfoDTO> getAllInfo() {
+    public List<ImageInfoDTO> getAllInfo(Integer page, Integer size) {
         String currentUserId = tokenSupplier.get().getUserId();
         Set<String> imageIds = imagePermissionDomainService.getImageIds(currentUserId);
-        List<Image> images = imageDomainService.getImages(imageIds);
-        return images.stream()
+        Stream<Image> images = imageDomainService.getImages(imageIds).stream();
+        return paginationService.pagination(images, page, size)
                 .map(imageInfoMapper::convert)
                 .collect(Collectors.toList());
     }

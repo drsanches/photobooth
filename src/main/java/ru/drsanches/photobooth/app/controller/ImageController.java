@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.drsanches.photobooth.app.data.image.dto.ImageInfoDTO;
@@ -19,6 +20,8 @@ import ru.drsanches.photobooth.common.swagger.ApiResponseCode201;
 import ru.drsanches.photobooth.common.swagger.ApiResponseCode400;
 import ru.drsanches.photobooth.common.swagger.ApiResponseCode401;
 import ru.drsanches.photobooth.common.swagger.ApiTokenAuthorization;
+import ru.drsanches.photobooth.common.swagger.ApiPaginationPage;
+import ru.drsanches.photobooth.common.swagger.ApiPaginationSize;
 
 import java.util.List;
 
@@ -75,8 +78,9 @@ public class ImageController {
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(path = "/all", method = RequestMethod.GET)
-    public List<ImageInfoDTO> getAllInfo() {
-        return imageWebService.getAllInfo();
+    public List<ImageInfoDTO> getAllInfo(@ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
+                                         @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size) {
+        return imageWebService.getAllInfo(page, size);
     }
 
     @Operation(summary = "Returns the last images info that is available to the user")
