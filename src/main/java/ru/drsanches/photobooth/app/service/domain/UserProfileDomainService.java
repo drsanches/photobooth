@@ -59,9 +59,7 @@ public class UserProfileDomainService {
         return profiles;
     }
 
-    public List<UserProfile> getAllByIds(Collection<String> userIds) {
-        List<UserProfile> profiles = new LinkedList<>();
-        userProfileRepository.findAllById(userIds).forEach(profiles::add);
-        return profiles;
+    public List<UserProfile> getAllByIdsOrderByUsername(Collection<String> userIds) {
+        return userProfileRepository.findAllByIdInOrderByUsername(userIds);
     }
 }

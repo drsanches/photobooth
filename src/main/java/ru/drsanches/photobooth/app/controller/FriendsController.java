@@ -36,7 +36,7 @@ public class FriendsController {
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(path = "", method = RequestMethod.GET)
-    public List<UserInfoDTO> getFriends(@ApiPaginationPage Integer page,
+    public List<UserInfoDTO> getFriends(@ApiPaginationPage @RequestParam(value = "size", required = false) Integer page,
                                         @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size) {
         return friendsWebService.getFriends(page, size);
     }

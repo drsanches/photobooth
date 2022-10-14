@@ -41,7 +41,7 @@ public class FriendsWebService {
     public List<UserInfoDTO> getFriends(Integer page, Integer size) {
         String userId = tokenSupplier.get().getUserId();
         List<String> friends = friendsDomainService.getFriendsIdList(userId);
-        Stream<UserProfile> result = userProfileDomainService.getAllByIds(friends).stream();
+        Stream<UserProfile> result = userProfileDomainService.getAllByIdsOrderByUsername(friends).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convert)
                 .collect(Collectors.toList());
@@ -50,7 +50,7 @@ public class FriendsWebService {
     public List<UserInfoDTO> getIncomingRequests(Integer page, Integer size) {
         String userId = tokenSupplier.get().getUserId();
         List<String> incoming = friendsDomainService.getIncomingRequestIdList(userId);
-        Stream<UserProfile> result = userProfileDomainService.getAllByIds(incoming).stream();
+        Stream<UserProfile> result = userProfileDomainService.getAllByIdsOrderByUsername(incoming).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convert)
                 .collect(Collectors.toList());
@@ -59,7 +59,7 @@ public class FriendsWebService {
     public List<UserInfoDTO> getOutgoingRequests(Integer page, Integer size) {
         String userId = tokenSupplier.get().getUserId();
         List<String> outgoing = friendsDomainService.getOutgoingRequestIdList(userId);
-        Stream<UserProfile> result = userProfileDomainService.getAllByIds(outgoing).stream();
+        Stream<UserProfile> result = userProfileDomainService.getAllByIdsOrderByUsername(outgoing).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convert)
                 .collect(Collectors.toList());

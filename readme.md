@@ -38,7 +38,6 @@
 ### Backlog:
 
 #### Back:
-- Add sorting
 - Refactor repositories (optimize)
 - Add cache? (on last images data)
 - Do not create UserProfile for admin?
