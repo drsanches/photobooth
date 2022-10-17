@@ -54,7 +54,6 @@ public class ImageController {
     }
 
     @Operation(summary = "Returns an image by id")
-    @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode400
     @RequestMapping(path = "/{imageId}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)

@@ -45,6 +45,9 @@
 - Add more validations
 - Use 404 instead 401 for nonexistent urls
 
+### UI:
+- Fix authorization
+
 #### Tests:
 - Check errors response body
 - Test pagination
