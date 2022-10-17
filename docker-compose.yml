@@ -1,11 +1,3 @@
-# BEFORE RUN:
-# gradlew clean
-# gradlew bootJar
-#
-# RUN:
-# docker-compose build
-# docker-compose up
-
 version: '3'
 
 services:
