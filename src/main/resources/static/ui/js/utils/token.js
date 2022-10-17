@@ -9,6 +9,7 @@ export function getToken() {
     return localStorage.getItem("token");
 }
 
+//TODO: Returns true for incorrect token in local storage
 export function isAuthorized() {
     return getToken() != null;
 }
