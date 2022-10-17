@@ -1,6 +1,6 @@
 ## PhotoBooth - a social network for sharing photos
 
-### Key provisions for implementation:
+### Key provisions for implementation
 
 #### Registration:
 - add UserAuth
@@ -29,12 +29,57 @@
 #### Get photo by id:
 - without permissions and deletion check?
 
--------------------------------------------------------
-### Database structure:
+---
+### Database structure
 
 ![Alt text](doc/db_schema.png?raw=true "DB schema")
 
--------------------------------------------------------
+---
+
+### How to run
+
+#### Environment variables
+
+- `PORT` - application port
+- `ADMIN_PASSWORD` - password for admin user
+- `JDBC_DATABASE_URL` - database url (example: `jdbc:postgresql://database_host:5432/databaseba_name`)
+- `JDBC_DATABASE_USERNAME` - database username
+- `JDBC_DATABASE_PASSWORD` - database user password
+
+#### JVM
+
+##### Database:
+By default, the application works with PostgreSQL. 
+Before run, it is needed to create a database for the application.
+
+##### Build:
+- `gradlew clean` - removes all previous builds
+- `gradlew bootJar` - builds executable jar
+
+##### Run:
+Run application by the command (with custom environment variables):
+
+    java -jar -DPORT=8080 -DADMIN_PASSWORD=admin -DJDBC_DATABASE_URL=jdbc:postgresql://localhost:5432/photobooth -DJDBC_DATABASE_USERNAME=photobooth_app -DJDBC_DATABASE_PASSWORD=pswd build\libs\photobooth-1.0.jar
+
+#### Docker
+
+##### Files description:
+- `Dockerfile` for automatic image building
+- `docker-compose.yml` with docker service definitions
+- `.env` contains environment variables (also contains one extra variable `DB_NAME`, needed for database container)
+
+##### Run:
+Before run, it is necessary to build **executable jar file** (see JVM.Build).
+After that, the application can be launched with the commands:
+
+- `docker-compose build` - builds services
+- `docker-compose up` - creates and starts containers
+
+#### Heroku
+`Procfile`contains the command to run the application on Heroku service. 
+
+---
+
 ### Backlog:
 
 #### Back:
