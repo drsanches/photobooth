@@ -23,8 +23,7 @@ class TestChangeUsername extends Specification {
         def response = RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: ["Authorization": "Bearer $token"],
-                body:  [newUsername: newUsername,
-                        password: user.password],
+                body:  [newUsername: newUsername],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
@@ -54,8 +53,7 @@ class TestChangeUsername extends Specification {
         RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
-                body:  [newUsername: user.username,
-                        password: user.password],
+                body:  [newUsername: user.username],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
@@ -71,8 +69,7 @@ class TestChangeUsername extends Specification {
         RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
-                body:  [newUsername: empty,
-                        password: user.password],
+                body:  [newUsername: empty],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
@@ -81,46 +78,6 @@ class TestChangeUsername extends Specification {
 
         where:
         empty << [null, ""]
-    }
-
-    def "username change without password"() {
-        given: "user and new username"
-        def user = new TestUser().register()
-        def newUsername = DataGenerator.createValidUsername()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().put(
-                path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
-                body:  [newUsername: newUsername,
-                        password: empty],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert e.response.status == 400
-
-        where:
-        empty << [null, ""]
-    }
-
-    def "username change with invalid password"() {
-        given: "user, new username and invalid password"
-        def user = new TestUser().register()
-        def newUsername = DataGenerator.createValidUsername()
-        def invalidPassword = DataGenerator.createValidPassword()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().put(
-                path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
-                body:  [newUsername: newUsername,
-                        password: invalidPassword],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert e.response.status == 401
     }
 
     def "username change with invalid token"() {

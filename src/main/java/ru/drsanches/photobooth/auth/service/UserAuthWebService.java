@@ -7,7 +7,6 @@ import org.springframework.validation.annotation.Validated;
 import ru.drsanches.photobooth.auth.data.dto.ChangeEmailDTO;
 import ru.drsanches.photobooth.auth.data.dto.ChangePasswordDTO;
 import ru.drsanches.photobooth.auth.data.dto.ChangeUsernameDTO;
-import ru.drsanches.photobooth.auth.data.dto.DeleteUserDTO;
 import ru.drsanches.photobooth.auth.data.dto.LoginDTO;
 import ru.drsanches.photobooth.auth.data.dto.RegistrationDTO;
 import ru.drsanches.photobooth.auth.data.dto.TokenDTO;
@@ -90,7 +89,6 @@ public class UserAuthWebService {
     public void changeUsername(@Valid ChangeUsernameDTO changeUsernameDTO) {
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        credentialsHelper.checkPassword(changeUsernameDTO.getPassword(), current.getPassword(), current.getSalt());
         String oldUsername = current.getUsername();
         if (changeUsernameDTO.getNewUsername().equals(oldUsername)) {
             throw new ApplicationException("New username is equal to old");
@@ -104,10 +102,6 @@ public class UserAuthWebService {
     public void changePassword(@Valid ChangePasswordDTO changePasswordDTO) {
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        credentialsHelper.checkPassword(changePasswordDTO.getOldPassword(), current.getPassword(), current.getSalt());
-        if (changePasswordDTO.getOldPassword().equals(changePasswordDTO.getNewPassword())) {
-            throw new ApplicationException("New password is equal to old");
-        }
         current.setSalt(UUID.randomUUID().toString());
         current.setPassword(credentialsHelper.encodePassword(changePasswordDTO.getNewPassword(), current.getSalt()));
         userAuthDomainService.save(current);
@@ -118,7 +112,6 @@ public class UserAuthWebService {
     public void changeEmail(@Valid ChangeEmailDTO changeEmailDTO) {
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        credentialsHelper.checkPassword(changeEmailDTO.getPassword(), current.getPassword(), current.getSalt());
         if (current.getEmail().equals(changeEmailDTO.getNewEmail())) {
             throw new ApplicationException("New email is equal to old");
         }
@@ -135,10 +128,9 @@ public class UserAuthWebService {
         tokenService.removeCurrentToken();
     }
 
-    public void disableUser(@Valid DeleteUserDTO deleteUserDTO) {
+    public void disableUser() {
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        credentialsHelper.checkPassword(deleteUserDTO.getPassword(), current.getPassword(), current.getSalt());
         tokenService.removeAllTokens(userId);
         current.setEnabled(false);
         current.setUsername(UUID.randomUUID().toString() + "_" + current.getUsername());

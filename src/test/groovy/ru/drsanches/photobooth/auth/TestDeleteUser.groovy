@@ -5,7 +5,6 @@ import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONArray
 import net.sf.json.JSONNull
-import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
 import ru.drsanches.photobooth.utils.Utils
@@ -32,7 +31,6 @@ class TestDeleteUser extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $token"],
-                body:  [password: user.password],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
@@ -88,48 +86,6 @@ class TestDeleteUser extends Specification {
         assert incomingRequests.get(0)["name"] == JSONNull.getInstance()
         assert incomingRequests.get(0)["status"] == JSONNull.getInstance()
         assert incomingRequests.get(0)["imagePath"] == Utils.getDeletedImagePath()
-    }
-
-    def "user deleting without password"() {
-        given: "user"
-        def user = new TestUser().register()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().post(
-                path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
-                body:  [password: empty],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert e.response.status == 400
-
-        and: "user was not deleted"
-        assert user.getAuthInfo() != null
-
-        where:
-        empty << [null, ""]
-    }
-
-    def "user deleting with invalid password"() {
-        given: "user and invalid password"
-        def user = new TestUser().register()
-        def invalidPassword = DataGenerator.createValidPassword()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().post(
-                path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
-                body:  [password: invalidPassword],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert e.response.status == 401
-
-        and: "user was not deleted"
-        assert user.getAuthInfo() != null
     }
 
     def "delete user with invalid token"() {

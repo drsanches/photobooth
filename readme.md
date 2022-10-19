@@ -76,7 +76,7 @@ After that, the application can be launched with the commands:
 - `docker-compose up` - creates and starts containers
 
 ### Heroku
-`Procfile`contains the command to run the application on Heroku service. 
+`Procfile` contains the command to run the application on Heroku service. 
 
 ---
 
@@ -89,6 +89,7 @@ After that, the application can be launched with the commands:
 - Add thumbnail images
 - Add more validations
 - Use 404 instead 401 for nonexistent urls
+- Add 2FA on critical auth operations
 
 ### UI
 - Fix authorization

@@ -22,8 +22,7 @@ class TestChangeEmail extends Specification {
         def response = RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
-                body:  [newEmail: newEmail,
-                        password: user.password],
+                body:  [newEmail: newEmail],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
@@ -41,8 +40,7 @@ class TestChangeEmail extends Specification {
         def response = RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
-                body:  [newEmail: empty,
-                        password: user.password],
+                body:  [newEmail: empty],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
@@ -56,27 +54,6 @@ class TestChangeEmail extends Specification {
         result << [JSONNull.getInstance(), ""]
     }
 
-    def "email change without password"() {
-        given: "user"
-        def user = new TestUser().register()
-        def newEmail = DataGenerator.createValidEmail()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().put(
-                path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
-                body:  [newEmail: newEmail,
-                        password: empty],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert e.response.status == 400
-
-        where:
-        empty << [null, ""]
-    }
-
     def "email change with old email"() {
         given: "user"
         def user = new TestUser().register()
@@ -85,32 +62,12 @@ class TestChangeEmail extends Specification {
         RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
-                body:  [newEmail: user.email,
-                        password: user.password],
+                body:  [newEmail: user.email],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert e.response.status == 400
-    }
-
-    def "email change with invalid password"() {
-        given: "user and invalid password"
-        def user = new TestUser().register()
-        def newEmail = DataGenerator.createValidEmail()
-        def invalidPassword = DataGenerator.createValidPassword()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().put(
-                path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
-                body:  [newEmail: newEmail,
-                        password: invalidPassword],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert e.response.status == 401
     }
 
     def "email change with invalid token"() {

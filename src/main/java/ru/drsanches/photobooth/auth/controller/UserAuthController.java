@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.drsanches.photobooth.auth.data.dto.ChangeEmailDTO;
 import ru.drsanches.photobooth.auth.data.dto.ChangePasswordDTO;
 import ru.drsanches.photobooth.auth.data.dto.ChangeUsernameDTO;
-import ru.drsanches.photobooth.auth.data.dto.DeleteUserDTO;
 import ru.drsanches.photobooth.auth.data.dto.LoginDTO;
 import ru.drsanches.photobooth.auth.data.dto.RegistrationDTO;
 import ru.drsanches.photobooth.auth.data.dto.TokenDTO;
@@ -114,7 +113,7 @@ public class UserAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
-    public void disableUser(@RequestBody DeleteUserDTO deleteUserDTO) {
-        userAuthWebService.disableUser(deleteUserDTO);
+    public void disableUser() {
+        userAuthWebService.disableUser();
     }
 }

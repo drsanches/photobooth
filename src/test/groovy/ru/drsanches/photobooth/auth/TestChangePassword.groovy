@@ -23,8 +23,7 @@ class TestChangePassword extends Specification {
         def response = RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: ["Authorization": "Bearer $token"],
-                body:  [oldPassword: user.password,
-                        newPassword: newPassword],
+                body:  [newPassword: newPassword],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
@@ -43,63 +42,6 @@ class TestChangePassword extends Specification {
         assert RequestUtils.getToken(user.username, newPassword) != token
     }
 
-    def "password change with equal password"() {
-        given: "user"
-        def user = new TestUser().register()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().put(
-                path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
-                body:  [oldPassword: user.password,
-                        newPassword: user.password],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert e.response.status == 400
-    }
-
-    def "password change with invalid odlPassword"() {
-        given: "user and invalid password"
-        def user = new TestUser().register()
-        def invalidPassword = DataGenerator.createValidPassword()
-        def newPassword = DataGenerator.createValidPassword()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().put(
-                path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
-                body:  [oldPassword: invalidPassword,
-                        newPassword: newPassword],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert e.response.status == 401
-    }
-
-    def "password change without odlPassword"() {
-        given: "user and new password"
-        def user = new TestUser().register()
-        def newPassword = DataGenerator.createValidPassword()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().put(
-                path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
-                body:  [oldPassword: empty,
-                        newPassword: newPassword],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert e.response.status == 400
-
-        where:
-        empty << [null, ""]
-    }
-
     def "password change without newPassword"() {
         given: "user"
         def user = new TestUser().register()
@@ -108,8 +50,7 @@ class TestChangePassword extends Specification {
         RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
-                body:  [oldPassword: user.password,
-                        newPassword: empty],
+                body:  [newPassword: empty],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
