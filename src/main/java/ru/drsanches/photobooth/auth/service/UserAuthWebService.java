@@ -134,6 +134,7 @@ public class UserAuthWebService {
         tokenService.removeAllTokens(userId);
         current.setEnabled(false);
         current.setUsername(UUID.randomUUID().toString() + "_" + current.getUsername());
+        current.setGoogleAuth(UUID.randomUUID().toString() + "_" + current.getGoogleAuth());
         userIntegrationService.updateUser(current);
         log.info("User with id '{}' has been disabled", current.getId());
     }

@@ -26,16 +26,19 @@ public class UserAuth {
     @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(nullable = false)
+    @Column
     @ToString.Exclude
     private String password;
 
-    @Column(nullable = false)
+    @Column
     @ToString.Exclude
     private String salt;
 
     @Column
     private String email;
+
+    @Column(unique = true)
+    private String googleAuth;
 
     @Column(nullable = false)
     private boolean enabled;

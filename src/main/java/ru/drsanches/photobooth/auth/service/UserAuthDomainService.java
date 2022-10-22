@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.drsanches.photobooth.auth.data.model.UserAuth;
 import ru.drsanches.photobooth.auth.data.repository.UserAuthRepository;
+import ru.drsanches.photobooth.exception.auth.NoGoogleUserException;
 import ru.drsanches.photobooth.exception.application.NoUserIdException;
 import ru.drsanches.photobooth.exception.application.NoUsernameException;
 import java.util.Optional;
@@ -33,6 +34,14 @@ public class UserAuthDomainService {
         Optional<UserAuth> user = userAuthRepository.findByUsername(username);
         if (user.isEmpty() || !user.get().isEnabled()) {
             throw new NoUsernameException(username);
+        }
+        return user.get();
+    }
+
+    public UserAuth getEnabledByGoogleAuth(String googleAuth) {
+        Optional<UserAuth> user = userAuthRepository.findByGoogleAuth(googleAuth);
+        if (user.isEmpty() || !user.get().isEnabled()) {
+            throw new NoGoogleUserException();
         }
         return user.get();
     }

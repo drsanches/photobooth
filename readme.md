@@ -9,6 +9,7 @@
 ### Delete user
 - UserAuth.enable = false
 - UserAuth.username = UUID_username
+- UserAuth.googleAuth = UUID_googleAuth
 - UserProfile.enable = false
 - UserProfile.username = UUID_username
 
@@ -90,6 +91,8 @@ After that, the application can be launched with the commands:
 - Add more validations
 - Use 404 instead 401 for nonexistent urls
 - Add 2FA on critical auth operations
+- Add stub for google auth
+- Add field descriptions for db models
 
 ### UI
 - Fix authorization
@@ -98,3 +101,4 @@ After that, the application can be launched with the commands:
 - Check errors response body
 - Test pagination
 - Test sorting
+- Test google auth

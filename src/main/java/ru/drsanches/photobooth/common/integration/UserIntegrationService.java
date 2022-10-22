@@ -38,7 +38,8 @@ public class UserIntegrationService {
         try {
             save(userAuth, userProfile);
         } catch(DataIntegrityViolationException e) {
-            throw new UserAlreadyExistsException(userAuth.getUsername(), e);
+            throw new UserAlreadyExistsException(userAuth.getGoogleAuth() != null ?
+                    userAuth.getGoogleAuth() : userAuth.getUsername(), e);
         }
         log.info("UserAuth and UserProfile has been created: {}, {}", userAuth, userProfile);
     }

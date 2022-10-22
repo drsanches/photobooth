@@ -30,6 +30,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             x -> x.matches("/api/v1/auth/registration.*"))
             .or(x -> x.matches("/api/v1/auth/login.*"))
             .or(x -> x.matches("/api/v1/auth/refreshToken.*"))
+            .or(x -> x.matches("/api/v1/auth/google/registration.*"))
+            .or(x -> x.matches("/api/v1/auth/google/login.*"))
             .or(x -> x.matches("/api/v1/image/" + ImageInfoMapper.DEFAULT_AVATAR_ID))
             .or(x -> x.matches("/api/v1/image/" + ImageInfoMapper.NO_PHOTO_IMAGE_ID))
             .or(x -> x.matches("/api/v1/image/" + ImageInfoMapper.DELETED_AVATAR_ID))
