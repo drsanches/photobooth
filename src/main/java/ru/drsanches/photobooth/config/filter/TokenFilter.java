@@ -48,7 +48,7 @@ public class TokenFilter extends GenericFilterBean {
     }
 
     private String getAccessTokenFromRequest(HttpServletRequest httpRequest) {
-        String token = httpRequest.getHeader("Authorization"); //TODO: Returns string "null" for incognito tab
+        String token = httpRequest.getHeader("Authorization");
         if (token == null) {
             token = getAccessTokenFromCookies(httpRequest.getCookies());
         }

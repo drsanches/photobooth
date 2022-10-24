@@ -50,6 +50,7 @@ public class TokenService {
             throw new WrongTokenException();
         }
         if (token.get().getExpiresAt().before(new GregorianCalendar())) {
+            tokenRepository.delete(token.get());
             throw new WrongTokenException();
         }
         tokenSupplier.set(token.get());
