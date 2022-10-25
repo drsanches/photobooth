@@ -2,7 +2,6 @@ package ru.drsanches.photobooth.auth
 
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
-import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
 import spock.lang.Specification

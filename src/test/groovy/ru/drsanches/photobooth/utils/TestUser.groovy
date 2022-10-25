@@ -21,6 +21,21 @@ class TestUser {
 
     String imagePath
 
+    TestUser() {}
+
+    TestUser(String username, String password) {
+        this.username = username
+        this.password = password
+        this.token = RequestUtils.getToken(this.username, this.password)
+        JSONObject authInfo = RequestUtils.getAuthInfo(this.token)
+        this.id = authInfo["id"]
+        this.email = authInfo["email"]
+        JSONObject userProfile = RequestUtils.getUserProfile(this.token)
+        this.name = userProfile["name"]
+        this.status = userProfile["status"]
+        this.imagePath = userProfile["imagePath"]
+    }
+
     TestUser register() {
         username = DataGenerator.createValidUsername()
         password = DataGenerator.createValidPassword()

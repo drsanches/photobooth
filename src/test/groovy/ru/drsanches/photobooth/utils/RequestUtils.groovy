@@ -8,12 +8,10 @@ import net.sf.json.JSONObject
 
 class RequestUtils {
 
-    static final String SERVER_URL = "http://localhost"
-
-    static final String PORT = "8080"
+    static final String SERVER_URL = "http://localhost:8080"
 
     static RESTClient getRestClient() {
-        return new RESTClient( "$SERVER_URL:$PORT")
+        return new RESTClient(SERVER_URL)
     }
 
     static String registerUser(String username, String password, String email) {

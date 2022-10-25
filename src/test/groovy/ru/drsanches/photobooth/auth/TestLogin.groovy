@@ -6,7 +6,6 @@ import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
-import ru.drsanches.photobooth.utils.TestUser
 import spock.lang.Specification
 
 class TestLogin extends Specification {

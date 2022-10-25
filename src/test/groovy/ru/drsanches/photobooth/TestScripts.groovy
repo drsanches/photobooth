@@ -12,17 +12,14 @@ import java.security.NoSuchAlgorithmException
 
 class TestScripts extends Specification {
 
-    final String PATH = "http://localhost:8080/api/v1"
-
-    String userId = "userId"
-    String username = "username"
-    String password = "password"
+    String username = "admin"
+    String password = "admin"
     String googleAccessToken = "googleAccessToken"
 
     def "register a user by google"() {
         when:
         RequestUtils.getRestClient().post(
-                path: PATH + "/auth/google/registration",
+                path: "/api/v1/auth/google/registration",
                 body:  [accessToken: googleAccessToken],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
@@ -33,7 +30,7 @@ class TestScripts extends Specification {
     def "login a user by google"() {
         when:
         RequestUtils.getRestClient().post(
-                path: PATH + "/auth/google/login",
+                path: "/api/v1/auth/google/login",
                 body:  [accessToken: googleAccessToken],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
@@ -41,11 +38,36 @@ class TestScripts extends Specification {
         assert true
     }
 
-    def "add a friend to the user"() {
+    def "send incoming friend request to the user"() {
+        given:
+        TestUser user = new TestUser(username, sha256(password))
+
         when:
-        TestUser user = new TestUser().register().sendFriendRequest(userId)
-        String token = RequestUtils.getToken(username, sha256(password))
-        RequestUtils.sendFriendRequest(token, user.id)
+        new TestUser().register().sendFriendRequest(user.id)
+
+        then:
+        assert true
+    }
+
+    def "send outgoing friend request from the user"() {
+        given:
+        TestUser user = new TestUser(username, sha256(password))
+
+        when:
+        TestUser outgoing = new TestUser().register()
+        user.sendFriendRequest(outgoing.id)
+
+        then:
+        assert true
+    }
+
+    def "add a friend to the user"() {
+        given:
+        TestUser user = new TestUser(username, sha256(password))
+
+        when:
+        TestUser friend = new TestUser().register().sendFriendRequest(user.id)
+        user.sendFriendRequest(friend.id)
 
         then:
         assert true
