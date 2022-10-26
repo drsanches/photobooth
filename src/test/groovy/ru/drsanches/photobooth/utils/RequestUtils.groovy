@@ -144,14 +144,14 @@ class RequestUtils {
         }
     }
 
-    static String getRefreshToken(String username, String password) {
+    static JSONObject getTokenInfo(String username, String password) {
         try {
             HttpResponseDecorator response = getRestClient().post(
                     path: "/api/v1/auth/login",
                     body: ["username": username,
                            "password": password],
                     requestContentType : ContentType.JSON) as HttpResponseDecorator
-            return response.status == 200 ? response.getData()["refreshToken"] : null
+            return response.status == 200 ? response.getData() as JSONObject : null
         } catch (Exception e) {
             e.printStackTrace()
             return null

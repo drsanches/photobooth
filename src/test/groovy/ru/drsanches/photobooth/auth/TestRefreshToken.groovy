@@ -15,7 +15,9 @@ class TestRefreshToken extends Specification {
         given: "user"
         def user = new TestUser().register()
         def oldToken = RequestUtils.getToken(user.username, user.password)
-        def refreshToken = RequestUtils.getRefreshToken(user.username, user.password)
+        def tokenInfo = RequestUtils.getTokenInfo(user.username, user.password)
+        def token = tokenInfo["accessToken"]
+        def refreshToken = tokenInfo["refreshToken"]
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
@@ -26,12 +28,15 @@ class TestRefreshToken extends Specification {
         then: "response is correct"
         assert response.status == 200
 
-        and: "token is correct"
-        def token = response.getData()["accessToken"]
-        assert RequestUtils.getAuthInfo(token as String) != null
+        and: "new token is correct"
+        def newtToken = response.getData()["accessToken"]
+        assert RequestUtils.getAuthInfo(newtToken as String) != null
 
-        and: "old token is invalid"
-        assert RequestUtils.getAuthInfo(oldToken as String) == null
+        and: "previous token is invalid"
+        assert RequestUtils.getAuthInfo(token as String) == null
+
+        and: "old token is correct"
+        assert RequestUtils.getAuthInfo(oldToken as String) != null
     }
 
     def "refresh token with invalid refreshToken"() {

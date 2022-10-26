@@ -57,7 +57,7 @@ public class TokenService {
 
     public Token refreshToken(String refreshToken) {
         Token token = getTokenByRefreshToken(refreshToken);
-        removeAllTokens(token.getUserId());
+        tokenRepository.deleteById(token.getAccessToken());
         return createToken(token.getUserId(), token.getRole());
     }
 
