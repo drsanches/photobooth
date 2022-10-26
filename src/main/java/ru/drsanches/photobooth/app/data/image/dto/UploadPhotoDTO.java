@@ -22,10 +22,9 @@ public class UploadPhotoDTO {
     @Schema(required = true, description = "Image in Base64")
     private String file;
 
-    @NotEmpty
     @EnabledIds
     @FriendIds
-    @Schema(required = true, description = "Ids of users to whom the photo is being sent")
+    @Schema(description = "Ids of users to whom the photo is being sent, null for all friends")
     private List<String> userIds;
 
     @ToString.Include

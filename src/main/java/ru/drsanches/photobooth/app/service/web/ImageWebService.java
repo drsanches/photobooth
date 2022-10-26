@@ -3,6 +3,7 @@ package ru.drsanches.photobooth.app.service.web;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import ru.drsanches.photobooth.app.data.image.dto.ImageInfoDTO;
 import ru.drsanches.photobooth.app.data.image.dto.UploadAvatarDTO;
@@ -11,6 +12,7 @@ import ru.drsanches.photobooth.app.data.image.mapper.ImageInfoMapper;
 import ru.drsanches.photobooth.app.data.image.model.Image;
 import ru.drsanches.photobooth.app.data.image.model.ImagePermission;
 import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
+import ru.drsanches.photobooth.app.service.domain.FriendsDomainService;
 import ru.drsanches.photobooth.app.service.domain.ImageDomainService;
 import ru.drsanches.photobooth.app.service.domain.ImagePermissionDomainService;
 import ru.drsanches.photobooth.app.service.domain.UserProfileDomainService;
@@ -35,6 +37,9 @@ public class ImageWebService {
 
     @Autowired
     private UserProfileDomainService userProfileDomainService;
+
+    @Autowired
+    private FriendsDomainService friendsDomainService;
 
     @Autowired
     private ImageDomainService imageDomainService;
@@ -77,9 +82,11 @@ public class ImageWebService {
         byte[] file = Base64.getDecoder().decode(uploadPhotoDTO.getFile());
         GregorianCalendar createdTime = new GregorianCalendar();
         imageDomainService.saveImage(new Image(imageId, file, createdTime, currentUserId));
-        uploadPhotoDTO.getUserIds().add(currentUserId);
-        List<ImagePermission> imagePermissions = new ArrayList<>(uploadPhotoDTO.getUserIds().size());
-        uploadPhotoDTO.getUserIds().forEach(userId -> imagePermissions.add(new ImagePermission(imageId, userId)));
+        List<String> allowedUsers = CollectionUtils.isEmpty(uploadPhotoDTO.getUserIds()) ?
+                getEnabledFriends(currentUserId) : uploadPhotoDTO.getUserIds();
+        allowedUsers.add(currentUserId);
+        List<ImagePermission> imagePermissions = new ArrayList<>(allowedUsers.size());
+        allowedUsers.forEach(userId -> imagePermissions.add(new ImagePermission(imageId, userId)));
         imagePermissionDomainService.savePermissions(imagePermissions);
         log.info("Photo with id '{}' uploaded for users: {}", imageId, uploadPhotoDTO.getUserIds());
     }
@@ -106,5 +113,12 @@ public class ImageWebService {
         userProfile.setImageId(null);
         userProfileDomainService.save(userProfile);
         log.info("User with id '{}' deleted his profile image", userId);
+    }
+
+    private List<String> getEnabledFriends(String currentUserId) {
+        List<String> friendIds = friendsDomainService.getFriendsIdList(currentUserId);
+        return userProfileDomainService.getEnabledByIds(friendIds).stream()
+                .map(UserProfile::getId)
+                .collect(Collectors.toList());
     }
 }
