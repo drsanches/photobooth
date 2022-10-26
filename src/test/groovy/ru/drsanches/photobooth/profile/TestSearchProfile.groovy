@@ -33,6 +33,26 @@ class TestSearchProfile extends Specification {
         assert response.getData()["imagePath"] == Utils.getDefaultImagePath()
     }
 
+    def "successful user profile searching with upper case"() {
+        given: "two users"
+        def user1 = new TestUser().register()
+        def user2 = new TestUser().register().fillProfile()
+
+        when: "request is sent"
+        def response = RequestUtils.getRestClient().get(
+                path: PATH + user2.username.toUpperCase(),
+                headers: ["Authorization": "Bearer $user1.token"],
+                requestContentType : ContentType.JSON) as HttpResponseDecorator
+
+        then: "response is correct"
+        assert response.status == 200
+        assert response.getData()["id"] == user2.id
+        assert response.getData()["username"] == user2.username
+        assert response.getData()["name"] == user2.name
+        assert response.getData()["status"] == user2.status
+        assert response.getData()["imagePath"] == Utils.getDefaultImagePath()
+    }
+
     def "search deleted user profile"() {
         given: "user and deleted user"
         def user1 = new TestUser().register()

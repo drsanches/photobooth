@@ -30,7 +30,7 @@ public class UserProfileWebService {
     }
 
     public UserInfoDTO searchProfile(String username) {
-        UserProfile userProfile = userProfileDomainService.getEnabledByUsername(username);
+        UserProfile userProfile = userProfileDomainService.getEnabledByUsername(username.toLowerCase());
         return userInfoMapper.convert(userProfile);
     }
 
