@@ -8,7 +8,6 @@ import ru.drsanches.photobooth.exception.auth.GoogleAuthException;
 @Component
 public class GoogleAccessTokenValidator {
 
-    //TODO: Fix injection?
     private final static String URL = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=%s";
 
     public String getEmail(String token) {
