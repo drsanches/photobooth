@@ -1,10 +1,10 @@
-package ru.drsanches.photobooth.app.service.validation.validator;
+package ru.drsanches.photobooth.app.validation.validator;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.drsanches.photobooth.app.service.validation.annotation.ValidBase64Image;
+import ru.drsanches.photobooth.app.validation.annotation.ValidBase64Image;
 
 import javax.imageio.ImageIO;
 import javax.validation.ConstraintValidator;

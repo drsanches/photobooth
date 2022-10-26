@@ -1,7 +1,6 @@
-package ru.drsanches.photobooth.app.service.validation.annotation;
+package ru.drsanches.photobooth.app.validation.annotation;
 
-import ru.drsanches.photobooth.app.service.validation.validator.EnabledIdsValidator;
-
+import ru.drsanches.photobooth.app.validation.validator.NotCurrentIdValidator;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.ElementType;
@@ -11,10 +10,10 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = EnabledIdsValidator.class)
-public @interface EnabledIds {
+@Constraint(validatedBy = NotCurrentIdValidator.class)
+public @interface NotCurrentId {
 
-    String message() default "contains nonexistent ids";
+    String message() default "the user can not be current";
 
     Class<?>[] groups() default {};
 

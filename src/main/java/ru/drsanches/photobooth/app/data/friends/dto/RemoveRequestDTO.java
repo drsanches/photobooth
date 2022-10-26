@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.NotEmpty;
-import ru.drsanches.photobooth.app.service.validation.annotation.ExistsId;
-import ru.drsanches.photobooth.app.service.validation.annotation.NotCurrentId;
+import ru.drsanches.photobooth.app.validation.annotation.ExistsId;
+import ru.drsanches.photobooth.app.validation.annotation.NotCurrentId;
 
 @Getter
 @Setter

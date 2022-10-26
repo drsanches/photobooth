@@ -1,4 +1,4 @@
-package ru.drsanches.photobooth.auth.service;
+package ru.drsanches.photobooth.auth.service.domain;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

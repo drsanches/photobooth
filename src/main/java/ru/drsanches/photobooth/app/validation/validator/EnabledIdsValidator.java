@@ -1,11 +1,11 @@
-package ru.drsanches.photobooth.app.service.validation.validator;
+package ru.drsanches.photobooth.app.validation.validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
 import ru.drsanches.photobooth.app.service.domain.UserProfileDomainService;
-import ru.drsanches.photobooth.app.service.validation.annotation.EnabledIds;
+import ru.drsanches.photobooth.app.validation.annotation.EnabledIds;
 import ru.drsanches.photobooth.common.token.TokenSupplier;
 
 import javax.validation.ConstraintValidator;

@@ -1,6 +1,6 @@
-package ru.drsanches.photobooth.app.service.validation.annotation;
+package ru.drsanches.photobooth.app.validation.annotation;
 
-import ru.drsanches.photobooth.app.service.validation.validator.ExistsIdValidator;
+import ru.drsanches.photobooth.app.validation.validator.FriendIdValidator;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.ElementType;
@@ -10,12 +10,14 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ExistsIdValidator.class)
-public @interface ExistsId {
+@Constraint(validatedBy = FriendIdValidator.class)
+public @interface FriendId {
 
-    String message() default "the user does not exist";
+    String message() default "some users are not friends";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    boolean mayContainCurrent() default false;
 }

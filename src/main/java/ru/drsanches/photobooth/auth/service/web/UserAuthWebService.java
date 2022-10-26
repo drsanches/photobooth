@@ -1,4 +1,4 @@
-package ru.drsanches.photobooth.auth.service;
+package ru.drsanches.photobooth.auth.service.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import ru.drsanches.photobooth.auth.data.dto.LoginDTO;
 import ru.drsanches.photobooth.auth.data.dto.RegistrationDTO;
 import ru.drsanches.photobooth.auth.data.dto.TokenDTO;
 import ru.drsanches.photobooth.auth.data.dto.UserAuthInfoDTO;
+import ru.drsanches.photobooth.auth.service.domain.UserAuthDomainService;
 import ru.drsanches.photobooth.auth.service.utils.CredentialsHelper;
 import ru.drsanches.photobooth.common.token.data.Role;
 import ru.drsanches.photobooth.auth.data.mapper.UserAuthInfoMapper;

@@ -1,7 +1,6 @@
-package ru.drsanches.photobooth.app.service.validation.annotation;
+package ru.drsanches.photobooth.app.validation.annotation;
 
-import ru.drsanches.photobooth.app.service.validation.validator.ValidBase64ImageValidator;
-
+import ru.drsanches.photobooth.app.validation.validator.ExistsIdValidator;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.ElementType;
@@ -11,10 +10,10 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ValidBase64ImageValidator.class)
-public @interface ValidBase64Image {
+@Constraint(validatedBy = ExistsIdValidator.class)
+public @interface ExistsId {
 
-    String message() default "invalid base64 image";
+    String message() default "the user does not exist";
 
     Class<?>[] groups() default {};
 

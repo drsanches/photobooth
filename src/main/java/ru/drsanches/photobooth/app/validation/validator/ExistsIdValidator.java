@@ -1,9 +1,9 @@
-package ru.drsanches.photobooth.app.service.validation.validator;
+package ru.drsanches.photobooth.app.validation.validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.drsanches.photobooth.app.service.domain.UserProfileDomainService;
-import ru.drsanches.photobooth.app.service.validation.annotation.ExistsId;
+import ru.drsanches.photobooth.app.validation.annotation.ExistsId;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 

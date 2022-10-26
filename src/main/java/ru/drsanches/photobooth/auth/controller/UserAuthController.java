@@ -18,7 +18,7 @@ import ru.drsanches.photobooth.auth.data.dto.LoginDTO;
 import ru.drsanches.photobooth.auth.data.dto.RegistrationDTO;
 import ru.drsanches.photobooth.auth.data.dto.TokenDTO;
 import ru.drsanches.photobooth.auth.data.dto.UserAuthInfoDTO;
-import ru.drsanches.photobooth.auth.service.UserAuthWebService;
+import ru.drsanches.photobooth.auth.service.web.UserAuthWebService;
 import ru.drsanches.photobooth.common.swagger.ApiResponseCode200;
 import ru.drsanches.photobooth.common.swagger.ApiResponseCode201;
 import ru.drsanches.photobooth.common.swagger.ApiResponseCode400;

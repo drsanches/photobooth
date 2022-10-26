@@ -1,6 +1,7 @@
-package ru.drsanches.photobooth.app.service.validation.annotation;
+package ru.drsanches.photobooth.app.validation.annotation;
 
-import ru.drsanches.photobooth.app.service.validation.validator.FriendIdValidator;
+import ru.drsanches.photobooth.app.validation.validator.FriendIdsValidator;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.ElementType;
@@ -10,14 +11,12 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = FriendIdValidator.class)
-public @interface FriendId {
+@Constraint(validatedBy = FriendIdsValidator.class)
+public @interface FriendIds {
 
-    String message() default "some users are not friends";
+    String message() default "contains non friends";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
-    boolean mayContainCurrent() default false;
 }

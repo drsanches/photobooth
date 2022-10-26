@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.NotEmpty;
-import ru.drsanches.photobooth.app.service.validation.annotation.ValidBase64Image;
+import ru.drsanches.photobooth.app.validation.annotation.ValidBase64Image;
 
 @Getter
 @Setter

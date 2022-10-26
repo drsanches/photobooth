@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.drsanches.photobooth.auth.data.dto.GoogleAccessTokenDTO;
 import ru.drsanches.photobooth.auth.data.dto.TokenDTO;
-import ru.drsanches.photobooth.auth.service.GoogleAuthWebService;
+import ru.drsanches.photobooth.auth.service.web.GoogleAuthWebService;
 import ru.drsanches.photobooth.common.swagger.ApiResponseCode200;
 import ru.drsanches.photobooth.common.swagger.ApiResponseCode201;
 import ru.drsanches.photobooth.common.swagger.ApiResponseCode400;

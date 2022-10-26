@@ -1,4 +1,4 @@
-package ru.drsanches.photobooth.auth.service;
+package ru.drsanches.photobooth.auth.service.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import ru.drsanches.photobooth.auth.data.dto.GoogleAccessTokenDTO;
 import ru.drsanches.photobooth.auth.data.dto.TokenDTO;
 import ru.drsanches.photobooth.auth.data.model.UserAuth;
+import ru.drsanches.photobooth.auth.service.domain.UserAuthDomainService;
 import ru.drsanches.photobooth.auth.service.utils.GoogleAccessTokenValidator;
 import ru.drsanches.photobooth.common.integration.UserIntegrationService;
 import ru.drsanches.photobooth.common.token.TokenService;

@@ -1,8 +1,8 @@
-package ru.drsanches.photobooth.app.service.validation.validator;
+package ru.drsanches.photobooth.app.validation.validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.drsanches.photobooth.app.service.validation.annotation.NotCurrentId;
+import ru.drsanches.photobooth.app.validation.annotation.NotCurrentId;
 import ru.drsanches.photobooth.common.token.TokenSupplier;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

@@ -1,21 +1,20 @@
-package ru.drsanches.photobooth.auth.service.validation.annotation;
+package ru.drsanches.photobooth.app.validation.annotation;
+
+import ru.drsanches.photobooth.app.validation.validator.EnabledIdsValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import javax.validation.constraints.Pattern;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-//TODO: Refactor
-@Constraint(validatedBy = { })
-@Pattern(regexp = "ya29\\.[a-zA-Z0-9\\-_]*", message = "wrong google token format")
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface GoogleAccessToken {
+@Constraint(validatedBy = EnabledIdsValidator.class)
+public @interface EnabledIds {
 
-    String message() default "wrong google token format";
+    String message() default "contains nonexistent ids";
 
     Class<?>[] groups() default {};
 
