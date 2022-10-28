@@ -1,9 +1,10 @@
-package ru.drsanches.photobooth.auth.data.dto;
+package ru.drsanches.photobooth.auth.data.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Getter
@@ -11,7 +12,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 @ToString
 public class ChangeUsernameDTO {
 
+    @Schema(required = true, maxLength = 20)
     @NotEmpty
-    @Schema(required = true)
+    @Length(max = 20)
     private String newUsername;
 }

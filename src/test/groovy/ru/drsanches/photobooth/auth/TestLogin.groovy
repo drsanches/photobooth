@@ -39,7 +39,7 @@ class TestLogin extends Specification {
 
     def "successful login with different username lower/upper case"() {
         given: "user"
-        def uuid = UUID.randomUUID().toString()
+        def uuid = UUID.randomUUID().toString().substring(0, 8)
         def username1 = "user_NAME_" + uuid
         def username2 = "USER_name_" + uuid
         def password = DataGenerator.createValidPassword()

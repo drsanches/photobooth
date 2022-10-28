@@ -1,7 +1,7 @@
 package ru.drsanches.photobooth.app.data.image.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.drsanches.photobooth.app.data.image.dto.ImageInfoDTO;
+import ru.drsanches.photobooth.app.data.image.dto.response.ImageInfoDTO;
 import ru.drsanches.photobooth.app.data.image.model.Image;
 import ru.drsanches.photobooth.common.utils.GregorianCalendarConvertor;
 

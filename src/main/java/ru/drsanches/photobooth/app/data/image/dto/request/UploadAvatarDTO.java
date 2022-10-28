@@ -1,4 +1,4 @@
-package ru.drsanches.photobooth.app.data.image.dto;
+package ru.drsanches.photobooth.app.data.image.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -12,10 +12,10 @@ import ru.drsanches.photobooth.app.validation.annotation.ValidBase64Image;
 @ToString
 public class UploadAvatarDTO {
 
+    @Schema(required = true, description = "Image in Base64")
     @NotEmpty
     @ValidBase64Image
     @ToString.Exclude
-    @Schema(required = true, description = "Image in Base64")
     private String file;
 
     @ToString.Include

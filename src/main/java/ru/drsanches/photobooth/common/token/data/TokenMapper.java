@@ -2,7 +2,7 @@ package ru.drsanches.photobooth.common.token.data;
 
 import org.springframework.stereotype.Component;
 import ru.drsanches.photobooth.common.utils.GregorianCalendarConvertor;
-import ru.drsanches.photobooth.auth.data.dto.TokenDTO;
+import ru.drsanches.photobooth.auth.data.dto.response.TokenDTO;
 
 @Component
 public class TokenMapper {

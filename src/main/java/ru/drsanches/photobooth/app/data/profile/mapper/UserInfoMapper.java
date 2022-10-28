@@ -2,7 +2,7 @@ package ru.drsanches.photobooth.app.data.profile.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.drsanches.photobooth.app.data.image.mapper.ImageInfoMapper;
-import ru.drsanches.photobooth.app.data.profile.dto.UserInfoDTO;
+import ru.drsanches.photobooth.app.data.profile.dto.response.UserInfoDTO;
 import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
 
 @Component

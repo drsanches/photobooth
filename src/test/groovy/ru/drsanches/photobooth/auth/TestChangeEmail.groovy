@@ -4,6 +4,7 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
+import org.apache.commons.lang3.RandomStringUtils
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
@@ -32,7 +33,7 @@ class TestChangeEmail extends Specification {
         assert user.getAuthInfo()['email'] == newEmail
     }
 
-    def "success email change without newEmail"() {
+    def "success email clean"() {
         given: "user"
         def user = new TestUser().register()
 
@@ -40,18 +41,14 @@ class TestChangeEmail extends Specification {
         def response = RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
-                body:  [newEmail: empty],
+                body:  [newEmail: null],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
 
         and: "user was updated"
-        assert user.getAuthInfo()['email'] == result
-
-        where:
-        empty << [null, ""]
-        result << [JSONNull.getInstance(), ""]
+        assert user.getAuthInfo()['email'] == JSONNull.instance
     }
 
     def "email change with old email"() {
@@ -68,6 +65,25 @@ class TestChangeEmail extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert e.response.status == 400
+    }
+
+    def "email change with invalid email"() {
+        given: "user"
+        def user = new TestUser().register()
+
+        when: "request is sent"
+        RequestUtils.getRestClient().put(
+                path: PATH,
+                headers: ["Authorization": "Bearer $user.token"],
+                body:  [newEmail: invalidEmail],
+                requestContentType : ContentType.JSON)
+
+        then: "response is correct"
+        HttpResponseException e = thrown(HttpResponseException)
+        assert e.response.status == 400
+
+        where:
+        invalidEmail << [RandomStringUtils.randomAlphabetic(256)]
     }
 
     def "email change with invalid token"() {

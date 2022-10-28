@@ -1,9 +1,10 @@
-package ru.drsanches.photobooth.auth.data.dto;
+package ru.drsanches.photobooth.auth.data.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Getter
@@ -11,8 +12,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 @ToString
 public class ChangePasswordDTO {
 
+    @Schema(required = true, maxLength = 255, description = "new password SHA256 hash")
     @NotEmpty
+    @Length(max = 255)
     @ToString.Exclude
-    @Schema(required = true, description = "new password SHA256 hash")
     private String newPassword;
 }

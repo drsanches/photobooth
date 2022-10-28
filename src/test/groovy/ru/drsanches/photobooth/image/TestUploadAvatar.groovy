@@ -57,6 +57,7 @@ class TestUploadAvatar extends Specification {
         assert user.getUserProfile()['imagePath'] as String == Utils.getDefaultImagePath()
 
         where:
+        //TODO: Add big size
         invalidData << [null, "", ";", Base64.getEncoder().encodeToString("test".getBytes())]
     }
 

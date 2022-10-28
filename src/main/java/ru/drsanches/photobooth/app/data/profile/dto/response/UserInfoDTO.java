@@ -1,4 +1,4 @@
-package ru.drsanches.photobooth.app.data.profile.dto;
+package ru.drsanches.photobooth.app.data.profile.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

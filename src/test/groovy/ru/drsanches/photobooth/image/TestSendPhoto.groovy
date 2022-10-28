@@ -268,6 +268,7 @@ class TestSendPhoto extends Specification {
         assert e.response.status == 400
 
         where:
+        //TODO: Add big size
         invalidData << [null, "", ";", Base64.getEncoder().encodeToString("test".getBytes())]
     }
 

@@ -3,7 +3,7 @@ package ru.drsanches.photobooth.utils
 class DataGenerator {
 
     static String createValidUsername() {
-        return "username-" + UUID.randomUUID().toString()
+        return "username-" + UUID.randomUUID().toString().substring(0, 8)
     }
 
     static String createValidPassword() {

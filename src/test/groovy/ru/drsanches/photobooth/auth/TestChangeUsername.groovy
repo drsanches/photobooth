@@ -3,6 +3,7 @@ package ru.drsanches.photobooth.auth
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
+import org.apache.commons.lang3.RandomStringUtils
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
@@ -78,6 +79,25 @@ class TestChangeUsername extends Specification {
 
         where:
         empty << [null, ""]
+    }
+
+    def "username change with invalid username"() {
+        given: "user"
+        def user = new TestUser().register()
+
+        when: "request is sent"
+        RequestUtils.getRestClient().put(
+                path: PATH,
+                headers: ["Authorization": "Bearer $user.token"],
+                body:  [newUsername: invalidUsername],
+                requestContentType : ContentType.JSON)
+
+        then: "response is correct"
+        HttpResponseException e = thrown(HttpResponseException)
+        assert e.response.status == 400
+
+        where:
+        invalidUsername << [RandomStringUtils.randomAlphabetic(21)]
     }
 
     def "username change with invalid token"() {

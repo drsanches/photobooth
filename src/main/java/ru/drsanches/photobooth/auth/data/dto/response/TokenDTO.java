@@ -1,4 +1,4 @@
-package ru.drsanches.photobooth.auth.data.dto;
+package ru.drsanches.photobooth.auth.data.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -11,18 +11,18 @@ import ru.drsanches.photobooth.common.utils.GregorianCalendarConvertor;
 @ToString
 public class TokenDTO {
 
-    @ToString.Exclude
     @Schema(required = true)
+    @ToString.Exclude
     private String accessToken;
 
-    @ToString.Exclude
     @Schema(required = true)
+    @ToString.Exclude
     private String refreshToken;
 
     @Schema(required = true)
     private String tokenType;
 
-    @ToString.Exclude
     @Schema(required = true, description = GregorianCalendarConvertor.PATTERN)
+    @ToString.Exclude
     private String expiresAt;
 }

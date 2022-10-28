@@ -3,6 +3,7 @@ package ru.drsanches.photobooth.auth
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
+import org.apache.commons.lang3.RandomStringUtils
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
@@ -59,6 +60,25 @@ class TestChangePassword extends Specification {
 
         where:
         empty << [null, ""]
+    }
+
+    def "password change with invalid password"() {
+        given: "user"
+        def user = new TestUser().register()
+
+        when: "request is sent"
+        RequestUtils.getRestClient().put(
+                path: PATH,
+                headers: ["Authorization": "Bearer $user.token"],
+                body:  [newPassword: invalidPassword],
+                requestContentType : ContentType.JSON)
+
+        then: "response is correct"
+        HttpResponseException e = thrown(HttpResponseException)
+        assert e.response.status == 400
+
+        where:
+        invalidPassword << [RandomStringUtils.randomAlphabetic(256)]
     }
 
     def "password change with invalid token"() {

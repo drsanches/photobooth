@@ -1,4 +1,4 @@
-package ru.drsanches.photobooth.app.data.image.dto;
+package ru.drsanches.photobooth.app.data.image.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -16,15 +16,15 @@ import java.util.List;
 @ToString
 public class UploadPhotoDTO {
 
+    @Schema(required = true, description = "Image in Base64")
     @NotEmpty
     @ValidBase64Image
     @ToString.Exclude
-    @Schema(required = true, description = "Image in Base64")
     private String file;
 
+    @Schema(description = "Ids of users to whom the photo is being sent, null for all friends")
     @EnabledIds
     @FriendIds
-    @Schema(description = "Ids of users to whom the photo is being sent, null for all friends")
     private List<String> userIds;
 
     @ToString.Include

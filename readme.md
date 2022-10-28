@@ -93,6 +93,7 @@ After that, the application can be launched with the commands:
 - Add 2FA on critical auth operations
 - Add stub for google auth
 - Add field descriptions for db models
+- Check profile info and change email for not empty
 
 ### UI
 - Fix authorization

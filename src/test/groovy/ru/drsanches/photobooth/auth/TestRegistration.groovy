@@ -4,6 +4,7 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
+import org.apache.commons.lang3.RandomStringUtils
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
@@ -90,6 +91,23 @@ class TestRegistration extends Specification {
 
         where:
         password << [null, ""]
+    }
+
+    def "registration with invalid data"() {
+        when: "request is sent"
+        RequestUtils.getRestClient().post(
+                path: PATH,
+                body: [username: username,
+                       password: password],
+                requestContentType : ContentType.JSON)
+
+        then: "response is correct"
+        HttpResponseException e = thrown(HttpResponseException)
+        assert e.response.status == 400
+
+        where:
+        username << [DataGenerator.createValidUsername(), RandomStringUtils.randomAlphabetic(21)]
+        password << [RandomStringUtils.randomAlphabetic(256), DataGenerator.createValidPassword()]
     }
 
     def "already existing user registration"() {
