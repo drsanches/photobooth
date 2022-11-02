@@ -31,7 +31,6 @@ spring:
     username: ${JDBC_DATABASE_USERNAME}
     password: ${JDBC_DATABASE_PASSWORD}
   jpa:
-    show-sql: false
     database-platform: postgres
     generate-ddl: true
     properties:
@@ -43,4 +42,6 @@ logging:
     root: ERROR
     org.springframework.web: ERROR
     ru.drsanches.photobooth: INFO
-#    org.springframework.transaction.interceptor: TRACE # For debug
+#    org.hibernate.SQL: DEBUG # SQL statements
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE # Parameters of SQL statements
+#    org.springframework.transaction.interceptor: TRACE # Transactions

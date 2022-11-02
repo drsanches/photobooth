@@ -3,6 +3,8 @@ package ru.drsanches.photobooth.app.service.web;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import ru.drsanches.photobooth.app.data.image.dto.response.ImageInfoDTO;
@@ -48,6 +50,9 @@ public class ImageWebService {
     private ImagePermissionDomainService imagePermissionDomainService;
 
     @Autowired
+    private PlatformTransactionManager transactionManager;
+
+    @Autowired
     private TokenSupplier tokenSupplier;
 
     @Autowired
@@ -62,9 +67,11 @@ public class ImageWebService {
         byte[] file = Base64.getDecoder().decode(uploadAvatarDTO.getFile());
         GregorianCalendar createdTime = new GregorianCalendar();
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
-        imageDomainService.saveImage(new Image(imageId, file, createdTime, userId));
         userProfile.setImageId(imageId);
-        userProfileDomainService.save(userProfile);
+        new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
+            imageDomainService.saveImage(new Image(imageId, file, createdTime, userId));
+            userProfileDomainService.save(userProfile);
+        });
         log.info("User with id '{}' updated his profile image, new image id is '{}'", userId, imageId);
     }
 
@@ -81,13 +88,15 @@ public class ImageWebService {
         String imageId = UUID.randomUUID().toString();
         byte[] file = Base64.getDecoder().decode(uploadPhotoDTO.getFile());
         GregorianCalendar createdTime = new GregorianCalendar();
-        imageDomainService.saveImage(new Image(imageId, file, createdTime, currentUserId));
         List<String> allowedUsers = CollectionUtils.isEmpty(uploadPhotoDTO.getUserIds()) ?
                 getEnabledFriends(currentUserId) : uploadPhotoDTO.getUserIds();
         allowedUsers.add(currentUserId);
         List<ImagePermission> imagePermissions = new ArrayList<>(allowedUsers.size());
         allowedUsers.forEach(userId -> imagePermissions.add(new ImagePermission(imageId, userId)));
-        imagePermissionDomainService.savePermissions(imagePermissions);
+        new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
+            imageDomainService.saveImage(new Image(imageId, file, createdTime, currentUserId));
+            imagePermissionDomainService.savePermissions(imagePermissions);
+        });
         log.info("Photo with id '{}' uploaded for users: {}", imageId, uploadPhotoDTO.getUserIds());
     }
 
