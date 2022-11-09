@@ -186,11 +186,11 @@ class RequestUtils {
         }
     }
 
-    static void uploadTestAvatar(String token) {
+    static void uploadAvatar(String token, byte[] image) {
         getRestClient().post(
                 path: '/api/v1/image/avatar',
                 headers: ["Authorization": "Bearer $token"],
-                body: [file: Utils.createTestBase64Image()],
+                body: [file: Utils.toBase64(image)],
                 requestContentType: ContentType.JSON)
     }
 
@@ -206,11 +206,11 @@ class RequestUtils {
         }
     }
 
-    static void sendTestPhoto(String token, List<String> userIds) {
+    static void sendPhoto(String token, List<String> userIds, byte[] image) {
         getRestClient().post(
                 path: '/api/v1/image/photo',
                 headers: ["Authorization": "Bearer $token"],
-                body:  [file: Utils.createTestBase64Image(),
+                body:  [file: Utils.toBase64(image),
                         userIds: userIds],
                 requestContentType : ContentType.JSON)
     }

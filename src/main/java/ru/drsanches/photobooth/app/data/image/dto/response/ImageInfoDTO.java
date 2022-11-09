@@ -17,6 +17,9 @@ public class ImageInfoDTO {
     @Schema(required = true)
     private String path;
 
+    @Schema(required = true)
+    private String thumbnailPath;
+
     @Schema(description = GregorianCalendarConvertor.PATTERN)
     private String createdTime;
 

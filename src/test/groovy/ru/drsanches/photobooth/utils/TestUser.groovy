@@ -21,6 +21,8 @@ class TestUser {
 
     String imagePath
 
+    String thumbnailPath
+
     TestUser() {}
 
     TestUser(String username, String password) {
@@ -34,6 +36,7 @@ class TestUser {
         this.name = userProfile["name"]
         this.status = userProfile["status"]
         this.imagePath = userProfile["imagePath"]
+        this.thumbnailPath = userProfile["thumbnailPath"]
     }
 
     TestUser register() {
@@ -43,6 +46,7 @@ class TestUser {
         token = RequestUtils.registerUser(username, password, email)
         id = RequestUtils.getAuthInfo(token)["id"]
         imagePath = Utils.getDefaultImagePath()
+        thumbnailPath = Utils.getDefaultThumbnailPath()
         return this
     }
 
@@ -53,9 +57,11 @@ class TestUser {
         return this
     }
 
-    TestUser uploadTestAvatar() {
-        RequestUtils.uploadTestAvatar(token)
-        this.imagePath = RequestUtils.getUserProfile(token)["imagePath"]
+    TestUser uploadAvatar(byte[] image) {
+        RequestUtils.uploadAvatar(token, image)
+        JSONObject userProfile = RequestUtils.getUserProfile(token)
+        this.imagePath = userProfile["imagePath"]
+        this.thumbnailPath = userProfile["thumbnailPath"]
         return this
     }
 
@@ -64,8 +70,8 @@ class TestUser {
         return this
     }
 
-    TestUser sendTestPhoto(List<String> userIds) {
-        RequestUtils.sendTestPhoto(token, userIds)
+    TestUser sendPhoto(List<String> userIds, byte[] image) {
+        RequestUtils.sendPhoto(token, userIds, image)
         return this
     }
 
@@ -80,11 +86,6 @@ class TestUser {
 
     JSONObject getUserProfile() {
         return RequestUtils.getUserProfile(token)
-    }
-
-    byte[] getImageData() {
-        String imagePath = RequestUtils.getUserProfile(token)["imagePath"]
-        return RequestUtils.getImage(token, imagePath)
     }
 
     JSONArray getIncomingFriendRequests() {

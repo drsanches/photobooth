@@ -4,17 +4,19 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
+import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
 import ru.drsanches.photobooth.utils.Utils
 import spock.lang.Specification
 
-//TODO: Add validation tests (different file formats and sizes)
 class TestSendPhoto extends Specification {
 
     String PATH = "/api/v1/image/photo"
 
     String IMAGE_PATH_PREFIX = "/api/v1/image/"
+
+    String THUMBNAIL_PATH_PREFIX = "/api/v1/image/thumbnail/"
 
     def "successful photo send"() {
         given: "user with friends"
@@ -25,14 +27,14 @@ class TestSendPhoto extends Specification {
         user.sendFriendRequest(friend2.id)
         friend1.sendFriendRequest(user.id)
         friend2.sendFriendRequest(user.id)
-        def base64Image = Utils.createTestBase64Image()
+        def image = DataGenerator.createValidImage()
 
         when: "request is sent"
         def dateBefore = new Date()
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
-                body:  [file: base64Image,
+                body:  [file: Utils.toBase64(image),
                         userIds: [friend1.id]],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
         def dateAfter = new Date()
@@ -45,6 +47,7 @@ class TestSendPhoto extends Specification {
         assert userImages.size() == 1
         assert userImages.get(0)["id"] != JSONNull.getInstance()
         assert userImages.get(0)["path"] == IMAGE_PATH_PREFIX + userImages.get(0)["id"]
+        assert userImages.get(0)["thumbnailPath"] == THUMBNAIL_PATH_PREFIX + userImages.get(0)["id"]
         assert userImages.get(0)["ownerId"] == user.id
         assert Utils.checkTimestamp(dateBefore, userImages.get(0)["createdTime"] as String, dateAfter)
 
@@ -54,7 +57,8 @@ class TestSendPhoto extends Specification {
         assert friendImages.get(0) == userImages.get(0)
 
         and: "image data is correct"
-        assert Utils.checkTestImage(RequestUtils.getImage(user.username, user.password, IMAGE_PATH_PREFIX + userImages.get(0)["id"]))
+        assert image == RequestUtils.getImage(user.username, user.password, IMAGE_PATH_PREFIX + userImages.get(0)["id"])
+        assert Utils.toThumbnail(image) == RequestUtils.getImage(user.token, THUMBNAIL_PATH_PREFIX + userImages.get(0)["id"])
 
         and: "another friend doesn't have a new photo"
         assert friend2.getAllImagesInfo().size() == 0
@@ -73,14 +77,14 @@ class TestSendPhoto extends Specification {
         friend1.sendFriendRequest(user.id)
         friend2.sendFriendRequest(user.id)
         incoming.sendFriendRequest(user.id)
-        def base64Image = Utils.createTestBase64Image()
+        def image = DataGenerator.createValidImage()
 
         when: "request is sent"
         def dateBefore = new Date()
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
-                body:  [file: base64Image,
+                body:  [file: Utils.toBase64(image),
                         userIds: all],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
         def dateAfter = new Date()
@@ -93,11 +97,13 @@ class TestSendPhoto extends Specification {
         assert userImages.size() == 1
         assert userImages.get(0)["id"] != JSONNull.getInstance()
         assert userImages.get(0)["path"] == IMAGE_PATH_PREFIX + userImages.get(0)["id"]
+        assert userImages.get(0)["thumbnailPath"] == THUMBNAIL_PATH_PREFIX + userImages.get(0)["id"]
         assert userImages.get(0)["ownerId"] == user.id
         assert Utils.checkTimestamp(dateBefore, userImages.get(0)["createdTime"] as String, dateAfter)
 
         and: "image data is correct"
-        assert Utils.checkTestImage(RequestUtils.getImage(user.username, user.password, IMAGE_PATH_PREFIX + userImages.get(0)["id"]))
+        assert image == RequestUtils.getImage(user.token, IMAGE_PATH_PREFIX + userImages.get(0)["id"])
+        assert Utils.toThumbnail(image) == RequestUtils.getImage(user.token, THUMBNAIL_PATH_PREFIX + userImages.get(0)["id"])
 
         and: "the first friend has similar photo"
         def friendImages1 = friend1.getAllImagesInfo()
@@ -120,14 +126,14 @@ class TestSendPhoto extends Specification {
     def "successful photo send to all friends without friends"() {
         given: "user without friends"
         def user = new TestUser().register()
-        def base64Image = Utils.createTestBase64Image()
+        def image = DataGenerator.createValidImage()
 
         when: "request is sent"
         def dateBefore = new Date()
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
-                body:  [file: base64Image,
+                body:  [file: Utils.toBase64(image),
                         userIds: all],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
         def dateAfter = new Date()
@@ -140,11 +146,13 @@ class TestSendPhoto extends Specification {
         assert userImages.size() == 1
         assert userImages.get(0)["id"] != JSONNull.getInstance()
         assert userImages.get(0)["path"] == IMAGE_PATH_PREFIX + userImages.get(0)["id"]
+        assert userImages.get(0)["thumbnailPath"] == THUMBNAIL_PATH_PREFIX + userImages.get(0)["id"]
         assert userImages.get(0)["ownerId"] == user.id
         assert Utils.checkTimestamp(dateBefore, userImages.get(0)["createdTime"] as String, dateAfter)
 
         and: "image data is correct"
-        assert Utils.checkTestImage(RequestUtils.getImage(user.username, user.password, IMAGE_PATH_PREFIX + userImages.get(0)["id"]))
+        assert image == RequestUtils.getImage(user.token, IMAGE_PATH_PREFIX + userImages.get(0)["id"])
+        assert Utils.toThumbnail(image) == RequestUtils.getImage(user.token, THUMBNAIL_PATH_PREFIX + userImages.get(0)["id"])
 
         where:
         all << [[], null]
@@ -153,7 +161,7 @@ class TestSendPhoto extends Specification {
     def "send a photo to yourself"() {
         given: "user"
         def user = new TestUser().register()
-        def base64Image = Utils.createTestBase64Image()
+        def base64Image = Utils.toBase64(DataGenerator.createValidImage())
 
         when: "request is sent"
         RequestUtils.getRestClient().post(
@@ -174,7 +182,7 @@ class TestSendPhoto extends Specification {
         def friend = new TestUser().register()
         user.sendFriendRequest(friend.id)
         friend.sendFriendRequest(user.id).delete()
-        def base64Image = Utils.createTestBase64Image()
+        def base64Image = Utils.toBase64(DataGenerator.createValidImage())
 
         when: "request is sent"
         RequestUtils.getRestClient().post(
@@ -193,7 +201,7 @@ class TestSendPhoto extends Specification {
         given: "two users"
         def user1 = new TestUser().register()
         def user2 = new TestUser().register()
-        def base64Image = Utils.createTestBase64Image()
+        def base64Image = Utils.toBase64(DataGenerator.createValidImage())
 
         when: "request is sent"
         RequestUtils.getRestClient().post(
@@ -213,7 +221,7 @@ class TestSendPhoto extends Specification {
         def user1 = new TestUser().register()
         def user2 = new TestUser().register()
         user1.sendFriendRequest(user2.id)
-        def base64Image = Utils.createTestBase64Image()
+        def base64Image = Utils.toBase64(DataGenerator.createValidImage())
 
         when: "request is sent"
         RequestUtils.getRestClient().post(
@@ -233,7 +241,7 @@ class TestSendPhoto extends Specification {
         def user1 = new TestUser().register()
         def user2 = new TestUser().register()
         user2.sendFriendRequest(user1.id)
-        def base64Image = Utils.createTestBase64Image()
+        def base64Image = Utils.toBase64(DataGenerator.createValidImage())
 
         when: "request is sent"
         RequestUtils.getRestClient().post(
@@ -275,7 +283,7 @@ class TestSendPhoto extends Specification {
     def "photo send with invalid token"() {
         given: "invalid token"
         def token = UUID.randomUUID().toString()
-        def base64Image = Utils.createTestBase64Image()
+        def base64Image = Utils.toBase64(DataGenerator.createValidImage())
 
         when: "request is sent"
         RequestUtils.getRestClient().post(

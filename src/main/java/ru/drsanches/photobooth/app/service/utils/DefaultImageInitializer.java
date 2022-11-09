@@ -16,17 +16,20 @@ import java.util.GregorianCalendar;
 @Component
 public class DefaultImageInitializer implements Initializer {
 
-    @Value("${application.default-image}")
+    @Value("${application.image.initial-data.default}")
     private String defaultImage;
 
-    @Value("${application.no-photo-image}")
+    @Value("${application.image.initial-data.no-photo}")
     private String noPhotoImage;
 
-    @Value("${application.deleted-image}")
+    @Value("${application.image.initial-data.deleted}")
     private String deletedImage;
 
     @Autowired
     private ImageDomainService imageDomainService;
+
+    @Autowired
+    private ImageConverter imageConverter;
 
     @Override
     public void initialize() {
@@ -40,7 +43,9 @@ public class DefaultImageInitializer implements Initializer {
             log.info("Image with id '{}' is already initialized", imageId);
             return;
         }
-        imageDomainService.saveImage(new Image(imageId, Base64.getDecoder().decode(imageData), new GregorianCalendar(), "system"));
+        byte[] image = Base64.getDecoder().decode(imageData);
+        byte[] thumbnail = imageConverter.toThumbnail(image);
+        imageDomainService.saveImage(new Image(imageId, image, thumbnail, new GregorianCalendar(), "system"));
         log.info("Image with id '{}' has been initialized", imageId);
     }
 }

@@ -29,6 +29,7 @@ class TestGetCurrentProfile extends Specification {
         assert response.getData()["name"] == user.name
         assert response.getData()["status"] == user.status
         assert response.getData()["imagePath"] == Utils.getDefaultImagePath()
+        assert response.getData()['thumbnailPath'] == Utils.getDefaultThumbnailPath()
     }
 
     def "get current user profile with invalid token"() {

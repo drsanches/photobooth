@@ -31,6 +31,7 @@ class TestSearchProfile extends Specification {
         assert response.getData()["name"] == user2.name
         assert response.getData()["status"] == user2.status
         assert response.getData()["imagePath"] == Utils.getDefaultImagePath()
+        assert response.getData()["thumbnailPath"] == Utils.getDefaultThumbnailPath()
     }
 
     def "successful user profile searching with upper case"() {
@@ -51,6 +52,7 @@ class TestSearchProfile extends Specification {
         assert response.getData()["name"] == user2.name
         assert response.getData()["status"] == user2.status
         assert response.getData()["imagePath"] == Utils.getDefaultImagePath()
+        assert response.getData()["thumbnailPath"] == Utils.getDefaultThumbnailPath()
     }
 
     def "search deleted user profile"() {

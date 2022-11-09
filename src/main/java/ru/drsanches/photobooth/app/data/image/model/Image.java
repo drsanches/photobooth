@@ -32,6 +32,10 @@ public class Image {
 
     @Column(nullable = false)
     @ToString.Exclude
+    private byte[] thumbnailData;
+
+    @Column(nullable = false)
+    @ToString.Exclude
     private GregorianCalendar createdTime;
 
     @Column(nullable = false)

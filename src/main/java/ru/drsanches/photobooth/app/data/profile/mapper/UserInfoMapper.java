@@ -21,6 +21,11 @@ public class UserInfoMapper {
                         ImageInfoMapper.IMAGE_PATH_PREFIX + ImageInfoMapper.DEFAULT_AVATAR_ID :
                         ImageInfoMapper.IMAGE_PATH_PREFIX + userProfile.getImageId() :
                 ImageInfoMapper.IMAGE_PATH_PREFIX + ImageInfoMapper.DELETED_AVATAR_ID);
+        userInfoDTO.setThumbnailPath(userProfile.isEnabled() ?
+                userProfile.getImageId() == null ?
+                        ImageInfoMapper.THUMBNAIL_PATH_PREFIX + ImageInfoMapper.DEFAULT_AVATAR_ID :
+                        ImageInfoMapper.THUMBNAIL_PATH_PREFIX + userProfile.getImageId() :
+                ImageInfoMapper.THUMBNAIL_PATH_PREFIX + ImageInfoMapper.DELETED_AVATAR_ID);
         return userInfoDTO;
     }
 }

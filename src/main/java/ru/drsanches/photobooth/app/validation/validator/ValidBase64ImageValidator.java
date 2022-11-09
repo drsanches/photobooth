@@ -18,7 +18,7 @@ import java.util.Base64;
 @Component
 public class ValidBase64ImageValidator implements ConstraintValidator<ValidBase64Image, String> {
 
-    @Value("${application.max-photo-bytes}")
+    @Value("${application.image.max-bytes}")
     private int maxPhotoBytes;
 
     @Override

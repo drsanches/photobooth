@@ -10,7 +10,9 @@ import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
-class TestScripts extends Specification {
+class TestScripts
+//        extends Specification //Uncomment before using
+{
 
     String username = "admin"
     String password = "admin"

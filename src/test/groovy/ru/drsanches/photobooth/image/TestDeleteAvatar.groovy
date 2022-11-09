@@ -2,6 +2,7 @@ package ru.drsanches.photobooth.image
 
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
+import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
 import ru.drsanches.photobooth.utils.Utils
@@ -23,15 +24,15 @@ class TestDeleteAvatar extends Specification {
         then: "response is correct"
         assert response.status == 200
         assert user.getUserProfile()["imagePath"] == Utils.getDefaultImagePath()
-
-        and: "image does not change"
-        assert Utils.checkDefaultImage(user.getImageData())
+        assert user.getUserProfile()["thumbnailPath"] == Utils.getDefaultThumbnailPath()
     }
 
     def "successful avatar deletion"() {
         given: "user"
-        def user = new TestUser().register().uploadTestAvatar()
+        def image = DataGenerator.createValidImage()
+        def user = new TestUser().register().uploadAvatar(image)
         def oldImagePath = user.imagePath
+        def oldThumbnailPath = user.thumbnailPath
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().delete(
@@ -40,14 +41,12 @@ class TestDeleteAvatar extends Specification {
 
         then: "response is correct"
         assert response.status == 200
-        assert user.getUserProfile()["imagePath"] == Utils.getDefaultImagePath()
-
-        and: "image is correct"
-        assert Utils.checkDefaultImage(user.getImageData())
+        assert user.getUserProfile()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert user.getUserProfile()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
 
         and: "the old image is available"
-        def oldImageData = RequestUtils.getImage(user.username, user.password, oldImagePath)
-        assert Utils.checkTestImage(oldImageData)
+        assert image == RequestUtils.getImage(user.username, user.password, oldImagePath)
+        assert Utils.toThumbnail(image) == RequestUtils.getImage(user.username, user.password, oldThumbnailPath)
     }
 
     def "delete avatar with invalid token"() {

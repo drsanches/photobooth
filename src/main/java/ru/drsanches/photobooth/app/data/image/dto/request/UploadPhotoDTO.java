@@ -16,6 +16,7 @@ import java.util.List;
 @ToString
 public class UploadPhotoDTO {
 
+    //TODO: Rename to image
     @Schema(required = true, description = "Image in Base64")
     @NotEmpty
     @ValidBase64Image

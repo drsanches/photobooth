@@ -18,6 +18,7 @@ import ru.drsanches.photobooth.app.service.domain.FriendsDomainService;
 import ru.drsanches.photobooth.app.service.domain.ImageDomainService;
 import ru.drsanches.photobooth.app.service.domain.ImagePermissionDomainService;
 import ru.drsanches.photobooth.app.service.domain.UserProfileDomainService;
+import ru.drsanches.photobooth.app.service.utils.ImageConverter;
 import ru.drsanches.photobooth.app.service.utils.PaginationService;
 import ru.drsanches.photobooth.common.token.TokenSupplier;
 
@@ -59,17 +60,21 @@ public class ImageWebService {
     private PaginationService<Image> paginationService;
 
     @Autowired
+    private ImageConverter imageConverter;
+
+    @Autowired
     private ImageInfoMapper imageInfoMapper;
 
     public void uploadAvatar(@Valid UploadAvatarDTO uploadAvatarDTO) {
         String userId = tokenSupplier.get().getUserId();
         String imageId = UUID.randomUUID().toString();
-        byte[] file = Base64.getDecoder().decode(uploadAvatarDTO.getFile());
+        byte[] image = Base64.getDecoder().decode(uploadAvatarDTO.getFile());
+        byte[] thumbnail = imageConverter.toThumbnail(image);
         GregorianCalendar createdTime = new GregorianCalendar();
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
         userProfile.setImageId(imageId);
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
-            imageDomainService.saveImage(new Image(imageId, file, createdTime, userId));
+            imageDomainService.saveImage(new Image(imageId, image, thumbnail, createdTime, userId));
             userProfileDomainService.save(userProfile);
         });
         log.info("User with id '{}' updated his profile image, new image id is '{}'", userId, imageId);
@@ -83,10 +88,15 @@ public class ImageWebService {
         return imageDomainService.getImage(imageId).getData();
     }
 
+    public byte[] getThumbnail(String imageId) {
+        return imageDomainService.getImage(imageId).getThumbnailData();
+    }
+
     public void uploadPhoto(@Valid UploadPhotoDTO uploadPhotoDTO) {
         String currentUserId = tokenSupplier.get().getUserId();
         String imageId = UUID.randomUUID().toString();
-        byte[] file = Base64.getDecoder().decode(uploadPhotoDTO.getFile());
+        byte[] image = Base64.getDecoder().decode(uploadPhotoDTO.getFile());
+        byte[] thumbnail = imageConverter.toThumbnail(image);
         GregorianCalendar createdTime = new GregorianCalendar();
         List<String> allowedUsers = CollectionUtils.isEmpty(uploadPhotoDTO.getUserIds()) ?
                 getEnabledFriends(currentUserId) : uploadPhotoDTO.getUserIds();
@@ -94,7 +104,7 @@ public class ImageWebService {
         List<ImagePermission> imagePermissions = new ArrayList<>(allowedUsers.size());
         allowedUsers.forEach(userId -> imagePermissions.add(new ImagePermission(imageId, userId)));
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
-            imageDomainService.saveImage(new Image(imageId, file, createdTime, currentUserId));
+            imageDomainService.saveImage(new Image(imageId, image, thumbnail, createdTime, currentUserId));
             imagePermissionDomainService.savePermissions(imagePermissions);
         });
         log.info("Photo with id '{}' uploaded for users: {}", imageId, uploadPhotoDTO.getUserIds());

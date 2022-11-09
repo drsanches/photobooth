@@ -35,11 +35,12 @@ class TestChangeCurrentProfile extends Specification {
 
         and: "user profile was updated"
         JSONObject userProfile = RequestUtils.getUserProfile(user.username, user.password)
-        userProfile['id'] == user.id
-        userProfile['username'] == user.username
-        userProfile['name'] == name
-        userProfile['status'] == status
-        userProfile['imagePath'] == Utils.getDefaultImagePath()
+        assert userProfile['id'] == user.id
+        assert userProfile['username'] == user.username
+        assert userProfile['name'] == name
+        assert userProfile['status'] == status
+        assert userProfile['imagePath'] == Utils.getDefaultImagePath()
+        assert userProfile['thumbnailPath'] == Utils.getDefaultThumbnailPath()
     }
 
     def "success user profile clean"() {
@@ -59,11 +60,12 @@ class TestChangeCurrentProfile extends Specification {
 
         and: "user profile was updated"
         JSONObject userProfile = RequestUtils.getUserProfile(user.username, user.password)
-        userProfile['id'] == user.id
-        userProfile['username'] == user.username
-        userProfile['name'] == JSONNull.instance
-        userProfile['status'] == JSONNull.instance
-        userProfile['imagePath'] == Utils.getDefaultImagePath()
+        assert userProfile['id'] == user.id
+        assert userProfile['username'] == user.username
+        assert userProfile['name'] == JSONNull.instance
+        assert userProfile['status'] == JSONNull.instance
+        assert userProfile['imagePath'] == Utils.getDefaultImagePath()
+        assert userProfile['thumbnailPath'] == Utils.getDefaultThumbnailPath()
     }
 
     def "user profile change with invalid data"() {

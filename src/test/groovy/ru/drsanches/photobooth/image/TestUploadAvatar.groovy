@@ -3,12 +3,12 @@ package ru.drsanches.photobooth.image
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
+import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
 import ru.drsanches.photobooth.utils.Utils
 import spock.lang.Specification
 
-//TODO: Add validation tests (different file formats and sizes)
 class TestUploadAvatar extends Specification {
 
     String PATH = "/api/v1/image/avatar"
@@ -16,26 +16,26 @@ class TestUploadAvatar extends Specification {
     def "successful avatar upload"() {
         given: "user and image"
         def user = new TestUser().register()
-        def base64Image = Utils.createTestBase64Image()
+        def image = DataGenerator.createValidImage()
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
-                body:  [file: base64Image],
+                body:  [file: Utils.toBase64(image)],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 201
 
         and: "user profile contains new image path"
-        def imagePath = user.getUserProfile()['imagePath'] as String
-        assert imagePath != Utils.getDefaultImagePath()
+        def userProfile = user.getUserProfile()
+        assert userProfile['imagePath'] != Utils.DEFAULT_IMAGE_PATH
+        assert userProfile['thumbnailPath'] != Utils.DEFAULT_THUMBNAIL_PATH
 
         and: "new image is correct"
-        def image = RequestUtils.getImage(user.username, user.password, imagePath)
-        assert image != null
-        assert Utils.checkTestImage(image)
+        assert image == RequestUtils.getImage(user.token, userProfile['imagePath'] as String)
+        assert Utils.toThumbnail(image) == RequestUtils.getImage(user.token, userProfile['thumbnailPath'] as String)
     }
 
     def "upload avatar with invalid data"() {
@@ -64,7 +64,7 @@ class TestUploadAvatar extends Specification {
     def "upload avatar with invalid token"() {
         given: "invalid token"
         def token = UUID.randomUUID().toString()
-        def base64Image = Utils.createTestBase64Image()
+        def base64Image = Utils.toBase64(DataGenerator.createValidImage())
 
         when: "request is sent"
         RequestUtils.getRestClient().post(

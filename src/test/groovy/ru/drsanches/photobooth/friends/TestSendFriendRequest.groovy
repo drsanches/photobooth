@@ -37,10 +37,6 @@ class TestSendFriendRequest extends Specification {
         def outgoingRequests = user1.getOutgoingFriendRequests()
         assert outgoingRequests.size() == 1
         assert outgoingRequests.get(0)["id"] == user2.id
-        assert outgoingRequests.get(0)["username"] == user2.username
-        assert outgoingRequests.get(0)["name"] == user2.name
-        assert outgoingRequests.get(0)["status"] == user2.status
-        assert outgoingRequests.get(0)["imagePath"] == Utils.getDefaultImagePath()
 
         and: "the second user has correct relationships"
         assert user2.getOutgoingFriendRequests() == new JSONArray()
@@ -48,10 +44,6 @@ class TestSendFriendRequest extends Specification {
         def incomingRequests = user2.getIncomingFriendRequests()
         assert incomingRequests.size() == 1
         assert incomingRequests.get(0)["id"] == user1.id
-        assert incomingRequests.get(0)["username"] == user1.username
-        assert incomingRequests.get(0)["name"] == user1.name
-        assert incomingRequests.get(0)["status"] == user1.status
-        assert incomingRequests.get(0)["imagePath"] == Utils.getDefaultImagePath()
     }
 
     /**
@@ -79,10 +71,6 @@ class TestSendFriendRequest extends Specification {
         def friends1 = user1.getFriends()
         assert friends1.size() == 1
         assert friends1.get(0)["id"] == user2.id
-        assert friends1.get(0)["username"] == user2.username
-        assert friends1.get(0)["name"] == user2.name
-        assert friends1.get(0)["status"] == user2.status
-        assert friends1.get(0)["imagePath"] == Utils.getDefaultImagePath()
 
         and: "the second user has correct relationships"
         assert user2.getIncomingFriendRequests() == new JSONArray()
@@ -90,10 +78,6 @@ class TestSendFriendRequest extends Specification {
         def friends2 = user2.getFriends()
         assert friends2.size() == 1
         assert friends2.get(0)["id"] == user1.id
-        assert friends2.get(0)["username"] == user1.username
-        assert friends2.get(0)["name"] == user1.name
-        assert friends2.get(0)["status"] == user1.status
-        assert friends2.get(0)["imagePath"] == Utils.getDefaultImagePath()
     }
 
     /**
@@ -122,10 +106,6 @@ class TestSendFriendRequest extends Specification {
         def outgoingRequests = user1.getOutgoingFriendRequests()
         assert outgoingRequests.size() == 1
         assert outgoingRequests.get(0)["id"] == user2.id
-        assert outgoingRequests.get(0)["username"] == user2.username
-        assert outgoingRequests.get(0)["name"] == user2.name
-        assert outgoingRequests.get(0)["status"] == user2.status
-        assert outgoingRequests.get(0)["imagePath"] == Utils.getDefaultImagePath()
 
         and: "the second user relationship has not changed"
         assert user2.getOutgoingFriendRequests() == new JSONArray()
@@ -133,10 +113,6 @@ class TestSendFriendRequest extends Specification {
         def incomingRequests = user2.getIncomingFriendRequests()
         assert incomingRequests.size() == 1
         assert incomingRequests.get(0)["id"] == user1.id
-        assert incomingRequests.get(0)["username"] == user1.username
-        assert incomingRequests.get(0)["name"] == user1.name
-        assert incomingRequests.get(0)["status"] == user1.status
-        assert incomingRequests.get(0)["imagePath"] == Utils.getDefaultImagePath()
     }
 
     /**
@@ -165,10 +141,6 @@ class TestSendFriendRequest extends Specification {
         def friends1 = user1.getFriends()
         assert friends1.size() == 1
         assert friends1.get(0)["id"] == user2.id
-        assert friends1.get(0)["username"] == user2.username
-        assert friends1.get(0)["name"] == user2.name
-        assert friends1.get(0)["status"] == user2.status
-        assert friends1.get(0)["imagePath"] == Utils.getDefaultImagePath()
 
         and: "the second user relationship has not changed"
         assert user2.getIncomingFriendRequests() == new JSONArray()
@@ -176,10 +148,6 @@ class TestSendFriendRequest extends Specification {
         def friends2 = user2.getFriends()
         assert friends2.size() == 1
         assert friends2.get(0)["id"] == user1.id
-        assert friends2.get(0)["username"] == user1.username
-        assert friends2.get(0)["name"] == user1.name
-        assert friends2.get(0)["status"] == user1.status
-        assert friends2.get(0)["imagePath"] == Utils.getDefaultImagePath()
     }
 
     def "send friend request without userId"() {

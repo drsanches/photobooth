@@ -61,6 +61,14 @@ public class ImageController {
         return imageWebService.getImage(imageId);
     }
 
+    @Operation(summary = "Returns an image thumbnail by id")
+    @ApiResponseCode200
+    @ApiResponseCode400
+    @RequestMapping(path = "/thumbnail/{imageId}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getThumbnail(@PathVariable String imageId) {
+        return imageWebService.getThumbnail(imageId);
+    }
+
     @Operation(summary = "Sends a photo to users")
     @ApiTokenAuthorization
     @ApiResponseCode201

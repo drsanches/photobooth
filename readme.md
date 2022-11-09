@@ -93,6 +93,8 @@ After that, the application can be launched with the commands:
 - Add 2FA on critical auth operations
 - Add stub for google auth
 - Add field descriptions for db models
+- Check all requirements in Swagger DTOs
+- Rename domain layers to DAO and separate web layer to web and domain
 
 ### UI
 - Fix authorization

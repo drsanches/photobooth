@@ -4,6 +4,7 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
+import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
 import ru.drsanches.photobooth.utils.Utils
@@ -36,7 +37,7 @@ class TestGetImageInfo extends Specification {
         def user1 = new TestUser().register()
         def user2 = new TestUser().register()
         def dateBefore = new Date()
-        user2.uploadTestAvatar()
+        user2.uploadAvatar(DataGenerator.createValidImage())
         def dateAfter = new Date()
 
         when: "request is sent"
@@ -49,6 +50,7 @@ class TestGetImageInfo extends Specification {
         assert response.status == 200
         assert response.getData()["id"] == (user2.imagePath as String).substring(PATH.length())
         assert response.getData()["path"] == user2.imagePath
+        assert response.getData()["thumbnailPath"] == user2.thumbnailPath
         assert response.getData()["ownerId"] == user2.id
         assert Utils.checkTimestamp(dateBefore, response.getData()["createdTime"] as String, dateAfter)
     }
