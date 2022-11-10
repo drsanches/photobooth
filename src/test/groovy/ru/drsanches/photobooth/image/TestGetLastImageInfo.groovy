@@ -31,8 +31,8 @@ class TestGetLastImageInfo extends Specification {
         then: "response is correct"
         assert response.status == 200
         assert response.getData()["id"] == "no_photo"
-        assert response.getData()["path"] == Utils.getNoPhotoPath()
-        assert response.getData()["thumbnailPath"] == Utils.getNoPhotoThumbnailPath()
+        assert response.getData()["path"] == Utils.NO_PHOTO_IMAGE_PATH
+        assert response.getData()["thumbnailPath"] == Utils.NO_PHOTO_THUMBNAIL_PATH
         assert response.getData()["createdTime"] == JSONNull.getInstance()
         assert response.getData()["ownerId"] == JSONNull.getInstance()
     }

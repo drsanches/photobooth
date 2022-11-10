@@ -22,10 +22,6 @@ class Utils {
     static final String NO_PHOTO_IMAGE_FILENAME = "src/test/resources/no_photo.jpg"
     static final String DELETED_IMAGE_FILENAME = "src/test/resources/deleted.jpg"
 
-    static String toBase64(byte[] source) {
-        return Base64.getEncoder().encodeToString(source)
-    }
-
     static byte[] getBytes(Object data) {
         if (data instanceof byte[]) {
             return data
@@ -39,34 +35,14 @@ class Utils {
         return new File(filename).getBytes()
     }
 
-    static String getDefaultImagePath() {
-        return "/api/v1/image/default"
-    }
-
-    static String getDefaultThumbnailPath() {
-        return "/api/v1/image/thumbnail/default"
-    }
-
-    static String getNoPhotoPath() {
-        return "/api/v1/image/no_photo"
-    }
-
-    static String getNoPhotoThumbnailPath() {
-        return "/api/v1/image/thumbnail/no_photo"
-    }
-
-    static String getDeletedImagePath() {
-        return "/api/v1/image/deleted"
-    }
-
-    static String getDeletedThumbnailPath() {
-        return "/api/v1/image/thumbnail/deleted"
-    }
-
     static boolean checkTimestamp(Date dateBefore, String timestamp, Date dateAfter) {
         DateFormat df = new SimpleDateFormat(GregorianCalendarConvertor.PATTERN)
         Date date = df.parse(timestamp)
         return dateBefore.before(date) && dateAfter.after(date)
+    }
+
+    static String toBase64(byte[] source) {
+        return Base64.getEncoder().encodeToString(source)
     }
 
     static byte[] toThumbnail(byte[] image) {

@@ -32,8 +32,8 @@ class TestGetIncomingRequests extends Specification {
         assert body.get(0)["username"] == user2.username
         assert body.get(0)["name"] == user2.name
         assert body.get(0)["status"] == user2.status
-        assert body.get(0)["imagePath"] == Utils.getDefaultImagePath()
-        assert body.get(0)["thumbnailPath"] == Utils.getDefaultThumbnailPath()
+        assert body.get(0)["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert body.get(0)["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
     }
 
     def "success empty incoming requests getting"() {
@@ -73,8 +73,8 @@ class TestGetIncomingRequests extends Specification {
         assert body.get(0)["username"] == JSONNull.getInstance()
         assert body.get(0)["name"] == JSONNull.getInstance()
         assert body.get(0)["status"] == JSONNull.getInstance()
-        assert body.get(0)["imagePath"] == Utils.getDeletedImagePath()
-        assert body.get(0)["thumbnailPath"] == Utils.getDeletedThumbnailPath()
+        assert body.get(0)["imagePath"] == Utils.DELETED_IMAGE_PATH
+        assert body.get(0)["thumbnailPath"] == Utils.DELETED_THUMBNAIL_PATH
     }
 
     def "get incoming requests with invalid token"() {

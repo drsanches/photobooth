@@ -170,22 +170,6 @@ class RequestUtils {
         }
     }
 
-    static byte[] getImage(String username, String password, String path) {
-        String token = getToken(username, password)
-        if (token == null) {
-            return null
-        }
-        try {
-            HttpResponseDecorator response = getRestClient().get(
-                    path: path,
-                    headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
-            return response.status == 200 ? (response.getData() as ByteArrayInputStream).getBytes() as byte[] : null
-        } catch(Exception e) {
-            e.printStackTrace()
-            return null
-        }
-    }
-
     static void uploadAvatar(String token, byte[] image) {
         getRestClient().post(
                 path: '/api/v1/image/avatar',

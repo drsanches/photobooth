@@ -45,8 +45,8 @@ class TestUser {
         email = DataGenerator.createValidEmail()
         token = RequestUtils.registerUser(username, password, email)
         id = RequestUtils.getAuthInfo(token)["id"]
-        imagePath = Utils.getDefaultImagePath()
-        thumbnailPath = Utils.getDefaultThumbnailPath()
+        imagePath = Utils.DEFAULT_IMAGE_PATH
+        thumbnailPath = Utils.DEFAULT_THUMBNAIL_PATH
         return this
     }
 

@@ -57,7 +57,7 @@ class TestSendPhoto extends Specification {
         assert friendImages.get(0) == userImages.get(0)
 
         and: "image data is correct"
-        assert image == RequestUtils.getImage(user.username, user.password, IMAGE_PATH_PREFIX + userImages.get(0)["id"])
+        assert image == RequestUtils.getImage(user.token, IMAGE_PATH_PREFIX + userImages.get(0)["id"])
         assert Utils.toThumbnail(image) == RequestUtils.getImage(user.token, THUMBNAIL_PATH_PREFIX + userImages.get(0)["id"])
 
         and: "another friend doesn't have a new photo"

@@ -29,8 +29,8 @@ class TestGetProfile extends Specification {
         assert response.getData()["username"] == user2.username
         assert response.getData()["name"] == user2.name
         assert response.getData()["status"] == user2.status
-        assert response.getData()["imagePath"] == Utils.getDefaultImagePath()
-        assert response.getData()["thumbnailPath"] == Utils.getDefaultThumbnailPath()
+        assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
     }
 
     def "get deleted user profile"() {

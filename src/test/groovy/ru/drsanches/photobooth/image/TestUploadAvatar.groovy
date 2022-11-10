@@ -54,7 +54,9 @@ class TestUploadAvatar extends Specification {
         assert e.response.status == 400
 
         and: "user profile does not change"
-        assert user.getUserProfile()['imagePath'] as String == Utils.getDefaultImagePath()
+        def userProfile = user.getUserProfile()
+        assert userProfile['imagePath'] == Utils.DEFAULT_IMAGE_PATH
+        assert userProfile['thumbnailPath'] == Utils.DEFAULT_THUMBNAIL_PATH
 
         where:
         //TODO: Add big size

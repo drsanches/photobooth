@@ -63,7 +63,8 @@ class TestDeleteUser extends Specification {
         assert friends.get(0)["username"] == JSONNull.getInstance()
         assert friends.get(0)["name"] == JSONNull.getInstance()
         assert friends.get(0)["status"] == JSONNull.getInstance()
-        assert friends.get(0)["imagePath"] == Utils.getDeletedImagePath()
+        assert friends.get(0)["imagePath"] == Utils.DELETED_IMAGE_PATH
+        assert friends.get(0)["thumbnailPath"] == Utils.DELETED_THUMBNAIL_PATH
 
         and: "incoming user relationships is correct"
         assert incoming.getIncomingFriendRequests() == new JSONArray()
@@ -74,7 +75,8 @@ class TestDeleteUser extends Specification {
         assert outgoingRequests.get(0)["username"] == JSONNull.getInstance()
         assert outgoingRequests.get(0)["name"] == JSONNull.getInstance()
         assert outgoingRequests.get(0)["status"] == JSONNull.getInstance()
-        assert outgoingRequests.get(0)["imagePath"] == Utils.getDeletedImagePath()
+        assert outgoingRequests.get(0)["imagePath"] == Utils.DELETED_IMAGE_PATH
+        assert outgoingRequests.get(0)["thumbnailPath"] == Utils.DELETED_THUMBNAIL_PATH
 
         and: "outgoing user relationships is correct"
         assert outgoing.getOutgoingFriendRequests() == new JSONArray()
@@ -85,7 +87,8 @@ class TestDeleteUser extends Specification {
         assert incomingRequests.get(0)["username"] == JSONNull.getInstance()
         assert incomingRequests.get(0)["name"] == JSONNull.getInstance()
         assert incomingRequests.get(0)["status"] == JSONNull.getInstance()
-        assert incomingRequests.get(0)["imagePath"] == Utils.getDeletedImagePath()
+        assert incomingRequests.get(0)["imagePath"] == Utils.DELETED_IMAGE_PATH
+        assert incomingRequests.get(0)["thumbnailPath"] == Utils.DELETED_THUMBNAIL_PATH
     }
 
     def "delete user with invalid token"() {

@@ -23,8 +23,8 @@ class TestDeleteAvatar extends Specification {
 
         then: "response is correct"
         assert response.status == 200
-        assert user.getUserProfile()["imagePath"] == Utils.getDefaultImagePath()
-        assert user.getUserProfile()["thumbnailPath"] == Utils.getDefaultThumbnailPath()
+        assert user.getUserProfile()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert user.getUserProfile()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
     }
 
     def "successful avatar deletion"() {
@@ -45,8 +45,8 @@ class TestDeleteAvatar extends Specification {
         assert user.getUserProfile()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
 
         and: "the old image is available"
-        assert image == RequestUtils.getImage(user.username, user.password, oldImagePath)
-        assert Utils.toThumbnail(image) == RequestUtils.getImage(user.username, user.password, oldThumbnailPath)
+        assert image == RequestUtils.getImage(user.token, oldImagePath)
+        assert Utils.toThumbnail(image) == RequestUtils.getImage(user.token, oldThumbnailPath)
     }
 
     def "delete avatar with invalid token"() {

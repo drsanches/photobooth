@@ -27,7 +27,8 @@ class TestGetImageInfo extends Specification {
         then: "response is correct"
         assert response.status == 200
         assert response.getData()["id"] == "default"
-        assert response.getData()["path"] == Utils.getDefaultImagePath()
+        assert response.getData()["path"] == Utils.DEFAULT_IMAGE_PATH
+        assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
         assert response.getData()["createdTime"] == JSONNull.getInstance()
         assert response.getData()["ownerId"] == JSONNull.getInstance()
     }

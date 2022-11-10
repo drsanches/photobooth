@@ -52,7 +52,7 @@ class TestRegistration extends Specification {
         assert userProfile['username'] == username
         assert userProfile['status'] == JSONNull.getInstance()
         assert userProfile['name'] == JSONNull.getInstance()
-        assert userProfile['imagePath'] == Utils.getDefaultImagePath()
+        assert userProfile['imagePath'] == Utils.DEFAULT_IMAGE_PATH
     }
 
     def "registration without username"() {
