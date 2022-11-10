@@ -12,24 +12,19 @@ import ru.drsanches.photobooth.app.data.image.dto.request.UploadAvatarDTO;
 import ru.drsanches.photobooth.app.data.image.dto.request.UploadPhotoDTO;
 import ru.drsanches.photobooth.app.data.image.mapper.ImageInfoMapper;
 import ru.drsanches.photobooth.app.data.image.model.Image;
-import ru.drsanches.photobooth.app.data.image.model.ImagePermission;
 import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
 import ru.drsanches.photobooth.app.service.domain.FriendsDomainService;
 import ru.drsanches.photobooth.app.service.domain.ImageDomainService;
 import ru.drsanches.photobooth.app.service.domain.ImagePermissionDomainService;
 import ru.drsanches.photobooth.app.service.domain.UserProfileDomainService;
-import ru.drsanches.photobooth.app.service.utils.ImageConverter;
 import ru.drsanches.photobooth.app.service.utils.PaginationService;
 import ru.drsanches.photobooth.common.token.TokenSupplier;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -60,24 +55,18 @@ public class ImageWebService {
     private PaginationService<Image> paginationService;
 
     @Autowired
-    private ImageConverter imageConverter;
-
-    @Autowired
     private ImageInfoMapper imageInfoMapper;
 
     public void uploadAvatar(@Valid UploadAvatarDTO uploadAvatarDTO) {
         String userId = tokenSupplier.get().getUserId();
-        String imageId = UUID.randomUUID().toString();
         byte[] image = Base64.getDecoder().decode(uploadAvatarDTO.getFile());
-        byte[] thumbnail = imageConverter.toThumbnail(image);
-        GregorianCalendar createdTime = new GregorianCalendar();
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
-        userProfile.setImageId(imageId);
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
-            imageDomainService.saveImage(new Image(imageId, image, thumbnail, createdTime, userId));
+            String imageId = imageDomainService.saveImage(image, userId).getId();
+            userProfile.setImageId(imageId);
             userProfileDomainService.save(userProfile);
+            log.info("User with id '{}' updated his profile image, new image id is '{}'", userId, imageId);
         });
-        log.info("User with id '{}' updated his profile image, new image id is '{}'", userId, imageId);
     }
 
     public ImageInfoDTO getImageInfo(String imageId) {
@@ -94,20 +83,15 @@ public class ImageWebService {
 
     public void uploadPhoto(@Valid UploadPhotoDTO uploadPhotoDTO) {
         String currentUserId = tokenSupplier.get().getUserId();
-        String imageId = UUID.randomUUID().toString();
         byte[] image = Base64.getDecoder().decode(uploadPhotoDTO.getFile());
-        byte[] thumbnail = imageConverter.toThumbnail(image);
-        GregorianCalendar createdTime = new GregorianCalendar();
         List<String> allowedUsers = CollectionUtils.isEmpty(uploadPhotoDTO.getUserIds()) ?
                 getEnabledFriends(currentUserId) : uploadPhotoDTO.getUserIds();
         allowedUsers.add(currentUserId);
-        List<ImagePermission> imagePermissions = new ArrayList<>(allowedUsers.size());
-        allowedUsers.forEach(userId -> imagePermissions.add(new ImagePermission(imageId, userId)));
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
-            imageDomainService.saveImage(new Image(imageId, image, thumbnail, createdTime, currentUserId));
-            imagePermissionDomainService.savePermissions(imagePermissions);
+            String imageId = imageDomainService.saveImage(image, currentUserId).getId();
+            imagePermissionDomainService.savePermissions(imageId, allowedUsers);
+            log.info("Photo with id '{}' uploaded for users: {}", imageId, allowedUsers);
         });
-        log.info("Photo with id '{}' uploaded for users: {}", imageId, uploadPhotoDTO.getUserIds());
     }
 
     public List<ImageInfoDTO> getAllInfo(Integer page, Integer size) {

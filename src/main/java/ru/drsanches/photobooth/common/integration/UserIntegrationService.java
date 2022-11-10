@@ -10,8 +10,11 @@ import ru.drsanches.photobooth.auth.data.model.UserAuth;
 import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
 import ru.drsanches.photobooth.auth.data.repository.UserAuthRepository;
 import ru.drsanches.photobooth.app.data.profile.repository.UserProfileRepository;
+import ru.drsanches.photobooth.auth.service.utils.CredentialsHelper;
+import ru.drsanches.photobooth.common.token.data.Role;
 import ru.drsanches.photobooth.exception.application.UserAlreadyExistsException;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Service for updating UserAuth and UserProfile objects together
@@ -29,19 +32,46 @@ public class UserIntegrationService {
     @Autowired
     private PlatformTransactionManager transactionManager;
 
+    @Autowired
+    private CredentialsHelper credentialsHelper;
+
+    public UserAuth createUser(String username, String password, String email) {
+        UserAuth userAuth = new UserAuth();
+        userAuth.setId(UUID.randomUUID().toString());
+        userAuth.setUsername(username.toLowerCase());
+        userAuth.setSalt(UUID.randomUUID().toString());
+        userAuth.setPassword(credentialsHelper.encodePassword(password, userAuth.getSalt()));
+        userAuth.setEmail(email);
+        userAuth.setEnabled(true);
+        userAuth.setRole(Role.USER);
+        return createUser(userAuth);
+    }
+
+    public UserAuth createUserByGoogle(String googleEmail) {
+        UserAuth userAuth = new UserAuth();
+        userAuth.setId(UUID.randomUUID().toString());
+        userAuth.setUsername(UUID.randomUUID().toString());
+        userAuth.setEmail(googleEmail);
+        userAuth.setGoogleAuth(googleEmail);
+        userAuth.setEnabled(true);
+        userAuth.setRole(Role.USER);
+        return createUser(userAuth);
+    }
+
     /**
      * Creates UserAuth and UserProfile in one transaction
      */
-    public void createUser(UserAuth userAuth) {
+    public UserAuth createUser(UserAuth userAuth) {
         UserProfile userProfile = new UserProfile();
         copy(userAuth, userProfile);
         try {
-            save(userAuth, userProfile);
+            UserAuth result = save(userAuth, userProfile);
+            log.info("UserAuth and UserProfile has been created: {}, {}", userAuth, userProfile);
+            return result;
         } catch(DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException(userAuth.getGoogleAuth() != null ?
                     userAuth.getGoogleAuth() : userAuth.getUsername(), e);
         }
-        log.info("UserAuth and UserProfile has been created: {}, {}", userAuth, userProfile);
     }
 
     /**
@@ -73,10 +103,11 @@ public class UserIntegrationService {
     /**
      * Saves UserAuth and UserProfile objects in one transaction
      */
-    private void save(UserAuth userAuth, UserProfile userProfile) {
-        new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
-            userAuthRepository.save(userAuth);
+    private UserAuth save(UserAuth userAuth, UserProfile userProfile) {
+        return new TransactionTemplate(transactionManager).execute(status -> {
+            UserAuth result = userAuthRepository.save(userAuth);
             userProfileRepository.save(userProfile);
+            return result;
         });
     }
 }

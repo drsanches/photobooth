@@ -81,6 +81,11 @@ After that, the application can be launched with the commands:
 
 ---
 
+## Migrate to release 1.1
+- Add `thumbnail_data` field in DB and fill it for all data 
+
+---
+
 ## Backlog
 
 ### Back
@@ -94,7 +99,6 @@ After that, the application can be launched with the commands:
 - Add stub for google auth
 - Add field descriptions for db models
 - Check all requirements in Swagger DTOs
-- Rename domain layers to DAO and separate web layer to web and domain
 
 ### UI
 - Fix authorization

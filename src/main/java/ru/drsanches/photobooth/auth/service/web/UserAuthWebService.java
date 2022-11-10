@@ -13,7 +13,6 @@ import ru.drsanches.photobooth.auth.data.dto.response.TokenDTO;
 import ru.drsanches.photobooth.auth.data.dto.response.UserAuthInfoDTO;
 import ru.drsanches.photobooth.auth.service.domain.UserAuthDomainService;
 import ru.drsanches.photobooth.auth.service.utils.CredentialsHelper;
-import ru.drsanches.photobooth.common.token.data.Role;
 import ru.drsanches.photobooth.auth.data.mapper.UserAuthInfoMapper;
 import ru.drsanches.photobooth.auth.data.model.UserAuth;
 import ru.drsanches.photobooth.exception.application.NoUsernameException;
@@ -55,15 +54,11 @@ public class UserAuthWebService {
     private UserAuthInfoMapper userAuthInfoMapper;
 
     public TokenDTO registration(@Valid RegistrationDTO registrationDTO) {
-        UserAuth userAuth = new UserAuth();
-        userAuth.setId(UUID.randomUUID().toString());
-        userAuth.setUsername(registrationDTO.getUsername().toLowerCase());
-        userAuth.setSalt(UUID.randomUUID().toString());
-        userAuth.setPassword(credentialsHelper.encodePassword(registrationDTO.getPassword(), userAuth.getSalt()));
-        userAuth.setEmail(registrationDTO.getEmail());
-        userAuth.setEnabled(true);
-        userAuth.setRole(Role.USER);
-        userIntegrationService.createUser(userAuth);
+        UserAuth userAuth = userIntegrationService.createUser(
+                registrationDTO.getUsername(),
+                registrationDTO.getPassword(),
+                registrationDTO.getEmail()
+        );
         Token token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
         log.info("New user with id '{}' has been created", userAuth.getId());
         return tokenMapper.convert(token);

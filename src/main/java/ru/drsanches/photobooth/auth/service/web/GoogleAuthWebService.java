@@ -11,7 +11,6 @@ import ru.drsanches.photobooth.auth.service.domain.UserAuthDomainService;
 import ru.drsanches.photobooth.auth.service.utils.GoogleAccessTokenValidator;
 import ru.drsanches.photobooth.common.integration.UserIntegrationService;
 import ru.drsanches.photobooth.common.token.TokenService;
-import ru.drsanches.photobooth.common.token.data.Role;
 import ru.drsanches.photobooth.common.token.data.Token;
 import ru.drsanches.photobooth.common.token.data.TokenMapper;
 
@@ -40,14 +39,7 @@ public class GoogleAuthWebService {
 
     public TokenDTO registration(@Valid GoogleAccessTokenDTO googleAccessTokenDTO) {
         String email = googleAccessTokenValidator.getEmail(googleAccessTokenDTO.getAccessToken());
-        UserAuth userAuth = new UserAuth();
-        userAuth.setId(UUID.randomUUID().toString());
-        userAuth.setUsername(UUID.randomUUID().toString());
-        userAuth.setEmail(email);
-        userAuth.setGoogleAuth(email);
-        userAuth.setEnabled(true);
-        userAuth.setRole(Role.USER);
-        userIntegrationService.createUser(userAuth);
+        UserAuth userAuth = userIntegrationService.createUserByGoogle(email);
         Token token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
         log.info("New user with id '{}' has been created", userAuth.getId());
         return tokenMapper.convert(token);

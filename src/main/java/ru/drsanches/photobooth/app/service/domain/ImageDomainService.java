@@ -5,11 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.drsanches.photobooth.app.data.image.model.Image;
 import ru.drsanches.photobooth.app.data.image.repository.ImageRepository;
+import ru.drsanches.photobooth.app.service.utils.ImageConverter;
 import ru.drsanches.photobooth.exception.application.NoImageException;
 
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -19,9 +22,19 @@ public class ImageDomainService {
     @Autowired
     private ImageRepository imageRepository;
 
-    public void saveImage(Image image) {
-        imageRepository.save(image);
-        log.info("New image has been saved: {}", image);
+    @Autowired
+    private ImageConverter imageConverter;
+
+    public Image saveImage(byte[] imageData, String ownerId) {
+        Image image = new Image();
+        image.setId(UUID.randomUUID().toString());
+        image.setData(imageData);
+        image.setThumbnailData(imageConverter.toThumbnail(imageData));
+        image.setOwnerId(ownerId);
+        image.setCreatedTime(new GregorianCalendar());
+        Image savedImage = imageRepository.save(image);
+        log.info("New image has been saved: {}", savedImage);
+        return savedImage;
     }
 
     public Image getImage(String imageId) {
