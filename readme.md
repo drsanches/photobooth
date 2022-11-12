@@ -89,16 +89,12 @@ After that, the application can be launched with the commands:
 ## Backlog
 
 ### Back
-- Refactor repositories (optimize)
 - Add cache? (on last images data)
 - Do not create UserProfile for admin?
-- Add thumbnail images
-- Add more validations
 - Use 404 instead 401 for nonexistent urls
 - Add 2FA on critical auth operations
 - Add stub for google auth
 - Add field descriptions for db models
-- Check all requirements in Swagger DTOs
 
 ### UI
 - Fix authorization

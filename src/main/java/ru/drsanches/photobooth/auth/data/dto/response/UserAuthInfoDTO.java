@@ -16,6 +16,6 @@ public class UserAuthInfoDTO {
     @Schema(required = true)
     private String username;
 
-    @Schema(required = true)
+    @Schema
     private String email;
 }
