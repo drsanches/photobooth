@@ -32,7 +32,7 @@ public class UserAuthController {
     @Autowired
     private UserAuthWebService userAuthWebService;
 
-    @Operation(summary = "Registers new user account and returns user information")
+    @Operation(summary = "Registers new user account and returns authorization token")
     @ApiResponseCode201
     @ApiResponseCode400
     @ResponseStatus(HttpStatus.CREATED)
@@ -41,7 +41,7 @@ public class UserAuthController {
         return userAuthWebService.registration(registrationDTO);
     }
 
-    @Operation(summary = "Returns authorization tokens")
+    @Operation(summary = "Returns authorization token")
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
