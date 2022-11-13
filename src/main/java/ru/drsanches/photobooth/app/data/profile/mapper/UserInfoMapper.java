@@ -2,13 +2,32 @@ package ru.drsanches.photobooth.app.data.profile.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.drsanches.photobooth.app.data.image.mapper.ImageInfoMapper;
+import ru.drsanches.photobooth.app.data.profile.dto.response.Relationship;
 import ru.drsanches.photobooth.app.data.profile.dto.response.UserInfoDTO;
 import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
 
 @Component
 public class UserInfoMapper {
 
-    public UserInfoDTO convert(UserProfile userProfile) {
+    public UserInfoDTO convertFriend(UserProfile userProfile) {
+        return convert(userProfile, Relationship.FRIEND);
+    }
+
+    public UserInfoDTO convertIncoming(UserProfile userProfile) {
+        return convert(userProfile, Relationship.INCOMING_FRIEND_REQUEST);
+    }
+
+    public UserInfoDTO convertOutgoing(UserProfile userProfile) {
+        return convert(userProfile, Relationship.OUTGOING_FRIEND_REQUEST);
+    }
+
+    public UserInfoDTO convert(UserProfile userProfile, Relationship relationship) {
+        UserInfoDTO userInfoDTO = convert(userProfile);
+        userInfoDTO.setRelationship(relationship);
+        return userInfoDTO;
+    }
+
+    private UserInfoDTO convert(UserProfile userProfile) {
         UserInfoDTO userInfoDTO = new UserInfoDTO();
         userInfoDTO.setId(userProfile.getId());
         if (userProfile.isEnabled()) {

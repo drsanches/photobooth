@@ -48,7 +48,7 @@ class TestChangeEmail extends Specification {
         assert response.status == 200
 
         and: "user was updated"
-        assert user.getAuthInfo()['email'] == JSONNull.instance
+        assert user.getAuthInfo()['email'] == JSONNull.getInstance()
     }
 
     def "email change with old email"() {

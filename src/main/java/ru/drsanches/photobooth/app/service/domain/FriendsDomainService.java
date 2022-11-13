@@ -42,6 +42,18 @@ public class FriendsDomainService {
                 .collect(Collectors.toList());
     }
 
+    public List<String> getOutgoingRequestAndFriendIdList(String userId) {
+        return friendRequestRepository.findByIdFromUserId(userId).stream()
+                .map(FriendRequest::getToUser)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getIncomingRequestAndFriendIdList(String userId) {
+        return friendRequestRepository.findByIdToUserId(userId).stream()
+                .map(FriendRequest::getFromUserId)
+                .collect(Collectors.toList());
+    }
+
     public void saveFriendRequest(String fromUserId, String toUserId) {
         FriendRequest friendRequest = new FriendRequest(fromUserId, toUserId);
         friendRequestRepository.save(friendRequest);
@@ -63,17 +75,5 @@ public class FriendsDomainService {
         } catch(EmptyResultDataAccessException e) {
             log.info("Reversed FriendRequest does not exist: " + reversedFriendRequestKey, e);
         }
-    }
-
-    private List<String> getOutgoingRequestAndFriendIdList(String userId) {
-        return friendRequestRepository.findByIdFromUserId(userId).stream()
-                .map(FriendRequest::getToUser)
-                .collect(Collectors.toList());
-    }
-
-    private List<String> getIncomingRequestAndFriendIdList(String userId) {
-        return friendRequestRepository.findByIdToUserId(userId).stream()
-                .map(FriendRequest::getFromUserId)
-                .collect(Collectors.toList());
     }
 }

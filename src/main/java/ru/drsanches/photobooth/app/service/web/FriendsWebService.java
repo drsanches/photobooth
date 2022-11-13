@@ -43,7 +43,7 @@ public class FriendsWebService {
         List<String> friends = friendsDomainService.getFriendsIdList(userId);
         Stream<UserProfile> result = userProfileDomainService.getAllByIdsOrderByUsername(friends).stream();
         return paginationService.pagination(result, page, size)
-                .map(userInfoMapper::convert)
+                .map(userInfoMapper::convertFriend)
                 .collect(Collectors.toList());
     }
 
@@ -52,7 +52,7 @@ public class FriendsWebService {
         List<String> incoming = friendsDomainService.getIncomingRequestIdList(userId);
         Stream<UserProfile> result = userProfileDomainService.getAllByIdsOrderByUsername(incoming).stream();
         return paginationService.pagination(result, page, size)
-                .map(userInfoMapper::convert)
+                .map(userInfoMapper::convertIncoming)
                 .collect(Collectors.toList());
     }
 
@@ -61,7 +61,7 @@ public class FriendsWebService {
         List<String> outgoing = friendsDomainService.getOutgoingRequestIdList(userId);
         Stream<UserProfile> result = userProfileDomainService.getAllByIdsOrderByUsername(outgoing).stream();
         return paginationService.pagination(result, page, size)
-                .map(userInfoMapper::convert)
+                .map(userInfoMapper::convertOutgoing)
                 .collect(Collectors.toList());
     }
 

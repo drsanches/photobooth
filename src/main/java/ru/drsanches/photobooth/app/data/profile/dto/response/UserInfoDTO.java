@@ -27,4 +27,7 @@ public class UserInfoDTO {
 
     @Schema(required = true)
     private String thumbnailPath;
+
+    @Schema(required = true)
+    private Relationship relationship;
 }

@@ -4,6 +4,7 @@ import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONArray
 import net.sf.json.JSONNull
+import ru.drsanches.photobooth.app.data.profile.dto.response.Relationship
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
 import ru.drsanches.photobooth.utils.Utils
@@ -35,6 +36,7 @@ class TestGetFriends extends Specification {
         assert body.get(0)["status"] == user2.status
         assert body.get(0)["imagePath"] == Utils.DEFAULT_IMAGE_PATH
         assert body.get(0)["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
+        assert body.get(0)["relationship"] == Relationship.FRIEND.name()
     }
 
     def "success empty friends getting"() {
@@ -78,6 +80,7 @@ class TestGetFriends extends Specification {
         assert body.get(0)["status"] == JSONNull.getInstance()
         assert body.get(0)["imagePath"] == Utils.DELETED_IMAGE_PATH
         assert body.get(0)["thumbnailPath"] == Utils.DELETED_THUMBNAIL_PATH
+        assert body.get(0)["relationship"] == Relationship.FRIEND.name()
     }
 
     def "get friends with invalid token"() {
