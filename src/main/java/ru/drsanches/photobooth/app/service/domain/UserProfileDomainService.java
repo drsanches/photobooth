@@ -47,6 +47,7 @@ public class UserProfileDomainService {
         return userProfile.get();
     }
 
+    //TODO: Sort?
     public List<UserProfile> findEnabledByUsername(String username, Integer page, Integer size) {
         Pageable pageable = paginationService.pageable(page, size);
         return userProfileRepository.findByUsernameContainingAndEnabled(username, true, pageable);
