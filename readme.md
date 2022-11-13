@@ -83,6 +83,8 @@ After that, the application can be launched with the commands:
 
 ## Migrate to release 1.1
 - Add `thumbnail_data` field in DB and fill it for all data 
+- **On client:** use new search by username substring endpoint
+- **On client:** pages now starts from zero
 
 ---
 

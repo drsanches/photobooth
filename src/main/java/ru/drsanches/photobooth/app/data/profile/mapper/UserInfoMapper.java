@@ -1,13 +1,20 @@
 package ru.drsanches.photobooth.app.data.profile.mapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.drsanches.photobooth.app.data.image.mapper.ImageInfoMapper;
 import ru.drsanches.photobooth.app.data.profile.dto.response.RelationshipDTO;
 import ru.drsanches.photobooth.app.data.profile.dto.response.UserInfoDTO;
 import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
+import ru.drsanches.photobooth.common.token.TokenSupplier;
+
+import java.util.List;
 
 @Component
 public class UserInfoMapper {
+
+    @Autowired
+    private TokenSupplier tokenSupplier;
 
     public UserInfoDTO convertFriend(UserProfile userProfile) {
         return convert(userProfile, RelationshipDTO.FRIEND);
@@ -24,6 +31,12 @@ public class UserInfoMapper {
     public UserInfoDTO convert(UserProfile userProfile, RelationshipDTO relationship) {
         UserInfoDTO userInfoDTO = convert(userProfile);
         userInfoDTO.setRelationship(relationship);
+        return userInfoDTO;
+    }
+
+    public UserInfoDTO convert(UserProfile userProfile, List<String> incomingIds, List<String> outgoingIds) {
+        UserInfoDTO userInfoDTO = convert(userProfile);
+        userInfoDTO.setRelationship(getRelationship(userInfoDTO.getId(), incomingIds, outgoingIds));
         return userInfoDTO;
     }
 
@@ -46,5 +59,20 @@ public class UserInfoMapper {
                         ImageInfoMapper.THUMBNAIL_PATH_PREFIX + userProfile.getImageId() :
                 ImageInfoMapper.THUMBNAIL_PATH_PREFIX + ImageInfoMapper.DELETED_AVATAR_ID);
         return userInfoDTO;
+    }
+
+    private RelationshipDTO getRelationship(String userId, List<String> incomingIds, List<String> outgoingIds) {
+        String currentUserId = tokenSupplier.get().getUserId();
+        if (currentUserId.equals(userId)) {
+            return RelationshipDTO.CURRENT;
+        }
+        if (incomingIds.contains(userId) && outgoingIds.contains(userId)) {
+            return RelationshipDTO.FRIEND;
+        } else if (incomingIds.contains(userId) && !outgoingIds.contains(userId)) {
+            return RelationshipDTO.INCOMING_FRIEND_REQUEST;
+        } else if (!incomingIds.contains(userId) && outgoingIds.contains(userId)) {
+            return RelationshipDTO.OUTGOING_FRIEND_REQUEST;
+        }
+        return RelationshipDTO.STRANGER;
     }
 }

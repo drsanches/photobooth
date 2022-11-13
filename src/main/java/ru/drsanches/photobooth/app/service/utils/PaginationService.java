@@ -1,6 +1,8 @@
 package ru.drsanches.photobooth.app.service.utils;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.stream.Stream;
 
@@ -15,9 +17,21 @@ public class PaginationService<T> {
 
     //TODO: Use pagination on database layer
     public Stream<T> pagination(Stream<T> stream, Integer page, Integer size) {
-        page = page == null || page < 1 ? 1 : page;
-        size = size == null || size < 0 ? defaultPageSize : size;
-        size = size > maxPageSize ? maxPageSize : size;
-        return stream.skip((page - 1) * size).limit(size);
+        page = page(page);
+        size = size(size);
+        return stream.skip(page * size).limit(size);
+    }
+
+    public Pageable pageable(Integer page, Integer size) {
+        return PageRequest.of(page(page), size(size));
+    }
+
+    private int size(Integer size) {
+        int result = size == null || size < 0 ? defaultPageSize : size;
+        return result > maxPageSize ? maxPageSize : result;
+    }
+
+    private int page(Integer page) {
+        return page == null || page < 0 ? 0 : page;
     }
 }

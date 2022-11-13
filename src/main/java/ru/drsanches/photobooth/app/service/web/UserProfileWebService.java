@@ -15,6 +15,7 @@ import ru.drsanches.photobooth.common.token.TokenSupplier;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -39,14 +40,31 @@ public class UserProfileWebService {
         return userInfoMapper.convert(userProfile, RelationshipDTO.CURRENT);
     }
 
+    @Deprecated
     public UserInfoDTO searchProfile(String username) {
+        String currentUserId = tokenSupplier.get().getUserId();
         UserProfile userProfile = userProfileDomainService.getEnabledByUsername(username.toLowerCase());
-        return userInfoMapper.convert(userProfile, getRelationship(userProfile.getId()));
+        List<String> incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
+        List<String> outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
+        return userInfoMapper.convert(userProfile, incomingIds, outgoingIds);
+    }
+
+    public List<UserInfoDTO> searchProfile(String username, Integer page, Integer size) {
+        String currentUserId = tokenSupplier.get().getUserId();
+        List<UserProfile> userProfile = userProfileDomainService.findEnabledByUsername(username.toLowerCase(), page, size);
+        List<String> incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
+        List<String> outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
+        return userProfile.stream()
+                .map(x -> userInfoMapper.convert(x, incomingIds, outgoingIds))
+                .collect(Collectors.toList());
     }
 
     public UserInfoDTO getProfile(String userId) {
+        String currentUserId = tokenSupplier.get().getUserId();
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
-        return userInfoMapper.convert(userProfile, getRelationship(userProfile.getId()));
+        List<String> incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
+        List<String> outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
+        return userInfoMapper.convert(userProfile, incomingIds, outgoingIds);
     }
 
     public void changeCurrentProfile(@Valid ChangeUserProfileDTO changeUserProfileDTO) {
@@ -56,22 +74,5 @@ public class UserProfileWebService {
         userProfile.setStatus(changeUserProfileDTO.getStatus());
         userProfileDomainService.save(userProfile);
         log.info("User with id '{}' updated his profile", userId);
-    }
-
-    private RelationshipDTO getRelationship(String userId) {
-        String currentUserId = tokenSupplier.get().getUserId();
-        if (currentUserId.equals(userId)) {
-            return RelationshipDTO.CURRENT;
-        }
-        List<String> incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
-        List<String> outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
-        if (incomingIds.contains(userId) && outgoingIds.contains(userId)) {
-            return RelationshipDTO.FRIEND;
-        } else if (incomingIds.contains(userId) && !outgoingIds.contains(userId)) {
-            return RelationshipDTO.INCOMING_FRIEND_REQUEST;
-        } else if (!incomingIds.contains(userId) && outgoingIds.contains(userId)) {
-            return RelationshipDTO.OUTGOING_FRIEND_REQUEST;
-        }
-        return RelationshipDTO.STRANGER;
     }
 }

@@ -1,21 +1,27 @@
 package ru.drsanches.photobooth.app.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.drsanches.photobooth.app.data.profile.dto.request.ChangeUserProfileDTO;
 import ru.drsanches.photobooth.app.data.profile.dto.response.UserInfoDTO;
 import ru.drsanches.photobooth.app.service.web.UserProfileWebService;
+import ru.drsanches.photobooth.common.swagger.ApiPaginationPage;
+import ru.drsanches.photobooth.common.swagger.ApiPaginationSize;
 import ru.drsanches.photobooth.common.swagger.ApiResponseCode200;
 import ru.drsanches.photobooth.common.swagger.ApiResponseCode400;
 import ru.drsanches.photobooth.common.swagger.ApiResponseCode401;
 import ru.drsanches.photobooth.common.swagger.ApiResponseCode404;
 import ru.drsanches.photobooth.common.swagger.ApiTokenAuthorization;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/profile", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -43,7 +49,7 @@ public class UserProfileController {
         userProfileWebService.changeCurrentProfile(changeUserProfileDTO);
     }
 
-    @Operation(summary = "Returns another user profile information by username")
+    @Operation(summary = "[DEPRECATED] Returns a user profile information by username")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode401
@@ -51,6 +57,19 @@ public class UserProfileController {
     @RequestMapping(value = "/search/{username}", method = RequestMethod.GET)
     public UserInfoDTO searchProfile(@PathVariable String username) {
         return userProfileWebService.searchProfile(username);
+    }
+
+    @Operation(summary = "Searches a list of user profile information by username")
+    @ApiTokenAuthorization
+    @ApiResponseCode200
+    @ApiResponseCode401
+    @ApiResponseCode404
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public List<UserInfoDTO> searchProfile(
+            @Parameter(description = "Username search string") @RequestParam(value = "username") String username,
+            @ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
+            @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size) {
+        return userProfileWebService.searchProfile(username, page, size);
     }
 
     @Operation(summary = "Returns another user profile information by id")
