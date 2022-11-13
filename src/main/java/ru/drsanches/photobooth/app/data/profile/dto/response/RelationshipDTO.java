@@ -1,6 +1,6 @@
 package ru.drsanches.photobooth.app.data.profile.dto.response;
 
-public enum Relationship {
+public enum RelationshipDTO {
 
     STRANGER,
     INCOMING_FRIEND_REQUEST,

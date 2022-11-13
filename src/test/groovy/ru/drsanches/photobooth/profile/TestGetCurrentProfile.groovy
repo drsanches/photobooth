@@ -3,7 +3,7 @@ package ru.drsanches.photobooth.profile
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
-import ru.drsanches.photobooth.app.data.profile.dto.response.Relationship
+import ru.drsanches.photobooth.app.data.profile.dto.response.RelationshipDTO
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
 import ru.drsanches.photobooth.utils.Utils
@@ -31,7 +31,7 @@ class TestGetCurrentProfile extends Specification {
         assert response.getData()["status"] == user.status
         assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
         assert response.getData()['thumbnailPath'] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()['relationship'] == Relationship.CURRENT.name()
+        assert response.getData()['relationship'] == RelationshipDTO.CURRENT.name()
     }
 
     def "get current user profile with invalid token"() {

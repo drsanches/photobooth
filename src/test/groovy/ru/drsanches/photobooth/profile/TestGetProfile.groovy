@@ -3,7 +3,7 @@ package ru.drsanches.photobooth.profile
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
-import ru.drsanches.photobooth.app.data.profile.dto.response.Relationship
+import ru.drsanches.photobooth.app.data.profile.dto.response.RelationshipDTO
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
 import ru.drsanches.photobooth.utils.Utils
@@ -32,7 +32,7 @@ class TestGetProfile extends Specification {
         assert response.getData()["status"] == user2.status
         assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
         assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["relationship"] == Relationship.STRANGER.name()
+        assert response.getData()["relationship"] == RelationshipDTO.STRANGER.name()
     }
 
     def "successful incoming user profile getting"() {
@@ -54,7 +54,7 @@ class TestGetProfile extends Specification {
         assert response.getData()["status"] == user2.status
         assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
         assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["relationship"] == Relationship.INCOMING_FRIEND_REQUEST.name()
+        assert response.getData()["relationship"] == RelationshipDTO.INCOMING_FRIEND_REQUEST.name()
     }
 
     def "successful outgoing user profile getting"() {
@@ -77,7 +77,7 @@ class TestGetProfile extends Specification {
         assert response.getData()["status"] == user2.status
         assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
         assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["relationship"] == Relationship.OUTGOING_FRIEND_REQUEST.name()
+        assert response.getData()["relationship"] == RelationshipDTO.OUTGOING_FRIEND_REQUEST.name()
     }
 
     def "successful friend profile getting"() {
@@ -100,7 +100,7 @@ class TestGetProfile extends Specification {
         assert response.getData()["status"] == user2.status
         assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
         assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["relationship"] == Relationship.FRIEND.name()
+        assert response.getData()["relationship"] == RelationshipDTO.FRIEND.name()
     }
 
     def "successful current profile getting"() {
@@ -121,7 +121,7 @@ class TestGetProfile extends Specification {
         assert response.getData()["status"] == user1.status
         assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
         assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["relationship"] == Relationship.CURRENT.name()
+        assert response.getData()["relationship"] == RelationshipDTO.CURRENT.name()
     }
 
     def "get deleted user profile"() {

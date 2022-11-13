@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.drsanches.photobooth.app.data.profile.dto.request.ChangeUserProfileDTO;
-import ru.drsanches.photobooth.app.data.profile.dto.response.Relationship;
+import ru.drsanches.photobooth.app.data.profile.dto.response.RelationshipDTO;
 import ru.drsanches.photobooth.app.data.profile.dto.response.UserInfoDTO;
 import ru.drsanches.photobooth.app.data.profile.mapper.UserInfoMapper;
 import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
@@ -36,7 +36,7 @@ public class UserProfileWebService {
     public UserInfoDTO getCurrentProfile() {
         String userId = tokenSupplier.get().getUserId();
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
-        return userInfoMapper.convert(userProfile, Relationship.CURRENT);
+        return userInfoMapper.convert(userProfile, RelationshipDTO.CURRENT);
     }
 
     public UserInfoDTO searchProfile(String username) {
@@ -58,20 +58,20 @@ public class UserProfileWebService {
         log.info("User with id '{}' updated his profile", userId);
     }
 
-    private Relationship getRelationship(String userId) {
+    private RelationshipDTO getRelationship(String userId) {
         String currentUserId = tokenSupplier.get().getUserId();
         if (currentUserId.equals(userId)) {
-            return Relationship.CURRENT;
+            return RelationshipDTO.CURRENT;
         }
         List<String> incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
         List<String> outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
         if (incomingIds.contains(userId) && outgoingIds.contains(userId)) {
-            return Relationship.FRIEND;
+            return RelationshipDTO.FRIEND;
         } else if (incomingIds.contains(userId) && !outgoingIds.contains(userId)) {
-            return Relationship.INCOMING_FRIEND_REQUEST;
+            return RelationshipDTO.INCOMING_FRIEND_REQUEST;
         } else if (!incomingIds.contains(userId) && outgoingIds.contains(userId)) {
-            return Relationship.OUTGOING_FRIEND_REQUEST;
+            return RelationshipDTO.OUTGOING_FRIEND_REQUEST;
         }
-        return Relationship.STRANGER;
+        return RelationshipDTO.STRANGER;
     }
 }

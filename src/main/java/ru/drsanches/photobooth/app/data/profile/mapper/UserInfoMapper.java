@@ -2,7 +2,7 @@ package ru.drsanches.photobooth.app.data.profile.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.drsanches.photobooth.app.data.image.mapper.ImageInfoMapper;
-import ru.drsanches.photobooth.app.data.profile.dto.response.Relationship;
+import ru.drsanches.photobooth.app.data.profile.dto.response.RelationshipDTO;
 import ru.drsanches.photobooth.app.data.profile.dto.response.UserInfoDTO;
 import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
 
@@ -10,18 +10,18 @@ import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
 public class UserInfoMapper {
 
     public UserInfoDTO convertFriend(UserProfile userProfile) {
-        return convert(userProfile, Relationship.FRIEND);
+        return convert(userProfile, RelationshipDTO.FRIEND);
     }
 
     public UserInfoDTO convertIncoming(UserProfile userProfile) {
-        return convert(userProfile, Relationship.INCOMING_FRIEND_REQUEST);
+        return convert(userProfile, RelationshipDTO.INCOMING_FRIEND_REQUEST);
     }
 
     public UserInfoDTO convertOutgoing(UserProfile userProfile) {
-        return convert(userProfile, Relationship.OUTGOING_FRIEND_REQUEST);
+        return convert(userProfile, RelationshipDTO.OUTGOING_FRIEND_REQUEST);
     }
 
-    public UserInfoDTO convert(UserProfile userProfile, Relationship relationship) {
+    public UserInfoDTO convert(UserProfile userProfile, RelationshipDTO relationship) {
         UserInfoDTO userInfoDTO = convert(userProfile);
         userInfoDTO.setRelationship(relationship);
         return userInfoDTO;

@@ -6,7 +6,7 @@ import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
 import net.sf.json.JSONObject
 import org.apache.commons.lang3.RandomStringUtils
-import ru.drsanches.photobooth.app.data.profile.dto.response.Relationship
+import ru.drsanches.photobooth.app.data.profile.dto.response.RelationshipDTO
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
@@ -42,7 +42,7 @@ class TestChangeCurrentProfile extends Specification {
         assert userProfile['status'] == status
         assert userProfile['imagePath'] == Utils.DEFAULT_IMAGE_PATH
         assert userProfile['thumbnailPath'] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert userProfile['relationship'] == Relationship.CURRENT.name()
+        assert userProfile['relationship'] == RelationshipDTO.CURRENT.name()
     }
 
     def "success user profile clean"() {
@@ -68,7 +68,7 @@ class TestChangeCurrentProfile extends Specification {
         assert userProfile['status'] == JSONNull.getInstance()
         assert userProfile['imagePath'] == Utils.DEFAULT_IMAGE_PATH
         assert userProfile['thumbnailPath'] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert userProfile['relationship'] == Relationship.CURRENT.name()
+        assert userProfile['relationship'] == RelationshipDTO.CURRENT.name()
     }
 
     def "user profile change with invalid data"() {

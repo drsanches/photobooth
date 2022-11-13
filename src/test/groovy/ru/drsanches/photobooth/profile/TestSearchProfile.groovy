@@ -3,7 +3,7 @@ package ru.drsanches.photobooth.profile
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
-import ru.drsanches.photobooth.app.data.profile.dto.response.Relationship
+import ru.drsanches.photobooth.app.data.profile.dto.response.RelationshipDTO
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
 import ru.drsanches.photobooth.utils.TestUser
@@ -33,7 +33,7 @@ class TestSearchProfile extends Specification {
         assert response.getData()["status"] == user2.status
         assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
         assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["relationship"] == Relationship.STRANGER.name()
+        assert response.getData()["relationship"] == RelationshipDTO.STRANGER.name()
     }
 
     def "successful user profile searching with upper case"() {
@@ -55,7 +55,7 @@ class TestSearchProfile extends Specification {
         assert response.getData()["status"] == user2.status
         assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
         assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["relationship"] == Relationship.STRANGER.name()
+        assert response.getData()["relationship"] == RelationshipDTO.STRANGER.name()
     }
 
     def "search deleted user profile"() {
