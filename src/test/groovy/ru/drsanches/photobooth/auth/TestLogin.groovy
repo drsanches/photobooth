@@ -6,6 +6,7 @@ import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
 import ru.drsanches.photobooth.utils.DataGenerator
 import ru.drsanches.photobooth.utils.RequestUtils
+import ru.drsanches.photobooth.utils.TestUser
 import spock.lang.Specification
 
 class TestLogin extends Specification {
@@ -14,15 +15,13 @@ class TestLogin extends Specification {
 
     def "successful login"() {
         given: "user"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
+        TestUser user = new TestUser().register()
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
-                body: [username: username,
-                       password: password],
+                body: [username: user.username,
+                       password: user.password],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
@@ -43,7 +42,8 @@ class TestLogin extends Specification {
         def username1 = "user_NAME_" + uuid
         def username2 = "USER_name_" + uuid
         def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username1, password, null)
+        def email = DataGenerator.createValidEmail()
+        RequestUtils.registerUser(username1, password, email)
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().post(
@@ -62,34 +62,29 @@ class TestLogin extends Specification {
 
     def "successful login with two different valid tokens" () {
         given: "user"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
-
-        String token1 = RequestUtils.getToken(username, password)
+        TestUser user = new TestUser().register()
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
-                body: [username: username,
-                       password: password],
+                body: [username: user.username,
+                       password: user.password],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
 
         and: "token is correct"
-        def token2 = response.getData()["accessToken"]
-        assert RequestUtils.getAuthInfo(token2 as String) != null
+        def newToken = response.getData()["accessToken"]
+        assert RequestUtils.getAuthInfo(newToken as String) != null
 
         and: "old token is correct"
-        assert RequestUtils.getAuthInfo(token1 as String) != null
+        assert RequestUtils.getAuthInfo(user.token as String) != null
     }
 
     def "login without username"() {
-        given: "user"
+        given: "password"
         def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(DataGenerator.createValidUsername(), password, null)
 
         when: "request is sent"
         RequestUtils.getRestClient().post(
@@ -107,9 +102,8 @@ class TestLogin extends Specification {
     }
 
     def "login without password"() {
-        given: "user"
+        given: "username"
         def username = DataGenerator.createValidUsername()
-        RequestUtils.registerUser(username, DataGenerator.createValidPassword(), null)
 
         when: "request is sent"
         RequestUtils.getRestClient().post(
@@ -127,11 +121,9 @@ class TestLogin extends Specification {
     }
 
     def "login with nonexistent username"() {
-        given: "user"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
+        given: "password"
         def nonexistentUsername = DataGenerator.createValidUsername()
+        def password = DataGenerator.createValidPassword()
 
         when: "request is sent"
         RequestUtils.getRestClient().post(
@@ -147,15 +139,13 @@ class TestLogin extends Specification {
 
     def "login with invalid password"() {
         given: "user"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-        RequestUtils.registerUser(username, password, null)
+        TestUser user = new TestUser().register()
         def invalidPassword = DataGenerator.createValidPassword()
 
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
-                body: [username: username,
+                body: [username: user.username,
                        password: invalidPassword],
                 requestContentType : ContentType.JSON)
 

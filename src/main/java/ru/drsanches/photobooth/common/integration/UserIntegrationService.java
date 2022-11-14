@@ -69,8 +69,11 @@ public class UserIntegrationService {
             log.info("UserAuth and UserProfile has been created: {}, {}", userAuth, userProfile);
             return result;
         } catch(DataIntegrityViolationException e) {
-            throw new UserAlreadyExistsException(userAuth.getGoogleAuth() != null ?
-                    userAuth.getGoogleAuth() : userAuth.getUsername(), e);
+            if (userAuth.getGoogleAuth() != null) {
+                throw new UserAlreadyExistsException(userAuth.getGoogleAuth(), e);
+            } else {
+                throw new UserAlreadyExistsException(userAuth.getUsername(), userAuth.getEmail(), e);
+            }
         }
     }
 
@@ -91,7 +94,7 @@ public class UserIntegrationService {
             save(userAuth, userProfile);
             log.info("UserAuth and UserProfile has been updated: {}, {}", userAuth, userProfile);
         } catch(DataIntegrityViolationException e) {
-            throw new UserAlreadyExistsException(userAuth.getUsername(), e);
+            throw new UserAlreadyExistsException(userAuth.getUsername(), userAuth.getEmail(), e);
         }
     }
 

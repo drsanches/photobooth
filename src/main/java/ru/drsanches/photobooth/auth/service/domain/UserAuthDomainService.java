@@ -42,6 +42,10 @@ public class UserAuthDomainService {
         return userAuthRepository.existsByUsername(username);
     }
 
+    public boolean existsByEmail(String email) {
+        return userAuthRepository.existsByEmail(email);
+    }
+
     public UserAuth getEnabledByGoogleAuth(String googleAuth) {
         Optional<UserAuth> user = userAuthRepository.findByGoogleAuth(googleAuth);
         if (user.isEmpty() || !user.get().isEnabled()) {

@@ -42,6 +42,7 @@ public class AdminInitializer implements Initializer {
             UserAuth userAuth = new UserAuth();
             userAuth.setId(UUID.randomUUID().toString());
             userAuth.setUsername(username);
+            userAuth.setEmail("admin@example.com"); //TODO: Use real email and move it to env?
             userAuth.setSalt(UUID.randomUUID().toString());
             userAuth.setPassword(new BCryptPasswordEncoder().encode(sha256(password) + userAuth.getSalt()));
             userAuth.setEnabled(true);

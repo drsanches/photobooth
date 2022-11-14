@@ -9,6 +9,7 @@
 ### Delete user
 - UserAuth.enable = false
 - UserAuth.username = UUID_username
+- UserAuth.email = UUID_email
 - UserAuth.googleAuth = UUID_googleAuth
 - UserProfile.enable = false
 - UserProfile.username = UUID_username
@@ -82,9 +83,10 @@ After that, the application can be launched with the commands:
 ---
 
 ## Migrate to release 1.1
-- Add `thumbnail_data` field in DB and fill it for all data 
-- **On client:** use new search by username substring endpoint
-- **On client:** pages now starts from zero
+- **DB:** Add `thumbnail_data` field and fill it for all data
+- **DB:** Field `email` now is unique and not null
+- **Client:** Use new search by username substring endpoint
+- **Client:** Pages now starts from zero
 
 ---
 
@@ -97,6 +99,7 @@ After that, the application can be launched with the commands:
 - Add 2FA on critical auth operations
 - Add stub for google auth
 - Add field descriptions for db models
+- Add available characters validation
 
 ### UI
 - Fix authorization

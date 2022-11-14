@@ -17,6 +17,8 @@ import java.util.GregorianCalendar;
 @Table(name="confirmation")
 public class Confirmation {
 
+    //TODO: Add userId and check it before operation
+
     @Id
     @Column
     private String id;

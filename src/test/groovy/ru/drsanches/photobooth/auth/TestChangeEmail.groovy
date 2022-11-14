@@ -33,24 +33,6 @@ class TestChangeEmail extends Specification {
         assert user.getAuthInfo()['email'] == newEmail
     }
 
-    def "success email clean"() {
-        given: "user"
-        def user = new TestUser().register()
-
-        when: "request is sent"
-        def response = RequestUtils.getRestClient().put(
-                path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
-                body:  [newEmail: null],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
-
-        then: "response is correct"
-        assert response.status == 200
-
-        and: "user was updated"
-        assert user.getAuthInfo()['email'] == JSONNull.getInstance()
-    }
-
     def "email change with old email"() {
         given: "user"
         def user = new TestUser().register()
@@ -65,6 +47,42 @@ class TestChangeEmail extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert e.response.status == 400
+    }
+
+    def "email change with existent email"() {
+        given: "user"
+        def user1 = new TestUser().register()
+        def user2 = new TestUser().register()
+
+        when: "request is sent"
+        RequestUtils.getRestClient().put(
+                path: PATH,
+                headers: ["Authorization": "Bearer $user1.token"],
+                body:  [newEmail: user2.email],
+                requestContentType : ContentType.JSON)
+
+        then: "response is correct"
+        HttpResponseException e = thrown(HttpResponseException)
+        assert e.response.status == 400
+    }
+
+    def "email change without email"() {
+        given: "user"
+        def user = new TestUser().register()
+
+        when: "request is sent"
+        RequestUtils.getRestClient().put(
+                path: PATH,
+                headers: ["Authorization": "Bearer $user.token"],
+                body:  [newUsername: empty],
+                requestContentType : ContentType.JSON)
+
+        then: "response is correct"
+        HttpResponseException e = thrown(HttpResponseException)
+        assert e.response.status == 400
+
+        where:
+        empty << [null, ""]
     }
 
     def "email change with invalid email"() {

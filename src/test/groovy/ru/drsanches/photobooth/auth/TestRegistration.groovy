@@ -16,7 +16,7 @@ class TestRegistration extends Specification {
     String PATH = "/api/v1/auth/registration"
 
     def "success user registration"() {
-        given: "username and password"
+        given: "username, password and email"
         def username = DataGenerator.createValidUsername()
         def password = DataGenerator.createValidPassword()
         def email = DataGenerator.createValidEmail()
@@ -56,14 +56,16 @@ class TestRegistration extends Specification {
     }
 
     def "registration without username"() {
-        given: "password"
+        given: "password and email"
         def password = DataGenerator.createValidPassword()
+        def email = DataGenerator.createValidEmail()
 
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
                 body: [username: username,
-                       password: password],
+                       password: password,
+                       email: email],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
@@ -75,14 +77,16 @@ class TestRegistration extends Specification {
     }
 
     def "registration without password"() {
-        given: "username"
+        given: "username and email"
         def username = DataGenerator.createValidUsername()
+        def email = DataGenerator.createValidEmail()
 
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
                 body: [username: username,
-                       password: password],
+                       password: password,
+                       email: email],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
@@ -91,6 +95,27 @@ class TestRegistration extends Specification {
 
         where:
         password << [null, ""]
+    }
+
+    def "registration without email"() {
+        given: "username and password"
+        def username = DataGenerator.createValidUsername()
+        def password = DataGenerator.createValidPassword()
+
+        when: "request is sent"
+        RequestUtils.getRestClient().post(
+                path: PATH,
+                body: [username: username,
+                       password: password,
+                       email: email],
+                requestContentType : ContentType.JSON)
+
+        then: "response is correct"
+        HttpResponseException e = thrown(HttpResponseException)
+        assert e.response.status == 400
+
+        where:
+        email << [null, ""]
     }
 
     def "registration with invalid data"() {
@@ -110,16 +135,37 @@ class TestRegistration extends Specification {
         password << [RandomStringUtils.randomAlphabetic(256), DataGenerator.createValidPassword()]
     }
 
-    def "already existing user registration"() {
+    def "registration with existing username"() {
         given: "user"
         def user = new TestUser().register()
         def password = DataGenerator.createValidPassword()
+        def email = DataGenerator.createValidEmail()
 
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
                 body:  [username: user.username,
-                        password: password],
+                        password: password,
+                        email: email],
+                requestContentType : ContentType.JSON)
+
+        then: "response is correct"
+        HttpResponseException e = thrown(HttpResponseException)
+        assert e.response.status == 400
+    }
+
+    def "registration with existing email"() {
+        given: "user"
+        def user = new TestUser().register()
+        def username = DataGenerator.createValidUsername()
+        def password = DataGenerator.createValidPassword()
+
+        when: "request is sent"
+        RequestUtils.getRestClient().post(
+                path: PATH,
+                body:  [username: username,
+                        password: password,
+                        email: user.email],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"

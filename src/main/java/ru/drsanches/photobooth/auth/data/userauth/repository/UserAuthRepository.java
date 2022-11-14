@@ -13,4 +13,6 @@ public interface UserAuthRepository extends CrudRepository<UserAuth, String> {
     Optional<UserAuth> findByGoogleAuth(String googleAuth);
 
     boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
 }

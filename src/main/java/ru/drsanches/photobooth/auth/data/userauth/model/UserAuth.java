@@ -34,8 +34,7 @@ public class UserAuth {
     @ToString.Exclude
     private String salt;
 
-    //TODO: Make unique and test it for registration and email change
-    @Column
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(unique = true)

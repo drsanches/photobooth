@@ -26,6 +26,7 @@ public class RegistrationDTO {
     private String password;
 
     @Schema(maxLength = 255)
+    @NotEmpty
     @Length(max = 255)
     private String email;
 }
