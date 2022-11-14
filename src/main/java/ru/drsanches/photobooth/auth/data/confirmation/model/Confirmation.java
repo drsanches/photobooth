@@ -3,6 +3,7 @@ package ru.drsanches.photobooth.auth.data.confirmation.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ru.drsanches.photobooth.common.utils.GregorianCalendarConvertor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +18,7 @@ import java.util.GregorianCalendar;
 @Table(name="confirmation")
 public class Confirmation {
 
-    //TODO: Add userId and check it before operation
+    //TODO: Add userId to check it before operation and operationId for logging
 
     @Id
     @Column
@@ -28,8 +29,15 @@ public class Confirmation {
     private String code;
 
     @Column(nullable = false)
+    @ToString.Exclude
     private String data;
 
     @Column(nullable = false)
+    @ToString.Exclude
     private GregorianCalendar expiresAt;
+
+    @ToString.Include
+    private String expiresAt() {
+        return GregorianCalendarConvertor.convert(expiresAt);
+    }
 }

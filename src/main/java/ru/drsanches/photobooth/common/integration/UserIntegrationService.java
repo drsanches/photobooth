@@ -13,6 +13,8 @@ import ru.drsanches.photobooth.app.data.profile.repository.UserProfileRepository
 import ru.drsanches.photobooth.auth.service.utils.CredentialsHelper;
 import ru.drsanches.photobooth.common.token.data.Role;
 import ru.drsanches.photobooth.exception.application.UserAlreadyExistsException;
+import ru.drsanches.photobooth.exception.server.ServerError;
+
 import java.util.Optional;
 import java.util.UUID;
 
@@ -85,7 +87,7 @@ public class UserIntegrationService {
         UserProfile userProfile;
         if (optionalUserProfile.isEmpty()) {
             userProfile = new UserProfile();
-            log.error("User profile with id'" + userAuth.getId() + "' does not exist");
+            log.error("UserProfile with id '" + userAuth.getId() + "' does not exist");
         } else {
             userProfile = optionalUserProfile.get();
         }
@@ -95,6 +97,44 @@ public class UserIntegrationService {
             log.info("UserAuth and UserProfile has been updated: {}, {}", userAuth, userProfile);
         } catch(DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException(userAuth.getUsername(), userAuth.getEmail(), e);
+        }
+    }
+
+    /**
+     * Updates UserAuth and UserProfile in one transaction
+     */
+    public void disableUser(String userId) {
+        Optional<UserAuth> optionalUserAuth = userAuthRepository.findById(userId);
+        UserAuth userAuth;
+        if (optionalUserAuth.isPresent()) {
+            userAuth = optionalUserAuth.get();
+            userAuth.setEnabled(false);
+            userAuth.setUsername(UUID.randomUUID().toString() + "_" + userAuth.getUsername());
+            userAuth.setEmail(UUID.randomUUID().toString() + "_" + userAuth.getEmail());
+            userAuth.setGoogleAuth(UUID.randomUUID().toString() + "_" + userAuth.getGoogleAuth());
+        } else {
+            log.error("UserAuth with id '{}' does not exist", userId);
+            userAuth = new UserAuth();
+            userAuth.setId(userId);
+            userAuth.setUsername(UUID.randomUUID().toString());
+            userAuth.setEmail(UUID.randomUUID().toString());
+            userAuth.setEnabled(false);
+            userAuth.setRole(Role.USER);
+        }
+        Optional<UserProfile> optionalUserProfile = userProfileRepository.findById(userId);
+        UserProfile userProfile;
+        if (optionalUserProfile.isPresent()) {
+            userProfile = optionalUserProfile.get();
+        } else {
+            userProfile = new UserProfile();
+            log.error("UserProfile with id '" + userAuth.getId() + "' does not exist");
+        }
+        copy(userAuth, userProfile);
+        try {
+            save(userAuth, userProfile);
+            log.info("UserAuth and UserProfile has been disabled: {}, {}", userAuth, userProfile);
+        } catch(DataIntegrityViolationException e) {
+            throw new ServerError("User disable error", e);
         }
     }
 

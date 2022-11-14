@@ -218,16 +218,8 @@ public class UserAuthWebService {
 
     public void disableUser() {
         String userId = tokenSupplier.get().getUserId();
-        UserAuth current = userAuthDomainService.getEnabledById(userId);
         tokenService.removeAllTokens(userId);
-
-        //TODO: Move this logic to the domain layer
-        current.setEnabled(false);
-        current.setUsername(UUID.randomUUID().toString() + "_" + current.getUsername());
-        current.setEmail(UUID.randomUUID().toString() + "_" + current.getEmail());
-        current.setGoogleAuth(UUID.randomUUID().toString() + "_" + current.getGoogleAuth());
-
-        userIntegrationService.updateUser(current);
-        log.info("User with id '{}' has been disabled", current.getId());
+        userIntegrationService.disableUser(userId);
+        log.info("User with id '{}' has been disabled", userId);
     }
 }
