@@ -7,6 +7,8 @@ import ru.drsanches.photobooth.common.utils.GregorianCalendarConvertor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.GregorianCalendar;
@@ -18,8 +20,6 @@ import java.util.GregorianCalendar;
 @Table(name="confirmation")
 public class Confirmation {
 
-    //TODO: Add userId to check it before operation and operationId for logging
-
     @Id
     @Column
     private String id;
@@ -27,6 +27,13 @@ public class Confirmation {
     @Column(unique = true, nullable = false)
     @ToString.Exclude
     private String code;
+
+    @Column
+    private String userId;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Operation operation;
 
     @Column(nullable = false)
     @ToString.Exclude

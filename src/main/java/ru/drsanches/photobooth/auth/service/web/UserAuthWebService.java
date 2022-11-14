@@ -17,6 +17,7 @@ import ru.drsanches.photobooth.auth.data.common.dto.response.TokenDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.response.UserAuthInfoDTO;
 import ru.drsanches.photobooth.auth.data.common.confirm.ChangeUsernameConfirmData;
 import ru.drsanches.photobooth.auth.data.confirmation.model.Confirmation;
+import ru.drsanches.photobooth.auth.data.confirmation.model.Operation;
 import ru.drsanches.photobooth.auth.service.domain.ConfirmationDomainService;
 import ru.drsanches.photobooth.auth.service.domain.UserAuthDomainService;
 import ru.drsanches.photobooth.auth.service.utils.CredentialsHelper;
@@ -36,6 +37,7 @@ import ru.drsanches.photobooth.common.token.data.TokenMapper;
 import javax.validation.Valid;
 import java.util.UUID;
 
+//TODO: Check userId before operation confirm
 @Slf4j
 @Service
 @Validated
@@ -80,7 +82,7 @@ public class UserAuthWebService {
                 .salt(salt)
                 .build();
         String data = stringSerializer.serialize(registrationConfirmData);
-        Confirmation confirmation = confirmationDomainService.save(data);
+        Confirmation confirmation = confirmationDomainService.create(data, null, Operation.REGISTRATION);
         if (with2FA) {
             //TODO: Send email with confirmation code
         }
@@ -126,7 +128,8 @@ public class UserAuthWebService {
                 .username(changeUsernameDTO.getNewUsername())
                 .build();
         String data = stringSerializer.serialize(changeUsernameConfirmData);
-        Confirmation confirmation = confirmationDomainService.save(data);
+        String userId = tokenSupplier.get().getUserId();
+        Confirmation confirmation = confirmationDomainService.create(data, userId, Operation.USERNAME_CHANGE);
         if (with2FA) {
             //TODO: Send email with confirmation code
         }
@@ -156,7 +159,8 @@ public class UserAuthWebService {
                 .salt(salt)
                 .build();
         String data = stringSerializer.serialize(changePasswordConfirmData);
-        Confirmation confirmation = confirmationDomainService.save(data);
+        String userId = tokenSupplier.get().getUserId();
+        Confirmation confirmation = confirmationDomainService.create(data, userId, Operation.PASSWORD_CHANGE);
         if (with2FA) {
             //TODO: Send email with confirmation code
         }
@@ -184,7 +188,8 @@ public class UserAuthWebService {
                 .email(changeEmailDTO.getNewEmail())
                 .build();
         String data = stringSerializer.serialize(changeEmailConfirmData);
-        Confirmation confirmation = confirmationDomainService.save(data);
+        String userId = tokenSupplier.get().getUserId();
+        Confirmation confirmation = confirmationDomainService.create(data, userId, Operation.EMAIL_CHANGE);
         if (with2FA) {
             //TODO: Send email with confirmation code
         }
@@ -216,6 +221,7 @@ public class UserAuthWebService {
         tokenService.removeCurrentToken();
     }
 
+    //TODO: Refactor for 2FA
     public void disableUser() {
         String userId = tokenSupplier.get().getUserId();
         tokenService.removeAllTokens(userId);

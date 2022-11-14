@@ -43,7 +43,7 @@ public class UserAuth {
     @Column(nullable = false)
     private boolean enabled;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
 }

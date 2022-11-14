@@ -38,7 +38,7 @@ public class Token {
     @Column(nullable = false)
     private String userId;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
 }

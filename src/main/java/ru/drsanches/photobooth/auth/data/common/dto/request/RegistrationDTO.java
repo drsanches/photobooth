@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import ru.drsanches.photobooth.auth.validation.annotation.NonexistentEmail;
 import ru.drsanches.photobooth.auth.validation.annotation.NonexistentUsername;
 
 @Getter
@@ -28,5 +29,6 @@ public class RegistrationDTO {
     @Schema(maxLength = 255)
     @NotEmpty
     @Length(max = 255)
+    @NonexistentEmail
     private String email;
 }

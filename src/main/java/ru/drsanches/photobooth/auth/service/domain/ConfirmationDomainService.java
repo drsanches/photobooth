@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.drsanches.photobooth.auth.data.confirmation.model.Confirmation;
+import ru.drsanches.photobooth.auth.data.confirmation.model.Operation;
 import ru.drsanches.photobooth.auth.data.confirmation.repository.ConfirmationRepository;
 import ru.drsanches.photobooth.exception.auth.WrongConfirmCodeException;
 
@@ -22,10 +23,12 @@ public class ConfirmationDomainService {
     @Autowired
     private ConfirmationRepository confirmationRepository;
 
-    public Confirmation save(String data) {
+    public Confirmation create(String data, String userId, Operation operation) {
         Confirmation confirmation = new Confirmation();
         confirmation.setId(UUID.randomUUID().toString());
         confirmation.setCode(UUID.randomUUID().toString());
+        confirmation.setUserId(userId);
+        confirmation.setOperation(operation);
         confirmation.setData(data);
         GregorianCalendar expiresAt = new GregorianCalendar();
         expiresAt.add(CALENDAR_FIELD, CALENDAR_VALUE);
