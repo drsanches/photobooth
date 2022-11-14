@@ -2,8 +2,8 @@ package ru.drsanches.photobooth.auth.service.domain;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.drsanches.photobooth.auth.data.model.Confirmation;
-import ru.drsanches.photobooth.auth.data.repository.ConfirmationRepository;
+import ru.drsanches.photobooth.auth.data.confirmation.model.Confirmation;
+import ru.drsanches.photobooth.auth.data.confirmation.repository.ConfirmationRepository;
 import ru.drsanches.photobooth.exception.auth.WrongConfirmCodeException;
 
 import java.util.GregorianCalendar;

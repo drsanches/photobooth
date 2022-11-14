@@ -1,8 +1,8 @@
-package ru.drsanches.photobooth.auth.data.mapper;
+package ru.drsanches.photobooth.auth.data.userauth.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.drsanches.photobooth.auth.data.dto.response.UserAuthInfoDTO;
-import ru.drsanches.photobooth.auth.data.model.UserAuth;
+import ru.drsanches.photobooth.auth.data.common.dto.response.UserAuthInfoDTO;
+import ru.drsanches.photobooth.auth.data.userauth.model.UserAuth;
 
 @Component
 public class UserAuthInfoMapper {

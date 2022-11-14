@@ -1,4 +1,4 @@
-package ru.drsanches.photobooth.auth.data.dto.request;
+package ru.drsanches.photobooth.auth.data.common.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

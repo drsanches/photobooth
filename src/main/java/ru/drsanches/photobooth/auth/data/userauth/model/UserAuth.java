@@ -1,4 +1,4 @@
-package ru.drsanches.photobooth.auth.data.model;
+package ru.drsanches.photobooth.auth.data.userauth.model;
 
 import lombok.Getter;
 import lombok.Setter;

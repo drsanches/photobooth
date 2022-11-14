@@ -1,8 +1,8 @@
-package ru.drsanches.photobooth.auth.data.repository;
+package ru.drsanches.photobooth.auth.data.userauth.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import ru.drsanches.photobooth.auth.data.model.UserAuth;
+import ru.drsanches.photobooth.auth.data.userauth.model.UserAuth;
 import java.util.Optional;
 
 @Repository

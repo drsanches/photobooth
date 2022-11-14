@@ -1,4 +1,4 @@
-package ru.drsanches.photobooth.auth.data.dto;
+package ru.drsanches.photobooth.auth.data.confirmation.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

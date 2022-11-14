@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import ru.drsanches.photobooth.auth.data.dto.request.GoogleAccessTokenDTO;
-import ru.drsanches.photobooth.auth.data.dto.response.TokenDTO;
-import ru.drsanches.photobooth.auth.data.model.UserAuth;
+import ru.drsanches.photobooth.auth.data.common.dto.request.GoogleAccessTokenDTO;
+import ru.drsanches.photobooth.auth.data.common.dto.response.TokenDTO;
+import ru.drsanches.photobooth.auth.data.userauth.model.UserAuth;
 import ru.drsanches.photobooth.auth.service.domain.UserAuthDomainService;
 import ru.drsanches.photobooth.auth.service.utils.GoogleAccessTokenValidator;
 import ru.drsanches.photobooth.common.integration.UserIntegrationService;
@@ -15,7 +15,6 @@ import ru.drsanches.photobooth.common.token.data.Token;
 import ru.drsanches.photobooth.common.token.data.TokenMapper;
 
 import javax.validation.Valid;
-import java.util.UUID;
 
 @Slf4j
 @Service
