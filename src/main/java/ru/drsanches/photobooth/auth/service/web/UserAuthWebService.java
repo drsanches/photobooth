@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import ru.drsanches.photobooth.auth.data.common.serializetion.ChangeEmailData;
 import ru.drsanches.photobooth.auth.data.common.serializetion.ChangePasswordData;
 import ru.drsanches.photobooth.auth.data.common.serializetion.RegistrationData;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangeEmailDTO;
@@ -179,13 +180,31 @@ public class UserAuthWebService {
     }
 
     public void changeEmail(@Valid ChangeEmailDTO changeEmailDTO) {
+        ChangeEmailData changeEmailData = ChangeEmailData.builder()
+                .email(changeEmailDTO.getNewEmail())
+                .build();
+        String data = stringSerializer.serialize(changeEmailData);
+        String code = confirmationDomainService.save(data);
+        if (with2FA) {
+            //TODO: Send email with confirmation code
+        }
+        log.info("New email changing process has been started: {}", changeEmailData);
+        if (!with2FA) {
+            changeEmailConfirm(code);
+        }
+    }
+
+    public void changeEmailConfirm(String code) {
+        Confirmation confirmation = confirmationDomainService.getNotExpired(code);
+        ChangeEmailData changeEmailData = stringSerializer.deserialize(confirmation.getData(), ChangeEmailData.class);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        if (current.getEmail().equals(changeEmailDTO.getNewEmail())) {
+        if (current.getEmail().equals(changeEmailData.getEmail())) { //TODO: Move to changeEmail
             throw new ApplicationException("New email is equal to old");
         }
-        current.setEmail(changeEmailDTO.getNewEmail());
+        current.setEmail(changeEmailData.getEmail());
         userAuthDomainService.save(current);
+        confirmationDomainService.delete(code);
         log.info("User with id '{}' changed email", current.getId());
     }
 
