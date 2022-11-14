@@ -27,7 +27,6 @@ import ru.drsanches.photobooth.auth.service.utils.StringSerializer;
 import ru.drsanches.photobooth.exception.application.NoUsernameException;
 import ru.drsanches.photobooth.exception.auth.WrongPasswordException;
 import ru.drsanches.photobooth.exception.auth.WrongUsernamePasswordException;
-import ru.drsanches.photobooth.exception.application.ApplicationException;
 import ru.drsanches.photobooth.common.integration.UserIntegrationService;
 import ru.drsanches.photobooth.common.token.TokenService;
 import ru.drsanches.photobooth.common.token.TokenSupplier;
@@ -204,9 +203,6 @@ public class UserAuthWebService {
         ChangeEmailConfirmData changeEmailConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangeEmailConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        if (current.getEmail().equals(changeEmailConfirmData.getEmail())) { //TODO: Move to changeEmail
-            throw new ApplicationException("New email is equal to old");
-        }
         current.setEmail(changeEmailConfirmData.getEmail());
         userAuthDomainService.save(current);
         confirmationDomainService.delete(confirmation.getId());
@@ -221,11 +217,24 @@ public class UserAuthWebService {
         tokenService.removeCurrentToken();
     }
 
-    //TODO: Refactor for 2FA
     public void disableUser() {
         String userId = tokenSupplier.get().getUserId();
-        tokenService.removeAllTokens(userId);
+        Confirmation confirmation = confirmationDomainService.create(null, userId, Operation.DISABLE);
+        if (with2FA) {
+            //TODO: Send email with confirmation code
+        }
+        log.info("New user disabling process has been started for user with id = {}", userId);
+        if (!with2FA) {
+            disableUserConfirm(confirmation.getCode());
+        }
+    }
+
+    public void disableUserConfirm(String code) {
+        Confirmation confirmation = confirmationDomainService.getNotExpired(code);
+        String userId = tokenSupplier.get().getUserId();
         userIntegrationService.disableUser(userId);
+        confirmationDomainService.delete(confirmation.getId());
+        tokenService.removeAllTokens(userId);
         log.info("User with id '{}' has been disabled", userId);
     }
 }

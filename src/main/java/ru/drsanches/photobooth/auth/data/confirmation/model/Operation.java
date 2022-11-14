@@ -6,5 +6,5 @@ public enum Operation {
     USERNAME_CHANGE,
     PASSWORD_CHANGE,
     EMAIL_CHANGE,
-    DELETION
+    DISABLE
 }

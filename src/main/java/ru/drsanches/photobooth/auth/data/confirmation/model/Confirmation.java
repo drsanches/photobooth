@@ -35,7 +35,7 @@ public class Confirmation {
     @Enumerated(EnumType.STRING)
     private Operation operation;
 
-    @Column(nullable = false)
+    @Column
     @ToString.Exclude
     private String data;
 
