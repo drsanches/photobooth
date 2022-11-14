@@ -39,7 +39,7 @@ public class DefaultImageInitializer implements Initializer {
             return;
         }
         byte[] image = Base64.getDecoder().decode(imageData);
-        imageDomainService.saveImage(image, "system");
+        imageDomainService.saveSystemImage(imageId, image);
         log.info("Image with id '{}' has been initialized", imageId);
     }
 }

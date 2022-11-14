@@ -37,6 +37,18 @@ public class ImageDomainService {
         return savedImage;
     }
 
+    public Image saveSystemImage(String id, byte[] imageData) {
+        Image image = new Image();
+        image.setId(id);
+        image.setData(imageData);
+        image.setThumbnailData(imageConverter.toThumbnail(imageData));
+        image.setOwnerId("system");
+        image.setCreatedTime(new GregorianCalendar());
+        Image savedImage = imageRepository.save(image);
+        log.info("New image has been saved: {}", savedImage);
+        return savedImage;
+    }
+
     public Image getImage(String imageId) {
         Optional<Image> image = imageRepository.findById(imageId);
         if (image.isEmpty()) {
