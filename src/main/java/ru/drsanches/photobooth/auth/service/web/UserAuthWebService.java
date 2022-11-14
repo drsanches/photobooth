@@ -80,12 +80,12 @@ public class UserAuthWebService {
                 .salt(salt)
                 .build();
         String data = stringSerializer.serialize(registrationData);
-        String code = confirmationDomainService.save(data);
+        Confirmation confirmation = confirmationDomainService.save(data);
         if (with2FA) {
             //TODO: Send email with confirmation code
         }
         log.info("New user registration process has been started: {}", registrationData);
-        return with2FA ? null : registrationConfirm(code);
+        return with2FA ? null : registrationConfirm(confirmation.getCode());
     }
 
     public TokenDTO registrationConfirm(String code) {
@@ -97,7 +97,7 @@ public class UserAuthWebService {
                 registrationData.getEncryptedPassword(),
                 registrationData.getSalt()
         );
-        confirmationDomainService.delete(code);
+        confirmationDomainService.delete(confirmation.getId());
         Token token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
         log.info("New user with id '{}' has been created", userAuth.getId());
         return tokenMapper.convert(token);
@@ -126,13 +126,13 @@ public class UserAuthWebService {
                 .username(changeUsernameDTO.getNewUsername())
                 .build();
         String data = stringSerializer.serialize(changeUsernameData);
-        String code = confirmationDomainService.save(data);
+        Confirmation confirmation = confirmationDomainService.save(data);
         if (with2FA) {
             //TODO: Send email with confirmation code
         }
         log.info("New username changing process has been started: {}", changeUsernameData);
         if (!with2FA) {
-            changeUsernameConfirm(code);
+            changeUsernameConfirm(confirmation.getCode());
         }
     }
 
@@ -144,7 +144,7 @@ public class UserAuthWebService {
         String oldUsername = current.getUsername();
         current.setUsername(changeUsernameData.getUsername());
         userIntegrationService.updateUser(current);
-        confirmationDomainService.delete(code);
+        confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User with id '{}' changed username from '{}' to '{}'", current.getId(), oldUsername, current.getUsername());
     }
@@ -156,13 +156,13 @@ public class UserAuthWebService {
                 .salt(salt)
                 .build();
         String data = stringSerializer.serialize(changePasswordData);
-        String code = confirmationDomainService.save(data);
+        Confirmation confirmation = confirmationDomainService.save(data);
         if (with2FA) {
             //TODO: Send email with confirmation code
         }
         log.info("New password changing process has been started: {}", changePasswordData);
         if (!with2FA) {
-            changePasswordConfirm(code);
+            changePasswordConfirm(confirmation.getCode());
         }
     }
 
@@ -174,7 +174,7 @@ public class UserAuthWebService {
         current.setSalt(changePasswordData.getSalt());
         current.setPassword(changePasswordData.getEncryptedPassword());
         userAuthDomainService.save(current);
-        confirmationDomainService.delete(code);
+        confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User with id '{}' changed password", current.getId());
     }
@@ -184,13 +184,13 @@ public class UserAuthWebService {
                 .email(changeEmailDTO.getNewEmail())
                 .build();
         String data = stringSerializer.serialize(changeEmailData);
-        String code = confirmationDomainService.save(data);
+        Confirmation confirmation = confirmationDomainService.save(data);
         if (with2FA) {
             //TODO: Send email with confirmation code
         }
         log.info("New email changing process has been started: {}", changeEmailData);
         if (!with2FA) {
-            changeEmailConfirm(code);
+            changeEmailConfirm(confirmation.getCode());
         }
     }
 
@@ -204,7 +204,7 @@ public class UserAuthWebService {
         }
         current.setEmail(changeEmailData.getEmail());
         userAuthDomainService.save(current);
-        confirmationDomainService.delete(code);
+        confirmationDomainService.delete(confirmation.getId());
         log.info("User with id '{}' changed email", current.getId());
     }
 

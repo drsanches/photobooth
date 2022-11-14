@@ -17,11 +17,12 @@ import java.util.GregorianCalendar;
 @Table(name="confirmation")
 public class Confirmation {
 
-    //TODO: Add userId and operation name and check it in web service
-    //TODO: Use a specialized id field
-
     @Id
     @Column
+    private String id;
+
+    @Column(unique = true, nullable = false)
+    @ToString.Exclude
     private String code;
 
     @Column(nullable = false)
