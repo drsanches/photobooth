@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import ru.drsanches.photobooth.auth.data.common.serializetion.ChangeEmailData;
-import ru.drsanches.photobooth.auth.data.common.serializetion.ChangePasswordData;
-import ru.drsanches.photobooth.auth.data.common.serializetion.RegistrationData;
+import ru.drsanches.photobooth.auth.data.common.confirm.ChangeEmailConfirmData;
+import ru.drsanches.photobooth.auth.data.common.confirm.ChangePasswordConfirmData;
+import ru.drsanches.photobooth.auth.data.common.confirm.RegistrationConfirmData;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangeEmailDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangePasswordDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangeUsernameDTO;
@@ -15,7 +15,7 @@ import ru.drsanches.photobooth.auth.data.common.dto.request.LoginDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.RegistrationDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.response.TokenDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.response.UserAuthInfoDTO;
-import ru.drsanches.photobooth.auth.data.common.serializetion.ChangeUsernameData;
+import ru.drsanches.photobooth.auth.data.common.confirm.ChangeUsernameConfirmData;
 import ru.drsanches.photobooth.auth.data.confirmation.model.Confirmation;
 import ru.drsanches.photobooth.auth.service.domain.ConfirmationDomainService;
 import ru.drsanches.photobooth.auth.service.domain.UserAuthDomainService;
@@ -73,29 +73,29 @@ public class UserAuthWebService {
 
     public TokenDTO registration(@Valid RegistrationDTO registrationDTO) {
         String salt = UUID.randomUUID().toString();
-        RegistrationData registrationData = RegistrationData.builder()
+        RegistrationConfirmData registrationConfirmData = RegistrationConfirmData.builder()
                 .username(registrationDTO.getUsername())
                 .email(registrationDTO.getEmail())
                 .encryptedPassword(credentialsHelper.encodePassword(registrationDTO.getPassword(), salt))
                 .salt(salt)
                 .build();
-        String data = stringSerializer.serialize(registrationData);
+        String data = stringSerializer.serialize(registrationConfirmData);
         Confirmation confirmation = confirmationDomainService.save(data);
         if (with2FA) {
             //TODO: Send email with confirmation code
         }
-        log.info("New user registration process has been started: {}", registrationData);
+        log.info("New user registration process has been started: {}", registrationConfirmData);
         return with2FA ? null : registrationConfirm(confirmation.getCode());
     }
 
     public TokenDTO registrationConfirm(String code) {
         Confirmation confirmation = confirmationDomainService.getNotExpired(code);
-        RegistrationData registrationData = stringSerializer.deserialize(confirmation.getData(), RegistrationData.class);
+        RegistrationConfirmData registrationConfirmData = stringSerializer.deserialize(confirmation.getData(), RegistrationConfirmData.class);
         UserAuth userAuth = userIntegrationService.createUser(
-                registrationData.getUsername(),
-                registrationData.getEmail(),
-                registrationData.getEncryptedPassword(),
-                registrationData.getSalt()
+                registrationConfirmData.getUsername(),
+                registrationConfirmData.getEmail(),
+                registrationConfirmData.getEncryptedPassword(),
+                registrationConfirmData.getSalt()
         );
         confirmationDomainService.delete(confirmation.getId());
         Token token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
@@ -122,15 +122,15 @@ public class UserAuthWebService {
     }
 
     public void changeUsername(@Valid ChangeUsernameDTO changeUsernameDTO) {
-        ChangeUsernameData changeUsernameData = ChangeUsernameData.builder()
+        ChangeUsernameConfirmData changeUsernameConfirmData = ChangeUsernameConfirmData.builder()
                 .username(changeUsernameDTO.getNewUsername())
                 .build();
-        String data = stringSerializer.serialize(changeUsernameData);
+        String data = stringSerializer.serialize(changeUsernameConfirmData);
         Confirmation confirmation = confirmationDomainService.save(data);
         if (with2FA) {
             //TODO: Send email with confirmation code
         }
-        log.info("New username changing process has been started: {}", changeUsernameData);
+        log.info("New username changing process has been started: {}", changeUsernameConfirmData);
         if (!with2FA) {
             changeUsernameConfirm(confirmation.getCode());
         }
@@ -138,11 +138,11 @@ public class UserAuthWebService {
 
     public void changeUsernameConfirm(String code) {
         Confirmation confirmation = confirmationDomainService.getNotExpired(code);
-        ChangeUsernameData changeUsernameData = stringSerializer.deserialize(confirmation.getData(), ChangeUsernameData.class);
+        ChangeUsernameConfirmData changeUsernameConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangeUsernameConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
         String oldUsername = current.getUsername();
-        current.setUsername(changeUsernameData.getUsername());
+        current.setUsername(changeUsernameConfirmData.getUsername());
         userIntegrationService.updateUser(current);
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
@@ -151,16 +151,16 @@ public class UserAuthWebService {
 
     public void changePassword(@Valid ChangePasswordDTO changePasswordDTO) {
         String salt = UUID.randomUUID().toString();
-        ChangePasswordData changePasswordData = ChangePasswordData.builder()
+        ChangePasswordConfirmData changePasswordConfirmData = ChangePasswordConfirmData.builder()
                 .encryptedPassword(credentialsHelper.encodePassword(changePasswordDTO.getNewPassword(), salt))
                 .salt(salt)
                 .build();
-        String data = stringSerializer.serialize(changePasswordData);
+        String data = stringSerializer.serialize(changePasswordConfirmData);
         Confirmation confirmation = confirmationDomainService.save(data);
         if (with2FA) {
             //TODO: Send email with confirmation code
         }
-        log.info("New password changing process has been started: {}", changePasswordData);
+        log.info("New password changing process has been started: {}", changePasswordConfirmData);
         if (!with2FA) {
             changePasswordConfirm(confirmation.getCode());
         }
@@ -168,11 +168,11 @@ public class UserAuthWebService {
 
     public void changePasswordConfirm(String code) {
         Confirmation confirmation = confirmationDomainService.getNotExpired(code);
-        ChangePasswordData changePasswordData = stringSerializer.deserialize(confirmation.getData(), ChangePasswordData.class);
+        ChangePasswordConfirmData changePasswordConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangePasswordConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        current.setSalt(changePasswordData.getSalt());
-        current.setPassword(changePasswordData.getEncryptedPassword());
+        current.setSalt(changePasswordConfirmData.getSalt());
+        current.setPassword(changePasswordConfirmData.getEncryptedPassword());
         userAuthDomainService.save(current);
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
@@ -180,15 +180,15 @@ public class UserAuthWebService {
     }
 
     public void changeEmail(@Valid ChangeEmailDTO changeEmailDTO) {
-        ChangeEmailData changeEmailData = ChangeEmailData.builder()
+        ChangeEmailConfirmData changeEmailConfirmData = ChangeEmailConfirmData.builder()
                 .email(changeEmailDTO.getNewEmail())
                 .build();
-        String data = stringSerializer.serialize(changeEmailData);
+        String data = stringSerializer.serialize(changeEmailConfirmData);
         Confirmation confirmation = confirmationDomainService.save(data);
         if (with2FA) {
             //TODO: Send email with confirmation code
         }
-        log.info("New email changing process has been started: {}", changeEmailData);
+        log.info("New email changing process has been started: {}", changeEmailConfirmData);
         if (!with2FA) {
             changeEmailConfirm(confirmation.getCode());
         }
@@ -196,13 +196,13 @@ public class UserAuthWebService {
 
     public void changeEmailConfirm(String code) {
         Confirmation confirmation = confirmationDomainService.getNotExpired(code);
-        ChangeEmailData changeEmailData = stringSerializer.deserialize(confirmation.getData(), ChangeEmailData.class);
+        ChangeEmailConfirmData changeEmailConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangeEmailConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        if (current.getEmail().equals(changeEmailData.getEmail())) { //TODO: Move to changeEmail
+        if (current.getEmail().equals(changeEmailConfirmData.getEmail())) { //TODO: Move to changeEmail
             throw new ApplicationException("New email is equal to old");
         }
-        current.setEmail(changeEmailData.getEmail());
+        current.setEmail(changeEmailConfirmData.getEmail());
         userAuthDomainService.save(current);
         confirmationDomainService.delete(confirmation.getId());
         log.info("User with id '{}' changed email", current.getId());

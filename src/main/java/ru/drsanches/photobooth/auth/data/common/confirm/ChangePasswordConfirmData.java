@@ -1,4 +1,4 @@
-package ru.drsanches.photobooth.auth.data.common.serializetion;
+package ru.drsanches.photobooth.auth.data.common.confirm;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class ChangeUsernameData {
+public class ChangePasswordConfirmData {
 
-    private String username;
+    private String encryptedPassword;
+
+    private String salt;
 }
