@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import ru.drsanches.photobooth.auth.data.confirmation.model.RegistrationData;
+import ru.drsanches.photobooth.auth.data.common.serializetion.RegistrationData;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangeEmailDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangePasswordDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangeUsernameDTO;
@@ -13,6 +13,7 @@ import ru.drsanches.photobooth.auth.data.common.dto.request.LoginDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.RegistrationDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.response.TokenDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.response.UserAuthInfoDTO;
+import ru.drsanches.photobooth.auth.data.common.serializetion.ChangeUsernameData;
 import ru.drsanches.photobooth.auth.data.confirmation.model.Confirmation;
 import ru.drsanches.photobooth.auth.service.domain.ConfirmationDomainService;
 import ru.drsanches.photobooth.auth.service.domain.UserAuthDomainService;
@@ -119,11 +120,29 @@ public class UserAuthWebService {
     }
 
     public void changeUsername(@Valid ChangeUsernameDTO changeUsernameDTO) {
+        ChangeUsernameData changeUsernameData = ChangeUsernameData.builder()
+                .username(changeUsernameDTO.getNewUsername())
+                .build();
+        String data = stringSerializer.serialize(changeUsernameData);
+        String code = confirmationDomainService.save(data);
+        if (with2FA) {
+            //TODO: Send email with confirmation code
+        }
+        log.info("New username changing process has been started: {}", changeUsernameData);
+        if (!with2FA) {
+            changeUsernameConfirm(code);
+        }
+    }
+
+    public void changeUsernameConfirm(String code) {
+        Confirmation confirmation = confirmationDomainService.getNotExpired(code);
+        ChangeUsernameData changeUsernameData = stringSerializer.deserialize(confirmation.getData(), ChangeUsernameData.class);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
         String oldUsername = current.getUsername();
-        current.setUsername(changeUsernameDTO.getNewUsername());
+        current.setUsername(changeUsernameData.getUsername());
         userIntegrationService.updateUser(current);
+        confirmationDomainService.delete(code);
         tokenService.removeAllTokens(userId);
         log.info("User with id '{}' changed username from '{}' to '{}'", current.getId(), oldUsername, current.getUsername());
     }
