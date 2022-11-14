@@ -18,6 +18,7 @@ import java.util.GregorianCalendar;
 public class Confirmation {
 
     //TODO: Add userId and operation name and check it in web service
+    //TODO: Use a specialized id field
 
     @Id
     @Column

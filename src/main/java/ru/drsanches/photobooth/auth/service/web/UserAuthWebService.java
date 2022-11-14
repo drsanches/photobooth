@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import ru.drsanches.photobooth.auth.data.common.serializetion.ChangePasswordData;
 import ru.drsanches.photobooth.auth.data.common.serializetion.RegistrationData;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangeEmailDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangePasswordDTO;
@@ -148,11 +149,31 @@ public class UserAuthWebService {
     }
 
     public void changePassword(@Valid ChangePasswordDTO changePasswordDTO) {
+        String salt = UUID.randomUUID().toString();
+        ChangePasswordData changePasswordData = ChangePasswordData.builder()
+                .encryptedPassword(credentialsHelper.encodePassword(changePasswordDTO.getNewPassword(), salt))
+                .salt(salt)
+                .build();
+        String data = stringSerializer.serialize(changePasswordData);
+        String code = confirmationDomainService.save(data);
+        if (with2FA) {
+            //TODO: Send email with confirmation code
+        }
+        log.info("New password changing process has been started: {}", changePasswordData);
+        if (!with2FA) {
+            changePasswordConfirm(code);
+        }
+    }
+
+    public void changePasswordConfirm(String code) {
+        Confirmation confirmation = confirmationDomainService.getNotExpired(code);
+        ChangePasswordData changePasswordData = stringSerializer.deserialize(confirmation.getData(), ChangePasswordData.class);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        current.setSalt(UUID.randomUUID().toString());
-        current.setPassword(credentialsHelper.encodePassword(changePasswordDTO.getNewPassword(), current.getSalt()));
+        current.setSalt(changePasswordData.getSalt());
+        current.setPassword(changePasswordData.getEncryptedPassword());
         userAuthDomainService.save(current);
+        confirmationDomainService.delete(code);
         tokenService.removeAllTokens(userId);
         log.info("User with id '{}' changed password", current.getId());
     }
