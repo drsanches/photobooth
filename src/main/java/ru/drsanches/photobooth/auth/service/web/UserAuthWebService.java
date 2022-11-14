@@ -2,8 +2,10 @@ package ru.drsanches.photobooth.auth.service.web;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import ru.drsanches.photobooth.auth.data.dto.RegistrationData;
 import ru.drsanches.photobooth.auth.data.dto.request.ChangeEmailDTO;
 import ru.drsanches.photobooth.auth.data.dto.request.ChangePasswordDTO;
 import ru.drsanches.photobooth.auth.data.dto.request.ChangeUsernameDTO;
@@ -11,10 +13,13 @@ import ru.drsanches.photobooth.auth.data.dto.request.LoginDTO;
 import ru.drsanches.photobooth.auth.data.dto.request.RegistrationDTO;
 import ru.drsanches.photobooth.auth.data.dto.response.TokenDTO;
 import ru.drsanches.photobooth.auth.data.dto.response.UserAuthInfoDTO;
+import ru.drsanches.photobooth.auth.data.model.Confirmation;
+import ru.drsanches.photobooth.auth.service.domain.ConfirmationDomainService;
 import ru.drsanches.photobooth.auth.service.domain.UserAuthDomainService;
 import ru.drsanches.photobooth.auth.service.utils.CredentialsHelper;
 import ru.drsanches.photobooth.auth.data.mapper.UserAuthInfoMapper;
 import ru.drsanches.photobooth.auth.data.model.UserAuth;
+import ru.drsanches.photobooth.auth.service.utils.StringSerializer;
 import ru.drsanches.photobooth.exception.application.NoUsernameException;
 import ru.drsanches.photobooth.exception.auth.WrongPasswordException;
 import ru.drsanches.photobooth.exception.auth.WrongUsernamePasswordException;
@@ -24,6 +29,7 @@ import ru.drsanches.photobooth.common.token.TokenService;
 import ru.drsanches.photobooth.common.token.TokenSupplier;
 import ru.drsanches.photobooth.common.token.data.Token;
 import ru.drsanches.photobooth.common.token.data.TokenMapper;
+
 import javax.validation.Valid;
 import java.util.UUID;
 
@@ -34,6 +40,9 @@ public class UserAuthWebService {
 
     @Autowired
     private UserAuthDomainService userAuthDomainService;
+
+    @Autowired
+    private ConfirmationDomainService confirmationDomainService;
 
     @Autowired
     private UserIntegrationService userIntegrationService;
@@ -51,14 +60,41 @@ public class UserAuthWebService {
     private TokenMapper tokenMapper;
 
     @Autowired
+    private StringSerializer stringSerializer;
+
+    @Autowired
     private UserAuthInfoMapper userAuthInfoMapper;
 
+    @Value("${application.2FA-enabled}")
+    private boolean with2FA;
+
     public TokenDTO registration(@Valid RegistrationDTO registrationDTO) {
+        String salt = UUID.randomUUID().toString();
+        RegistrationData registrationData = RegistrationData.builder()
+                .username(registrationDTO.getUsername())
+                .email(registrationDTO.getEmail())
+                .encryptedPassword(credentialsHelper.encodePassword(registrationDTO.getPassword(), salt))
+                .salt(salt)
+                .build();
+        String data = stringSerializer.serialize(registrationData);
+        String code = confirmationDomainService.save(data);
+        if (with2FA) {
+            //TODO: Send email with confirmation code
+        }
+        log.info("New user registration process has been started: {}", registrationData);
+        return with2FA ? null : registrationConfirm(code);
+    }
+
+    public TokenDTO registrationConfirm(String code) {
+        Confirmation confirmation = confirmationDomainService.getNotExpired(code);
+        RegistrationData registrationData = stringSerializer.deserialize(confirmation.getData(), RegistrationData.class);
         UserAuth userAuth = userIntegrationService.createUser(
-                registrationDTO.getUsername(),
-                registrationDTO.getPassword(),
-                registrationDTO.getEmail()
+                registrationData.getUsername(),
+                registrationData.getEmail(),
+                registrationData.getEncryptedPassword(),
+                registrationData.getSalt()
         );
+        confirmationDomainService.delete(code);
         Token token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
         log.info("New user with id '{}' has been created", userAuth.getId());
         return tokenMapper.convert(token);

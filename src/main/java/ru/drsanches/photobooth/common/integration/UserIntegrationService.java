@@ -35,12 +35,12 @@ public class UserIntegrationService {
     @Autowired
     private CredentialsHelper credentialsHelper;
 
-    public UserAuth createUser(String username, String password, String email) {
+    public UserAuth createUser(String username, String email, String encryptedPassword, String salt) {
         UserAuth userAuth = new UserAuth();
         userAuth.setId(UUID.randomUUID().toString());
         userAuth.setUsername(username.toLowerCase());
-        userAuth.setSalt(UUID.randomUUID().toString());
-        userAuth.setPassword(credentialsHelper.encodePassword(password, userAuth.getSalt()));
+        userAuth.setPassword(encryptedPassword);
+        userAuth.setSalt(salt);
         userAuth.setEmail(email);
         userAuth.setEnabled(true);
         userAuth.setRole(Role.USER);

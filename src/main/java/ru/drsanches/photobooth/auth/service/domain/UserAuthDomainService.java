@@ -38,6 +38,10 @@ public class UserAuthDomainService {
         return user.get();
     }
 
+    public boolean existsByUsername(String username) {
+        return userAuthRepository.existsByUsername(username);
+    }
+
     public UserAuth getEnabledByGoogleAuth(String googleAuth) {
         Optional<UserAuth> user = userAuthRepository.findByGoogleAuth(googleAuth);
         if (user.isEmpty() || !user.get().isEnabled()) {
