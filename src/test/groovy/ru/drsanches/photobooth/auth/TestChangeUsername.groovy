@@ -62,6 +62,23 @@ class TestChangeUsername extends Specification {
         assert e.response.status == 400
     }
 
+    def "username change with existent username"() {
+        given: "user"
+        def user1 = new TestUser().register()
+        def user2 = new TestUser().register()
+
+        when: "request is sent"
+        RequestUtils.getRestClient().put(
+                path: PATH,
+                headers: ["Authorization": "Bearer $user1.token"],
+                body:  [newUsername: user2.username],
+                requestContentType : ContentType.JSON)
+
+        then: "response is correct"
+        HttpResponseException e = thrown(HttpResponseException)
+        assert e.response.status == 400
+    }
+
     def "username change without username"() {
         given: "user"
         def user = new TestUser().register()

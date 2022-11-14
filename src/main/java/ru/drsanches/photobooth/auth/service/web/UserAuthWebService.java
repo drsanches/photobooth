@@ -122,9 +122,6 @@ public class UserAuthWebService {
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
         String oldUsername = current.getUsername();
-        if (changeUsernameDTO.getNewUsername().equals(oldUsername)) {
-            throw new ApplicationException("New username is equal to old");
-        }
         current.setUsername(changeUsernameDTO.getNewUsername());
         userIntegrationService.updateUser(current);
         tokenService.removeAllTokens(userId);

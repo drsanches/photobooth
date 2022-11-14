@@ -87,8 +87,12 @@ public class UserIntegrationService {
             userProfile = optionalUserProfile.get();
         }
         copy(userAuth, userProfile);
-        save(userAuth, userProfile);
-        log.info("UserAuth and UserProfile has been updated: {}, {}", userAuth, userProfile);
+        try {
+            save(userAuth, userProfile);
+            log.info("UserAuth and UserProfile has been updated: {}, {}", userAuth, userProfile);
+        } catch(DataIntegrityViolationException e) {
+            throw new UserAlreadyExistsException(userAuth.getUsername(), e);
+        }
     }
 
     /**
