@@ -12,12 +12,12 @@ import javax.validation.constraints.Pattern;
 @Getter
 @Setter
 @ToString
-public class GoogleAccessTokenDTO {
+public class GoogleTokenDTO {
 
-    @Schema(required = true, description = "Google OAuth access token")
+    @Schema(required = true, description = "Google OAuth id token")
     @NotEmpty
-    @Length(max = 300) //TODO: determine the length
-    @Pattern(regexp = "ya29\\.[a-zA-Z0-9\\-_]*", message = "wrong google token format")
+//    @Length(max = 300) //TODO: determine the length
+//    @Pattern(regexp = "ya29\\.[a-zA-Z0-9\\-_]*", message = "wrong google token format") //TODO: Change
     @ToString.Exclude
-    private String accessToken;
+    private String idToken;
 }
