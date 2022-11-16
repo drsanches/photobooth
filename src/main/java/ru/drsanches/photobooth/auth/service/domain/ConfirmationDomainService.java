@@ -38,18 +38,12 @@ public class ConfirmationDomainService {
         return result;
     }
 
-    public Confirmation getNotExpired(String code) {
-        Optional<Confirmation> optionalConfirmation = confirmationRepository.findByCode(code);
-        if (optionalConfirmation.isEmpty()) {
+    public Confirmation get(String code) {
+        Optional<Confirmation> confirmation = confirmationRepository.findByCode(code);
+        if (confirmation.isEmpty()) {
             throw new WrongConfirmCodeException("Wrong confirmation code");
         }
-        Confirmation confirmation = optionalConfirmation.get();
-        if (confirmation.getExpiresAt().before(new GregorianCalendar())) {
-            confirmationRepository.delete(confirmation);
-            log.info("Expired Confirmation has been deleted: {}", confirmation);
-            throw new WrongConfirmCodeException("Confirmation code has been expired");
-        }
-        return confirmation;
+        return confirmation.get();
     }
 
     public void delete(String id) {

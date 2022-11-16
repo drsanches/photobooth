@@ -25,6 +25,7 @@ import ru.drsanches.photobooth.auth.data.userauth.mapper.UserAuthInfoMapper;
 import ru.drsanches.photobooth.auth.data.userauth.model.UserAuth;
 import ru.drsanches.photobooth.auth.service.utils.StringSerializer;
 import ru.drsanches.photobooth.exception.application.NoUsernameException;
+import ru.drsanches.photobooth.exception.auth.WrongConfirmCodeException;
 import ru.drsanches.photobooth.exception.auth.WrongPasswordException;
 import ru.drsanches.photobooth.exception.auth.WrongUsernamePasswordException;
 import ru.drsanches.photobooth.common.integration.UserIntegrationService;
@@ -34,9 +35,9 @@ import ru.drsanches.photobooth.common.token.data.Token;
 import ru.drsanches.photobooth.common.token.data.TokenMapper;
 
 import javax.validation.Valid;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
-//TODO: Check userId before operation confirm
 @Slf4j
 @Service
 @Validated
@@ -90,7 +91,8 @@ public class UserAuthWebService {
     }
 
     public TokenDTO registrationConfirm(String code) {
-        Confirmation confirmation = confirmationDomainService.getNotExpired(code);
+        Confirmation confirmation = confirmationDomainService.get(code);
+        validate(confirmation, Operation.REGISTRATION);
         RegistrationConfirmData registrationConfirmData = stringSerializer.deserialize(confirmation.getData(), RegistrationConfirmData.class);
         UserAuth userAuth = userIntegrationService.createUser(
                 registrationConfirmData.getUsername(),
@@ -139,7 +141,8 @@ public class UserAuthWebService {
     }
 
     public void changeUsernameConfirm(String code) {
-        Confirmation confirmation = confirmationDomainService.getNotExpired(code);
+        Confirmation confirmation = confirmationDomainService.get(code);
+        validate(confirmation, Operation.USERNAME_CHANGE);
         ChangeUsernameConfirmData changeUsernameConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangeUsernameConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
@@ -170,7 +173,8 @@ public class UserAuthWebService {
     }
 
     public void changePasswordConfirm(String code) {
-        Confirmation confirmation = confirmationDomainService.getNotExpired(code);
+        Confirmation confirmation = confirmationDomainService.get(code);
+        validate(confirmation, Operation.PASSWORD_CHANGE);
         ChangePasswordConfirmData changePasswordConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangePasswordConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
@@ -199,7 +203,8 @@ public class UserAuthWebService {
     }
 
     public void changeEmailConfirm(String code) {
-        Confirmation confirmation = confirmationDomainService.getNotExpired(code);
+        Confirmation confirmation = confirmationDomainService.get(code);
+        validate(confirmation, Operation.EMAIL_CHANGE);
         ChangeEmailConfirmData changeEmailConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangeEmailConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
@@ -230,11 +235,24 @@ public class UserAuthWebService {
     }
 
     public void disableUserConfirm(String code) {
-        Confirmation confirmation = confirmationDomainService.getNotExpired(code);
+        Confirmation confirmation = confirmationDomainService.get(code);
+        validate(confirmation, Operation.DISABLE);
         String userId = tokenSupplier.get().getUserId();
         userIntegrationService.disableUser(userId);
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User with id '{}' has been disabled", userId);
+    }
+
+    private void validate(Confirmation confirmation, Operation operation) {
+        if (confirmation.getUserId() != null && !confirmation.getUserId().equals(tokenSupplier.get().getUserId())
+                || operation != confirmation.getOperation()) {
+            throw new WrongConfirmCodeException();
+        }
+        if (confirmation.getExpiresAt().before(new GregorianCalendar())) {
+            confirmationDomainService.delete(confirmation.getId());
+            log.info("Expired Confirmation has been deleted: {}", confirmation);
+            throw new WrongConfirmCodeException("Confirmation code has been expired");
+        }
     }
 }

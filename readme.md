@@ -100,6 +100,7 @@ After that, the application can be launched with the commands:
 - Add stub for google auth
 - Add field descriptions for db models
 - Add available characters validation
+- Add scheduled tasks to clean expired tokens and confirmations
 
 ### UI
 - Fix authorization
