@@ -21,7 +21,7 @@ class TestChangeUsername extends Specification {
         def newUsername = DataGenerator.createValidUsername()
 
         when: "request is sent"
-        def response = RequestUtils.getRestClient().put(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $token"],
                 body:  [newUsername: newUsername],
@@ -51,7 +51,7 @@ class TestChangeUsername extends Specification {
         def user = new TestUser().register()
 
         when: "request is sent"
-        RequestUtils.getRestClient().put(
+        RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
                 body:  [newUsername: user.username],
@@ -68,7 +68,7 @@ class TestChangeUsername extends Specification {
         def user2 = new TestUser().register()
 
         when: "request is sent"
-        RequestUtils.getRestClient().put(
+        RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user1.token"],
                 body:  [newUsername: user2.username],
@@ -84,7 +84,7 @@ class TestChangeUsername extends Specification {
         def user = new TestUser().register()
 
         when: "request is sent"
-        RequestUtils.getRestClient().put(
+        RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
                 body:  [newUsername: empty],
@@ -103,7 +103,7 @@ class TestChangeUsername extends Specification {
         def user = new TestUser().register()
 
         when: "request is sent"
-        RequestUtils.getRestClient().put(
+        RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
                 body:  [newUsername: invalidUsername],
@@ -122,7 +122,7 @@ class TestChangeUsername extends Specification {
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"
-        RequestUtils.getRestClient().put(
+        RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $token"],
                 requestContentType : ContentType.JSON)

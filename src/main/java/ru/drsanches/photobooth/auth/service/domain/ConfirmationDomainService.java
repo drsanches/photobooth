@@ -1,6 +1,7 @@
 package ru.drsanches.photobooth.auth.service.domain;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.drsanches.photobooth.auth.data.confirmation.model.Confirmation;
@@ -26,7 +27,7 @@ public class ConfirmationDomainService {
     public Confirmation create(String data, String userId, String email, Operation operation) {
         Confirmation confirmation = new Confirmation();
         confirmation.setId(UUID.randomUUID().toString());
-        confirmation.setCode(UUID.randomUUID().toString());
+        confirmation.setCode(RandomStringUtils.randomAlphanumeric(6));
         confirmation.setUserId(userId);
         confirmation.setEmail(email);
         confirmation.setOperation(operation);

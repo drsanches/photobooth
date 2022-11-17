@@ -30,7 +30,7 @@ class TestRegistration extends Specification {
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
-        assert response.status == 201
+        assert response.status == 200
         def token = response.getData()["accessToken"]
         assert token != JSONNull.getInstance()
         assert response.getData()["refreshToken"] != JSONNull.getInstance()

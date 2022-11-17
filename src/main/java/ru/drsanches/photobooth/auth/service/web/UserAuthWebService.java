@@ -11,6 +11,7 @@ import ru.drsanches.photobooth.auth.data.common.confirm.RegistrationConfirmData;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangeEmailDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangePasswordDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangeUsernameDTO;
+import ru.drsanches.photobooth.auth.data.common.dto.request.ConfirmationCodeDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.LoginDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.RegistrationDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.response.TokenDTO;
@@ -91,11 +92,11 @@ public class UserAuthWebService {
             emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
         }
         log.info("New user registration process has been started: {}", registrationConfirmData);
-        return with2FA ? null : registrationConfirm(confirmation.getCode());
+        return with2FA ? null : registrationConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
     }
 
-    public TokenDTO registrationConfirm(String code) {
-        Confirmation confirmation = confirmationDomainService.get(code);
+    public TokenDTO registrationConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
+        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
         validate(confirmation, Operation.REGISTRATION);
         RegistrationConfirmData registrationConfirmData = stringSerializer.deserialize(confirmation.getData(), RegistrationConfirmData.class);
         UserAuth userAuth = userIntegrationService.createUser(
@@ -142,12 +143,12 @@ public class UserAuthWebService {
         }
         log.info("New username changing process has been started: {}", changeUsernameConfirmData);
         if (!with2FA) {
-            changeUsernameConfirm(confirmation.getCode());
+            changeUsernameConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
         }
     }
 
-    public void changeUsernameConfirm(String code) {
-        Confirmation confirmation = confirmationDomainService.get(code);
+    public void changeUsernameConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
+        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
         validate(confirmation, Operation.USERNAME_CHANGE);
         ChangeUsernameConfirmData changeUsernameConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangeUsernameConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
@@ -176,12 +177,12 @@ public class UserAuthWebService {
         }
         log.info("New password changing process has been started: {}", changePasswordConfirmData);
         if (!with2FA) {
-            changePasswordConfirm(confirmation.getCode());
+            changePasswordConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
         }
     }
 
-    public void changePasswordConfirm(String code) {
-        Confirmation confirmation = confirmationDomainService.get(code);
+    public void changePasswordConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
+        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
         validate(confirmation, Operation.PASSWORD_CHANGE);
         ChangePasswordConfirmData changePasswordConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangePasswordConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
@@ -208,12 +209,12 @@ public class UserAuthWebService {
         }
         log.info("New email changing process has been started: {}", changeEmailConfirmData);
         if (!with2FA) {
-            changeEmailConfirm(confirmation.getCode());
+            changeEmailConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
         }
     }
 
-    public void changeEmailConfirm(String code) {
-        Confirmation confirmation = confirmationDomainService.get(code);
+    public void changeEmailConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
+        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
         validate(confirmation, Operation.EMAIL_CHANGE);
         ChangeEmailConfirmData changeEmailConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangeEmailConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
@@ -242,12 +243,12 @@ public class UserAuthWebService {
         }
         log.info("New user disabling process has been started for user with id = {}", userId);
         if (!with2FA) {
-            disableUserConfirm(confirmation.getCode());
+            disableUserConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
         }
     }
 
-    public void disableUserConfirm(String code) {
-        Confirmation confirmation = confirmationDomainService.get(code);
+    public void disableUserConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
+        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
         validate(confirmation, Operation.DISABLE);
         String userId = tokenSupplier.get().getUserId();
         userIntegrationService.disableUser(userId);

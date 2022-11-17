@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangeEmailDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangePasswordDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.ChangeUsernameDTO;
+import ru.drsanches.photobooth.auth.data.common.dto.request.ConfirmationCodeDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.LoginDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.request.RegistrationDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.response.TokenDTO;
@@ -32,13 +33,22 @@ public class UserAuthController {
     @Autowired
     private UserAuthWebService userAuthWebService;
 
-    @Operation(summary = "Registers new user account and returns authorization token")
-    @ApiResponseCode201
+    @Operation(summary = "If 2FA is activated, registers the user, otherwise, sends a confirmation code to the mail")
+    @ApiResponseCode200
     @ApiResponseCode400
-    @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public TokenDTO registration(@RequestBody RegistrationDTO registrationDTO) {
         return userAuthWebService.registration(registrationDTO);
+    }
+
+    @Operation(summary = "Registers the user by confirmation code")
+    @ApiResponseCode201
+    @ApiResponseCode400
+    @ApiResponseCode401
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(value = "/registration/confirm", method = RequestMethod.POST)
+    public TokenDTO registrationConfirm(@RequestBody ConfirmationCodeDTO confirmationCodeDTO) {
+        return userAuthWebService.registrationConfirm(confirmationCodeDTO);
     }
 
     @Operation(summary = "Returns authorization token")
@@ -59,34 +69,64 @@ public class UserAuthController {
         return userAuthWebService.info();
     }
 
-    @Operation(summary = "Changes username")
+    @Operation(summary = "If 2FA is activated, changes username, otherwise, sends a confirmation code to the mail")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
-    @RequestMapping(value = "/changeUsername", method = RequestMethod.PUT)
+    @RequestMapping(value = "/changeUsername", method = RequestMethod.POST)
     public void changeUsername(@RequestBody ChangeUsernameDTO changeUsernameDTO) {
         userAuthWebService.changeUsername(changeUsernameDTO);
     }
 
-    @Operation(summary = "Changes password")
+    @Operation(summary = "Changes username by confirmation code")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
-    @RequestMapping(value = "/changePassword", method = RequestMethod.PUT)
+    @RequestMapping(value = "/changeUsername/confirm", method = RequestMethod.POST)
+    public void changeUsernameConfirm(@RequestBody ConfirmationCodeDTO confirmationCodeDTO) {
+        userAuthWebService.changeUsernameConfirm(confirmationCodeDTO);
+    }
+
+    @Operation(summary = "If 2FA is activated, changes password, otherwise, sends a confirmation code to the mail")
+    @ApiTokenAuthorization
+    @ApiResponseCode200
+    @ApiResponseCode400
+    @ApiResponseCode401
+    @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
     public void changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
         userAuthWebService.changePassword(changePasswordDTO);
     }
 
-    @Operation(summary = "Changes email")
+    @Operation(summary = "Changes username by confirmation code")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
-    @RequestMapping(value = "/changeEmail", method = RequestMethod.PUT)
+    @RequestMapping(value = "/changePassword/confirm", method = RequestMethod.POST)
+    public void changePasswordConfirm(@RequestBody ConfirmationCodeDTO confirmationCodeDTO) {
+        userAuthWebService.changePasswordConfirm(confirmationCodeDTO);
+    }
+
+    @Operation(summary = "If 2FA is activated, changes email, otherwise, sends a confirmation code to the mail")
+    @ApiTokenAuthorization
+    @ApiResponseCode200
+    @ApiResponseCode400
+    @ApiResponseCode401
+    @RequestMapping(value = "/changeEmail", method = RequestMethod.POST)
     public void changeEmail(@RequestBody ChangeEmailDTO changeEmailDTO) {
         userAuthWebService.changeEmail(changeEmailDTO);
+    }
+
+    @Operation(summary = "Changes email by confirmation code")
+    @ApiTokenAuthorization
+    @ApiResponseCode200
+    @ApiResponseCode400
+    @ApiResponseCode401
+    @RequestMapping(value = "/changeEmail/confirm", method = RequestMethod.POST)
+    public void changeEmailConfirm(@RequestBody ConfirmationCodeDTO confirmationCodeDTO) {
+        userAuthWebService.changeEmailConfirm(confirmationCodeDTO);
     }
 
     @Operation(summary = "Returns new authorization token")
@@ -107,13 +147,22 @@ public class UserAuthController {
         userAuthWebService.logout();
     }
 
+    @Operation(summary = "If 2FA is activated, deletes current user account, otherwise, sends a confirmation code to the mail")
+    @ApiTokenAuthorization
+    @ApiResponseCode200
+    @ApiResponseCode401
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
+    public void disableUser() {
+        userAuthWebService.disableUser();
+    }
+
     @Operation(summary = "Deletes current user account")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
-    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
-    public void disableUser() {
-        userAuthWebService.disableUser();
+    @RequestMapping(value = "/deleteUser/confirm", method = RequestMethod.POST)
+    public void disableUserConfirm(@RequestBody ConfirmationCodeDTO confirmationCodeDTO) {
+        userAuthWebService.disableUserConfirm(confirmationCodeDTO);
     }
 }

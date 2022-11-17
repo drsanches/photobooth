@@ -98,7 +98,6 @@ After that, the application can be launched with the commands:
 - Add cache? (on last images data)
 - Do not create UserProfile for admin?
 - Use 404 instead 401 for nonexistent urls
-- Add 2FA on critical auth operations
 - Add stub for google auth
 - Add field descriptions for db models
 - Add available characters validation
@@ -112,3 +111,5 @@ After that, the application can be launched with the commands:
 - Test pagination
 - Test sorting
 - Test google auth
+- Test email notifications
+- Test 2FA

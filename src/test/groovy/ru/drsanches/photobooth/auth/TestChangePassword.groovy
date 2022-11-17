@@ -21,7 +21,7 @@ class TestChangePassword extends Specification {
         def newPassword = DataGenerator.createValidPassword()
 
         when: "request is sent"
-        def response = RequestUtils.getRestClient().put(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $token"],
                 body:  [newPassword: newPassword],
@@ -48,7 +48,7 @@ class TestChangePassword extends Specification {
         def user = new TestUser().register()
 
         when: "request is sent"
-        RequestUtils.getRestClient().put(
+        RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
                 body:  [newPassword: empty],
@@ -67,7 +67,7 @@ class TestChangePassword extends Specification {
         def user = new TestUser().register()
 
         when: "request is sent"
-        RequestUtils.getRestClient().put(
+        RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
                 body:  [newPassword: invalidPassword],
@@ -86,7 +86,7 @@ class TestChangePassword extends Specification {
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"
-        RequestUtils.getRestClient().put(
+        RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $token"],
                 requestContentType : ContentType.JSON)
