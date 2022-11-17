@@ -23,11 +23,12 @@ public class ConfirmationDomainService {
     @Autowired
     private ConfirmationRepository confirmationRepository;
 
-    public Confirmation create(String data, String userId, Operation operation) {
+    public Confirmation create(String data, String userId, String email, Operation operation) {
         Confirmation confirmation = new Confirmation();
         confirmation.setId(UUID.randomUUID().toString());
         confirmation.setCode(UUID.randomUUID().toString());
         confirmation.setUserId(userId);
+        confirmation.setEmail(email);
         confirmation.setOperation(operation);
         confirmation.setData(data);
         GregorianCalendar expiresAt = new GregorianCalendar();
