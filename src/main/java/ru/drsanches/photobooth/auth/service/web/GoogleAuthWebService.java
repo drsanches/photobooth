@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import ru.drsanches.photobooth.auth.data.common.dto.request.GoogleTokenDTO;
 import ru.drsanches.photobooth.auth.data.common.dto.response.TokenDTO;
+import ru.drsanches.photobooth.auth.data.confirmation.model.Operation;
 import ru.drsanches.photobooth.auth.data.userauth.model.UserAuth;
 import ru.drsanches.photobooth.auth.service.domain.UserAuthDomainService;
 import ru.drsanches.photobooth.auth.service.integration.GoogleUserInfoService;
+import ru.drsanches.photobooth.auth.service.utils.email.EmailNotifier;
 import ru.drsanches.photobooth.common.integration.UserIntegrationService;
 import ru.drsanches.photobooth.common.token.TokenService;
 import ru.drsanches.photobooth.common.token.data.Token;
@@ -35,6 +37,9 @@ public class GoogleAuthWebService {
     private TokenService tokenService;
 
     @Autowired
+    private EmailNotifier emailNotifier;
+
+    @Autowired
     private TokenMapper tokenMapper;
 
     public TokenDTO getToken(@Valid GoogleTokenDTO googleTokenDTO) {
@@ -45,6 +50,7 @@ public class GoogleAuthWebService {
         } catch (NoGoogleUserException e) {
             userAuth = userIntegrationService.createUserByGoogle(email);
             log.info("New user with id '{}' has been created", userAuth.getId());
+            emailNotifier.sendSuccessNotification(userAuth.getEmail(), Operation.REGISTRATION);
         }
         Token token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
         return tokenMapper.convert(token);
