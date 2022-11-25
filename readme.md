@@ -47,7 +47,7 @@
 - `JDBC_DATABASE_URL` - database url (example: `jdbc:postgresql://database_host:5432/databaseba_name`)
 - `JDBC_DATABASE_USERNAME` - database username
 - `JDBC_DATABASE_PASSWORD` - database user password
-- `EMAIL_USERNAME` - smtp service username
+- `EMAIL_ADDRESS` - smtp service username (email address)
 - `EMAIL_PASSWORD` - smtp service password
 
 ### JVM
@@ -63,7 +63,7 @@ Before run, it is needed to create a database for the application.
 #### Run
 Run application by the command (with custom environment variables):
 
-    java -jar -DPORT=8080 -DADMIN_PASSWORD=admin -DJDBC_DATABASE_URL=jdbc:postgresql://localhost:5432/photobooth -DJDBC_DATABASE_USERNAME=photobooth_app -DJDBC_DATABASE_PASSWORD=pswd -DEMAIL_USERNAME=user -DEMAIL_PASSWORD=pswd build\libs\photobooth-1.0.jar
+    java -jar -DPORT=8080 -DADMIN_PASSWORD=admin -DJDBC_DATABASE_URL=jdbc:postgresql://localhost:5432/photobooth -DJDBC_DATABASE_USERNAME=photobooth_app -DJDBC_DATABASE_PASSWORD=pswd -DEMAIL_ADDRESS=mail@example.com -DEMAIL_PASSWORD=pswd build\libs\photobooth-1.0.jar
 
 ### Docker
 
@@ -87,6 +87,7 @@ After that, the application can be launched with the commands:
 ## Migrate to release 1.1
 - **DB:** Add `thumbnail_data` field and fill it for all data
 - **DB:** Field `email` now is unique and not null
+- **Env:** Add EMAIL_ADDRESS and EMAIL_PASSWORD
 - **Client:** Use new search by username substring endpoint
 - **Client:** Pages now starts from zero
 

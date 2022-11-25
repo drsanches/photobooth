@@ -41,10 +41,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # Required if application.email-sending-enabled
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${EMAIL_USERNAME}
+    username: ${EMAIL_ADDRESS}
     password: ${EMAIL_PASSWORD}
     properties:
       mail.smtp.auth: true
