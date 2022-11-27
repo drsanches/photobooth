@@ -11,7 +11,6 @@ import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import ru.drsanches.photobooth.app.data.image.mapper.ImageInfoMapper;
 import ru.drsanches.photobooth.config.filter.AdminFilter;
 import ru.drsanches.photobooth.config.filter.LogFilter;
 import ru.drsanches.photobooth.config.filter.TokenFilter;
@@ -31,13 +30,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .or(x -> x.matches("/api/v1/auth/login.*"))
             .or(x -> x.matches("/api/v1/auth/refreshToken.*"))
             .or(x -> x.matches("/api/v1/auth/google/token.*"))
-            .or(x -> x.matches("/api/v1/image/" + ImageInfoMapper.DEFAULT_AVATAR_ID))
-            .or(x -> x.matches("/api/v1/image/" + ImageInfoMapper.NO_PHOTO_IMAGE_ID))
-            .or(x -> x.matches("/api/v1/image/" + ImageInfoMapper.DELETED_AVATAR_ID))
+            .or(x -> x.matches("/api/v1/image/" + ImageConsts.DEFAULT_AVATAR_ID))
+            .or(x -> x.matches("/api/v1/image/" + ImageConsts.NO_PHOTO_IMAGE_ID))
+            .or(x -> x.matches("/api/v1/image/" + ImageConsts.DELETED_AVATAR_ID))
             .or(x -> x.matches("/api/v1/image/" + IMAGE_ID_PATTERN))
-            .or(x -> x.matches("/api/v1/image/thumbnail/" + ImageInfoMapper.DEFAULT_AVATAR_ID))
-            .or(x -> x.matches("/api/v1/image/thumbnail/" + ImageInfoMapper.NO_PHOTO_IMAGE_ID))
-            .or(x -> x.matches("/api/v1/image/thumbnail/" + ImageInfoMapper.DELETED_AVATAR_ID))
+            .or(x -> x.matches("/api/v1/image/thumbnail/" + ImageConsts.DEFAULT_AVATAR_ID))
+            .or(x -> x.matches("/api/v1/image/thumbnail/" + ImageConsts.NO_PHOTO_IMAGE_ID))
+            .or(x -> x.matches("/api/v1/image/thumbnail/" + ImageConsts.DELETED_AVATAR_ID))
             .or(x -> x.matches("/api/v1/image/thumbnail/" + IMAGE_ID_PATTERN))
             .or(x -> x.matches("/actuator/health.*"))
             .or(x -> x.matches("/ui.*"))

@@ -7,7 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.drsanches.photobooth.auth.data.userauth.model.UserAuth;
 import ru.drsanches.photobooth.auth.data.userauth.repository.UserAuthRepository;
-import ru.drsanches.photobooth.common.integration.UserIntegrationService;
+import ru.drsanches.photobooth.common.service.UserIntegrationService;
 import ru.drsanches.photobooth.common.token.data.Role;
 import ru.drsanches.photobooth.common.utils.Initializer;
 

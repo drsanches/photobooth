@@ -2,11 +2,11 @@ package ru.drsanches.photobooth.app.data.profile.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.drsanches.photobooth.app.data.image.mapper.ImageInfoMapper;
 import ru.drsanches.photobooth.app.data.profile.dto.response.RelationshipDTO;
 import ru.drsanches.photobooth.app.data.profile.dto.response.UserInfoDTO;
 import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
 import ru.drsanches.photobooth.common.token.TokenSupplier;
+import ru.drsanches.photobooth.config.ImageConsts;
 
 import java.util.List;
 
@@ -50,14 +50,14 @@ public class UserInfoMapper {
         }
         userInfoDTO.setImagePath(userProfile.isEnabled() ?
                 userProfile.getImageId() == null ?
-                        ImageInfoMapper.IMAGE_PATH_PREFIX + ImageInfoMapper.DEFAULT_AVATAR_ID :
-                        ImageInfoMapper.IMAGE_PATH_PREFIX + userProfile.getImageId() :
-                ImageInfoMapper.IMAGE_PATH_PREFIX + ImageInfoMapper.DELETED_AVATAR_ID);
+                        ImageConsts.IMAGE_PATH_PREFIX + ImageConsts.DEFAULT_AVATAR_ID :
+                        ImageConsts.IMAGE_PATH_PREFIX + userProfile.getImageId() :
+                ImageConsts.IMAGE_PATH_PREFIX + ImageConsts.DELETED_AVATAR_ID);
         userInfoDTO.setThumbnailPath(userProfile.isEnabled() ?
                 userProfile.getImageId() == null ?
-                        ImageInfoMapper.THUMBNAIL_PATH_PREFIX + ImageInfoMapper.DEFAULT_AVATAR_ID :
-                        ImageInfoMapper.THUMBNAIL_PATH_PREFIX + userProfile.getImageId() :
-                ImageInfoMapper.THUMBNAIL_PATH_PREFIX + ImageInfoMapper.DELETED_AVATAR_ID);
+                        ImageConsts.THUMBNAIL_PATH_PREFIX + ImageConsts.DEFAULT_AVATAR_ID :
+                        ImageConsts.THUMBNAIL_PATH_PREFIX + userProfile.getImageId() :
+                ImageConsts.THUMBNAIL_PATH_PREFIX + ImageConsts.DELETED_AVATAR_ID);
         return userInfoDTO;
     }
 

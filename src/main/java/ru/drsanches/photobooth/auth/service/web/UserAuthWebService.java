@@ -30,7 +30,7 @@ import ru.drsanches.photobooth.exception.application.NoUsernameException;
 import ru.drsanches.photobooth.exception.auth.WrongConfirmCodeException;
 import ru.drsanches.photobooth.exception.auth.WrongPasswordException;
 import ru.drsanches.photobooth.exception.auth.WrongUsernamePasswordException;
-import ru.drsanches.photobooth.common.integration.UserIntegrationService;
+import ru.drsanches.photobooth.common.service.UserIntegrationService;
 import ru.drsanches.photobooth.common.token.TokenService;
 import ru.drsanches.photobooth.common.token.TokenSupplier;
 import ru.drsanches.photobooth.common.token.data.Token;

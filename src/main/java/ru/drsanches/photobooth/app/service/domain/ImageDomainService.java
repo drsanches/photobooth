@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.drsanches.photobooth.app.data.image.model.Image;
 import ru.drsanches.photobooth.app.data.image.repository.ImageRepository;
 import ru.drsanches.photobooth.app.service.utils.ImageConverter;
+import ru.drsanches.photobooth.config.ImageConsts;
 import ru.drsanches.photobooth.exception.application.NoImageException;
 
 import java.util.Collection;
@@ -42,7 +43,7 @@ public class ImageDomainService {
         image.setId(id);
         image.setData(imageData);
         image.setThumbnailData(imageConverter.toThumbnail(imageData));
-        image.setOwnerId("system");
+        image.setOwnerId(ImageConsts.SYSTEM_OWNER_ID);
         image.setCreatedTime(new GregorianCalendar());
         Image savedImage = imageRepository.save(image);
         log.info("New image has been saved: {}", savedImage);

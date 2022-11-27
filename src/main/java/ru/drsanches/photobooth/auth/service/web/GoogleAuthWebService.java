@@ -11,7 +11,7 @@ import ru.drsanches.photobooth.auth.data.userauth.model.UserAuth;
 import ru.drsanches.photobooth.auth.service.domain.UserAuthDomainService;
 import ru.drsanches.photobooth.auth.service.integration.GoogleUserInfoService;
 import ru.drsanches.photobooth.auth.service.utils.email.EmailNotifier;
-import ru.drsanches.photobooth.common.integration.UserIntegrationService;
+import ru.drsanches.photobooth.common.service.UserIntegrationService;
 import ru.drsanches.photobooth.common.token.TokenService;
 import ru.drsanches.photobooth.common.token.data.Token;
 import ru.drsanches.photobooth.common.token.data.TokenMapper;

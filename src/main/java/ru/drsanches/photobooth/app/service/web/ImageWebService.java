@@ -19,6 +19,7 @@ import ru.drsanches.photobooth.app.service.domain.ImagePermissionDomainService;
 import ru.drsanches.photobooth.app.service.domain.UserProfileDomainService;
 import ru.drsanches.photobooth.app.service.utils.PaginationService;
 import ru.drsanches.photobooth.common.token.TokenSupplier;
+import ru.drsanches.photobooth.config.ImageConsts;
 
 import javax.validation.Valid;
 import java.util.Base64;
@@ -107,7 +108,7 @@ public class ImageWebService {
         String currentUserId = tokenSupplier.get().getUserId();
         Set<String> imageIds = imagePermissionDomainService.getImageIds(currentUserId);
         Optional<Image> image = imageDomainService.getLastImage(imageIds, currentUserId);
-        return imageInfoMapper.convert(image.orElse(imageDomainService.getImage(ImageInfoMapper.NO_PHOTO_IMAGE_ID)));
+        return imageInfoMapper.convert(image.orElse(imageDomainService.getImage(ImageConsts.NO_PHOTO_IMAGE_ID)));
     }
 
     public void deleteAvatar() {
