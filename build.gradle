@@ -36,7 +36,6 @@ dependencies {
 
     //Other
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.4.8' //Swagger
-    implementation group: 'com.logtail', name: 'logback-logtail', version: '0.1.0' //Logtail
 
     //Tests
     testCompile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.11'
