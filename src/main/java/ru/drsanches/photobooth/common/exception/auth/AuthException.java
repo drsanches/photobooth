@@ -1,6 +1,6 @@
-package ru.drsanches.photobooth.exception.auth;
+package ru.drsanches.photobooth.common.exception.auth;
 
-import ru.drsanches.photobooth.exception.BaseException;
+import ru.drsanches.photobooth.common.exception.BaseException;
 
 public class AuthException extends BaseException {
 

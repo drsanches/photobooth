@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.drsanches.photobooth.auth.data.userauth.model.UserAuth;
 import ru.drsanches.photobooth.auth.data.userauth.repository.UserAuthRepository;
-import ru.drsanches.photobooth.exception.auth.NoGoogleUserException;
-import ru.drsanches.photobooth.exception.application.NoUserIdException;
-import ru.drsanches.photobooth.exception.application.NoUsernameException;
+import ru.drsanches.photobooth.common.exception.auth.NoGoogleUserException;
+import ru.drsanches.photobooth.common.exception.application.NoUserIdException;
+import ru.drsanches.photobooth.common.exception.application.NoUsernameException;
 import java.util.Optional;
 
 @Slf4j

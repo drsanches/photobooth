@@ -1,6 +1,6 @@
-package ru.drsanches.photobooth.exception.server;
+package ru.drsanches.photobooth.common.exception.server;
 
-import ru.drsanches.photobooth.exception.BaseException;
+import ru.drsanches.photobooth.common.exception.BaseException;
 
 public class ServerError extends BaseException {
 

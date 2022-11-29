@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-import ru.drsanches.photobooth.exception.server.ServerError;
+import ru.drsanches.photobooth.common.exception.server.ServerError;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;

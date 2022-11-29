@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.drsanches.photobooth.auth.data.google.dto.GoogleInfoDTO;
-import ru.drsanches.photobooth.exception.auth.GoogleAuthException;
+import ru.drsanches.photobooth.common.exception.auth.GoogleAuthException;
 
 @Slf4j
 @Component

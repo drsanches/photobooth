@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.drsanches.photobooth.auth.data.confirmation.model.Confirmation;
 import ru.drsanches.photobooth.auth.data.confirmation.model.Operation;
 import ru.drsanches.photobooth.auth.data.confirmation.repository.ConfirmationRepository;
-import ru.drsanches.photobooth.exception.auth.WrongConfirmCodeException;
+import ru.drsanches.photobooth.common.exception.auth.WrongConfirmCodeException;
 
 import java.util.GregorianCalendar;
 import java.util.Optional;

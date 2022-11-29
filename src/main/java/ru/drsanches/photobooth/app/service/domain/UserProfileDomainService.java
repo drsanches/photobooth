@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import ru.drsanches.photobooth.app.data.profile.model.UserProfile;
 import ru.drsanches.photobooth.app.data.profile.repository.UserProfileRepository;
 import ru.drsanches.photobooth.app.service.utils.PaginationService;
-import ru.drsanches.photobooth.exception.application.NoUserIdException;
-import ru.drsanches.photobooth.exception.application.NoUsernameException;
+import ru.drsanches.photobooth.common.exception.application.NoUserIdException;
+import ru.drsanches.photobooth.common.exception.application.NoUsernameException;
 
 import java.util.Collection;
 import java.util.LinkedList;

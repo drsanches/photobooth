@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.MediaType;
-import ru.drsanches.photobooth.exception.dto.ExceptionDTO;
+import ru.drsanches.photobooth.common.exception.dto.ExceptionDTO;
 
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;

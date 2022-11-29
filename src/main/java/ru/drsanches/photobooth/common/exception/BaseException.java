@@ -1,10 +1,10 @@
-package ru.drsanches.photobooth.exception;
+package ru.drsanches.photobooth.common.exception;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.drsanches.photobooth.exception.dto.ExceptionDTO;
-import ru.drsanches.photobooth.exception.dto.ExceptionLogInfoDTO;
-import ru.drsanches.photobooth.exception.dto.ExternalExceptionLogInfoDTO;
+import ru.drsanches.photobooth.common.exception.dto.ExceptionDTO;
+import ru.drsanches.photobooth.common.exception.dto.ExceptionLogInfoDTO;
+import ru.drsanches.photobooth.common.exception.dto.ExternalExceptionLogInfoDTO;
 
 import java.util.GregorianCalendar;
 import java.util.UUID;

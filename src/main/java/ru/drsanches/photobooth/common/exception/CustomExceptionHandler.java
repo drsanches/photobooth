@@ -1,15 +1,15 @@
-package ru.drsanches.photobooth.exception;
+package ru.drsanches.photobooth.common.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.drsanches.photobooth.exception.application.ApplicationException;
-import ru.drsanches.photobooth.exception.application.NoUserIdException;
-import ru.drsanches.photobooth.exception.application.NoUsernameException;
-import ru.drsanches.photobooth.exception.auth.AuthException;
-import ru.drsanches.photobooth.exception.server.ServerError;
+import ru.drsanches.photobooth.common.exception.application.ApplicationException;
+import ru.drsanches.photobooth.common.exception.application.NoUserIdException;
+import ru.drsanches.photobooth.common.exception.application.NoUsernameException;
+import ru.drsanches.photobooth.common.exception.auth.AuthException;
+import ru.drsanches.photobooth.common.exception.server.ServerError;
 import javax.validation.ConstraintViolationException;
 
 @Slf4j

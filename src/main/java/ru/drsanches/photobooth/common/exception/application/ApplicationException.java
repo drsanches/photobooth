@@ -1,6 +1,6 @@
-package ru.drsanches.photobooth.exception.application;
+package ru.drsanches.photobooth.common.exception.application;
 
-import ru.drsanches.photobooth.exception.BaseException;
+import ru.drsanches.photobooth.common.exception.BaseException;
 
 public class ApplicationException extends BaseException {
 

@@ -1,4 +1,4 @@
-package ru.drsanches.photobooth.exception.auth;
+package ru.drsanches.photobooth.common.exception.auth;
 
 public class GoogleAuthException extends AuthException {
 

@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.drsanches.photobooth.app.validation.annotation.ValidBase64Image;
-import ru.drsanches.photobooth.exception.BaseException;
+import ru.drsanches.photobooth.common.exception.BaseException;
 
 import javax.imageio.ImageIO;
 import javax.validation.ConstraintValidator;

@@ -10,7 +10,7 @@ import ru.drsanches.photobooth.auth.data.userauth.repository.UserAuthRepository;
 import ru.drsanches.photobooth.common.service.UserIntegrationService;
 import ru.drsanches.photobooth.common.token.data.Role;
 import ru.drsanches.photobooth.common.utils.Initializer;
-import ru.drsanches.photobooth.exception.BaseException;
+import ru.drsanches.photobooth.common.exception.BaseException;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

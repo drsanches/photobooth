@@ -1,6 +1,6 @@
-package ru.drsanches.photobooth.exception.auth;
+package ru.drsanches.photobooth.common.exception.auth;
 
-import ru.drsanches.photobooth.exception.application.ApplicationException;
+import ru.drsanches.photobooth.common.exception.application.ApplicationException;
 
 public class NoGoogleUserException extends ApplicationException {
 

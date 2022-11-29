@@ -3,7 +3,7 @@ package ru.drsanches.photobooth.config.filter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.GenericFilterBean;
-import ru.drsanches.photobooth.exception.auth.AuthException;
+import ru.drsanches.photobooth.common.exception.auth.AuthException;
 import ru.drsanches.photobooth.common.token.TokenService;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.drsanches.photobooth.app.data.friends.model.FriendRequest;
 import ru.drsanches.photobooth.app.data.friends.model.FriendRequestKey;
 import ru.drsanches.photobooth.app.data.friends.repository.FriendRequestRepository;
-import ru.drsanches.photobooth.exception.BaseException;
+import ru.drsanches.photobooth.common.exception.BaseException;
 
 import java.util.List;
 import java.util.stream.Collectors;

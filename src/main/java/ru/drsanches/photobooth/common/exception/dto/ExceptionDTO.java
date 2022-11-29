@@ -1,4 +1,4 @@
-package ru.drsanches.photobooth.exception.dto;
+package ru.drsanches.photobooth.common.exception.dto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;

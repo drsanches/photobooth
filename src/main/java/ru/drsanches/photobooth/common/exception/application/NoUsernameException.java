@@ -1,4 +1,4 @@
-package ru.drsanches.photobooth.exception.application;
+package ru.drsanches.photobooth.common.exception.application;
 
 public class NoUsernameException extends ApplicationException {
 

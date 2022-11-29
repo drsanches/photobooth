@@ -2,7 +2,7 @@ package ru.drsanches.photobooth.app.service.utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.drsanches.photobooth.exception.server.ServerError;
+import ru.drsanches.photobooth.common.exception.server.ServerError;
 
 import javax.imageio.ImageIO;
 import java.awt.Image;

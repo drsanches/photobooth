@@ -3,7 +3,7 @@ package ru.drsanches.photobooth.auth.service.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
-import ru.drsanches.photobooth.exception.server.ServerError;
+import ru.drsanches.photobooth.common.exception.server.ServerError;
 
 @Component
 public class StringSerializer {

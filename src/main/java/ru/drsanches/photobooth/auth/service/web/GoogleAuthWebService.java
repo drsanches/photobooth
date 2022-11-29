@@ -15,7 +15,7 @@ import ru.drsanches.photobooth.common.service.UserIntegrationService;
 import ru.drsanches.photobooth.common.token.TokenService;
 import ru.drsanches.photobooth.common.token.data.Token;
 import ru.drsanches.photobooth.common.token.data.TokenMapper;
-import ru.drsanches.photobooth.exception.auth.NoGoogleUserException;
+import ru.drsanches.photobooth.common.exception.auth.NoGoogleUserException;
 
 import javax.validation.Valid;
 

@@ -2,7 +2,7 @@ package ru.drsanches.photobooth.auth.service.utils;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-import ru.drsanches.photobooth.exception.auth.WrongPasswordException;
+import ru.drsanches.photobooth.common.exception.auth.WrongPasswordException;
 
 @Component
 public class CredentialsHelper {

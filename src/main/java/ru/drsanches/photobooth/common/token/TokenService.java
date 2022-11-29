@@ -2,7 +2,7 @@ package ru.drsanches.photobooth.common.token;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.drsanches.photobooth.exception.auth.WrongTokenException;
+import ru.drsanches.photobooth.common.exception.auth.WrongTokenException;
 import ru.drsanches.photobooth.common.token.data.Role;
 import ru.drsanches.photobooth.common.token.data.Token;
 import ru.drsanches.photobooth.common.token.data.TokenRepository;

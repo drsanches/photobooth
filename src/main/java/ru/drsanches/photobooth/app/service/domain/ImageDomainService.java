@@ -7,7 +7,7 @@ import ru.drsanches.photobooth.app.data.image.model.Image;
 import ru.drsanches.photobooth.app.data.image.repository.ImageRepository;
 import ru.drsanches.photobooth.app.service.utils.ImageConverter;
 import ru.drsanches.photobooth.config.ImageConsts;
-import ru.drsanches.photobooth.exception.application.NoImageException;
+import ru.drsanches.photobooth.common.exception.application.NoImageException;
 
 import java.util.Collection;
 import java.util.GregorianCalendar;

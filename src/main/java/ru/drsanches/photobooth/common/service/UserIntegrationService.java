@@ -12,8 +12,8 @@ import ru.drsanches.photobooth.auth.data.userauth.repository.UserAuthRepository;
 import ru.drsanches.photobooth.app.data.profile.repository.UserProfileRepository;
 import ru.drsanches.photobooth.auth.service.utils.CredentialsHelper;
 import ru.drsanches.photobooth.common.token.data.Role;
-import ru.drsanches.photobooth.exception.application.UserAlreadyExistsException;
-import ru.drsanches.photobooth.exception.server.ServerError;
+import ru.drsanches.photobooth.common.exception.application.UserAlreadyExistsException;
+import ru.drsanches.photobooth.common.exception.server.ServerError;
 
 import java.util.Optional;
 import java.util.UUID;
