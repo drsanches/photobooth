@@ -16,12 +16,11 @@ import java.util.List;
 @ToString
 public class UploadPhotoDTO {
 
-    //TODO: Rename to image
     @Schema(required = true, description = "Image in Base64")
     @NotEmpty
     @ValidBase64Image
     @ToString.Exclude
-    private String file;
+    private String image;
 
     @Schema(description = "Ids of users to whom the photo is being sent, null for all friends")
     @EnabledIds
@@ -30,6 +29,6 @@ public class UploadPhotoDTO {
 
     @ToString.Include
     private int base64length() {
-        return file.length();
+        return image.length();
     }
 }

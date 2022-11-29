@@ -90,6 +90,7 @@ After that, the application can be launched with the commands:
 - **Env:** Add EMAIL_ADDRESS and EMAIL_PASSWORD
 - **Client:** Use new search by username substring endpoint
 - **Client:** Pages now starts from zero
+- **Client:** Changed field in DTO for uploading photo and avatar (file -> image)
 
 ---
 

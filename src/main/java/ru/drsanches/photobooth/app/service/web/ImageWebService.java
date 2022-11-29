@@ -60,7 +60,7 @@ public class ImageWebService {
 
     public void uploadAvatar(@Valid UploadAvatarDTO uploadAvatarDTO) {
         String userId = tokenSupplier.get().getUserId();
-        byte[] image = Base64.getDecoder().decode(uploadAvatarDTO.getFile());
+        byte[] image = Base64.getDecoder().decode(uploadAvatarDTO.getImage());
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
             String imageId = imageDomainService.saveImage(image, userId).getId();
@@ -84,7 +84,7 @@ public class ImageWebService {
 
     public void uploadPhoto(@Valid UploadPhotoDTO uploadPhotoDTO) {
         String currentUserId = tokenSupplier.get().getUserId();
-        byte[] image = Base64.getDecoder().decode(uploadPhotoDTO.getFile());
+        byte[] image = Base64.getDecoder().decode(uploadPhotoDTO.getImage());
         List<String> allowedUsers = CollectionUtils.isEmpty(uploadPhotoDTO.getUserIds()) ?
                 getEnabledFriends(currentUserId) : uploadPhotoDTO.getUserIds();
         allowedUsers.add(currentUserId);
