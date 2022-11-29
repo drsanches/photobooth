@@ -10,6 +10,7 @@ import ru.drsanches.photobooth.auth.data.userauth.repository.UserAuthRepository;
 import ru.drsanches.photobooth.common.service.UserIntegrationService;
 import ru.drsanches.photobooth.common.token.data.Role;
 import ru.drsanches.photobooth.common.utils.Initializer;
+import ru.drsanches.photobooth.exception.BaseException;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -53,7 +54,7 @@ public class AdminInitializer implements Initializer {
             userIntegrationService.createUser(userAuth);
             log.info("Admin with id '{}' has been initialized", userAuth.getId());
         } catch (NoSuchAlgorithmException e) {
-            log.error("Failed to generate sha256 hash", e);
+            log.error("Failed to generate sha256 hash {}", BaseException.log(e));
             System.exit(1);
         }
     }

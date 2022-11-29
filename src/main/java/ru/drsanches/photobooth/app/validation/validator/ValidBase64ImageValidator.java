@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.drsanches.photobooth.app.validation.annotation.ValidBase64Image;
+import ru.drsanches.photobooth.exception.BaseException;
 
 import javax.imageio.ImageIO;
 import javax.validation.ConstraintValidator;
@@ -38,7 +39,7 @@ public class ValidBase64ImageValidator implements ConstraintValidator<ValidBase6
         try {
             imageData = Base64.getDecoder().decode(base64Image);
         } catch (IllegalArgumentException e) {
-            log.error("Invalid Base64 string", e);
+            log.error("Invalid Base64 string {}", BaseException.log(e));
             return false;
         }
 
@@ -47,7 +48,7 @@ public class ValidBase64ImageValidator implements ConstraintValidator<ValidBase6
             bufferedImage = ImageIO.read(stream);
         } catch (IOException e) {
             customMessage(context, "invalid image data");
-            log.error("Invalid image data", e);
+            log.error("Invalid image data {}", BaseException.log(e));
             return false;
         }
 

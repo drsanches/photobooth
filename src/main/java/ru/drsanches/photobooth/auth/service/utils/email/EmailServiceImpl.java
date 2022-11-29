@@ -27,7 +27,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setSubject(subject);
             helper.setText(message, true);
         } catch (MessagingException e) {
-            throw new ServerError(e);
+            throw new ServerError("Mail message initialization error", e);
         }
         emailSender.send(mimeMessage);
         log.info("Email message with subject '{}' has been sent to {}", subject, to);

@@ -1,26 +1,14 @@
 package ru.drsanches.photobooth.exception.auth;
 
-import ru.drsanches.photobooth.exception.dto.ExceptionDTO;
+import ru.drsanches.photobooth.exception.BaseException;
 
-import java.util.UUID;
-
-public class AuthException extends RuntimeException {
-
-    protected final String message;
-
-    protected final String uuid = UUID.randomUUID().toString();
+public class AuthException extends BaseException {
 
     public AuthException(String message) {
-        this.message = message;
+        super(message);
     }
 
     public AuthException(String message, Exception cause) {
-        super(cause);
-        this.message = message;
-    }
-
-    @Override
-    public String getMessage() {
-        return new ExceptionDTO(message, uuid).toString();
+        super(message, cause);
     }
 }

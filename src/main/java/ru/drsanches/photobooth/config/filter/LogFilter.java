@@ -1,20 +1,27 @@
 package ru.drsanches.photobooth.config.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.GenericFilterBean;
 import ru.drsanches.photobooth.common.token.TokenSupplier;
+import ru.drsanches.photobooth.common.utils.GregorianCalendarConvertor;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.GregorianCalendar;
 import java.util.function.Predicate;
 
 @Slf4j
 public class LogFilter extends GenericFilterBean {
-
-    private final static String MESSAGE_PATTERN = "URL: {}, Address: {}, UserId: {}";
 
     private final TokenSupplier TOKEN_SUPPLIER;
 
@@ -30,11 +37,45 @@ public class LogFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         if (LOG_URI.test(httpRequest.getRequestURI())) {
             if (TOKEN_SUPPLIER.get() != null) {
-                log.info(MESSAGE_PATTERN, httpRequest.getRequestURL(), httpRequest.getRemoteAddr(), TOKEN_SUPPLIER.get().getUserId());
+                log.info("{} {}, info: {}", httpRequest.getMethod(),  httpRequest.getRequestURL(), LogInfo.builder()
+                        .method(httpRequest.getMethod())
+                        .url(httpRequest.getRequestURL())
+                        .address(httpRequest.getRemoteAddr())
+                        .userId(TOKEN_SUPPLIER.get().getUserId())
+                        .build());
             } else {
-                log.info(MESSAGE_PATTERN, httpRequest.getRequestURL(), httpRequest.getRemoteAddr(), "unauthorized");
+                log.info("{} {}, info: {}", httpRequest.getMethod(), httpRequest.getRequestURL(), LogInfo.builder()
+                        .method(httpRequest.getMethod())
+                        .url(httpRequest.getRequestURL())
+                        .address(httpRequest.getRemoteAddr())
+                        .build());
             }
         }
         chain.doFilter(request, response);
+    }
+
+    @AllArgsConstructor
+    @Builder
+    @Getter
+    @Setter
+    private static class LogInfo {
+
+        private static final ObjectMapper MAPPER = new ObjectMapper();
+
+        private final String timestamp = GregorianCalendarConvertor.convert(new GregorianCalendar());
+
+        private final String method;
+
+        private final StringBuffer url;
+
+        private final String address;
+
+        private final String userId;
+
+        @SneakyThrows
+        @Override
+        public String toString() {
+            return MAPPER.writeValueAsString(this);
+        }
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import ru.drsanches.photobooth.app.data.friends.model.FriendRequest;
 import ru.drsanches.photobooth.app.data.friends.model.FriendRequestKey;
 import ru.drsanches.photobooth.app.data.friends.repository.FriendRequestRepository;
+import ru.drsanches.photobooth.exception.BaseException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,14 +68,15 @@ public class FriendsDomainService {
             friendRequestRepository.deleteById(friendRequestKey);
             log.info("FriendRequest has been removed: {}", friendRequestKey);
         } catch(EmptyResultDataAccessException e) {
-            log.warn("FriendRequest does not exist: " + friendRequestKey, e);
+            log.warn("FriendRequest does not exist: {}, exception: {}", friendRequestKey, BaseException.log(e));
         }
         FriendRequestKey reversedFriendRequestKey = new FriendRequestKey(toUserId, fromUserId);
         try {
             friendRequestRepository.deleteById(reversedFriendRequestKey);
             log.info("Reversed FriendRequest has been removed: {}", reversedFriendRequestKey);
         } catch(EmptyResultDataAccessException e) {
-            log.info("Reversed FriendRequest does not exist: " + reversedFriendRequestKey, e);
+            log.info("Reversed FriendRequest does not exist: {}, exception: {}",
+                    reversedFriendRequestKey, BaseException.log(e));
         }
     }
 }
