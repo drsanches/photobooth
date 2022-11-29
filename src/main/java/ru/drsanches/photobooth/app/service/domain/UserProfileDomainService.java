@@ -27,7 +27,7 @@ public class UserProfileDomainService {
 
     public void save(UserProfile userProfile) {
         userProfileRepository.save(userProfile);
-        log.info("UserProfile has been updated: {}", userProfile);
+        log.info("UserProfile updated: {}", userProfile);
     }
 
     public UserProfile getEnabledById(String userId) {

@@ -66,7 +66,7 @@ public class ImageWebService {
             String imageId = imageDomainService.saveImage(image, userId).getId();
             userProfile.setImageId(imageId);
             userProfileDomainService.save(userProfile);
-            log.info("User with id '{}' updated his profile image, new image id is '{}'", userId, imageId);
+            log.info("User updated profile image. UserId: {}, newImageId: {}", userId, imageId);
         });
     }
 
@@ -91,7 +91,7 @@ public class ImageWebService {
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
             String imageId = imageDomainService.saveImage(image, currentUserId).getId();
             imagePermissionDomainService.savePermissions(imageId, allowedUsers);
-            log.info("Photo with id '{}' uploaded for users: {}", imageId, allowedUsers);
+            log.info("User uploaded new image. UserId: {}, imageId: {}, allowedUserIds: {}", currentUserId, imageId, allowedUsers);
         });
     }
 
@@ -116,7 +116,7 @@ public class ImageWebService {
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
         userProfile.setImageId(null);
         userProfileDomainService.save(userProfile);
-        log.info("User with id '{}' deleted his profile image", userId);
+        log.info("User deleted his profile image. UserId: {}", userId);
     }
 
     private List<String> getEnabledFriends(String currentUserId) {

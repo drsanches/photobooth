@@ -37,7 +37,7 @@ public class TokenFilter extends GenericFilterBean {
             TOKEN_SERVICE.validate(token);
         } catch (AuthException e) {
             if (!EXCLUDE_URI.test(uri)) {
-                log.info("Wrong token for uri '{}' {}", uri, e.log());
+                log.info("Wrong token for uri. Uri: {}, exception: {}", uri, e.log());
                 httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
                 httpResponse.getOutputStream().flush();
                 httpResponse.getOutputStream().println(e.getMessage());

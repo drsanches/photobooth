@@ -39,7 +39,7 @@ public class AdminInitializer implements Initializer {
     @Override
     public void initialize() {
         if (userAuthRepository.findByUsername(username).isPresent()) {
-            log.info("Admin with username '{}' is already initialized", username);
+            log.info("Admin already initialized. Username: {}", username);
             return;
         }
         try {
@@ -52,9 +52,9 @@ public class AdminInitializer implements Initializer {
             userAuth.setEnabled(true);
             userAuth.setRole(Role.ADMIN);
             userIntegrationService.createUser(userAuth);
-            log.info("Admin with id '{}' has been initialized", userAuth.getId());
+            log.info("Admin initialized. Id: {}", userAuth.getId());
         } catch (NoSuchAlgorithmException e) {
-            log.error("Failed to generate sha256 hash {}", BaseException.log(e));
+            log.error("Failed to generate sha256 hash. Exception: {}", BaseException.log(e));
             System.exit(1);
         }
     }

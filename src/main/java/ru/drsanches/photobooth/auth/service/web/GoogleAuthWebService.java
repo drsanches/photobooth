@@ -49,7 +49,7 @@ public class GoogleAuthWebService {
             userAuth = userAuthDomainService.getEnabledByGoogleAuth(email);
         } catch (NoGoogleUserException e) {
             userAuth = userIntegrationService.createUserByGoogle(email);
-            log.info("New user with id '{}' has been created", userAuth.getId());
+            log.info("New user created. Id: {}", userAuth.getId());
             emailNotifier.sendSuccessNotification(userAuth.getEmail(), Operation.REGISTRATION);
         }
         Token token = tokenService.createToken(userAuth.getId(), userAuth.getRole());

@@ -73,6 +73,6 @@ public class UserProfileWebService {
         userProfile.setName(changeUserProfileDTO.getName());
         userProfile.setStatus(changeUserProfileDTO.getStatus());
         userProfileDomainService.save(userProfile);
-        log.info("User with id '{}' updated his profile", userId);
+        log.info("User updated his profile. UserId: {}", userId);
     }
 }

@@ -10,6 +10,6 @@ import org.springframework.stereotype.Component;
 public class EmailServiceStub implements EmailService {
 
     public void sendHtmlMessage(String to, String subject, String message) {
-        log.info("Email message with subject '{}' was not send to {}", subject, to);
+        log.info("Email message was not send. Subject: {}, to: {}", subject, to);
     }
 }

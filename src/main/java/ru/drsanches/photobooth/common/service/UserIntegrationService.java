@@ -68,7 +68,7 @@ public class UserIntegrationService {
         copy(userAuth, userProfile);
         try {
             UserAuth result = save(userAuth, userProfile);
-            log.info("UserAuth and UserProfile has been created: {}, {}", userAuth, userProfile);
+            log.info("UserAuth with UserProfile created. UserAuth: {}, UserProfile: {}", userAuth, userProfile);
             return result;
         } catch(DataIntegrityViolationException e) {
             if (userAuth.getGoogleAuth() != null) {
@@ -87,14 +87,14 @@ public class UserIntegrationService {
         UserProfile userProfile;
         if (optionalUserProfile.isEmpty()) {
             userProfile = new UserProfile();
-            log.error("UserProfile with id '" + userAuth.getId() + "' does not exist");
+            log.error("UserProfile does not exist. Id: {}", userAuth.getId());
         } else {
             userProfile = optionalUserProfile.get();
         }
         copy(userAuth, userProfile);
         try {
             save(userAuth, userProfile);
-            log.info("UserAuth and UserProfile has been updated: {}, {}", userAuth, userProfile);
+            log.info("UserAuth with UserProfile updated. UserAuth: {}, UserProfile: {}", userAuth, userProfile);
         } catch(DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException(userAuth.getUsername(), userAuth.getEmail(), e);
         }
@@ -113,7 +113,7 @@ public class UserIntegrationService {
             userAuth.setEmail(UUID.randomUUID().toString() + "_" + userAuth.getEmail());
             userAuth.setGoogleAuth(UUID.randomUUID().toString() + "_" + userAuth.getGoogleAuth());
         } else {
-            log.error("UserAuth with id '{}' does not exist", userId);
+            log.error("UserAuth does not exist. Id: {}", userId);
             userAuth = new UserAuth();
             userAuth.setId(userId);
             userAuth.setUsername(UUID.randomUUID().toString());
@@ -127,12 +127,12 @@ public class UserIntegrationService {
             userProfile = optionalUserProfile.get();
         } else {
             userProfile = new UserProfile();
-            log.error("UserProfile with id '" + userAuth.getId() + "' does not exist");
+            log.error("UserProfile does not exist. Id: {}", userAuth.getId());
         }
         copy(userAuth, userProfile);
         try {
             save(userAuth, userProfile);
-            log.info("UserAuth and UserProfile has been disabled: {}, {}", userAuth, userProfile);
+            log.info("UserAuth with UserProfile disabled. UserAuth: {}, UserProfile: {}", userAuth, userProfile);
         } catch(DataIntegrityViolationException e) {
             throw new ServerError("User disable error", e);
         }

@@ -30,6 +30,6 @@ public class EmailServiceImpl implements EmailService {
             throw new ServerError("Mail message initialization error", e);
         }
         emailSender.send(mimeMessage);
-        log.info("Email message with subject '{}' has been sent to {}", subject, to);
+        log.info("Email message sent. Subject: {}, to: {}", subject, to);
     }
 }

@@ -68,12 +68,12 @@ public class FriendsWebService {
     public void sendRequest(@Valid SendRequestDTO sendRequestDTO) {
         String fromUserId = tokenSupplier.get().getUserId();
         friendsDomainService.saveFriendRequest(fromUserId, sendRequestDTO.getUserId());
-        log.info("User with id '{}' send friend request to user '{}'", fromUserId, sendRequestDTO.getUserId());
+        log.info("Friend request sent. FromUserId: {}, toUserId: {}", fromUserId, sendRequestDTO.getUserId());
     }
 
     public void removeRequest(@Valid RemoveRequestDTO removeRequestDTO) {
         String currentUserId = tokenSupplier.get().getUserId();
         friendsDomainService.removeFriendRequest(currentUserId, removeRequestDTO.getUserId());
-        log.info("User with id '{}' canceled friendship for user '{}'", currentUserId, removeRequestDTO.getUserId());
+        log.info("Friendship canceled. ByUserId: {}, forUserId: {}", currentUserId, removeRequestDTO.getUserId());
     }
 }

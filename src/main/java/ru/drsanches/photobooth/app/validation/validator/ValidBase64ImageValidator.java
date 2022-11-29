@@ -31,7 +31,7 @@ public class ValidBase64ImageValidator implements ConstraintValidator<ValidBase6
         //The original data is less than base64 in 3/4
         if (base64Image.getBytes().length * 3/4 > maxPhotoBytes) {
             customMessage(context, "base64 string is too long: max=" + maxPhotoBytes);
-            log.error("Base64 string is too long: length={}", base64Image.length());
+            log.error("Base64 string is too long. Length: {}", base64Image.length());
             return false;
         }
 
@@ -39,7 +39,7 @@ public class ValidBase64ImageValidator implements ConstraintValidator<ValidBase6
         try {
             imageData = Base64.getDecoder().decode(base64Image);
         } catch (IllegalArgumentException e) {
-            log.error("Invalid Base64 string {}", BaseException.log(e));
+            log.error("Invalid Base64 string. Exception: {}", BaseException.log(e));
             return false;
         }
 
@@ -48,7 +48,7 @@ public class ValidBase64ImageValidator implements ConstraintValidator<ValidBase6
             bufferedImage = ImageIO.read(stream);
         } catch (IOException e) {
             customMessage(context, "invalid image data");
-            log.error("Invalid image data {}", BaseException.log(e));
+            log.error("Invalid image data. Exception: {}", BaseException.log(e));
             return false;
         }
 
@@ -59,7 +59,7 @@ public class ValidBase64ImageValidator implements ConstraintValidator<ValidBase6
         }
         if (bufferedImage.getHeight() != bufferedImage.getWidth()) {
             customMessage(context, "image is not square");
-            log.error("Image is not square: width={}, height={}", bufferedImage.getWidth(), bufferedImage.getHeight());
+            log.error("Image is not square. Width: {}, height: {}", bufferedImage.getWidth(), bufferedImage.getHeight());
             return false;
         }
         return true;

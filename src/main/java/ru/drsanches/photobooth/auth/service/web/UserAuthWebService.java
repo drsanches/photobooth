@@ -91,7 +91,7 @@ public class UserAuthWebService {
         if (with2FA) {
             emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
         }
-        log.info("New user registration process has been started: {}", registrationConfirmData);
+        log.info("User registration process started: {}", registrationConfirmData);
         return with2FA ? null : registrationConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
     }
 
@@ -107,7 +107,7 @@ public class UserAuthWebService {
         );
         confirmationDomainService.delete(confirmation.getId());
         Token token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
-        log.info("New user with id '{}' has been created", userAuth.getId());
+        log.info("New user created. UserId: {}", userAuth.getId());
         emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
         return tokenMapper.convert(token);
     }
@@ -141,7 +141,7 @@ public class UserAuthWebService {
         if (with2FA) {
             emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
         }
-        log.info("New username changing process has been started: {}", changeUsernameConfirmData);
+        log.info("Username changing process started: {}", changeUsernameConfirmData);
         if (!with2FA) {
             changeUsernameConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
         }
@@ -158,7 +158,7 @@ public class UserAuthWebService {
         userIntegrationService.updateUser(current);
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
-        log.info("User with id '{}' changed username from '{}' to '{}'", current.getId(), oldUsername, current.getUsername());
+        log.info("User changed username. UserId: {}, oldUsername: {}, newUsername: {}", current.getId(), oldUsername, current.getUsername());
         emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
     }
 
@@ -175,7 +175,7 @@ public class UserAuthWebService {
         if (with2FA) {
             emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
         }
-        log.info("New password changing process has been started: {}", changePasswordConfirmData);
+        log.info("Password changing process started: {}", changePasswordConfirmData);
         if (!with2FA) {
             changePasswordConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
         }
@@ -192,7 +192,7 @@ public class UserAuthWebService {
         userAuthDomainService.save(current);
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
-        log.info("User with id '{}' changed password", current.getId());
+        log.info("User changed password. UserId: {}", current.getId());
         emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
     }
 
@@ -207,7 +207,7 @@ public class UserAuthWebService {
         if (with2FA) {
             emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
         }
-        log.info("New email changing process has been started: {}", changeEmailConfirmData);
+        log.info("Email changing process started: {}", changeEmailConfirmData);
         if (!with2FA) {
             changeEmailConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
         }
@@ -222,7 +222,7 @@ public class UserAuthWebService {
         current.setEmail(changeEmailConfirmData.getEmail());
         userAuthDomainService.save(current);
         confirmationDomainService.delete(confirmation.getId());
-        log.info("User with id '{}' changed email", current.getId());
+        log.info("User changed email. UserId: {}", current.getId());
         emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
     }
 
@@ -241,7 +241,7 @@ public class UserAuthWebService {
         if (with2FA) {
             emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
         }
-        log.info("New user disabling process has been started for user with id = {}", userId);
+        log.info("User disabling process started. UserId: {}", userId);
         if (!with2FA) {
             disableUserConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
         }
@@ -254,7 +254,7 @@ public class UserAuthWebService {
         userIntegrationService.disableUser(userId);
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
-        log.info("User with id '{}' has been disabled", userId);
+        log.info("User disabled. UserId: {}", userId);
         emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
     }
 
@@ -265,8 +265,8 @@ public class UserAuthWebService {
         }
         if (confirmation.getExpiresAt().before(new GregorianCalendar())) {
             confirmationDomainService.delete(confirmation.getId());
-            log.info("Expired Confirmation has been deleted: {}", confirmation);
-            throw new WrongConfirmCodeException("Confirmation code has been expired");
+            log.info("Expired Confirmation deleted: {}", confirmation);
+            throw new WrongConfirmCodeException("Confirmation code expired");
         }
     }
 }

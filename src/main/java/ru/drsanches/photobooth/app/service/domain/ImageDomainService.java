@@ -34,7 +34,7 @@ public class ImageDomainService {
         image.setOwnerId(ownerId);
         image.setCreatedTime(new GregorianCalendar());
         Image savedImage = imageRepository.save(image);
-        log.info("New image has been saved: {}", savedImage);
+        log.info("New image saved: {}", savedImage);
         return savedImage;
     }
 
@@ -46,7 +46,7 @@ public class ImageDomainService {
         image.setOwnerId(ImageConsts.SYSTEM_OWNER_ID);
         image.setCreatedTime(new GregorianCalendar());
         Image savedImage = imageRepository.save(image);
-        log.info("New image has been saved: {}", savedImage);
+        log.info("New image saved: {}", savedImage);
         return savedImage;
     }
 
@@ -68,7 +68,7 @@ public class ImageDomainService {
             List<String> foundIds = images.stream()
                     .map(Image::getId)
                     .collect(Collectors.toList());
-            log.warn("Images were not found: {}", imageIds.stream()
+            log.warn("Images not found. Ids: {}", imageIds.stream()
                     .filter(x -> !foundIds.contains(x))
                     .collect(Collectors.toList()));
         }

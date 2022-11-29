@@ -19,7 +19,7 @@ public class UserAuthDomainService {
 
     public void save(UserAuth userAuth) {
         userAuthRepository.save(userAuth);
-        log.info("UserAuth has been updated: {}", userAuth);
+        log.info("UserAuth updated: {}", userAuth);
     }
 
     public UserAuth getEnabledById(String userId) {

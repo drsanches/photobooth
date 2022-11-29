@@ -35,11 +35,11 @@ public class DefaultImageInitializer implements Initializer {
 
     private void initialize(String imageId, String imageData) {
         if (imageDomainService.exists(imageId)) {
-            log.info("Image with id '{}' is already initialized", imageId);
+            log.info("Image already initialized. Id: {}", imageId);
             return;
         }
         byte[] image = Base64.getDecoder().decode(imageData);
         imageDomainService.saveSystemImage(imageId, image);
-        log.info("Image with id '{}' has been initialized", imageId);
+        log.info("Image initialized. Id: {}", imageId);
     }
 }

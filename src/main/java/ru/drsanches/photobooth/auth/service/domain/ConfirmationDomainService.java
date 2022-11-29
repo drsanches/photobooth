@@ -36,7 +36,7 @@ public class ConfirmationDomainService {
         expiresAt.add(CALENDAR_FIELD, CALENDAR_VALUE);
         confirmation.setExpiresAt(expiresAt);
         Confirmation result = confirmationRepository.save(confirmation);
-        log.info("Confirmation has been created: {}", confirmation);
+        log.info("Confirmation created: {}", confirmation);
         return result;
     }
 
@@ -50,6 +50,6 @@ public class ConfirmationDomainService {
 
     public void delete(String id) {
         confirmationRepository.deleteById(id);
-        log.info("Confirmation with id '{}' has been deleted", id);
+        log.info("Confirmation deleted. Id: {}", id);
     }
 }
