@@ -22,7 +22,7 @@ class TestUploadAvatar extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
-                body:  [image: Utils.toBase64(image)],
+                body:  [file: Utils.toBase64(image)],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
@@ -46,7 +46,7 @@ class TestUploadAvatar extends Specification {
         RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $user.token"],
-                body:  [image: invalidData],
+                body:  [file: invalidData],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
@@ -72,7 +72,7 @@ class TestUploadAvatar extends Specification {
         RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: ["Authorization": "Bearer $token"],
-                body:  [image: base64Image],
+                body:  [file: base64Image],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"

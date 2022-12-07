@@ -174,7 +174,7 @@ class RequestUtils {
         getRestClient().post(
                 path: '/api/v1/image/avatar',
                 headers: ["Authorization": "Bearer $token"],
-                body: [image: Utils.toBase64(image)],
+                body: [file: Utils.toBase64(image)],
                 requestContentType: ContentType.JSON)
     }
 
@@ -194,7 +194,7 @@ class RequestUtils {
         getRestClient().post(
                 path: '/api/v1/image/photo',
                 headers: ["Authorization": "Bearer $token"],
-                body:  [image: Utils.toBase64(image),
+                body:  [file: Utils.toBase64(image),
                         userIds: userIds],
                 requestContentType : ContentType.JSON)
     }

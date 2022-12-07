@@ -16,10 +16,10 @@ public class UploadAvatarDTO {
     @NotEmpty
     @ValidBase64Image
     @ToString.Exclude
-    private String image;
+    private String file;
 
     @ToString.Include
     private int base64length() {
-        return image.length();
+        return file.length();
     }
 }
