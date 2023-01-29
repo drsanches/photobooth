@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.end2end.utils
 
 import javax.imageio.ImageIO
-import java.awt.*
+import java.awt.Image
 import java.awt.image.BufferedImage
 import java.text.DateFormat
 import java.text.SimpleDateFormat

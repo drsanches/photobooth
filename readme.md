@@ -82,6 +82,11 @@ After that, the application can be launched with the commands:
 ### Heroku
 `Procfile` contains the command to run the application on Heroku service. 
 
+## How to test
+
+After the application start, it can be tested with the command:
+    
+    gradlew test
 ---
 
 ## Migrate to release 1.1

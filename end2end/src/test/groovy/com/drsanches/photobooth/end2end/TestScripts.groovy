@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
-//TODO: Fix scripts
 class TestScripts
 //        extends Specification //Uncomment before using
 {
@@ -25,8 +24,7 @@ class TestScripts
                 body:  [accessToken: googleAccessToken],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
-        then:
-        assert true
+        then: true
     }
 
     def "login a user by google"() {
@@ -36,8 +34,7 @@ class TestScripts
                 body:  [accessToken: googleAccessToken],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
-        then:
-        assert true
+        then: true
     }
 
     def "send incoming friend request to the user"() {
@@ -47,8 +44,7 @@ class TestScripts
         when:
         new TestUser().register().sendFriendRequest(user.id)
 
-        then:
-        assert true
+        then: true
     }
 
     def "send outgoing friend request from the user"() {
@@ -59,8 +55,7 @@ class TestScripts
         TestUser outgoing = new TestUser().register()
         user.sendFriendRequest(outgoing.id)
 
-        then:
-        assert true
+        then: true
     }
 
     def "add a friend to the user"() {
@@ -71,8 +66,7 @@ class TestScripts
         TestUser friend = new TestUser().register().sendFriendRequest(user.id)
         user.sendFriendRequest(friend.id)
 
-        then:
-        assert true
+        then: true
     }
 
     private static String sha256(String password) throws NoSuchAlgorithmException {

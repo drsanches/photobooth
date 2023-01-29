@@ -1,6 +1,5 @@
 package com.drsanches.photobooth.end2end.utils
 
-
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.RESTClient
