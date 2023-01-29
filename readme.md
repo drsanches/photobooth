@@ -113,7 +113,6 @@ After the application start, it can be tested with the command:
 - Fix authorization
 
 ### Tests
-- Check errors response body
 - Test pagination
 - Test sorting
 - Test google auth

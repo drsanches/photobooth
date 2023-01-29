@@ -8,6 +8,7 @@ import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
+import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 
 class TestSendPhoto extends Specification {
@@ -33,7 +34,7 @@ class TestSendPhoto extends Specification {
         def dateBefore = new Date()
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
+                headers: [Authorization: "Bearer $user.token"],
                 body:  [file: Utils.toBase64(image),
                         userIds: [friend1.id]],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
@@ -83,7 +84,7 @@ class TestSendPhoto extends Specification {
         def dateBefore = new Date()
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
+                headers: [Authorization: "Bearer $user.token"],
                 body:  [file: Utils.toBase64(image),
                         userIds: all],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
@@ -132,7 +133,7 @@ class TestSendPhoto extends Specification {
         def dateBefore = new Date()
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
+                headers: [Authorization: "Bearer $user.token"],
                 body:  [file: Utils.toBase64(image),
                         userIds: all],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
@@ -166,13 +167,15 @@ class TestSendPhoto extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
+                headers: [Authorization: "Bearer $user.token"],
                 body:  [file: base64Image,
                         userIds: [user.id]],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDTO.userIds: contains non friends"
         assert e.response.status == 400
     }
 
@@ -187,13 +190,15 @@ class TestSendPhoto extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
+                headers: [Authorization: "Bearer $user.token"],
                 body:  [file: base64Image,
                         userIds: [friend.id]],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDTO.userIds: contains nonexistent ids"
         assert e.response.status == 400
     }
 
@@ -206,13 +211,15 @@ class TestSendPhoto extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: ["Authorization": "Bearer $user1.token"],
+                headers: [Authorization: "Bearer $user1.token"],
                 body:  [file: base64Image,
                         userIds: [user2.id]],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDTO.userIds: contains non friends"
         assert e.response.status == 400
     }
 
@@ -226,13 +233,15 @@ class TestSendPhoto extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: ["Authorization": "Bearer $user1.token"],
+                headers: [Authorization: "Bearer $user1.token"],
                 body:  [file: base64Image,
                         userIds: [user2.id]],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDTO.userIds: contains non friends"
         assert e.response.status == 400
     }
 
@@ -246,13 +255,15 @@ class TestSendPhoto extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: ["Authorization": "Bearer $user1.token"],
+                headers: [Authorization: "Bearer $user1.token"],
                 body:  [file: base64Image,
                         userIds: [user2.id]],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDTO.userIds: contains non friends"
         assert e.response.status == 400
     }
 
@@ -266,18 +277,32 @@ class TestSendPhoto extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: ["Authorization": "Bearer $user1.token"],
+                headers: [Authorization: "Bearer $user1.token"],
                 body:  [file: invalidData,
                         userIds: [user2.id]],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == message
         assert e.response.status == 400
 
         where:
-        //TODO: Add big size
-        invalidData << [null, "", ";", Base64.getEncoder().encodeToString("test".getBytes())]
+        invalidData << [
+                null,
+                "",
+                ";",
+                Base64.getEncoder().encodeToString("test".getBytes()),
+                Base64.getEncoder().encodeToString(new byte[300 * 1000 + 1])
+        ]
+        message << [
+                "uploadPhoto.uploadPhotoDTO.file: may not be empty",
+                "uploadPhoto.uploadPhotoDTO.file: may not be empty",
+                "uploadPhoto.uploadPhotoDTO.file: invalid base64 image",
+                "uploadPhoto.uploadPhotoDTO.file: invalid image data",
+                "uploadPhoto.uploadPhotoDTO.file: base64 string is too long, max image size is 300000 bytes"
+        ]
     }
 
     def "photo send with invalid token"() {
@@ -288,12 +313,14 @@ class TestSendPhoto extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
+                headers: [Authorization: "Bearer $token"],
                 body:  [file: base64Image],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "Wrong token"
         assert e.response.status == 401
     }
 }

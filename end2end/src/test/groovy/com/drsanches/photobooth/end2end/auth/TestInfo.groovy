@@ -5,6 +5,7 @@ import com.drsanches.photobooth.end2end.utils.TestUser
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
+import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 
 class TestInfo extends Specification {
@@ -18,15 +19,15 @@ class TestInfo extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
+                headers: [Authorization: "Bearer $user.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert response.getData()["id"] == user.id
-        assert response.getData()["username"] == user.username
-        assert response.getData()["email"] == user.email
-        assert response.getData()["password"] == null
+        assert response.data["id"] == user.id
+        assert response.data["username"] == user.username
+        assert response.data["email"] == user.email
+        assert response.data["password"] == null
     }
 
     def "get auth info with invalid token"() {
@@ -36,11 +37,13 @@ class TestInfo extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
+                headers: [Authorization: "Bearer $token"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "Wrong token"
         assert e.response.status == 401
     }
 }

@@ -7,6 +7,7 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
+import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 
 class TestLogin extends Specification {
@@ -26,11 +27,11 @@ class TestLogin extends Specification {
 
         then: "response is correct"
         assert response.status == 200
-        def token = response.getData()["accessToken"]
+        def token = response.data["accessToken"]
         token != JSONNull.getInstance()
-        response.getData()["refreshToken"] != JSONNull.getInstance()
-        response.getData()["tokenType"] == "Bearer"
-        response.getData()["expiresAt"] != JSONNull.getInstance()
+        response.data["refreshToken"] != JSONNull.getInstance()
+        response.data["tokenType"] == "Bearer"
+        response.data["expiresAt"] != JSONNull.getInstance()
 
         and: "token is correct"
         assert RequestUtils.getAuthInfo(token as String) != null
@@ -56,7 +57,7 @@ class TestLogin extends Specification {
         assert response.status == 200
 
         and: "token is correct"
-        def token = response.getData()["accessToken"]
+        def token = response.data["accessToken"]
         assert RequestUtils.getAuthInfo(token as String) != null
     }
 
@@ -75,7 +76,7 @@ class TestLogin extends Specification {
         assert response.status == 200
 
         and: "token is correct"
-        def newToken = response.getData()["accessToken"]
+        def newToken = response.data["accessToken"]
         assert RequestUtils.getAuthInfo(newToken as String) != null
 
         and: "old token is correct"
@@ -95,6 +96,8 @@ class TestLogin extends Specification {
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "login.loginDTO.username: may not be empty"
         assert e.response.status == 400
 
         where:
@@ -114,6 +117,8 @@ class TestLogin extends Specification {
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "login.loginDTO.password: may not be empty"
         assert e.response.status == 400
 
         where:
@@ -134,6 +139,8 @@ class TestLogin extends Specification {
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "Wrong username or password"
         assert e.response.status == 401
     }
 
@@ -151,6 +158,8 @@ class TestLogin extends Specification {
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "Wrong username or password"
         assert e.response.status == 401
     }
 }

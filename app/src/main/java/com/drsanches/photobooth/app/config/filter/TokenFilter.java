@@ -4,6 +4,7 @@ import com.drsanches.photobooth.app.common.exception.auth.AuthException;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.filter.GenericFilterBean;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -39,6 +40,7 @@ public class TokenFilter extends GenericFilterBean {
             if (!EXCLUDE_URI.test(uri)) {
                 log.info("Wrong token for uri. Uri: {}, exception: {}", uri, e.log());
                 httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                httpResponse.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
                 httpResponse.getOutputStream().flush();
                 httpResponse.getOutputStream().println(e.getMessage());
                 return;

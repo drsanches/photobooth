@@ -9,6 +9,7 @@ import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
+import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 
 class TestRegistration extends Specification {
@@ -31,11 +32,11 @@ class TestRegistration extends Specification {
 
         then: "response is correct"
         assert response.status == 200
-        def token = response.getData()["accessToken"]
+        def token = response.data["accessToken"]
         assert token != JSONNull.getInstance()
-        assert response.getData()["refreshToken"] != JSONNull.getInstance()
-        assert response.getData()["tokenType"] == "Bearer"
-        assert response.getData()["expiresAt"] != JSONNull.getInstance()
+        assert response.data["refreshToken"] != JSONNull.getInstance()
+        assert response.data["tokenType"] == "Bearer"
+        assert response.data["expiresAt"] != JSONNull.getInstance()
 
         and: "token is valid"
         def authInfo = RequestUtils.getAuthInfo(token as String)
@@ -48,11 +49,11 @@ class TestRegistration extends Specification {
 
         and: "user profile was created"
         def userProfile = RequestUtils.getUserProfile(username, password)
-        assert userProfile['id'] == authInfo["id"]
-        assert userProfile['username'] == username
-        assert userProfile['status'] == JSONNull.getInstance()
-        assert userProfile['name'] == JSONNull.getInstance()
-        assert userProfile['imagePath'] == Utils.DEFAULT_IMAGE_PATH
+        assert userProfile["id"] == authInfo["id"]
+        assert userProfile["username"] == username
+        assert userProfile["status"] == JSONNull.getInstance()
+        assert userProfile["name"] == JSONNull.getInstance()
+        assert userProfile["imagePath"] == Utils.DEFAULT_IMAGE_PATH
     }
 
     def "registration without username"() {
@@ -70,6 +71,8 @@ class TestRegistration extends Specification {
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "registration.registrationDTO.username: may not be empty"
         assert e.response.status == 400
 
         where:
@@ -91,6 +94,8 @@ class TestRegistration extends Specification {
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "registration.registrationDTO.password: may not be empty"
         assert e.response.status == 400
 
         where:
@@ -112,6 +117,8 @@ class TestRegistration extends Specification {
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "registration.registrationDTO.email: may not be empty"
         assert e.response.status == 400
 
         where:
@@ -123,16 +130,37 @@ class TestRegistration extends Specification {
         RequestUtils.getRestClient().post(
                 path: PATH,
                 body: [username: username,
-                       password: password],
+                       password: password,
+                       email: email],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == message
         assert e.response.status == 400
 
         where:
-        username << [DataGenerator.createValidUsername(), RandomStringUtils.randomAlphabetic(21)]
-        password << [RandomStringUtils.randomAlphabetic(256), DataGenerator.createValidPassword()]
+        username << [
+                RandomStringUtils.randomAlphabetic(21),
+                DataGenerator.createValidUsername(),
+                DataGenerator.createValidUsername()
+        ]
+        password << [
+                DataGenerator.createValidPassword(),
+                RandomStringUtils.randomAlphabetic(256),
+                DataGenerator.createValidPassword()
+        ]
+        email << [
+                DataGenerator.createValidEmail(),
+                DataGenerator.createValidEmail(),
+                RandomStringUtils.randomAlphabetic(256)
+        ]
+        message << [
+                "registration.registrationDTO.username: length must be between 0 and 20",
+                "registration.registrationDTO.password: length must be between 0 and 255",
+                "registration.registrationDTO.email: length must be between 0 and 255"
+        ]
     }
 
     def "registration with existing username"() {
@@ -151,6 +179,8 @@ class TestRegistration extends Specification {
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "registration.registrationDTO.username: User with username '$user.username' already exists"
         assert e.response.status == 400
     }
 
@@ -170,6 +200,8 @@ class TestRegistration extends Specification {
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "registration.registrationDTO.email: User with email '$user.email' already exists"
         assert e.response.status == 400
     }
 }

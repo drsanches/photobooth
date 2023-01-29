@@ -10,6 +10,7 @@ import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
 import net.sf.json.JSONObject
 import org.apache.commons.lang3.RandomStringUtils
+import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 
 class TestChangeCurrentProfile extends Specification {
@@ -25,7 +26,7 @@ class TestChangeCurrentProfile extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().put(
                 path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
+                headers: [Authorization: "Bearer $user.token"],
                 body:  [name: name,
                         status: status],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
@@ -35,13 +36,13 @@ class TestChangeCurrentProfile extends Specification {
 
         and: "user profile was updated"
         JSONObject userProfile = RequestUtils.getUserProfile(user.username, user.password)
-        assert userProfile['id'] == user.id
-        assert userProfile['username'] == user.username
-        assert userProfile['name'] == name
-        assert userProfile['status'] == status
-        assert userProfile['imagePath'] == Utils.DEFAULT_IMAGE_PATH
-        assert userProfile['thumbnailPath'] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert userProfile['relationship'] == "CURRENT"
+        assert userProfile["id"] == user.id
+        assert userProfile["username"] == user.username
+        assert userProfile["name"] == name
+        assert userProfile["status"] == status
+        assert userProfile["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert userProfile["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
+        assert userProfile["relationship"] == "CURRENT"
     }
 
     def "success user profile clean"() {
@@ -51,7 +52,7 @@ class TestChangeCurrentProfile extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().put(
                 path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
+                headers: [Authorization: "Bearer $user.token"],
                 body:  [name: null,
                         status: null],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
@@ -61,13 +62,13 @@ class TestChangeCurrentProfile extends Specification {
 
         and: "user profile was updated"
         JSONObject userProfile = RequestUtils.getUserProfile(user.username, user.password)
-        assert userProfile['id'] == user.id
-        assert userProfile['username'] == user.username
-        assert userProfile['name'] == JSONNull.getInstance()
-        assert userProfile['status'] == JSONNull.getInstance()
-        assert userProfile['imagePath'] == Utils.DEFAULT_IMAGE_PATH
-        assert userProfile['thumbnailPath'] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert userProfile['relationship'] == "CURRENT"
+        assert userProfile["id"] == user.id
+        assert userProfile["username"] == user.username
+        assert userProfile["name"] == JSONNull.getInstance()
+        assert userProfile["status"] == JSONNull.getInstance()
+        assert userProfile["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert userProfile["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
+        assert userProfile["relationship"] == "CURRENT"
     }
 
     def "user profile change with invalid data"() {
@@ -77,19 +78,24 @@ class TestChangeCurrentProfile extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().put(
                 path: PATH,
-                headers: ["Authorization": "Bearer $user.token"],
+                headers: [Authorization: "Bearer $user.token"],
                 body:  [name: name,
                         status: status],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == message
         assert e.response.status == 400
 
         where:
-        name                                     | status
-        RandomStringUtils.randomAlphabetic(101) | DataGenerator.createValidStatus()
-        DataGenerator.createValidName()         | RandomStringUtils.randomAlphabetic(51)
+        name << [RandomStringUtils.randomAlphabetic(101), DataGenerator.createValidName()]
+        status << [DataGenerator.createValidStatus(), RandomStringUtils.randomAlphabetic(51)]
+        message << [
+                "changeCurrentProfile.changeUserProfileDTO.name: length must be between 0 and 100",
+                "changeCurrentProfile.changeUserProfileDTO.status: length must be between 0 and 50"
+        ]
     }
 
     def "user profile change with invalid token"() {
@@ -99,11 +105,13 @@ class TestChangeCurrentProfile extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().put(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
+                headers: [Authorization: "Bearer $token"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "Wrong token"
         assert e.response.status == 401
     }
 }

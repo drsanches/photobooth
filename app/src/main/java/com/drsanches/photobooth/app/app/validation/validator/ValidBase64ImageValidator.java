@@ -30,7 +30,7 @@ public class ValidBase64ImageValidator implements ConstraintValidator<ValidBase6
 
         //The original data is less than base64 in 3/4
         if (base64Image.getBytes().length * 3/4 > maxPhotoBytes) {
-            customMessage(context, "base64 string is too long: max=" + maxPhotoBytes);
+            customMessage(context, "base64 string is too long, max image size is " + maxPhotoBytes + " bytes");
             log.error("Base64 string is too long. Length: {}", base64Image.length());
             return false;
         }

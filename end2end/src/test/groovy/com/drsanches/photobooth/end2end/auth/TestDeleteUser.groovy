@@ -8,6 +8,7 @@ import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONArray
 import net.sf.json.JSONNull
+import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 
 class TestDeleteUser extends Specification {
@@ -30,7 +31,7 @@ class TestDeleteUser extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
+                headers: [Authorization: "Bearer $token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
@@ -98,11 +99,13 @@ class TestDeleteUser extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"],
+                headers: [Authorization: "Bearer $token"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "Wrong token"
         assert e.response.status == 401
     }
 }

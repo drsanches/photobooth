@@ -8,6 +8,7 @@ import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
+import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 
 class TestGetImageInfo extends Specification {
@@ -21,16 +22,16 @@ class TestGetImageInfo extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH + "default/info",
-                headers: ["Authorization": "Bearer $user.token"],
+                headers: [Authorization: "Bearer $user.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert response.getData()["id"] == "default"
-        assert response.getData()["path"] == Utils.DEFAULT_IMAGE_PATH
-        assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["createdTime"] == JSONNull.getInstance()
-        assert response.getData()["ownerId"] == JSONNull.getInstance()
+        assert response.data["id"] == "default"
+        assert response.data["path"] == Utils.DEFAULT_IMAGE_PATH
+        assert response.data["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
+        assert response.data["createdTime"] == JSONNull.getInstance()
+        assert response.data["ownerId"] == JSONNull.getInstance()
     }
 
     def "successful custom avatar info getting"() {
@@ -44,16 +45,16 @@ class TestGetImageInfo extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: user2.imagePath + "/info",
-                headers: ["Authorization": "Bearer $user1.token"],
+                headers: [Authorization: "Bearer $user1.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert response.getData()["id"] == (user2.imagePath as String).substring(PATH.length())
-        assert response.getData()["path"] == user2.imagePath
-        assert response.getData()["thumbnailPath"] == user2.thumbnailPath
-        assert response.getData()["ownerId"] == user2.id
-        assert Utils.checkTimestamp(dateBefore, response.getData()["createdTime"] as String, dateAfter)
+        assert response.data["id"] == (user2.imagePath as String).substring(PATH.length())
+        assert response.data["path"] == user2.imagePath
+        assert response.data["thumbnailPath"] == user2.thumbnailPath
+        assert response.data["ownerId"] == user2.id
+        assert Utils.checkTimestamp(dateBefore, response.data["createdTime"] as String, dateAfter)
     }
 
     def "get nonexistent image info"() {
@@ -64,11 +65,13 @@ class TestGetImageInfo extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().get(
                 path: PATH + nonexistentImageId + "/info",
-                headers: ["Authorization": "Bearer $user.token"],
+                headers: [Authorization: "Bearer $user.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "There is no image with id '$nonexistentImageId'"
         assert e.response.status == 400
     }
 
@@ -79,11 +82,13 @@ class TestGetImageInfo extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().get(
                 path: PATH + "default/info",
-                headers: ["Authorization": "Bearer $token"],
+                headers: [Authorization: "Bearer $token"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "Wrong token"
         assert e.response.status == 401
     }
 }

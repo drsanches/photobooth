@@ -5,6 +5,7 @@ import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
+import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 
 class TestRefreshToken extends Specification {
@@ -22,14 +23,14 @@ class TestRefreshToken extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: ["Authorization": "Bearer $refreshToken"],
+                headers: [Authorization: "Bearer $refreshToken"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
 
         and: "new token is correct"
-        def newtToken = response.getData()["accessToken"]
+        def newtToken = response.data["accessToken"]
         assert RequestUtils.getAuthInfo(newtToken as String) != null
 
         and: "previous token is invalid"
@@ -46,11 +47,13 @@ class TestRefreshToken extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: ["Authorization": "Bearer $invalidRefreshToken"],
+                headers: [Authorization: "Bearer $invalidRefreshToken"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "Wrong token"
         assert e.response.status == 401
     }
 }

@@ -7,6 +7,7 @@ import com.drsanches.photobooth.end2end.utils.Utils
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
+import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 
 class Deprecated_TestSearchProfile extends Specification {
@@ -21,18 +22,18 @@ class Deprecated_TestSearchProfile extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH + user2.username,
-                headers: ["Authorization": "Bearer $user1.token"],
+                headers: [Authorization: "Bearer $user1.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert response.getData()["id"] == user2.id
-        assert response.getData()["username"] == user2.username
-        assert response.getData()["name"] == user2.name
-        assert response.getData()["status"] == user2.status
-        assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
-        assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["relationship"] == "STRANGER"
+        assert response.data["id"] == user2.id
+        assert response.data["username"] == user2.username
+        assert response.data["name"] == user2.name
+        assert response.data["status"] == user2.status
+        assert response.data["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert response.data["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
+        assert response.data["relationship"] == "STRANGER"
     }
 
     def "successful user profile searching with upper case"() {
@@ -43,18 +44,18 @@ class Deprecated_TestSearchProfile extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH + user2.username.toUpperCase(),
-                headers: ["Authorization": "Bearer $user1.token"],
+                headers: [Authorization: "Bearer $user1.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert response.getData()["id"] == user2.id
-        assert response.getData()["username"] == user2.username
-        assert response.getData()["name"] == user2.name
-        assert response.getData()["status"] == user2.status
-        assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
-        assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["relationship"] == "STRANGER"
+        assert response.data["id"] == user2.id
+        assert response.data["username"] == user2.username
+        assert response.data["name"] == user2.name
+        assert response.data["status"] == user2.status
+        assert response.data["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert response.data["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
+        assert response.data["relationship"] == "STRANGER"
     }
 
     def "search deleted user profile"() {
@@ -65,11 +66,13 @@ class Deprecated_TestSearchProfile extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().get(
                 path: PATH + user2.username,
-                headers: ["Authorization": "Bearer $user1.token"],
+                headers: [Authorization: "Bearer $user1.token"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "There is no user with username '$user2.username'"
         assert e.response.status == 404
     }
 
@@ -81,11 +84,13 @@ class Deprecated_TestSearchProfile extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().get(
                 path: PATH + nonexistentUsername,
-                headers: ["Authorization": "Bearer $user.token"],
+                headers: [Authorization: "Bearer $user.token"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "There is no user with username '$nonexistentUsername'"
         assert e.response.status == 404
     }
 
@@ -97,11 +102,13 @@ class Deprecated_TestSearchProfile extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().get(
                 path: PATH + username,
-                headers: ["Authorization": "Bearer $token"],
+                headers: [Authorization: "Bearer $token"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "Wrong token"
         assert e.response.status == 401
     }
 }

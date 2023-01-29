@@ -41,8 +41,8 @@ class RequestUtils {
         try {
             HttpResponseDecorator response = getRestClient().get(
                     path: "/api/v1/auth/info",
-                    headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
-            return response.status == 200 ? response.getData() as JSONObject : null
+                    headers: [Authorization: "Bearer $token"]) as HttpResponseDecorator
+            return response.status == 200 ? response.data as JSONObject : null
         } catch(Exception e) {
             e.printStackTrace()
             return null
@@ -61,8 +61,8 @@ class RequestUtils {
         try {
             HttpResponseDecorator response = getRestClient().get(
                     path: "/api/v1/profile",
-                    headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
-            return response.status == 200 ? response.getData() as JSONObject : null
+                    headers: [Authorization: "Bearer $token"]) as HttpResponseDecorator
+            return response.status == 200 ? response.data as JSONObject : null
         } catch(Exception e) {
             e.printStackTrace()
             return null
@@ -71,8 +71,8 @@ class RequestUtils {
 
     static void changeUserProfile(String token, String name, String status) {
         getRestClient().put(
-                path: '/api/v1/profile',
-                headers: ["Authorization": "Bearer $token"],
+                path: "/api/v1/profile",
+                headers: [Authorization: "Bearer $token"],
                 body: [name: name,
                        status: status],
                 requestContentType: ContentType.JSON)
@@ -81,8 +81,8 @@ class RequestUtils {
     static void sendFriendRequest(String token, String userId) {
         getRestClient().post(
                 path: "/api/v1/friends/manage/add",
-                headers: ["Authorization": "Bearer $token"],
-                body: ["userId": userId],
+                headers: [Authorization: "Bearer $token"],
+                body: [userId: userId],
                 requestContentType: ContentType.JSON)
     }
 
@@ -90,8 +90,8 @@ class RequestUtils {
         try {
             HttpResponseDecorator response = getRestClient().get(
                     path: "/api/v1/friends/requests/incoming",
-                    headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
-            return response.status == 200 ? response.getData() as JSONArray : null
+                    headers: [Authorization: "Bearer $token"]) as HttpResponseDecorator
+            return response.status == 200 ? response.data as JSONArray : null
         } catch(Exception e) {
             e.printStackTrace()
             return null
@@ -102,8 +102,8 @@ class RequestUtils {
         try {
             HttpResponseDecorator response = getRestClient().get(
                     path: "/api/v1/friends/requests/outgoing",
-                    headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
-            return response.status == 200 ? response.getData() as JSONArray : null
+                    headers: [Authorization: "Bearer $token"]) as HttpResponseDecorator
+            return response.status == 200 ? response.data as JSONArray : null
         } catch(Exception e) {
             e.printStackTrace()
             return null
@@ -114,8 +114,8 @@ class RequestUtils {
         try {
             HttpResponseDecorator response = getRestClient().get(
                     path: "/api/v1/friends",
-                    headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
-            return response.status == 200 ? response.getData() as JSONArray : null
+                    headers: [Authorization: "Bearer $token"]) as HttpResponseDecorator
+            return response.status == 200 ? response.data as JSONArray : null
         } catch(Exception e) {
             e.printStackTrace()
             return null
@@ -125,7 +125,7 @@ class RequestUtils {
     static void deleteUser(String token, String password) {
         getRestClient().post(
                 path: "/api/v1/auth/deleteUser",
-                headers: ["Authorization": "Bearer $token"],
+                headers: [Authorization: "Bearer $token"],
                 body:  [password: password],
                 requestContentType : ContentType.JSON)
     }
@@ -134,10 +134,10 @@ class RequestUtils {
         try {
             HttpResponseDecorator response = getRestClient().post(
                     path: "/api/v1/auth/login",
-                    body: ["username": username,
-                            "password": password],
+                    body: [username: username,
+                           password: password],
                     requestContentType : ContentType.JSON) as HttpResponseDecorator
-            return response.status == 200 ? response.getData()["accessToken"] : null
+            return response.status == 200 ? response.data["accessToken"] : null
         } catch (Exception e) {
             e.printStackTrace()
             return null
@@ -148,10 +148,10 @@ class RequestUtils {
         try {
             HttpResponseDecorator response = getRestClient().post(
                     path: "/api/v1/auth/login",
-                    body: ["username": username,
-                           "password": password],
+                    body: [username: username,
+                           password: password],
                     requestContentType : ContentType.JSON) as HttpResponseDecorator
-            return response.status == 200 ? response.getData() as JSONObject : null
+            return response.status == 200 ? response.data as JSONObject : null
         } catch (Exception e) {
             e.printStackTrace()
             return null
@@ -162,8 +162,8 @@ class RequestUtils {
         try {
             HttpResponseDecorator response = getRestClient().get(
                     path: path,
-                    headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
-            return response.status == 200 ? (response.getData() as ByteArrayInputStream).getBytes() as byte[] : null
+                    headers: [Authorization: "Bearer $token"]) as HttpResponseDecorator
+            return response.status == 200 ? (response.data as ByteArrayInputStream).getBytes() as byte[] : null
         } catch(Exception e) {
             e.printStackTrace()
             return null
@@ -173,7 +173,7 @@ class RequestUtils {
     static void uploadAvatar(String token, byte[] image) {
         getRestClient().post(
                 path: '/api/v1/image/avatar',
-                headers: ["Authorization": "Bearer $token"],
+                headers: [Authorization: "Bearer $token"],
                 body: [file: Utils.toBase64(image)],
                 requestContentType: ContentType.JSON)
     }
@@ -182,8 +182,8 @@ class RequestUtils {
         try {
             HttpResponseDecorator response = getRestClient().get(
                     path: "/api/v1/image/all",
-                    headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
-            return response.status == 200 ? response.getData() as JSONArray : null
+                    headers: [Authorization: "Bearer $token"]) as HttpResponseDecorator
+            return response.status == 200 ? response.data as JSONArray : null
         } catch(Exception e) {
             e.printStackTrace()
             return null
@@ -193,7 +193,7 @@ class RequestUtils {
     static void sendPhoto(String token, List<String> userIds, byte[] image) {
         getRestClient().post(
                 path: '/api/v1/image/photo',
-                headers: ["Authorization": "Bearer $token"],
+                headers: [Authorization: "Bearer $token"],
                 body:  [file: Utils.toBase64(image),
                         userIds: userIds],
                 requestContentType : ContentType.JSON)

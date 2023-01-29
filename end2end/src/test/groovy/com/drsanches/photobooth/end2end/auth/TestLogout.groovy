@@ -4,6 +4,7 @@ import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
+import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 
 class TestLogout extends Specification {
@@ -19,7 +20,7 @@ class TestLogout extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"]) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $token"]) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
@@ -46,10 +47,12 @@ class TestLogout extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: ["Authorization": "Bearer $token"])
+                headers: [Authorization: "Bearer $token"])
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "Wrong token"
         assert e.response.status == 401
     }
 }

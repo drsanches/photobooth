@@ -7,6 +7,7 @@ import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
+import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 
 class TestGetThumbnail extends Specification {
@@ -110,6 +111,8 @@ class TestGetThumbnail extends Specification {
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "There is no image with id '$nonexistentImageId'"
         assert e.response.status == 400
     }
 }

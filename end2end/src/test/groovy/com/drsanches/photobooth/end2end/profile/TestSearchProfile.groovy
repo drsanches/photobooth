@@ -8,6 +8,7 @@ import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONArray
+import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 
 class TestSearchProfile extends Specification {
@@ -31,7 +32,7 @@ class TestSearchProfile extends Specification {
 
         then: "response is correct"
         assert response.status == 200
-        def results = response.getData() as JSONArray
+        def results = response.data as JSONArray
         assert results.size() == 1
         assert results.get(0)["id"] == user2.id
         assert results.get(0)["username"] == user2.username
@@ -59,7 +60,7 @@ class TestSearchProfile extends Specification {
 
         then: "response is correct"
         assert response.status == 200
-        def results = response.getData() as JSONArray
+        def results = response.data as JSONArray
         assert results.size() == 1
         assert results.get(0)["id"] == user2.id
         assert results.get(0)["username"] == user2.username
@@ -84,7 +85,7 @@ class TestSearchProfile extends Specification {
 
         then: "response is correct"
         assert response.status == 200
-        assert (response.getData() as JSONArray).size() == 0
+        assert (response.data as JSONArray).size() == 0
     }
 
     def "search nonexistent user profile"() {
@@ -96,12 +97,12 @@ class TestSearchProfile extends Specification {
         def response = RequestUtils.getRestClient().get(
                 path: PATH,
                 params: [username: nonexistentUsername],
-                headers: ["Authorization": "Bearer $user.token"],
+                headers: [Authorization: "Bearer $user.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert (response.getData() as JSONArray).size() == 0
+        assert (response.data as JSONArray).size() == 0
     }
 
     def "get user profile with invalid token"() {
@@ -112,11 +113,13 @@ class TestSearchProfile extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().get(
                 path: PATH + username,
-                headers: ["Authorization": "Bearer $token"],
+                headers: [Authorization: "Bearer $token"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "Wrong token"
         assert e.response.status == 401
     }
 }

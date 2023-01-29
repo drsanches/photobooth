@@ -6,6 +6,7 @@ import com.drsanches.photobooth.end2end.utils.Utils
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseDecorator
 import groovyx.net.http.HttpResponseException
+import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 
 class TestGetProfile extends Specification {
@@ -20,18 +21,18 @@ class TestGetProfile extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH + user2.id,
-                headers: ["Authorization": "Bearer $user1.token"],
+                headers: [Authorization: "Bearer $user1.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert response.getData()["id"] == user2.id
-        assert response.getData()["username"] == user2.username
-        assert response.getData()["name"] == user2.name
-        assert response.getData()["status"] == user2.status
-        assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
-        assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["relationship"] == "STRANGER"
+        assert response.data["id"] == user2.id
+        assert response.data["username"] == user2.username
+        assert response.data["name"] == user2.name
+        assert response.data["status"] == user2.status
+        assert response.data["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert response.data["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
+        assert response.data["relationship"] == "STRANGER"
     }
 
     def "successful incoming user profile getting"() {
@@ -42,18 +43,18 @@ class TestGetProfile extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH + user2.id,
-                headers: ["Authorization": "Bearer $user1.token"],
+                headers: [Authorization: "Bearer $user1.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert response.getData()["id"] == user2.id
-        assert response.getData()["username"] == user2.username
-        assert response.getData()["name"] == user2.name
-        assert response.getData()["status"] == user2.status
-        assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
-        assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["relationship"] == "INCOMING_FRIEND_REQUEST"
+        assert response.data["id"] == user2.id
+        assert response.data["username"] == user2.username
+        assert response.data["name"] == user2.name
+        assert response.data["status"] == user2.status
+        assert response.data["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert response.data["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
+        assert response.data["relationship"] == "INCOMING_FRIEND_REQUEST"
     }
 
     def "successful outgoing user profile getting"() {
@@ -65,18 +66,18 @@ class TestGetProfile extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH + user2.id,
-                headers: ["Authorization": "Bearer $user1.token"],
+                headers: [Authorization: "Bearer $user1.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert response.getData()["id"] == user2.id
-        assert response.getData()["username"] == user2.username
-        assert response.getData()["name"] == user2.name
-        assert response.getData()["status"] == user2.status
-        assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
-        assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["relationship"] == "OUTGOING_FRIEND_REQUEST"
+        assert response.data["id"] == user2.id
+        assert response.data["username"] == user2.username
+        assert response.data["name"] == user2.name
+        assert response.data["status"] == user2.status
+        assert response.data["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert response.data["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
+        assert response.data["relationship"] == "OUTGOING_FRIEND_REQUEST"
     }
 
     def "successful friend profile getting"() {
@@ -88,18 +89,18 @@ class TestGetProfile extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH + user2.id,
-                headers: ["Authorization": "Bearer $user1.token"],
+                headers: [Authorization: "Bearer $user1.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert response.getData()["id"] == user2.id
-        assert response.getData()["username"] == user2.username
-        assert response.getData()["name"] == user2.name
-        assert response.getData()["status"] == user2.status
-        assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
-        assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["relationship"] == "FRIEND"
+        assert response.data["id"] == user2.id
+        assert response.data["username"] == user2.username
+        assert response.data["name"] == user2.name
+        assert response.data["status"] == user2.status
+        assert response.data["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert response.data["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
+        assert response.data["relationship"] == "FRIEND"
     }
 
     def "successful current profile getting"() {
@@ -109,18 +110,18 @@ class TestGetProfile extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH + user1.id,
-                headers: ["Authorization": "Bearer $user1.token"],
+                headers: [Authorization: "Bearer $user1.token"],
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert response.getData()["id"] == user1.id
-        assert response.getData()["username"] == user1.username
-        assert response.getData()["name"] == user1.name
-        assert response.getData()["status"] == user1.status
-        assert response.getData()["imagePath"] == Utils.DEFAULT_IMAGE_PATH
-        assert response.getData()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.getData()["relationship"] == "CURRENT"
+        assert response.data["id"] == user1.id
+        assert response.data["username"] == user1.username
+        assert response.data["name"] == user1.name
+        assert response.data["status"] == user1.status
+        assert response.data["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert response.data["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
+        assert response.data["relationship"] == "CURRENT"
     }
 
     def "get deleted user profile"() {
@@ -131,11 +132,13 @@ class TestGetProfile extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().get(
                 path: PATH + user2.id,
-                headers: ["Authorization": "Bearer $user1.token"],
+                headers: [Authorization: "Bearer $user1.token"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "There is no user with id '$user2.id'"
         assert e.response.status == 404
     }
 
@@ -147,11 +150,13 @@ class TestGetProfile extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().get(
                 path: PATH + nonexistentId,
-                headers: ["Authorization": "Bearer $user.token"],
+                headers: [Authorization: "Bearer $user.token"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "There is no user with id '$nonexistentId'"
         assert e.response.status == 404
     }
 
@@ -163,11 +168,13 @@ class TestGetProfile extends Specification {
         when: "request is sent"
         RequestUtils.getRestClient().get(
                 path: PATH + userId,
-                headers: ["Authorization": "Bearer $token"],
+                headers: [Authorization: "Bearer $token"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == "Wrong token"
         assert e.response.status == 401
     }
 }
