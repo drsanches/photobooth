@@ -1,1 +1,4 @@
 rootProject.name = 'photobooth'
+
+include 'app'
+include 'end2end'

@@ -63,7 +63,7 @@ Before run, it is needed to create a database for the application.
 #### Run
 Run application by the command (with custom environment variables):
 
-    java -jar -DPORT=8080 -DADMIN_PASSWORD=admin -DJDBC_DATABASE_URL=jdbc:postgresql://localhost:5432/photobooth -DJDBC_DATABASE_USERNAME=photobooth_app -DJDBC_DATABASE_PASSWORD=pswd -DEMAIL_ADDRESS=mail@example.com -DEMAIL_PASSWORD=pswd build\libs\photobooth-1.0.jar
+    java -jar -DPORT=8080 -DADMIN_PASSWORD=admin -DJDBC_DATABASE_URL=jdbc:postgresql://localhost:5432/photobooth -DJDBC_DATABASE_USERNAME=photobooth_app -DJDBC_DATABASE_PASSWORD=pswd -DEMAIL_ADDRESS=mail@example.com -DEMAIL_PASSWORD=pswd app\build\libs\photobooth-1.0.jar
 
 ### Docker
 

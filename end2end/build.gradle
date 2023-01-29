@@ -1,0 +1,23 @@
+plugins {
+    id 'groovy'
+}
+
+group 'com.drsanches.photobooth'
+version '1.0'
+
+sourceCompatibility = JavaVersion.VERSION_11
+
+repositories {
+    mavenCentral()
+    maven { url "http://repository.codehaus.org/" }
+}
+
+dependencies {
+    //Utils
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+
+    //Tests
+    implementation group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.11'
+    implementation group: 'org.spockframework', name: 'spock-core', version: '1.1-groovy-2.4'
+    implementation group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.5.0'
+}

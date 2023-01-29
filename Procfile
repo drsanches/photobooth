@@ -1,1 +1,1 @@
-web: java -jar build/libs/photobooth-1.0.jar
+web: java -jar app/build/libs/photobooth-1.0.jar
