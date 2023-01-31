@@ -1,9 +1,11 @@
 package com.drsanches.photobooth.app.auth.data.google.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
+@Setter
 @ToString
 public class GoogleInfoDTO {
 

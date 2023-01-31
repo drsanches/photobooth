@@ -12,9 +12,11 @@ public class GoogleUserInfoService {
 
     private final static String URL = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=%s";
 
+    private final RestTemplate restTemplate = new RestTemplate();
+
     public GoogleInfoDTO getGoogleInfo(String idToken) {
         try {
-            GoogleInfoDTO response = new RestTemplate().getForObject(String.format(URL, idToken), GoogleInfoDTO.class);
+            GoogleInfoDTO response = restTemplate.getForObject(String.format(URL, idToken), GoogleInfoDTO.class);
             log.info("Google user info response: {}", response);
             return response;
         } catch (Exception e) {

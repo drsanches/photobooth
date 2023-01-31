@@ -56,8 +56,8 @@ class GoogleAuthWebServiceTest {
 
     @BeforeEach
     void setUp() {
-        GoogleInfoDTO googleInfo = Mockito.mock(GoogleInfoDTO.class);
-        Mockito.when(googleInfo.getEmail()).thenReturn(USER_EMAIL);
+        GoogleInfoDTO googleInfo = new GoogleInfoDTO();
+        googleInfo.setEmail(USER_EMAIL);
         Mockito.when(googleUserInfoService.getGoogleInfo(Mockito.any())).thenReturn(googleInfo);
     }
 
