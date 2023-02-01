@@ -18,7 +18,7 @@ import javax.validation.ConstraintViolationException;
 @ControllerAdvice
 public class CustomExceptionHandler {
 
-    @ExceptionHandler({ApplicationException.class})
+    @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<String> handleApplicationException(ApplicationException e) {
         log.warn("Application exception: {}", e.log());
         return new ResponseEntity<>(e.getMessage(), headers(), HttpStatus.BAD_REQUEST);
@@ -41,13 +41,13 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(e.getMessage(), headers(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({ServerError.class})
+    @ExceptionHandler(ServerError.class)
     public ResponseEntity<String> handleServerError(ServerError e) {
         log.error("Server error: {}", e.log());
         return new ResponseEntity<>(e.getMessage(), headers(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler({RuntimeException.class})
+    @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
         return handleServerError(new ServerError(e.getMessage(), e));
     }

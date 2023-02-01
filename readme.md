@@ -114,6 +114,5 @@ After the application start, it can be tested with the command:
 
 ### Tests
 - Test sorting
-- Test email notifications
 - Test 2FA
 - Test transactions
