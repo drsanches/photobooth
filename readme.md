@@ -60,6 +60,9 @@ Before run, it is needed to create a database for the application.
 - `gradlew clean` - removes all previous builds
 - `gradlew bootJar` - builds executable jar
 
+or
+- `gradlew stage` - contains 2 previous tasks
+
 #### Run
 Run application by the command (with custom environment variables):
 
