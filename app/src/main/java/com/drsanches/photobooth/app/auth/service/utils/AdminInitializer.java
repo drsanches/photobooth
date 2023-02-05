@@ -54,7 +54,7 @@ public class AdminInitializer implements Initializer {
             userIntegrationService.createUser(userAuth);
             log.info("Admin initialized. Id: {}", userAuth.getId());
         } catch (NoSuchAlgorithmException e) {
-            log.error("Failed to generate sha256 hash", e);
+            log.error("Failed to generate sha256 hash. Exception: {}", BaseException.log(e));
             System.exit(1);
         }
     }

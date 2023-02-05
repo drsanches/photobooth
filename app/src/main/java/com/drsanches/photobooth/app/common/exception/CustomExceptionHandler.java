@@ -20,7 +20,7 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<String> handleApplicationException(ApplicationException e) {
-        log.warn("Application exception", e);
+        log.warn("Application exception: {}", e.log());
         return new ResponseEntity<>(e.getMessage(), headers(), HttpStatus.BAD_REQUEST);
     }
 
@@ -31,19 +31,19 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<String> handleAuthException(AuthException e) {
-        log.warn("Auth exception", e);
+        log.warn("Auth exception: {}", e.log());
         return new ResponseEntity<>(e.getMessage(), headers(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({NoUserIdException.class, NoUsernameException.class})
     public ResponseEntity<String> handleNoUserException(ApplicationException e) {
-        log.warn("No user exception", e);
+        log.warn("No user exception: {}", e.log());
         return new ResponseEntity<>(e.getMessage(), headers(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ServerError.class)
     public ResponseEntity<String> handleServerError(ServerError e) {
-        log.error("Server error", e);
+        log.error("Server error: {}", e.log());
         return new ResponseEntity<>(e.getMessage(), headers(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
