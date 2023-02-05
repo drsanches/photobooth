@@ -2,10 +2,10 @@ package com.drsanches.photobooth.app.common.exception.dto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.SneakyThrows;
 
-@Getter
+@Data
 @AllArgsConstructor
 public class ExceptionDTO {
 

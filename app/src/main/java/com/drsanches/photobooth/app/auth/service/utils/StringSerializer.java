@@ -14,7 +14,7 @@ public class StringSerializer {
         try {
             return objectMapper.readValue(content, valueType);
         } catch (JsonProcessingException e) {
-            throw new ServerError("Registration confirmation deserialization error", e);
+            throw new ServerError("Deserialization error", e);
         }
     }
 
@@ -22,7 +22,7 @@ public class StringSerializer {
         try {
             return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
-            throw new ServerError("Registration serialization error", e);
+            throw new ServerError("Serialization error", e);
         }
     }
 }

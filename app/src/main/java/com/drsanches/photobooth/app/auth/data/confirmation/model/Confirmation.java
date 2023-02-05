@@ -1,8 +1,7 @@
 package com.drsanches.photobooth.app.auth.data.confirmation.model;
 
 import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.Column;
@@ -13,9 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.GregorianCalendar;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Entity
 @Table(name="confirmation")
 public class Confirmation {

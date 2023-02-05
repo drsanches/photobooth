@@ -4,8 +4,7 @@ import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.GenericFilterBean;
@@ -48,10 +47,9 @@ public class LogFilter extends GenericFilterBean {
         chain.doFilter(request, response);
     }
 
+    @Data
     @AllArgsConstructor
     @Builder
-    @Getter
-    @Setter
     private static class LogInfo {
 
         private static final ObjectMapper MAPPER = new ObjectMapper();

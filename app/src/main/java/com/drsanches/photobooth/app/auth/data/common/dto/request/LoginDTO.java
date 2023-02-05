@@ -1,15 +1,12 @@
 package com.drsanches.photobooth.app.auth.data.common.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class LoginDTO {
 
     @Schema(required = true, maxLength = 20)

@@ -1,17 +1,13 @@
 package com.drsanches.photobooth.app.app.data.profile.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Entity
 @Table(name="user_profile")
 public class UserProfile {

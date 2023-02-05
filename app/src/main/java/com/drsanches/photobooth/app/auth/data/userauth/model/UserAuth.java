@@ -1,8 +1,7 @@
 package com.drsanches.photobooth.app.auth.data.userauth.model;
 
 import com.drsanches.photobooth.app.common.token.data.Role;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.Column;
@@ -12,9 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Entity
 @Table(name="user_auth")
 public class UserAuth {

@@ -2,13 +2,10 @@ package com.drsanches.photobooth.app.auth.data.common.dto.response;
 
 import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class TokenDTO {
 
     @Schema(required = true)

@@ -2,9 +2,8 @@ package com.drsanches.photobooth.app.app.data.image.model;
 
 import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Column;
@@ -13,11 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.GregorianCalendar;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 @Table(name="image")
 public class Image {
