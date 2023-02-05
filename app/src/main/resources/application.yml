@@ -25,6 +25,8 @@ management: # http://localhost:8080/actuator
         include: "*"
 
 spring:
+  mvc:
+    static-path-pattern: /ui/**
   h2: # http://localhost:8080/h2-console
     console:
       enabled: true

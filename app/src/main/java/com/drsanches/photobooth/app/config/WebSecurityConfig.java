@@ -18,7 +18,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.function.Predicate;
-import static java.util.function.Predicate.not;
 
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -39,20 +38,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .or(x -> x.matches("/api/v1/image/thumbnail/" + ImageConsts.DELETED_AVATAR_ID))
             .or(x -> x.matches("/api/v1/image/thumbnail/" + IMAGE_ID_PATTERN))
             .or(x -> x.matches("/actuator/health.*"))
-            .or(x -> x.matches("/ui.*"))
-            .or(x -> x.matches("/favicon.ico"))
-            .or(x -> x.matches("/error")); //Not sent to client, and no extra 401 error in the logs
+            .or(x -> x.matches("/ui.*"));
 
     private final Predicate<String> ADMIN_URI = ((Predicate<String>)
             x -> x.matches("/h2-console.*"))
             .or(x -> x.matches("/swagger-ui.html.*"))
-            .or(((Predicate<String>) x -> x.matches("/actuator.*")).and(not(x -> x.matches("/actuator/health.*"))));
+            .or(((Predicate<String>) x -> x.matches("/actuator.*"))
+                    .and(Predicate.not(x -> x.matches("/actuator/health.*"))));
 
-    private final Predicate<String> LOG_URI = ((Predicate<String>)
-            x -> x.matches("/api.*"))
-            .or(x -> x.matches("/h2-console.*"))
-            .or(x -> x.matches("/swagger-ui.html.*"))
-            .or(x -> x.matches("/actuator.*"));
+    private final Predicate<String> EXCLUDE_LOG_URI = ((Predicate<String>)
+            x -> x.matches("/ui/css.*"))
+            .or(x -> x.matches("/ui/js.*"))
+            .or(x -> x.matches("/swagger-ui/.*.js"))
+            .or(x -> x.matches("/swagger-ui/.*.css"))
+            .or(x -> x.matches("/swagger-ui/.*.map"))
+            .or(x -> x.matches("/swagger-ui/.*.png"));
 
     @Autowired
     private TokenService tokenService;
@@ -64,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.addFilterAfter(new TokenFilter(tokenService, PUBLIC_URI), BasicAuthenticationFilter.class);
         http.addFilterAfter(new AdminFilter(tokenSupplier, ADMIN_URI), TokenFilter.class);
-        http.addFilterAfter(new LogFilter(tokenSupplier, LOG_URI), AdminFilter.class);
+        http.addFilterAfter(new LogFilter(tokenSupplier, EXCLUDE_LOG_URI), AdminFilter.class);
         http.cors().and().csrf().disable()
                 .headers().frameOptions().disable()
                 .addHeaderWriter(new StaticHeadersWriter("X-FRAME-OPTIONS", "SAMEORIGIN"))

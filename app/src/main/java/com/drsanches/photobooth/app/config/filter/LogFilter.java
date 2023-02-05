@@ -1,6 +1,5 @@
 package com.drsanches.photobooth.app.config.filter;
 
-import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
 import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.GregorianCalendar;
 import java.util.function.Predicate;
 
 @Slf4j
@@ -25,28 +23,24 @@ public class LogFilter extends GenericFilterBean {
 
     private final TokenSupplier TOKEN_SUPPLIER;
 
-    private final Predicate<String> LOG_URI;
+    private final Predicate<String> EXCLUDE_LOG_URI;
 
-    public LogFilter(TokenSupplier tokenSupplier, Predicate<String> logUri) {
+    public LogFilter(TokenSupplier tokenSupplier, Predicate<String> excludeLogUri) {
         this.TOKEN_SUPPLIER = tokenSupplier;
-        this.LOG_URI = logUri;
+        this.EXCLUDE_LOG_URI = excludeLogUri;
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        if (LOG_URI.test(httpRequest.getRequestURI())) {
+        if (!EXCLUDE_LOG_URI.test(httpRequest.getRequestURI())) {
             if (TOKEN_SUPPLIER.get() != null) {
                 log.info("{} {}, info: {}", httpRequest.getMethod(),  httpRequest.getRequestURL(), LogInfo.builder()
-                        .method(httpRequest.getMethod())
-                        .url(httpRequest.getRequestURL())
                         .address(httpRequest.getRemoteAddr())
                         .userId(TOKEN_SUPPLIER.get().getUserId())
                         .build());
             } else {
                 log.info("{} {}, info: {}", httpRequest.getMethod(), httpRequest.getRequestURL(), LogInfo.builder()
-                        .method(httpRequest.getMethod())
-                        .url(httpRequest.getRequestURL())
                         .address(httpRequest.getRemoteAddr())
                         .build());
             }
@@ -61,12 +55,6 @@ public class LogFilter extends GenericFilterBean {
     private static class LogInfo {
 
         private static final ObjectMapper MAPPER = new ObjectMapper();
-
-        private final String timestamp = GregorianCalendarConvertor.convert(new GregorianCalendar());
-
-        private final String method;
-
-        private final StringBuffer url;
 
         private final String address;
 

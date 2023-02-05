@@ -119,6 +119,8 @@ After the application start, it can be tested with the command:
 - Add field descriptions for db models
 - Add available characters validation
 - Add scheduled tasks to clean expired tokens and confirmations
+- Refactor logging
+- Use @Data
 
 ### UI
 - Fix authorization
