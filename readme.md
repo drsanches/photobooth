@@ -115,10 +115,10 @@ After the application start, it can be tested with the command:
 - Add cache? (on last images data)
 - Do not create UserProfile for admin?
 - Use 404 instead 401 for nonexistent urls
+- Separate app, auth and scheduler to different modules
 - Add stub for google auth
 - Add field descriptions for db models
 - Add available characters validation
-- Add scheduled tasks to clean expired tokens and confirmations
 - Refactor logging
 
 ### UI

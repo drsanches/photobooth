@@ -17,6 +17,13 @@ application:
     max-page-size: 100
   2FA-enabled: false
   email-sending-enabled: false
+  scheduler:
+    expired-token-clean-task:
+      enabled: true
+      cron: 0 0 1 * * * # at 1 AM every day
+    expired-confirmation-clean-task:
+      enabled: true
+      cron: 0 0 3 * * * # at 3 AM every day
 
 management: # http://localhost:8080/actuator
   endpoints:
