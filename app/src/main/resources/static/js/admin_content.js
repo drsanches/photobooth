@@ -1,4 +1,4 @@
-import {isAuthorized} from "/ui/js/utils/token.js";
+import API from "/ui/js/utils/api.js";
 
 export var adminContent = {
     data() {
@@ -7,7 +7,9 @@ export var adminContent = {
         }
     },
     mounted() {
-        this.authorized = isAuthorized();
+        API.getInfo(data => {
+            this.authorized = true;
+        });
     },
     template: `
         <div>

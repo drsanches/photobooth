@@ -1,5 +1,5 @@
-import {sendData, followLink, hash} from "/ui/js/utils/common.js";
-import {setToken} from "/ui/js/utils/token.js";
+import API from "/ui/js/utils/api.js";
+import {followLink} from "/ui/js/utils/utils.js";
 
 export var login = {
     data() {
@@ -14,16 +14,7 @@ export var login = {
                 alert("Enter all data");
                 return;
             }
-            var body = {
-                username: this.username,
-                password: hash(this.password),
-            }
-            sendData("/auth/login", "POST", body, true, function(data) {
-                setToken(data.accessToken);
-                followLink("/ui/index.html");
-            }, function() {
-                alert("Login error!");
-            });
+            API.login(this.username, this.password, () => followLink("/ui/index.html"), () => alert("Login error!"));
         }
     },
     template: `

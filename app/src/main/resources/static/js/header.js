@@ -1,6 +1,5 @@
-import {followLink, getData} from "/ui/js/utils/common.js";
-import {isAuthorized, deleteToken} from "/ui/js/utils/token.js";
-import {hasUsername, getUsername, setUsername, deleteUsername} from "/ui/js/utils/username.js";
+import API from "/ui/js/utils/api.js";
+import {followLink} from "/ui/js/utils/utils.js";
 
 export var header = {
     data() {
@@ -12,25 +11,13 @@ export var header = {
     methods: {
             home: () => followLink("/ui/index.html"),
             login: () => followLink("/ui/login.html"),
-            logout: () => {
-                getData("/auth/logout").then(data => {
-                    deleteToken();
-                    deleteUsername();
-                    followLink("/ui/index.html");
-                });
-            }
+            logout: () => API.logout(() => followLink("/ui/index.html"))
         },
     mounted() {
-        getData("/auth/info").then(data => {
-            setUsername(data.username);
+        API.getInfo(data => {
+            this.username = data.username;
+            this.authorized = true;
         });
-
-        this.authorized = isAuthorized();
-        this.username = getUsername();
-
-        if (isAuthorized() && !hasUsername()) {
-            followLink("/ui/index.html");
-        }
     },
     template: `
         <div>

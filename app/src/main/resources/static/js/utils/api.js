@@ -1,19 +1,31 @@
-import {getToken, deleteToken} from "/ui/js/utils/token.js"
-import {deleteUsername} from "/ui/js/utils/username.js"
 import {sha256} from '/ui/js/lib/sha256.js'
+import {setToken, getToken, deleteToken} from "/ui/js/utils/token.js"
 
-var BASE_URL = window.location.protocol + "//" + window.location.host;
-var API_BASE_URL = BASE_URL + "/api/v1";
+const API_BASE_URL = window.location.protocol + "//" + window.location.host + "/api/v1";
 
-export function hash(password) {
-    return sha256(password);
+function login(username, password, onSuccess, onError) {
+    var body = {
+        username: username,
+        password: sha256(password),
+    };
+    sendData("/auth/login", "POST", body, true, data => {
+        setToken(data.accessToken);
+        onSuccess();
+    }, onError);
 }
 
-export function followLink(path) {
-    window.location.href = BASE_URL + path;
+function getInfo(onSuccess) {
+    getData("/auth/info", true, onSuccess);
 }
 
-export function sendData(path, method, body, needResponseData, onSuccess, onError) {
+function logout(onSuccess) {
+    getData("/auth/logout", false, () => {
+        deleteToken();
+        onSuccess();
+    });
+}
+
+function sendData(path, method, body, withResponseData, onSuccess, onError) {
     var response;
     if (body != null) {
         response = {
@@ -35,7 +47,7 @@ export function sendData(path, method, body, needResponseData, onSuccess, onErro
     fetch(API_BASE_URL + path, response)
     .then(response => {
         if (response.ok) {
-            if (needResponseData) {
+            if (withResponseData) {
                 response.json().then(data => onSuccess(data));
             } else {
                 onSuccess();
@@ -52,7 +64,7 @@ export function sendData(path, method, body, needResponseData, onSuccess, onErro
     .catch(error => console.error(error));
 }
 
-export function getData(path) {
+function getData(path, withResponseData, onSuccess) {
     return fetch(API_BASE_URL + path, {
         method: 'GET',
         headers: {
@@ -61,7 +73,11 @@ export function getData(path) {
     })
     .then(response => {
         if (response.ok) {
-            return response.json();
+            if (withResponseData) {
+                response.json().then(data => onSuccess(data));
+            } else {
+                onSuccess();
+            }
         } else {
             response.json().then(data => processError(response.status, data));
         }
@@ -72,7 +88,14 @@ export function getData(path) {
 function processError(status, data) {
     if (status == 401) {
         deleteToken();
-        deleteUsername();
     }
     console.error(JSON.stringify(data));
 }
+
+var API = {
+    login: login,
+    getInfo: getInfo,
+    logout: logout
+}
+
+export default API;

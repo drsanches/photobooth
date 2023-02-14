@@ -121,9 +121,6 @@ After the application start, it can be tested with the command:
 - Add available characters validation
 - Refactor logging
 
-### UI
-- Fix authorization
-
 ### Tests
 - Test sorting
 - Test 2FA
