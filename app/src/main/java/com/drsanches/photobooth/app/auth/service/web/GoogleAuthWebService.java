@@ -1,10 +1,15 @@
 package com.drsanches.photobooth.app.auth.service.web;
 
+import com.drsanches.photobooth.app.auth.data.confirmation.model.Confirmation;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Operation;
+import com.drsanches.photobooth.app.auth.data.google.dto.GoogleGetTokenDTO;
+import com.drsanches.photobooth.app.auth.data.google.dto.GoogleSetUsernameDTO;
+import com.drsanches.photobooth.app.auth.service.domain.ConfirmationDomainService;
+import com.drsanches.photobooth.app.auth.service.utils.ConfirmationCodeValidator;
 import com.drsanches.photobooth.app.common.token.TokenService;
+import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import com.drsanches.photobooth.app.common.token.data.TokenMapper;
 import com.drsanches.photobooth.app.auth.data.common.dto.request.GoogleTokenDTO;
-import com.drsanches.photobooth.app.auth.data.common.dto.response.TokenDTO;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.service.domain.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.service.integration.GoogleUserInfoService;
@@ -34,7 +39,16 @@ public class GoogleAuthWebService {
     private GoogleUserInfoService googleUserInfoService;
 
     @Autowired
+    private ConfirmationDomainService confirmationDomainService;
+
+    @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private TokenSupplier tokenSupplier;
+
+    @Autowired
+    private ConfirmationCodeValidator confirmationCodeValidator;
 
     @Autowired
     private EmailNotifier emailNotifier;
@@ -42,17 +56,33 @@ public class GoogleAuthWebService {
     @Autowired
     private TokenMapper tokenMapper;
 
-    public TokenDTO getToken(@Valid GoogleTokenDTO googleTokenDTO) {
+    public GoogleGetTokenDTO getToken(@Valid GoogleTokenDTO googleTokenDTO) {
         String email = googleUserInfoService.getGoogleInfo(googleTokenDTO.getIdToken()).getEmail();
         UserAuth userAuth;
+        String confirmationCode = null;
         try {
             userAuth = userAuthDomainService.getEnabledByGoogleAuth(email);
         } catch (NoGoogleUserException e) {
             userAuth = userIntegrationService.createUserByGoogle(email);
             log.info("New user created. Id: {}", userAuth.getId());
+            confirmationCode = confirmationDomainService.create(null, userAuth.getId(), userAuth.getEmail(), Operation.GOOGLE_USERNAME_CHANGE).getCode();
+            log.info("Google username changing process started. UserId: {}", userAuth.getId());
             emailNotifier.sendSuccessNotification(userAuth.getEmail(), Operation.REGISTRATION);
         }
         Token token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
-        return tokenMapper.convert(token);
+        return new GoogleGetTokenDTO(tokenMapper.convert(token), confirmationCode);
+    }
+
+    public void setUsername(@Valid GoogleSetUsernameDTO googleSetUsernameDTO) {
+        Confirmation confirmation = confirmationDomainService.get(googleSetUsernameDTO.getCode());
+        confirmationCodeValidator.validate(confirmation, Operation.GOOGLE_USERNAME_CHANGE);
+        String userId = tokenSupplier.get().getUserId();
+        UserAuth current = userAuthDomainService.getEnabledById(userId);
+        String oldUsername = current.getUsername();
+        current.setUsername(googleSetUsernameDTO.getNewUsername());
+        userIntegrationService.updateUser(current);
+        confirmationDomainService.delete(confirmation.getId());
+        tokenService.removeAllTokens(userId);
+        log.info("User changed google default username. UserId: {}, oldUsername: {}, newUsername: {}", current.getId(), oldUsername, current.getUsername());
     }
 }

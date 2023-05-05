@@ -6,8 +6,8 @@ import com.drsanches.photobooth.app.auth.data.common.confirm.RegistrationConfirm
 import com.drsanches.photobooth.app.auth.data.common.dto.request.RegistrationDTO;
 import com.drsanches.photobooth.app.auth.data.common.dto.response.UserAuthInfoDTO;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Operation;
+import com.drsanches.photobooth.app.auth.service.utils.ConfirmationCodeValidator;
 import com.drsanches.photobooth.app.auth.service.utils.CredentialsHelper;
-import com.drsanches.photobooth.app.common.exception.auth.WrongConfirmCodeException;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.common.token.data.TokenMapper;
 import com.drsanches.photobooth.app.auth.data.common.confirm.ChangeEmailConfirmData;
@@ -37,7 +37,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
-import java.util.GregorianCalendar;
 import java.util.UUID;
 
 @Slf4j
@@ -70,6 +69,9 @@ public class UserAuthWebService {
     private StringSerializer stringSerializer;
 
     @Autowired
+    private ConfirmationCodeValidator confirmationCodeValidator;
+
+    @Autowired
     private UserAuthInfoMapper userAuthInfoMapper;
 
     @Autowired
@@ -97,7 +99,7 @@ public class UserAuthWebService {
 
     public TokenDTO registrationConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
         Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
-        validate(confirmation, Operation.REGISTRATION);
+        confirmationCodeValidator.validate(confirmation, Operation.REGISTRATION);
         RegistrationConfirmData registrationConfirmData = stringSerializer.deserialize(confirmation.getData(), RegistrationConfirmData.class);
         UserAuth userAuth = userIntegrationService.createUser(
                 registrationConfirmData.getUsername(),
@@ -149,7 +151,7 @@ public class UserAuthWebService {
 
     public void changeUsernameConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
         Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
-        validate(confirmation, Operation.USERNAME_CHANGE);
+        confirmationCodeValidator.validate(confirmation, Operation.USERNAME_CHANGE);
         ChangeUsernameConfirmData changeUsernameConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangeUsernameConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
@@ -183,7 +185,7 @@ public class UserAuthWebService {
 
     public void changePasswordConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
         Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
-        validate(confirmation, Operation.PASSWORD_CHANGE);
+        confirmationCodeValidator.validate(confirmation, Operation.PASSWORD_CHANGE);
         ChangePasswordConfirmData changePasswordConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangePasswordConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
@@ -215,7 +217,7 @@ public class UserAuthWebService {
 
     public void changeEmailConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
         Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
-        validate(confirmation, Operation.EMAIL_CHANGE);
+        confirmationCodeValidator.validate(confirmation, Operation.EMAIL_CHANGE);
         ChangeEmailConfirmData changeEmailConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangeEmailConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
@@ -249,24 +251,12 @@ public class UserAuthWebService {
 
     public void disableUserConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
         Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
-        validate(confirmation, Operation.DISABLE);
+        confirmationCodeValidator.validate(confirmation, Operation.DISABLE);
         String userId = tokenSupplier.get().getUserId();
         userIntegrationService.disableUser(userId);
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User disabled. UserId: {}", userId);
         emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
-    }
-
-    private void validate(Confirmation confirmation, Operation operation) {
-        if (confirmation.getUserId() != null && !confirmation.getUserId().equals(tokenSupplier.get().getUserId())
-                || operation != confirmation.getOperation()) {
-            throw new WrongConfirmCodeException();
-        }
-        if (confirmation.getExpiresAt().before(new GregorianCalendar())) {
-            confirmationDomainService.delete(confirmation.getId());
-            log.info("Expired Confirmation deleted: {}", confirmation);
-            throw new WrongConfirmCodeException("Confirmation code expired");
-        }
     }
 }
