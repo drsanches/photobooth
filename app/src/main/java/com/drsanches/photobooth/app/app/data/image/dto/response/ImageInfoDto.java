@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class ImageInfoDTO {
+public class ImageInfoDto {
 
     @Schema(required = true)
     private String id;

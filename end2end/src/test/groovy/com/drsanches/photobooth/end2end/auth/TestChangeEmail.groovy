@@ -47,7 +47,7 @@ class TestChangeEmail extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "changeEmail.changeEmailDTO.newEmail: User with email '$user.email' already exists"
+        assert e.response.data["message"] == "changeEmail.changeEmailDto.newEmail: User with email '$user.email' already exists"
         assert e.response.status == 400
     }
 
@@ -66,7 +66,7 @@ class TestChangeEmail extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "changeEmail.changeEmailDTO.newEmail: User with email '$user2.email' already exists"
+        assert e.response.data["message"] == "changeEmail.changeEmailDto.newEmail: User with email '$user2.email' already exists"
         assert e.response.status == 400
     }
 
@@ -84,7 +84,7 @@ class TestChangeEmail extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "changeEmail.changeEmailDTO.newEmail: may not be empty"
+        assert e.response.data["message"] == "changeEmail.changeEmailDto.newEmail: may not be empty"
         assert e.response.status == 400
 
         where:
@@ -110,7 +110,7 @@ class TestChangeEmail extends Specification {
 
         where:
         invalidEmail << [RandomStringUtils.randomAlphabetic(256)]
-        message << ["changeEmail.changeEmailDTO.newEmail: length must be between 0 and 255"]
+        message << ["changeEmail.changeEmailDto.newEmail: length must be between 0 and 255"]
     }
 
     def "email change with invalid token"() {

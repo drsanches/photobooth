@@ -9,7 +9,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Data
-public class RegistrationDTO {
+public class RegistrationDto {
 
     @Schema(required = true, maxLength = 20)
     @NotEmpty

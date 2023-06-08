@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Data
-public class ChangeEmailDTO {
+public class ChangeEmailDto {
 
     @Schema(maxLength = 255)
     @NotEmpty

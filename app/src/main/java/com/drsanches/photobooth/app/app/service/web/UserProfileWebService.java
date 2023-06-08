@@ -1,8 +1,8 @@
 package com.drsanches.photobooth.app.app.service.web;
 
-import com.drsanches.photobooth.app.app.data.profile.dto.request.ChangeUserProfileDTO;
-import com.drsanches.photobooth.app.app.data.profile.dto.response.RelationshipDTO;
-import com.drsanches.photobooth.app.app.data.profile.dto.response.UserInfoDTO;
+import com.drsanches.photobooth.app.app.data.profile.dto.request.ChangeUserProfileDto;
+import com.drsanches.photobooth.app.app.data.profile.dto.response.RelationshipDto;
+import com.drsanches.photobooth.app.app.data.profile.dto.response.UserInfoDto;
 import com.drsanches.photobooth.app.app.data.profile.mapper.UserInfoMapper;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.app.service.domain.FriendsDomainService;
@@ -34,14 +34,14 @@ public class UserProfileWebService {
     @Autowired
     private UserInfoMapper userInfoMapper;
 
-    public UserInfoDTO getCurrentProfile() {
+    public UserInfoDto getCurrentProfile() {
         String userId = tokenSupplier.get().getUserId();
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
-        return userInfoMapper.convert(userProfile, RelationshipDTO.CURRENT);
+        return userInfoMapper.convert(userProfile, RelationshipDto.CURRENT);
     }
 
     @Deprecated
-    public UserInfoDTO searchProfile(String username) {
+    public UserInfoDto searchProfile(String username) {
         String currentUserId = tokenSupplier.get().getUserId();
         UserProfile userProfile = userProfileDomainService.getEnabledByUsername(username.toLowerCase());
         List<String> incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
@@ -49,7 +49,7 @@ public class UserProfileWebService {
         return userInfoMapper.convert(userProfile, incomingIds, outgoingIds);
     }
 
-    public List<UserInfoDTO> searchProfile(String username, Integer page, Integer size) {
+    public List<UserInfoDto> searchProfile(String username, Integer page, Integer size) {
         String currentUserId = tokenSupplier.get().getUserId();
         List<UserProfile> userProfile = userProfileDomainService.findEnabledByUsername(username.toLowerCase(), page, size);
         List<String> incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
@@ -59,7 +59,7 @@ public class UserProfileWebService {
                 .collect(Collectors.toList());
     }
 
-    public UserInfoDTO getProfile(String userId) {
+    public UserInfoDto getProfile(String userId) {
         String currentUserId = tokenSupplier.get().getUserId();
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
         List<String> incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
@@ -67,11 +67,11 @@ public class UserProfileWebService {
         return userInfoMapper.convert(userProfile, incomingIds, outgoingIds);
     }
 
-    public void changeCurrentProfile(@Valid ChangeUserProfileDTO changeUserProfileDTO) {
+    public void changeCurrentProfile(@Valid ChangeUserProfileDto changeUserProfileDto) {
         String userId = tokenSupplier.get().getUserId();
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
-        userProfile.setName(changeUserProfileDTO.getName());
-        userProfile.setStatus(changeUserProfileDTO.getStatus());
+        userProfile.setName(changeUserProfileDto.getName());
+        userProfile.setStatus(changeUserProfileDto.getStatus());
         userProfileDomainService.save(userProfile);
         log.info("User updated his profile. UserId: {}", userId);
     }

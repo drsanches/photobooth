@@ -1,8 +1,8 @@
 package com.drsanches.photobooth.app.app.controller;
 
-import com.drsanches.photobooth.app.app.data.friends.dto.request.RemoveRequestDTO;
-import com.drsanches.photobooth.app.app.data.friends.dto.request.SendRequestDTO;
-import com.drsanches.photobooth.app.app.data.profile.dto.response.UserInfoDTO;
+import com.drsanches.photobooth.app.app.data.friends.dto.request.RemoveRequestDto;
+import com.drsanches.photobooth.app.app.data.friends.dto.request.SendRequestDto;
+import com.drsanches.photobooth.app.app.data.profile.dto.response.UserInfoDto;
 import com.drsanches.photobooth.app.app.service.web.FriendsWebService;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationPage;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationSize;
@@ -36,7 +36,7 @@ public class FriendsController {
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(path = "", method = RequestMethod.GET)
-    public List<UserInfoDTO> getFriends(@ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
+    public List<UserInfoDto> getFriends(@ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
                                         @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size) {
         return friendsWebService.getFriends(page, size);
     }
@@ -46,7 +46,7 @@ public class FriendsController {
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(path = "/requests/incoming", method = RequestMethod.GET)
-    public List<UserInfoDTO> getIncomingRequests(@ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
+    public List<UserInfoDto> getIncomingRequests(@ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
                                                  @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size) {
         return friendsWebService.getIncomingRequests(page, size);
     }
@@ -56,7 +56,7 @@ public class FriendsController {
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(path = "/requests/outgoing", method = RequestMethod.GET)
-    public List<UserInfoDTO> getOutgoingRequests(@ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
+    public List<UserInfoDto> getOutgoingRequests(@ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
                                                  @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size) {
         return friendsWebService.getOutgoingRequests(page, size);
     }
@@ -68,8 +68,8 @@ public class FriendsController {
     @ApiResponseCode401
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/manage/add", method = RequestMethod.POST)
-    public void sendRequest(@RequestBody SendRequestDTO sendRequestDTO) {
-        friendsWebService.sendRequest(sendRequestDTO);
+    public void sendRequest(@RequestBody SendRequestDto sendRequestDto) {
+        friendsWebService.sendRequest(sendRequestDto);
     }
 
     @Operation(summary = "Cancels the friend request from the current or to another user or removes user from friends")
@@ -78,7 +78,7 @@ public class FriendsController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(path = "/manage/delete", method = RequestMethod.POST)
-    public void removeRequest(@RequestBody RemoveRequestDTO removeRequestDTO) {
-        friendsWebService.removeRequest(removeRequestDTO);
+    public void removeRequest(@RequestBody RemoveRequestDto removeRequestDto) {
+        friendsWebService.removeRequest(removeRequestDto);
     }
 }

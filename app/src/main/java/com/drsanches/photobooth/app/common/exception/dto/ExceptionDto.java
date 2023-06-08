@@ -7,7 +7,7 @@ import lombok.SneakyThrows;
 
 @Data
 @AllArgsConstructor
-public class ExceptionDTO {
+public class ExceptionDto {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 

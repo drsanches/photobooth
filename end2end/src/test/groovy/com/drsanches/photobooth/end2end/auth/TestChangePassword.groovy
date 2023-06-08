@@ -58,7 +58,7 @@ class TestChangePassword extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "changePassword.changePasswordDTO.newPassword: may not be empty"
+        assert e.response.data["message"] == "changePassword.changePasswordDto.newPassword: may not be empty"
         assert e.response.status == 400
 
         where:
@@ -84,7 +84,7 @@ class TestChangePassword extends Specification {
 
         where:
         invalidPassword << [RandomStringUtils.randomAlphabetic(256)]
-        message << ["changePassword.changePasswordDTO.newPassword: length must be between 0 and 255"]
+        message << ["changePassword.changePasswordDto.newPassword: length must be between 0 and 255"]
     }
 
     def "password change with invalid token"() {

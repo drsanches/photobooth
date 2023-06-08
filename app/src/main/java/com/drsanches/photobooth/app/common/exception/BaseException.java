@@ -1,8 +1,8 @@
 package com.drsanches.photobooth.app.common.exception;
 
-import com.drsanches.photobooth.app.common.exception.dto.ExceptionDTO;
-import com.drsanches.photobooth.app.common.exception.dto.ExceptionLogInfoDTO;
-import com.drsanches.photobooth.app.common.exception.dto.ExternalExceptionLogInfoDTO;
+import com.drsanches.photobooth.app.common.exception.dto.ExceptionDto;
+import com.drsanches.photobooth.app.common.exception.dto.ExceptionLogInfoDto;
+import com.drsanches.photobooth.app.common.exception.dto.ExternalExceptionLogInfoDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,15 +43,15 @@ public class BaseException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return new ExceptionDTO(uuid, super.getMessage()).toString();
+        return new ExceptionDto(uuid, super.getMessage()).toString();
     }
 
     public String log() {
-        return new ExceptionLogInfoDTO(uuid, timestamp, logMessage, this).toString();
+        return new ExceptionLogInfoDto(uuid, timestamp, logMessage, this).toString();
     }
 
     public static String log(Throwable e) {
-        return new ExternalExceptionLogInfoDTO(e).toString();
+        return new ExternalExceptionLogInfoDto(e).toString();
     }
 }
 

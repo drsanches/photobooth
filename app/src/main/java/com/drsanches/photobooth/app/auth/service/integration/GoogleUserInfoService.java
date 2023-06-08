@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.auth.service.integration;
 
-import com.drsanches.photobooth.app.auth.data.google.dto.GoogleInfoDTO;
+import com.drsanches.photobooth.app.auth.data.google.dto.GoogleInfoDto;
 import com.drsanches.photobooth.app.common.exception.auth.GoogleAuthException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -14,9 +14,9 @@ public class GoogleUserInfoService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public GoogleInfoDTO getGoogleInfo(String idToken) {
+    public GoogleInfoDto getGoogleInfo(String idToken) {
         try {
-            GoogleInfoDTO response = restTemplate.getForObject(String.format(URL, idToken), GoogleInfoDTO.class);
+            GoogleInfoDto response = restTemplate.getForObject(String.format(URL, idToken), GoogleInfoDto.class);
             log.info("Google user info response: {}", response);
             return response;
         } catch (Exception e) {

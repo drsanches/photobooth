@@ -1,8 +1,8 @@
 package com.drsanches.photobooth.app.app.controller;
 
-import com.drsanches.photobooth.app.app.data.image.dto.request.UploadAvatarDTO;
-import com.drsanches.photobooth.app.app.data.image.dto.request.UploadPhotoDTO;
-import com.drsanches.photobooth.app.app.data.image.dto.response.ImageInfoDTO;
+import com.drsanches.photobooth.app.app.data.image.dto.request.UploadAvatarDto;
+import com.drsanches.photobooth.app.app.data.image.dto.request.UploadPhotoDto;
+import com.drsanches.photobooth.app.app.data.image.dto.response.ImageInfoDto;
 import com.drsanches.photobooth.app.app.service.web.ImageWebService;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationPage;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationSize;
@@ -39,8 +39,8 @@ public class ImageController {
     @ApiResponseCode401
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/avatar", method = RequestMethod.POST)
-    public void uploadAvatar(@RequestBody UploadAvatarDTO uploadAvatarDTO) {
-        imageWebService.uploadAvatar(uploadAvatarDTO);
+    public void uploadAvatar(@RequestBody UploadAvatarDto uploadAvatarDto) {
+        imageWebService.uploadAvatar(uploadAvatarDto);
     }
 
     @Operation(summary = "Returns an image by id")
@@ -49,7 +49,7 @@ public class ImageController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(path = "/{imageId}/info", method = RequestMethod.GET)
-    public ImageInfoDTO getImageInfo(@PathVariable String imageId) {
+    public ImageInfoDto getImageInfo(@PathVariable String imageId) {
         return imageWebService.getImageInfo(imageId);
     }
 
@@ -76,8 +76,8 @@ public class ImageController {
     @ApiResponseCode401
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/photo", method = RequestMethod.POST)
-    public void uploadPhoto(@RequestBody UploadPhotoDTO uploadPhotoDTO) {
-        imageWebService.uploadPhoto(uploadPhotoDTO);
+    public void uploadPhoto(@RequestBody UploadPhotoDto uploadPhotoDto) {
+        imageWebService.uploadPhoto(uploadPhotoDto);
     }
 
     @Operation(summary = "Returns all images info that are available to the user")
@@ -85,7 +85,7 @@ public class ImageController {
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(path = "/all", method = RequestMethod.GET)
-    public List<ImageInfoDTO> getAllInfo(@ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
+    public List<ImageInfoDto> getAllInfo(@ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
                                          @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size) {
         return imageWebService.getAllInfo(page, size);
     }
@@ -95,7 +95,7 @@ public class ImageController {
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(path = "/last", method = RequestMethod.GET)
-    public ImageInfoDTO getLastImageInfo() {
+    public ImageInfoDto getLastImageInfo() {
         return imageWebService.getLastImageInfo();
     }
 

@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class UserInfoDTO {
+public class UserInfoDto {
 
     @Schema(required = true)
     private String id;
@@ -25,5 +25,5 @@ public class UserInfoDTO {
     private String thumbnailPath;
 
     @Schema(required = true)
-    private RelationshipDTO relationship;
+    private RelationshipDto relationship;
 }

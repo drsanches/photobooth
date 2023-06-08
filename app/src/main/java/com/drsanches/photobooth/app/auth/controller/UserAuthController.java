@@ -1,14 +1,14 @@
 package com.drsanches.photobooth.app.auth.controller;
 
-import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangeUsernameDTO;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.ConfirmationCodeDTO;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.RegistrationDTO;
-import com.drsanches.photobooth.app.auth.data.common.dto.response.UserAuthInfoDTO;
+import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangeUsernameDto;
+import com.drsanches.photobooth.app.auth.data.common.dto.request.ConfirmationCodeDto;
+import com.drsanches.photobooth.app.auth.data.common.dto.request.RegistrationDto;
+import com.drsanches.photobooth.app.auth.data.common.dto.response.UserAuthInfoDto;
 import com.drsanches.photobooth.app.auth.service.web.UserAuthWebService;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangeEmailDTO;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangePasswordDTO;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.LoginDTO;
-import com.drsanches.photobooth.app.auth.data.common.dto.response.TokenDTO;
+import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangeEmailDto;
+import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangePasswordDto;
+import com.drsanches.photobooth.app.auth.data.common.dto.request.LoginDto;
+import com.drsanches.photobooth.app.auth.data.common.dto.response.TokenDto;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode201;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode400;
@@ -37,8 +37,8 @@ public class UserAuthController {
     @ApiResponseCode200
     @ApiResponseCode400
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public TokenDTO registration(@RequestBody RegistrationDTO registrationDTO) {
-        return userAuthWebService.registration(registrationDTO);
+    public TokenDto registration(@RequestBody RegistrationDto registrationDto) {
+        return userAuthWebService.registration(registrationDto);
     }
 
     @Operation(summary = "Registers the user by confirmation code")
@@ -47,8 +47,8 @@ public class UserAuthController {
     @ApiResponseCode401
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/registration/confirm", method = RequestMethod.POST)
-    public TokenDTO registrationConfirm(@RequestBody ConfirmationCodeDTO confirmationCodeDTO) {
-        return userAuthWebService.registrationConfirm(confirmationCodeDTO);
+    public TokenDto registrationConfirm(@RequestBody ConfirmationCodeDto confirmationCodeDto) {
+        return userAuthWebService.registrationConfirm(confirmationCodeDto);
     }
 
     @Operation(summary = "Returns authorization token")
@@ -56,8 +56,8 @@ public class UserAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public TokenDTO login(@RequestBody LoginDTO loginDTO) {
-        return userAuthWebService.login(loginDTO);
+    public TokenDto login(@RequestBody LoginDto loginDto) {
+        return userAuthWebService.login(loginDto);
     }
 
     @Operation(summary = "Returns current user private information")
@@ -65,7 +65,7 @@ public class UserAuthController {
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(value = "/info", method = RequestMethod.GET)
-    public UserAuthInfoDTO info() {
+    public UserAuthInfoDto info() {
         return userAuthWebService.info();
     }
 
@@ -75,8 +75,8 @@ public class UserAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/changeUsername", method = RequestMethod.POST)
-    public void changeUsername(@RequestBody ChangeUsernameDTO changeUsernameDTO) {
-        userAuthWebService.changeUsername(changeUsernameDTO);
+    public void changeUsername(@RequestBody ChangeUsernameDto changeUsernameDto) {
+        userAuthWebService.changeUsername(changeUsernameDto);
     }
 
     @Operation(summary = "Changes username by confirmation code")
@@ -85,8 +85,8 @@ public class UserAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/changeUsername/confirm", method = RequestMethod.POST)
-    public void changeUsernameConfirm(@RequestBody ConfirmationCodeDTO confirmationCodeDTO) {
-        userAuthWebService.changeUsernameConfirm(confirmationCodeDTO);
+    public void changeUsernameConfirm(@RequestBody ConfirmationCodeDto confirmationCodeDto) {
+        userAuthWebService.changeUsernameConfirm(confirmationCodeDto);
     }
 
     @Operation(summary = "If 2FA is activated, changes password, otherwise, sends a confirmation code to the mail")
@@ -95,8 +95,8 @@ public class UserAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
-    public void changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
-        userAuthWebService.changePassword(changePasswordDTO);
+    public void changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
+        userAuthWebService.changePassword(changePasswordDto);
     }
 
     @Operation(summary = "Changes username by confirmation code")
@@ -105,8 +105,8 @@ public class UserAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/changePassword/confirm", method = RequestMethod.POST)
-    public void changePasswordConfirm(@RequestBody ConfirmationCodeDTO confirmationCodeDTO) {
-        userAuthWebService.changePasswordConfirm(confirmationCodeDTO);
+    public void changePasswordConfirm(@RequestBody ConfirmationCodeDto confirmationCodeDto) {
+        userAuthWebService.changePasswordConfirm(confirmationCodeDto);
     }
 
     @Operation(summary = "If 2FA is activated, changes email, otherwise, sends a confirmation code to the mail")
@@ -115,8 +115,8 @@ public class UserAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/changeEmail", method = RequestMethod.POST)
-    public void changeEmail(@RequestBody ChangeEmailDTO changeEmailDTO) {
-        userAuthWebService.changeEmail(changeEmailDTO);
+    public void changeEmail(@RequestBody ChangeEmailDto changeEmailDto) {
+        userAuthWebService.changeEmail(changeEmailDto);
     }
 
     @Operation(summary = "Changes email by confirmation code")
@@ -125,15 +125,15 @@ public class UserAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/changeEmail/confirm", method = RequestMethod.POST)
-    public void changeEmailConfirm(@RequestBody ConfirmationCodeDTO confirmationCodeDTO) {
-        userAuthWebService.changeEmailConfirm(confirmationCodeDTO);
+    public void changeEmailConfirm(@RequestBody ConfirmationCodeDto confirmationCodeDto) {
+        userAuthWebService.changeEmailConfirm(confirmationCodeDto);
     }
 
     @Operation(summary = "Returns new authorization token")
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(value = "/refreshToken", method = RequestMethod.GET)
-    public TokenDTO refreshToken(@RequestHeader("Authorization")
+    public TokenDto refreshToken(@RequestHeader("Authorization")
                                  @Parameter(description = "Refresh token", required = true) String refreshToken) {
         return userAuthWebService.refreshToken(refreshToken);
     }
@@ -162,7 +162,7 @@ public class UserAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/deleteUser/confirm", method = RequestMethod.POST)
-    public void disableUserConfirm(@RequestBody ConfirmationCodeDTO confirmationCodeDTO) {
-        userAuthWebService.disableUserConfirm(confirmationCodeDTO);
+    public void disableUserConfirm(@RequestBody ConfirmationCodeDto confirmationCodeDto) {
+        userAuthWebService.disableUserConfirm(confirmationCodeDto);
     }
 }

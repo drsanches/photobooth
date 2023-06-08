@@ -3,7 +3,7 @@ package com.drsanches.photobooth.app.auth.data.google.dto;
 import lombok.Data;
 
 @Data
-public class GoogleInfoDTO {
+public class GoogleInfoDto {
 
     private String email;
 

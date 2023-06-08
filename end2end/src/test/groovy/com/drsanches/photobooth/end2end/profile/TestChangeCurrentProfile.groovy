@@ -93,8 +93,8 @@ class TestChangeCurrentProfile extends Specification {
         name << [RandomStringUtils.randomAlphabetic(101), DataGenerator.createValidName()]
         status << [DataGenerator.createValidStatus(), RandomStringUtils.randomAlphabetic(51)]
         message << [
-                "changeCurrentProfile.changeUserProfileDTO.name: length must be between 0 and 100",
-                "changeCurrentProfile.changeUserProfileDTO.status: length must be between 0 and 50"
+                "changeCurrentProfile.changeUserProfileDto.name: length must be between 0 and 100",
+                "changeCurrentProfile.changeUserProfileDto.status: length must be between 0 and 50"
         ]
     }
 

@@ -70,11 +70,11 @@ class TestUploadAvatar extends Specification {
                 Base64.getEncoder().encodeToString(new byte[300 * 1000 + 1])
         ]
         message << [
-                "uploadAvatar.uploadAvatarDTO.file: may not be empty",
-                "uploadAvatar.uploadAvatarDTO.file: may not be empty",
-                "uploadAvatar.uploadAvatarDTO.file: invalid base64 image",
-                "uploadAvatar.uploadAvatarDTO.file: invalid image data",
-                "uploadAvatar.uploadAvatarDTO.file: base64 string is too long, max image size is 300000 bytes"
+                "uploadAvatar.uploadAvatarDto.file: may not be empty",
+                "uploadAvatar.uploadAvatarDto.file: may not be empty",
+                "uploadAvatar.uploadAvatarDto.file: invalid base64 image",
+                "uploadAvatar.uploadAvatarDto.file: invalid image data",
+                "uploadAvatar.uploadAvatarDto.file: base64 string is too long, max image size is 300000 bytes"
         ]
     }
 

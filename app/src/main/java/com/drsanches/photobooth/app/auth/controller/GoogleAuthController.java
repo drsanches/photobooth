@@ -1,8 +1,8 @@
 package com.drsanches.photobooth.app.auth.controller;
 
-import com.drsanches.photobooth.app.auth.data.common.dto.request.GoogleTokenDTO;
-import com.drsanches.photobooth.app.auth.data.google.dto.GoogleGetTokenDTO;
-import com.drsanches.photobooth.app.auth.data.google.dto.GoogleSetUsernameDTO;
+import com.drsanches.photobooth.app.auth.data.common.dto.request.GoogleTokenDto;
+import com.drsanches.photobooth.app.auth.data.google.dto.GoogleGetTokenDto;
+import com.drsanches.photobooth.app.auth.data.google.dto.GoogleSetUsernameDto;
 import com.drsanches.photobooth.app.auth.service.web.GoogleAuthWebService;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode400;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode401;
@@ -27,8 +27,8 @@ public class GoogleAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/token", method = RequestMethod.POST)
-    public GoogleGetTokenDTO getToken(@RequestBody GoogleTokenDTO googleTokenDTO) {
-        return googleAuthWebService.getToken(googleTokenDTO);
+    public GoogleGetTokenDto getToken(@RequestBody GoogleTokenDto googleTokenDto) {
+        return googleAuthWebService.getToken(googleTokenDto);
     }
 
     @Operation(summary = "Sets new username instead of default")
@@ -36,7 +36,7 @@ public class GoogleAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/setUsername", method = RequestMethod.POST)
-    public void setUsername(@RequestBody GoogleSetUsernameDTO googleSetUsernameDTO) {
-        googleAuthWebService.setUsername(googleSetUsernameDTO);
+    public void setUsername(@RequestBody GoogleSetUsernameDto googleSetUsernameDto) {
+        googleAuthWebService.setUsername(googleSetUsernameDto);
     }
 }

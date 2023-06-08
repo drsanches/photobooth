@@ -11,7 +11,7 @@ import java.util.GregorianCalendar;
 
 @Data
 @AllArgsConstructor
-public class ExternalExceptionLogInfoDTO {
+public class ExternalExceptionLogInfoDto {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -19,7 +19,7 @@ public class ExternalExceptionLogInfoDTO {
 
     private final String exception;
 
-    public ExternalExceptionLogInfoDTO(Throwable e) {
+    public ExternalExceptionLogInfoDto(Throwable e) {
         this.exception = ExceptionUtils.getStackTrace(e);
     }
 

@@ -61,7 +61,7 @@ class TestChangeUsername extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "changeUsername.changeUsernameDTO.newUsername: User with username '$user.username' already exists"
+        assert e.response.data["message"] == "changeUsername.changeUsernameDto.newUsername: User with username '$user.username' already exists"
         assert e.response.status == 400
     }
 
@@ -80,7 +80,7 @@ class TestChangeUsername extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "changeUsername.changeUsernameDTO.newUsername: User with username '$user2.username' already exists"
+        assert e.response.data["message"] == "changeUsername.changeUsernameDto.newUsername: User with username '$user2.username' already exists"
         assert e.response.status == 400
     }
 
@@ -98,7 +98,7 @@ class TestChangeUsername extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "changeUsername.changeUsernameDTO.newUsername: may not be empty"
+        assert e.response.data["message"] == "changeUsername.changeUsernameDto.newUsername: may not be empty"
         assert e.response.status == 400
 
         where:
@@ -124,7 +124,7 @@ class TestChangeUsername extends Specification {
 
         where:
         invalidUsername << [RandomStringUtils.randomAlphabetic(21)]
-        message << ["changeUsername.changeUsernameDTO.newUsername: length must be between 0 and 20"]
+        message << ["changeUsername.changeUsernameDto.newUsername: length must be between 0 and 20"]
     }
 
     def "username change with invalid token"() {

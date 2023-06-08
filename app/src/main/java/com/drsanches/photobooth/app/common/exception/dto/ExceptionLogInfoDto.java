@@ -11,7 +11,7 @@ import java.util.GregorianCalendar;
 
 @Data
 @AllArgsConstructor
-public class ExceptionLogInfoDTO {
+public class ExceptionLogInfoDto {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -23,7 +23,7 @@ public class ExceptionLogInfoDTO {
 
     private final String exception;
 
-    public ExceptionLogInfoDTO(String uuid, GregorianCalendar timestamp, String logMessage, Throwable e) {
+    public ExceptionLogInfoDto(String uuid, GregorianCalendar timestamp, String logMessage, Throwable e) {
         this.uuid = uuid;
         this.timestamp = GregorianCalendarConvertor.convert(timestamp);
         this.logMessage = logMessage;

@@ -203,7 +203,7 @@ class TestRemoveFriendRequest extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "removeRequest.removeRequestDTO.userId: the user can not be current"
+        assert e.response.data["message"] == "removeRequest.removeRequestDto.userId: the user can not be current"
         assert e.response.status == 400
 
         and: "the first user has correct relationships"
@@ -228,7 +228,7 @@ class TestRemoveFriendRequest extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "removeRequest.removeRequestDTO.userId: may not be empty"
+        assert e.response.data["message"] == "removeRequest.removeRequestDto.userId: may not be empty"
         assert e.response.status == 400
 
         where:
@@ -250,7 +250,7 @@ class TestRemoveFriendRequest extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "removeRequest.removeRequestDTO.userId: the user does not exist"
+        assert e.response.data["message"] == "removeRequest.removeRequestDto.userId: the user does not exist"
         assert e.response.status == 400
     }
 

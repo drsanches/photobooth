@@ -7,9 +7,9 @@ import com.drsanches.photobooth.app.app.service.domain.FriendsDomainService;
 import com.drsanches.photobooth.app.app.service.domain.ImageDomainService;
 import com.drsanches.photobooth.app.app.service.domain.UserProfileDomainService;
 import com.drsanches.photobooth.app.app.service.utils.PaginationService;
-import com.drsanches.photobooth.app.app.data.image.dto.request.UploadAvatarDTO;
-import com.drsanches.photobooth.app.app.data.image.dto.request.UploadPhotoDTO;
-import com.drsanches.photobooth.app.app.data.image.dto.response.ImageInfoDTO;
+import com.drsanches.photobooth.app.app.data.image.dto.request.UploadAvatarDto;
+import com.drsanches.photobooth.app.app.data.image.dto.request.UploadPhotoDto;
+import com.drsanches.photobooth.app.app.data.image.dto.response.ImageInfoDto;
 import com.drsanches.photobooth.app.app.service.domain.ImagePermissionDomainService;
 import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import com.drsanches.photobooth.app.config.ImageConsts;
@@ -58,9 +58,9 @@ public class ImageWebService {
     @Autowired
     private ImageInfoMapper imageInfoMapper;
 
-    public void uploadAvatar(@Valid UploadAvatarDTO uploadAvatarDTO) {
+    public void uploadAvatar(@Valid UploadAvatarDto uploadAvatarDto) {
         String userId = tokenSupplier.get().getUserId();
-        byte[] image = Base64.getDecoder().decode(uploadAvatarDTO.getFile());
+        byte[] image = Base64.getDecoder().decode(uploadAvatarDto.getFile());
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
             String imageId = imageDomainService.saveImage(image, userId).getId();
@@ -70,7 +70,7 @@ public class ImageWebService {
         });
     }
 
-    public ImageInfoDTO getImageInfo(String imageId) {
+    public ImageInfoDto getImageInfo(String imageId) {
         return imageInfoMapper.convert(imageDomainService.getImage(imageId));
     }
 
@@ -82,11 +82,11 @@ public class ImageWebService {
         return imageDomainService.getImage(imageId).getThumbnailData();
     }
 
-    public void uploadPhoto(@Valid UploadPhotoDTO uploadPhotoDTO) {
+    public void uploadPhoto(@Valid UploadPhotoDto uploadPhotoDto) {
         String currentUserId = tokenSupplier.get().getUserId();
-        byte[] image = Base64.getDecoder().decode(uploadPhotoDTO.getFile());
-        List<String> allowedUsers = CollectionUtils.isEmpty(uploadPhotoDTO.getUserIds()) ?
-                getEnabledFriends(currentUserId) : uploadPhotoDTO.getUserIds();
+        byte[] image = Base64.getDecoder().decode(uploadPhotoDto.getFile());
+        List<String> allowedUsers = CollectionUtils.isEmpty(uploadPhotoDto.getUserIds()) ?
+                getEnabledFriends(currentUserId) : uploadPhotoDto.getUserIds();
         allowedUsers.add(currentUserId);
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
             String imageId = imageDomainService.saveImage(image, currentUserId).getId();
@@ -95,7 +95,7 @@ public class ImageWebService {
         });
     }
 
-    public List<ImageInfoDTO> getAllInfo(Integer page, Integer size) {
+    public List<ImageInfoDto> getAllInfo(Integer page, Integer size) {
         String currentUserId = tokenSupplier.get().getUserId();
         Set<String> imageIds = imagePermissionDomainService.getImageIds(currentUserId);
         Stream<Image> images = imageDomainService.getImages(imageIds).stream();
@@ -104,7 +104,7 @@ public class ImageWebService {
                 .collect(Collectors.toList());
     }
 
-    public ImageInfoDTO getLastImageInfo() {
+    public ImageInfoDto getLastImageInfo() {
         String currentUserId = tokenSupplier.get().getUserId();
         Set<String> imageIds = imagePermissionDomainService.getImageIds(currentUserId);
         Optional<Image> image = imageDomainService.getLastImage(imageIds, currentUserId);

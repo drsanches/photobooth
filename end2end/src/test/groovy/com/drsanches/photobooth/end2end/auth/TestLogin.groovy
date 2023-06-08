@@ -97,7 +97,7 @@ class TestLogin extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "login.loginDTO.username: may not be empty"
+        assert e.response.data["message"] == "login.loginDto.username: may not be empty"
         assert e.response.status == 400
 
         where:
@@ -118,7 +118,7 @@ class TestLogin extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "login.loginDTO.password: may not be empty"
+        assert e.response.data["message"] == "login.loginDto.password: may not be empty"
         assert e.response.status == 400
 
         where:

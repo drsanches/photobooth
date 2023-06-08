@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.ToString;
 
 @Data
-public class TokenDTO {
+public class TokenDto {
 
     @Schema(required = true)
     @ToString.Exclude

@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.auth.service.integration;
 
-import com.drsanches.photobooth.app.auth.data.google.dto.GoogleInfoDTO;
+import com.drsanches.photobooth.app.auth.data.google.dto.GoogleInfoDto;
 import com.drsanches.photobooth.app.common.exception.auth.GoogleAuthException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,19 +28,19 @@ class GoogleUserInfoServiceTest {
     @Test
     void getGoogleInfo() {
         String idToken = "idToken";
-        GoogleInfoDTO googleInfoDTO = new GoogleInfoDTO();
-        googleInfoDTO.setEmail(UUID.randomUUID().toString());
-        Mockito.when(restTemplate.getForObject(String.format(URL, idToken), GoogleInfoDTO.class))
-                .thenReturn(googleInfoDTO);
+        GoogleInfoDto googleInfoDto = new GoogleInfoDto();
+        googleInfoDto.setEmail(UUID.randomUUID().toString());
+        Mockito.when(restTemplate.getForObject(String.format(URL, idToken), GoogleInfoDto.class))
+                .thenReturn(googleInfoDto);
 
-        GoogleInfoDTO result = googleUserInfoService.getGoogleInfo(idToken);
-        Assertions.assertEquals(googleInfoDTO, result);
+        GoogleInfoDto result = googleUserInfoService.getGoogleInfo(idToken);
+        Assertions.assertEquals(googleInfoDto, result);
     }
 
     @Test
     void getGoogleInfoWithIncorrectToken() {
         String wrongIdToken = "wrongIdToken";
-        Mockito.when(restTemplate.getForObject(String.format(URL, wrongIdToken), GoogleInfoDTO.class))
+        Mockito.when(restTemplate.getForObject(String.format(URL, wrongIdToken), GoogleInfoDto.class))
                 .thenThrow(RuntimeException.class);
 
         Assertions.assertThrows(GoogleAuthException.class, () -> googleUserInfoService.getGoogleInfo(wrongIdToken));

@@ -3,20 +3,20 @@ package com.drsanches.photobooth.app.auth.service.web;
 import com.drsanches.photobooth.app.auth.data.common.confirm.ChangePasswordConfirmData;
 import com.drsanches.photobooth.app.auth.data.common.confirm.ChangeUsernameConfirmData;
 import com.drsanches.photobooth.app.auth.data.common.confirm.RegistrationConfirmData;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.RegistrationDTO;
-import com.drsanches.photobooth.app.auth.data.common.dto.response.UserAuthInfoDTO;
+import com.drsanches.photobooth.app.auth.data.common.dto.request.RegistrationDto;
+import com.drsanches.photobooth.app.auth.data.common.dto.response.UserAuthInfoDto;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Operation;
 import com.drsanches.photobooth.app.auth.service.utils.ConfirmationCodeValidator;
 import com.drsanches.photobooth.app.auth.service.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.common.token.data.TokenMapper;
 import com.drsanches.photobooth.app.auth.data.common.confirm.ChangeEmailConfirmData;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangeEmailDTO;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangePasswordDTO;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangeUsernameDTO;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.ConfirmationCodeDTO;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.LoginDTO;
-import com.drsanches.photobooth.app.auth.data.common.dto.response.TokenDTO;
+import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangeEmailDto;
+import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangePasswordDto;
+import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangeUsernameDto;
+import com.drsanches.photobooth.app.auth.data.common.dto.request.ConfirmationCodeDto;
+import com.drsanches.photobooth.app.auth.data.common.dto.request.LoginDto;
+import com.drsanches.photobooth.app.auth.data.common.dto.response.TokenDto;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Confirmation;
 import com.drsanches.photobooth.app.auth.data.userauth.mapper.UserAuthInfoMapper;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
@@ -80,12 +80,12 @@ public class UserAuthWebService {
     @Value("${application.2FA-enabled}")
     private boolean with2FA;
 
-    public TokenDTO registration(@Valid RegistrationDTO registrationDTO) {
+    public TokenDto registration(@Valid RegistrationDto registrationDto) {
         String salt = UUID.randomUUID().toString();
         RegistrationConfirmData registrationConfirmData = RegistrationConfirmData.builder()
-                .username(registrationDTO.getUsername())
-                .email(registrationDTO.getEmail())
-                .encryptedPassword(credentialsHelper.encodePassword(registrationDTO.getPassword(), salt))
+                .username(registrationDto.getUsername())
+                .email(registrationDto.getEmail())
+                .encryptedPassword(credentialsHelper.encodePassword(registrationDto.getPassword(), salt))
                 .salt(salt)
                 .build();
         String data = stringSerializer.serialize(registrationConfirmData);
@@ -94,11 +94,11 @@ public class UserAuthWebService {
             emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
         }
         log.info("User registration process started: {}", registrationConfirmData);
-        return with2FA ? null : registrationConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
+        return with2FA ? null : registrationConfirm(new ConfirmationCodeDto(confirmation.getCode()));
     }
 
-    public TokenDTO registrationConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
-        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
+    public TokenDto registrationConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
+        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
         confirmationCodeValidator.validate(confirmation, Operation.REGISTRATION);
         RegistrationConfirmData registrationConfirmData = stringSerializer.deserialize(confirmation.getData(), RegistrationConfirmData.class);
         UserAuth userAuth = userIntegrationService.createUser(
@@ -114,11 +114,11 @@ public class UserAuthWebService {
         return tokenMapper.convert(token);
     }
 
-    public TokenDTO login(@Valid LoginDTO loginDTO) {
+    public TokenDto login(@Valid LoginDto loginDto) {
         UserAuth userAuth;
         try {
-            userAuth = userAuthDomainService.getEnabledByUsername(loginDTO.getUsername().toLowerCase());
-            credentialsHelper.checkPassword(loginDTO.getPassword(), userAuth.getPassword(), userAuth.getSalt());
+            userAuth = userAuthDomainService.getEnabledByUsername(loginDto.getUsername().toLowerCase());
+            credentialsHelper.checkPassword(loginDto.getPassword(), userAuth.getPassword(), userAuth.getSalt());
         } catch (NoUsernameException | WrongPasswordException e) {
             throw new WrongUsernamePasswordException(e);
         }
@@ -126,15 +126,15 @@ public class UserAuthWebService {
         return tokenMapper.convert(token);
     }
 
-    public UserAuthInfoDTO info() {
+    public UserAuthInfoDto info() {
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
         return userAuthInfoMapper.convert(current);
     }
 
-    public void changeUsername(@Valid ChangeUsernameDTO changeUsernameDTO) {
+    public void changeUsername(@Valid ChangeUsernameDto changeUsernameDto) {
         ChangeUsernameConfirmData changeUsernameConfirmData = ChangeUsernameConfirmData.builder()
-                .username(changeUsernameDTO.getNewUsername())
+                .username(changeUsernameDto.getNewUsername())
                 .build();
         String data = stringSerializer.serialize(changeUsernameConfirmData);
         String userId = tokenSupplier.get().getUserId();
@@ -145,12 +145,12 @@ public class UserAuthWebService {
         }
         log.info("Username changing process started: {}", changeUsernameConfirmData);
         if (!with2FA) {
-            changeUsernameConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
+            changeUsernameConfirm(new ConfirmationCodeDto(confirmation.getCode()));
         }
     }
 
-    public void changeUsernameConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
-        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
+    public void changeUsernameConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
+        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
         confirmationCodeValidator.validate(confirmation, Operation.USERNAME_CHANGE);
         ChangeUsernameConfirmData changeUsernameConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangeUsernameConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
@@ -164,10 +164,10 @@ public class UserAuthWebService {
         emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
     }
 
-    public void changePassword(@Valid ChangePasswordDTO changePasswordDTO) {
+    public void changePassword(@Valid ChangePasswordDto changePasswordDto) {
         String salt = UUID.randomUUID().toString();
         ChangePasswordConfirmData changePasswordConfirmData = ChangePasswordConfirmData.builder()
-                .encryptedPassword(credentialsHelper.encodePassword(changePasswordDTO.getNewPassword(), salt))
+                .encryptedPassword(credentialsHelper.encodePassword(changePasswordDto.getNewPassword(), salt))
                 .salt(salt)
                 .build();
         String data = stringSerializer.serialize(changePasswordConfirmData);
@@ -179,12 +179,12 @@ public class UserAuthWebService {
         }
         log.info("Password changing process started: {}", changePasswordConfirmData);
         if (!with2FA) {
-            changePasswordConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
+            changePasswordConfirm(new ConfirmationCodeDto(confirmation.getCode()));
         }
     }
 
-    public void changePasswordConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
-        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
+    public void changePasswordConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
+        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
         confirmationCodeValidator.validate(confirmation, Operation.PASSWORD_CHANGE);
         ChangePasswordConfirmData changePasswordConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangePasswordConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
@@ -198,9 +198,9 @@ public class UserAuthWebService {
         emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
     }
 
-    public void changeEmail(@Valid ChangeEmailDTO changeEmailDTO) {
+    public void changeEmail(@Valid ChangeEmailDto changeEmailDto) {
         ChangeEmailConfirmData changeEmailConfirmData = ChangeEmailConfirmData.builder()
-                .email(changeEmailDTO.getNewEmail())
+                .email(changeEmailDto.getNewEmail())
                 .build();
         String data = stringSerializer.serialize(changeEmailConfirmData);
         String userId = tokenSupplier.get().getUserId();
@@ -211,12 +211,12 @@ public class UserAuthWebService {
         }
         log.info("Email changing process started: {}", changeEmailConfirmData);
         if (!with2FA) {
-            changeEmailConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
+            changeEmailConfirm(new ConfirmationCodeDto(confirmation.getCode()));
         }
     }
 
-    public void changeEmailConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
-        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
+    public void changeEmailConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
+        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
         confirmationCodeValidator.validate(confirmation, Operation.EMAIL_CHANGE);
         ChangeEmailConfirmData changeEmailConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangeEmailConfirmData.class);
         String userId = tokenSupplier.get().getUserId();
@@ -228,7 +228,7 @@ public class UserAuthWebService {
         emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
     }
 
-    public TokenDTO refreshToken(String refreshToken) {
+    public TokenDto refreshToken(String refreshToken) {
         return tokenMapper.convert(tokenService.refreshToken(refreshToken));
     }
 
@@ -245,12 +245,12 @@ public class UserAuthWebService {
         }
         log.info("User disabling process started. UserId: {}", userId);
         if (!with2FA) {
-            disableUserConfirm(new ConfirmationCodeDTO(confirmation.getCode()));
+            disableUserConfirm(new ConfirmationCodeDto(confirmation.getCode()));
         }
     }
 
-    public void disableUserConfirm(@Valid ConfirmationCodeDTO confirmationCodeDTO) {
-        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDTO.getCode());
+    public void disableUserConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
+        Confirmation confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
         confirmationCodeValidator.validate(confirmation, Operation.DISABLE);
         String userId = tokenSupplier.get().getUserId();
         userIntegrationService.disableUser(userId);

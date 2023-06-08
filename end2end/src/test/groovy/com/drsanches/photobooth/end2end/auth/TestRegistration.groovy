@@ -72,7 +72,7 @@ class TestRegistration extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "registration.registrationDTO.username: may not be empty"
+        assert e.response.data["message"] == "registration.registrationDto.username: may not be empty"
         assert e.response.status == 400
 
         where:
@@ -95,7 +95,7 @@ class TestRegistration extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "registration.registrationDTO.password: may not be empty"
+        assert e.response.data["message"] == "registration.registrationDto.password: may not be empty"
         assert e.response.status == 400
 
         where:
@@ -118,7 +118,7 @@ class TestRegistration extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "registration.registrationDTO.email: may not be empty"
+        assert e.response.data["message"] == "registration.registrationDto.email: may not be empty"
         assert e.response.status == 400
 
         where:
@@ -157,9 +157,9 @@ class TestRegistration extends Specification {
                 RandomStringUtils.randomAlphabetic(256)
         ]
         message << [
-                "registration.registrationDTO.username: length must be between 0 and 20",
-                "registration.registrationDTO.password: length must be between 0 and 255",
-                "registration.registrationDTO.email: length must be between 0 and 255"
+                "registration.registrationDto.username: length must be between 0 and 20",
+                "registration.registrationDto.password: length must be between 0 and 255",
+                "registration.registrationDto.email: length must be between 0 and 255"
         ]
     }
 
@@ -180,7 +180,7 @@ class TestRegistration extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "registration.registrationDTO.username: User with username '$user.username' already exists"
+        assert e.response.data["message"] == "registration.registrationDto.username: User with username '$user.username' already exists"
         assert e.response.status == 400
     }
 
@@ -201,7 +201,7 @@ class TestRegistration extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "registration.registrationDTO.email: User with email '$user.email' already exists"
+        assert e.response.data["message"] == "registration.registrationDto.email: User with email '$user.email' already exists"
         assert e.response.status == 400
     }
 }

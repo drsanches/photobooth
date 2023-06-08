@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app.app.controller;
 
-import com.drsanches.photobooth.app.app.data.profile.dto.request.ChangeUserProfileDTO;
-import com.drsanches.photobooth.app.app.data.profile.dto.response.UserInfoDTO;
+import com.drsanches.photobooth.app.app.data.profile.dto.request.ChangeUserProfileDto;
+import com.drsanches.photobooth.app.app.data.profile.dto.response.UserInfoDto;
 import com.drsanches.photobooth.app.app.service.web.UserProfileWebService;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationPage;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationSize;
@@ -35,7 +35,7 @@ public class UserProfileController {
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public UserInfoDTO getCurrentProfile() {
+    public UserInfoDto getCurrentProfile() {
         return userProfileWebService.getCurrentProfile();
     }
 
@@ -45,8 +45,8 @@ public class UserProfileController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "", method = RequestMethod.PUT)
-    public void changeCurrentProfile(@RequestBody ChangeUserProfileDTO changeUserProfileDTO) {
-        userProfileWebService.changeCurrentProfile(changeUserProfileDTO);
+    public void changeCurrentProfile(@RequestBody ChangeUserProfileDto changeUserProfileDto) {
+        userProfileWebService.changeCurrentProfile(changeUserProfileDto);
     }
 
     @Operation(summary = "[DEPRECATED] Returns a user profile information by username")
@@ -55,7 +55,7 @@ public class UserProfileController {
     @ApiResponseCode401
     @ApiResponseCode404
     @RequestMapping(value = "/search/{username}", method = RequestMethod.GET)
-    public UserInfoDTO searchProfile(@PathVariable String username) {
+    public UserInfoDto searchProfile(@PathVariable String username) {
         return userProfileWebService.searchProfile(username);
     }
 
@@ -65,7 +65,7 @@ public class UserProfileController {
     @ApiResponseCode401
     @ApiResponseCode404
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public List<UserInfoDTO> searchProfile(
+    public List<UserInfoDto> searchProfile(
             @Parameter(description = "Username search string") @RequestParam(value = "username") String username,
             @ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
             @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size) {
@@ -78,7 +78,7 @@ public class UserProfileController {
     @ApiResponseCode401
     @ApiResponseCode404
     @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-    public UserInfoDTO getProfile(@PathVariable String userId) {
+    public UserInfoDto getProfile(@PathVariable String userId) {
         return userProfileWebService.getProfile(userId);
     }
 }

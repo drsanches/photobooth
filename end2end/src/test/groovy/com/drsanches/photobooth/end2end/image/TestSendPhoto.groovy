@@ -175,7 +175,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDTO.userIds: contains non friends"
+        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDto.userIds: contains non friends"
         assert e.response.status == 400
     }
 
@@ -198,7 +198,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDTO.userIds: contains nonexistent ids"
+        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDto.userIds: contains nonexistent ids"
         assert e.response.status == 400
     }
 
@@ -219,7 +219,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDTO.userIds: contains non friends"
+        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDto.userIds: contains non friends"
         assert e.response.status == 400
     }
 
@@ -241,7 +241,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDTO.userIds: contains non friends"
+        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDto.userIds: contains non friends"
         assert e.response.status == 400
     }
 
@@ -263,7 +263,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDTO.userIds: contains non friends"
+        assert e.response.data["message"] == "uploadPhoto.uploadPhotoDto.userIds: contains non friends"
         assert e.response.status == 400
     }
 
@@ -297,11 +297,11 @@ class TestSendPhoto extends Specification {
                 Base64.getEncoder().encodeToString(new byte[300 * 1000 + 1])
         ]
         message << [
-                "uploadPhoto.uploadPhotoDTO.file: may not be empty",
-                "uploadPhoto.uploadPhotoDTO.file: may not be empty",
-                "uploadPhoto.uploadPhotoDTO.file: invalid base64 image",
-                "uploadPhoto.uploadPhotoDTO.file: invalid image data",
-                "uploadPhoto.uploadPhotoDTO.file: base64 string is too long, max image size is 300000 bytes"
+                "uploadPhoto.uploadPhotoDto.file: may not be empty",
+                "uploadPhoto.uploadPhotoDto.file: may not be empty",
+                "uploadPhoto.uploadPhotoDto.file: invalid base64 image",
+                "uploadPhoto.uploadPhotoDto.file: invalid image data",
+                "uploadPhoto.uploadPhotoDto.file: base64 string is too long, max image size is 300000 bytes"
         ]
     }
 

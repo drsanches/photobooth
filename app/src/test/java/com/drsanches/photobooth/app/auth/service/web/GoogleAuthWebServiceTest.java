@@ -1,12 +1,12 @@
 package com.drsanches.photobooth.app.auth.service.web;
 
-import com.drsanches.photobooth.app.auth.data.common.dto.request.GoogleTokenDTO;
-import com.drsanches.photobooth.app.auth.data.common.dto.response.TokenDTO;
+import com.drsanches.photobooth.app.auth.data.common.dto.request.GoogleTokenDto;
+import com.drsanches.photobooth.app.auth.data.common.dto.response.TokenDto;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Confirmation;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Operation;
-import com.drsanches.photobooth.app.auth.data.google.dto.GoogleGetTokenDTO;
-import com.drsanches.photobooth.app.auth.data.google.dto.GoogleInfoDTO;
-import com.drsanches.photobooth.app.auth.data.google.dto.GoogleSetUsernameDTO;
+import com.drsanches.photobooth.app.auth.data.google.dto.GoogleGetTokenDto;
+import com.drsanches.photobooth.app.auth.data.google.dto.GoogleInfoDto;
+import com.drsanches.photobooth.app.auth.data.google.dto.GoogleSetUsernameDto;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.service.domain.ConfirmationDomainService;
 import com.drsanches.photobooth.app.auth.service.domain.UserAuthDomainService;
@@ -73,40 +73,40 @@ class GoogleAuthWebServiceTest {
 
     @Test
     void getTokenForExisting() {
-        GoogleInfoDTO googleInfo = new GoogleInfoDTO();
+        GoogleInfoDto googleInfo = new GoogleInfoDto();
         googleInfo.setEmail(USER_EMAIL);
         UserAuth userAuth = createUserAuth();
         Token token = createToken();
-        TokenDTO tokenDTO = createTokenDTO();
+        TokenDto tokenDto = createTokenDto();
         Mockito.when(googleUserInfoService.getGoogleInfo(Mockito.any())).thenReturn(googleInfo);
         Mockito.when(userAuthDomainService.getEnabledByGoogleAuth(USER_EMAIL)).thenReturn(userAuth);
         Mockito.when(tokenService.createToken(USER_ID, Role.USER)).thenReturn(token);
-        Mockito.when(tokenMapper.convert(token)).thenReturn(tokenDTO);
+        Mockito.when(tokenMapper.convert(token)).thenReturn(tokenDto);
 
-        GoogleGetTokenDTO result = googleAuthWebService.getToken(new GoogleTokenDTO(ID_TOKEN));
+        GoogleGetTokenDto result = googleAuthWebService.getToken(new GoogleTokenDto(ID_TOKEN));
 
-        Assertions.assertEquals(tokenDTO, result.getToken());
+        Assertions.assertEquals(tokenDto, result.getToken());
         Assertions.assertNull(result.getChangeUsernameCode());
     }
 
     @Test
     void getTokenForNonExisting() {
-        GoogleInfoDTO googleInfo = new GoogleInfoDTO();
+        GoogleInfoDto googleInfo = new GoogleInfoDto();
         googleInfo.setEmail(USER_EMAIL);
         UserAuth userAuth = createUserAuth();
         Token token = createToken();
-        TokenDTO tokenDTO = createTokenDTO();
+        TokenDto tokenDto = createTokenDto();
         Mockito.when(googleUserInfoService.getGoogleInfo(Mockito.any())).thenReturn(googleInfo);
         Mockito.when(userAuthDomainService.getEnabledByGoogleAuth(USER_EMAIL)).thenThrow(NoGoogleUserException.class);
         Mockito.when(userIntegrationService.createUserByGoogle(USER_EMAIL)).thenReturn(userAuth);
         Mockito.when(confirmationDomainService.create(null, USER_ID, USER_EMAIL, Operation.GOOGLE_USERNAME_CHANGE)).thenReturn(createConfirmation());
         Mockito.when(tokenService.createToken(USER_ID, Role.USER)).thenReturn(token);
-        Mockito.when(tokenMapper.convert(token)).thenReturn(tokenDTO);
+        Mockito.when(tokenMapper.convert(token)).thenReturn(tokenDto);
 
-        GoogleGetTokenDTO result = googleAuthWebService.getToken(new GoogleTokenDTO(ID_TOKEN));
+        GoogleGetTokenDto result = googleAuthWebService.getToken(new GoogleTokenDto(ID_TOKEN));
 
         Mockito.verify(emailNotifier, Mockito.times(1)).sendSuccessNotification(USER_EMAIL, Operation.REGISTRATION);
-        Assertions.assertEquals(tokenDTO, result.getToken());
+        Assertions.assertEquals(tokenDto, result.getToken());
         Assertions.assertEquals(CONFIRMATION_CODE, result.getChangeUsernameCode());
     }
 
@@ -119,7 +119,7 @@ class GoogleAuthWebServiceTest {
         Mockito.when(userAuthDomainService.getEnabledById(USER_ID)).thenReturn(userAuth);
 
         String newUsername = UUID.randomUUID().toString();
-        GoogleSetUsernameDTO request = new GoogleSetUsernameDTO();
+        GoogleSetUsernameDto request = new GoogleSetUsernameDto();
         request.setNewUsername(newUsername);
         request.setCode(CONFIRMATION_CODE);
         googleAuthWebService.setUsername(request);
@@ -147,10 +147,10 @@ class GoogleAuthWebServiceTest {
         return token;
     }
 
-    private TokenDTO createTokenDTO() {
-        TokenDTO tokenDTO = new TokenDTO();
-        tokenDTO.setAccessToken(ACCESS_TOKEN);
-        return tokenDTO;
+    private TokenDto createTokenDto() {
+        TokenDto tokenDto = new TokenDto();
+        tokenDto.setAccessToken(ACCESS_TOKEN);
+        return tokenDto;
     }
 
     private Confirmation createConfirmation() {

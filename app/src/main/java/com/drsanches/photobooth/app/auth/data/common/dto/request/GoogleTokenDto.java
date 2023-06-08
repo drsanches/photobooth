@@ -1,17 +1,19 @@
 package com.drsanches.photobooth.app.auth.data.common.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Data
-public class ChangePasswordDTO {
+@NoArgsConstructor
+@AllArgsConstructor
+public class GoogleTokenDto {
 
-    @Schema(required = true, maxLength = 255, description = "new password SHA256 hash")
+    @Schema(required = true, description = "Google OAuth id token")
     @NotEmpty
-    @Length(max = 255)
     @ToString.Exclude
-    private String newPassword;
+    private String idToken;
 }
