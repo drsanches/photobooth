@@ -15,7 +15,7 @@ import com.drsanches.photobooth.app.auth.service.domain.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.service.integration.GoogleUserInfoService;
 import com.drsanches.photobooth.app.auth.service.utils.email.EmailNotifier;
 import com.drsanches.photobooth.app.common.exception.auth.NoGoogleUserException;
-import com.drsanches.photobooth.app.common.service.UserIntegrationService;
+import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.token.data.Token;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class GoogleAuthWebService {
     private UserAuthDomainService userAuthDomainService;
 
     @Autowired
-    private UserIntegrationService userIntegrationService;
+    private UserIntegrationDomainService userIntegrationDomainService;
 
     @Autowired
     private GoogleUserInfoService googleUserInfoService;
@@ -63,7 +63,7 @@ public class GoogleAuthWebService {
         try {
             userAuth = userAuthDomainService.getEnabledByGoogleAuth(email);
         } catch (NoGoogleUserException e) {
-            userAuth = userIntegrationService.createUserByGoogle(email);
+            userAuth = userIntegrationDomainService.createUserByGoogle(email);
             log.info("New user created. Id: {}", userAuth.getId());
             confirmationCode = confirmationDomainService.create(null, userAuth.getId(), userAuth.getEmail(), Operation.GOOGLE_USERNAME_CHANGE).getCode();
             log.info("Google username changing process started. UserId: {}", userAuth.getId());
@@ -80,7 +80,7 @@ public class GoogleAuthWebService {
         UserAuth current = userAuthDomainService.getEnabledById(userId);
         String oldUsername = current.getUsername();
         current.setUsername(googleSetUsernameDto.getNewUsername());
-        userIntegrationService.updateUser(current);
+        userIntegrationDomainService.updateUser(current);
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User changed google default username. UserId: {}, oldUsername: {}, newUsername: {}", current.getId(), oldUsername, current.getUsername());

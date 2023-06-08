@@ -27,7 +27,7 @@ import com.drsanches.photobooth.app.auth.service.utils.email.EmailNotifier;
 import com.drsanches.photobooth.app.common.exception.application.NoUsernameException;
 import com.drsanches.photobooth.app.common.exception.auth.WrongPasswordException;
 import com.drsanches.photobooth.app.common.exception.auth.WrongUsernamePasswordException;
-import com.drsanches.photobooth.app.common.service.UserIntegrationService;
+import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import com.drsanches.photobooth.app.common.token.data.Token;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +51,7 @@ public class UserAuthWebService {
     private ConfirmationDomainService confirmationDomainService;
 
     @Autowired
-    private UserIntegrationService userIntegrationService;
+    private UserIntegrationDomainService userIntegrationDomainService;
 
     @Autowired
     private TokenService tokenService;
@@ -101,7 +101,7 @@ public class UserAuthWebService {
         Confirmation confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
         confirmationCodeValidator.validate(confirmation, Operation.REGISTRATION);
         RegistrationConfirmData registrationConfirmData = stringSerializer.deserialize(confirmation.getData(), RegistrationConfirmData.class);
-        UserAuth userAuth = userIntegrationService.createUser(
+        UserAuth userAuth = userIntegrationDomainService.createUser(
                 registrationConfirmData.getUsername(),
                 registrationConfirmData.getEmail(),
                 registrationConfirmData.getEncryptedPassword(),
@@ -157,7 +157,7 @@ public class UserAuthWebService {
         UserAuth current = userAuthDomainService.getEnabledById(userId);
         String oldUsername = current.getUsername();
         current.setUsername(changeUsernameConfirmData.getUsername());
-        userIntegrationService.updateUser(current);
+        userIntegrationDomainService.updateUser(current);
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User changed username. UserId: {}, oldUsername: {}, newUsername: {}", current.getId(), oldUsername, current.getUsername());
@@ -253,7 +253,7 @@ public class UserAuthWebService {
         Confirmation confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
         confirmationCodeValidator.validate(confirmation, Operation.DISABLE);
         String userId = tokenSupplier.get().getUserId();
-        userIntegrationService.disableUser(userId);
+        userIntegrationDomainService.disableUser(userId);
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User disabled. UserId: {}", userId);

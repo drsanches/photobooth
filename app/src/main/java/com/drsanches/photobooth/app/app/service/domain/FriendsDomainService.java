@@ -59,23 +59,23 @@ public class FriendsDomainService {
     public void saveFriendRequest(String fromUserId, String toUserId) {
         FriendRequest friendRequest = new FriendRequest(fromUserId, toUserId);
         friendRequestRepository.save(friendRequest);
-        log.info("New FriendRequest created: {}", friendRequest);
+        log.debug("New FriendRequest created: {}", friendRequest);
     }
 
     public void removeFriendRequest(String fromUserId, String toUserId) {
         FriendRequestKey friendRequestKey = new FriendRequestKey(fromUserId, toUserId);
         try {
             friendRequestRepository.deleteById(friendRequestKey);
-            log.info("FriendRequest removed: {}", friendRequestKey);
+            log.debug("FriendRequest removed: {}", friendRequestKey);
         } catch(EmptyResultDataAccessException e) {
             log.warn("FriendRequest does not exist. Key: {}, exception: {}", friendRequestKey, BaseException.log(e));
         }
         FriendRequestKey reversedFriendRequestKey = new FriendRequestKey(toUserId, fromUserId);
         try {
             friendRequestRepository.deleteById(reversedFriendRequestKey);
-            log.info("Reversed FriendRequest removed: {}", reversedFriendRequestKey);
+            log.debug("Reversed FriendRequest removed: {}", reversedFriendRequestKey);
         } catch(EmptyResultDataAccessException e) {
-            log.info("Reversed FriendRequest does not exist. Key: {}, exception: {}",
+            log.debug("Reversed FriendRequest does not exist. Key: {}, exception: {}",
                     reversedFriendRequestKey, BaseException.log(e));
         }
     }

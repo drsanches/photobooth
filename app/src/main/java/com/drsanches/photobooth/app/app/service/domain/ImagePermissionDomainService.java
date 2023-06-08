@@ -22,7 +22,7 @@ public class ImagePermissionDomainService {
         List<ImagePermission> imagePermissions = new ArrayList<>(userIds.size());
         userIds.forEach(userId -> imagePermissions.add(new ImagePermission(imageId, userId)));
         imagePermissionRepository.saveAll(imagePermissions);
-        log.info("New image permissions saved: {}", imagePermissions);
+        log.debug("New image permissions saved: {}", imagePermissions);
     }
 
     public Set<String> getImageIds(String userId) {

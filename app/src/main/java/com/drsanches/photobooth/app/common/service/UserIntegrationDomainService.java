@@ -23,7 +23,7 @@ import java.util.UUID;
  */
 @Slf4j
 @Service
-public class UserIntegrationService {
+public class UserIntegrationDomainService {
 
     @Autowired
     private UserAuthRepository userAuthRepository;
@@ -68,7 +68,7 @@ public class UserIntegrationService {
         copy(userAuth, userProfile);
         try {
             UserAuth result = save(userAuth, userProfile);
-            log.info("UserAuth with UserProfile created. UserAuth: {}, UserProfile: {}", userAuth, userProfile);
+            log.debug("UserAuth with UserProfile created. UserAuth: {}, UserProfile: {}", userAuth, userProfile);
             return result;
         } catch(DataIntegrityViolationException e) {
             if (userAuth.getGoogleAuth() != null) {
@@ -94,7 +94,7 @@ public class UserIntegrationService {
         copy(userAuth, userProfile);
         try {
             save(userAuth, userProfile);
-            log.info("UserAuth with UserProfile updated. UserAuth: {}, UserProfile: {}", userAuth, userProfile);
+            log.debug("UserAuth with UserProfile updated. UserAuth: {}, UserProfile: {}", userAuth, userProfile);
         } catch(DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException(userAuth.getUsername(), userAuth.getEmail(), e);
         }
@@ -132,7 +132,7 @@ public class UserIntegrationService {
         copy(userAuth, userProfile);
         try {
             save(userAuth, userProfile);
-            log.info("UserAuth with UserProfile disabled. UserAuth: {}, UserProfile: {}", userAuth, userProfile);
+            log.debug("UserAuth with UserProfile disabled. UserAuth: {}, UserProfile: {}", userAuth, userProfile);
         } catch(DataIntegrityViolationException e) {
             throw new ServerError("User disable error", e);
         }

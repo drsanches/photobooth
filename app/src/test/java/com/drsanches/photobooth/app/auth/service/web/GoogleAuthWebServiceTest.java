@@ -14,7 +14,7 @@ import com.drsanches.photobooth.app.auth.service.integration.GoogleUserInfoServi
 import com.drsanches.photobooth.app.auth.service.utils.ConfirmationCodeValidator;
 import com.drsanches.photobooth.app.auth.service.utils.email.EmailNotifier;
 import com.drsanches.photobooth.app.common.exception.auth.NoGoogleUserException;
-import com.drsanches.photobooth.app.common.service.UserIntegrationService;
+import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import com.drsanches.photobooth.app.common.token.data.Role;
@@ -51,7 +51,7 @@ class GoogleAuthWebServiceTest {
     private ConfirmationDomainService confirmationDomainService;
 
     @Mock
-    private UserIntegrationService userIntegrationService;
+    private UserIntegrationDomainService userIntegrationDomainService;
 
     @Mock
     private ConfirmationCodeValidator confirmationCodeValidator;
@@ -98,7 +98,7 @@ class GoogleAuthWebServiceTest {
         TokenDto tokenDto = createTokenDto();
         Mockito.when(googleUserInfoService.getGoogleInfo(Mockito.any())).thenReturn(googleInfo);
         Mockito.when(userAuthDomainService.getEnabledByGoogleAuth(USER_EMAIL)).thenThrow(NoGoogleUserException.class);
-        Mockito.when(userIntegrationService.createUserByGoogle(USER_EMAIL)).thenReturn(userAuth);
+        Mockito.when(userIntegrationDomainService.createUserByGoogle(USER_EMAIL)).thenReturn(userAuth);
         Mockito.when(confirmationDomainService.create(null, USER_ID, USER_EMAIL, Operation.GOOGLE_USERNAME_CHANGE)).thenReturn(createConfirmation());
         Mockito.when(tokenService.createToken(USER_ID, Role.USER)).thenReturn(token);
         Mockito.when(tokenMapper.convert(token)).thenReturn(tokenDto);
@@ -126,7 +126,7 @@ class GoogleAuthWebServiceTest {
 
         userAuth.setUsername(newUsername);
         Mockito.verify(confirmationCodeValidator).validate(confirmation, Operation.GOOGLE_USERNAME_CHANGE);
-        Mockito.verify(userIntegrationService).updateUser(userAuth);
+        Mockito.verify(userIntegrationDomainService).updateUser(userAuth);
         Mockito.verify(confirmationDomainService).delete(confirmation.getId());
         Mockito.verify(tokenService).removeAllTokens(USER_ID);
     }

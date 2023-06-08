@@ -34,7 +34,7 @@ public class ImageDomainService {
         image.setOwnerId(ownerId);
         image.setCreatedTime(new GregorianCalendar());
         Image savedImage = imageRepository.save(image);
-        log.info("New image saved: {}", savedImage);
+        log.debug("New image saved: {}", savedImage);
         return savedImage;
     }
 
@@ -46,7 +46,7 @@ public class ImageDomainService {
         image.setOwnerId(ImageConsts.SYSTEM_OWNER_ID);
         image.setCreatedTime(new GregorianCalendar());
         Image savedImage = imageRepository.save(image);
-        log.info("New image saved: {}", savedImage);
+        log.debug("New image saved: {}", savedImage);
         return savedImage;
     }
 

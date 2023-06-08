@@ -5,7 +5,7 @@ import com.drsanches.photobooth.app.common.token.data.Role;
 import com.drsanches.photobooth.app.common.utils.Initializer;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.common.exception.BaseException;
-import com.drsanches.photobooth.app.common.service.UserIntegrationService;
+import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +31,7 @@ public class AdminInitializer implements Initializer {
     private String email;
 
     @Autowired
-    private UserIntegrationService userIntegrationService;
+    private UserIntegrationDomainService userIntegrationDomainService;
 
     @Autowired
     private UserAuthRepository userAuthRepository;
@@ -51,7 +51,7 @@ public class AdminInitializer implements Initializer {
             userAuth.setPassword(new BCryptPasswordEncoder().encode(sha256(password) + userAuth.getSalt()));
             userAuth.setEnabled(true);
             userAuth.setRole(Role.ADMIN);
-            userIntegrationService.createUser(userAuth);
+            userIntegrationDomainService.createUser(userAuth);
             log.info("Admin initialized. Id: {}", userAuth.getId());
         } catch (NoSuchAlgorithmException e) {
             log.error("Failed to generate sha256 hash. Exception: {}", BaseException.log(e));
