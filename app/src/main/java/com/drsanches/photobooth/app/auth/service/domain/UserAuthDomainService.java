@@ -9,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Slf4j
 @Service
 public class UserAuthDomainService {
@@ -24,19 +22,19 @@ public class UserAuthDomainService {
     }
 
     public UserAuth getEnabledById(String userId) {
-        Optional<UserAuth> user = userAuthRepository.findById(userId);
-        if (user.isEmpty() || !user.get().isEnabled()) {
-            throw new NoUserIdException(userId);
-        }
-        return user.get();
+        return userAuthRepository.findById(userId)
+                .filter(UserAuth::isEnabled)
+                .orElseThrow(() -> {
+                    throw new NoUserIdException(userId);
+                });
     }
 
     public UserAuth getEnabledByUsername(String username) {
-        Optional<UserAuth> user = userAuthRepository.findByUsername(username);
-        if (user.isEmpty() || !user.get().isEnabled()) {
-            throw new NoUsernameException(username);
-        }
-        return user.get();
+        return userAuthRepository.findByUsername(username)
+                .filter(UserAuth::isEnabled)
+                .orElseThrow(() -> {
+                    throw new NoUsernameException(username);
+                });
     }
 
     public boolean existsByUsername(String username) {
@@ -48,10 +46,10 @@ public class UserAuthDomainService {
     }
 
     public UserAuth getEnabledByGoogleAuth(String googleAuth) {
-        Optional<UserAuth> user = userAuthRepository.findByGoogleAuth(googleAuth);
-        if (user.isEmpty() || !user.get().isEnabled()) {
-            throw new NoGoogleUserException();
-        }
-        return user.get();
+        return userAuthRepository.findByGoogleAuth(googleAuth)
+                .filter(UserAuth::isEnabled)
+                .orElseThrow(() -> {
+                    throw new NoGoogleUserException();
+                });
     }
 }

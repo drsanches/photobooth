@@ -51,11 +51,9 @@ public class ImageDomainService {
     }
 
     public Image getImage(String imageId) {
-        Optional<Image> image = imageRepository.findById(imageId);
-        if (image.isEmpty()) {
+        return imageRepository.findById(imageId).orElseThrow(() -> {
             throw new NoImageException(imageId);
-        }
-        return image.get();
+        });
     }
 
     public Optional<Image> getLastImage(Collection<String> imageIds, String ownerId) {

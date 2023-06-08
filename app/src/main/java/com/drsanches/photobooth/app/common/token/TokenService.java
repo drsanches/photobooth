@@ -7,7 +7,6 @@ import com.drsanches.photobooth.app.common.token.data.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.GregorianCalendar;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -44,15 +43,12 @@ public class TokenService {
         if (accessToken == null || extractTokenId(accessToken) == null) {
             throw new WrongTokenException();
         }
-        Optional<Token> token = tokenRepository.findById(extractTokenId(accessToken));
-
-        if (token.isEmpty()) {
-            throw new WrongTokenException();
-        }
-        if (token.get().getExpiresAt().before(new GregorianCalendar())) {
-            throw new WrongTokenException();
-        }
-        tokenSupplier.set(token.get());
+        Token token = tokenRepository.findById(extractTokenId(accessToken))
+                .filter(it -> it.getExpiresAt().after(new GregorianCalendar()))
+                .orElseThrow(() -> {
+                    throw new WrongTokenException();
+                });
+        tokenSupplier.set(token);
     }
 
     public Token refreshToken(String refreshToken) {
@@ -75,11 +71,10 @@ public class TokenService {
         if (refreshToken == null || extractTokenId(refreshToken) == null) {
             throw new WrongTokenException();
         }
-        Optional<Token> tokenModel = tokenRepository.findByRefreshToken(extractTokenId(refreshToken));
-        if (tokenModel.isEmpty()) {
-            throw new WrongTokenException();
-        }
-        return tokenModel.get();
+        return tokenRepository.findByRefreshToken(extractTokenId(refreshToken))
+                .orElseThrow(() -> {
+                    throw new WrongTokenException();
+                });
     }
 
     private String extractTokenId(String token) {

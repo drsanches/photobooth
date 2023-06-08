@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -83,14 +82,11 @@ public class UserIntegrationDomainService {
      * Updates UserAuth and UserProfile in one transaction
      */
     public void updateUser(UserAuth userAuth) {
-        Optional<UserProfile> optionalUserProfile = userProfileRepository.findById(userAuth.getId());
-        UserProfile userProfile;
-        if (optionalUserProfile.isEmpty()) {
-            userProfile = new UserProfile();
-            log.error("UserProfile does not exist. Id: {}", userAuth.getId());
-        } else {
-            userProfile = optionalUserProfile.get();
-        }
+        UserProfile userProfile = userProfileRepository.findById(userAuth.getId())
+                .orElseGet(() -> {
+                    log.error("UserProfile does not exist. Id: {}", userAuth.getId());
+                    return new UserProfile();
+                });
         copy(userAuth, userProfile);
         try {
             save(userAuth, userProfile);
@@ -104,31 +100,27 @@ public class UserIntegrationDomainService {
      * Updates UserAuth and UserProfile in one transaction
      */
     public void disableUser(String userId) {
-        Optional<UserAuth> optionalUserAuth = userAuthRepository.findById(userId);
-        UserAuth userAuth;
-        if (optionalUserAuth.isPresent()) {
-            userAuth = optionalUserAuth.get();
-            userAuth.setEnabled(false);
-            userAuth.setUsername(UUID.randomUUID().toString() + "_" + userAuth.getUsername());
-            userAuth.setEmail(UUID.randomUUID().toString() + "_" + userAuth.getEmail());
-            userAuth.setGoogleAuth(UUID.randomUUID().toString() + "_" + userAuth.getGoogleAuth());
-        } else {
+        UserAuth userAuth = userAuthRepository.findById(userId).map(it -> {
+            it.setEnabled(false);
+            it.setUsername(UUID.randomUUID() + "_" + it.getUsername());
+            it.setEmail(UUID.randomUUID() + "_" + it.getEmail());
+            it.setGoogleAuth(UUID.randomUUID() + "_" + it.getGoogleAuth());
+            return it;
+        }).orElseGet(() -> {
             log.error("UserAuth does not exist. Id: {}", userId);
-            userAuth = new UserAuth();
-            userAuth.setId(userId);
-            userAuth.setUsername(UUID.randomUUID().toString());
-            userAuth.setEmail(UUID.randomUUID().toString());
-            userAuth.setEnabled(false);
-            userAuth.setRole(Role.USER);
-        }
-        Optional<UserProfile> optionalUserProfile = userProfileRepository.findById(userId);
-        UserProfile userProfile;
-        if (optionalUserProfile.isPresent()) {
-            userProfile = optionalUserProfile.get();
-        } else {
-            userProfile = new UserProfile();
-            log.error("UserProfile does not exist. Id: {}", userAuth.getId());
-        }
+            UserAuth result = new UserAuth();
+            result.setId(userId);
+            result.setUsername(UUID.randomUUID().toString());
+            result.setEmail(UUID.randomUUID().toString());
+            result.setEnabled(false);
+            result.setRole(Role.USER);
+            return result;
+        });
+        UserProfile userProfile = userProfileRepository.findById(userId)
+                .orElseGet(() -> {
+                        log.error("UserProfile does not exist. Id: {}", userAuth.getId());
+                        return new UserProfile();
+                });
         copy(userAuth, userProfile);
         try {
             save(userAuth, userProfile);

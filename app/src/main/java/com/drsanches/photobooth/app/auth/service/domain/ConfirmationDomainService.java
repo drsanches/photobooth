@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.GregorianCalendar;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -41,11 +40,10 @@ public class ConfirmationDomainService {
     }
 
     public Confirmation get(String code) {
-        Optional<Confirmation> confirmation = confirmationRepository.findByCode(code);
-        if (confirmation.isEmpty()) {
-            throw new WrongConfirmCodeException("Wrong confirmation code");
-        }
-        return confirmation.get();
+        return confirmationRepository.findByCode(code)
+                .orElseThrow(() -> {
+                    throw new WrongConfirmCodeException("Wrong confirmation code");
+                });
     }
 
     public void delete(String id) {

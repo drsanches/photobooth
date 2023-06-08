@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -31,20 +30,20 @@ public class UserProfileDomainService {
     }
 
     public UserProfile getEnabledById(String userId) {
-        Optional<UserProfile> userProfile = userProfileRepository.findById(userId);
-        if (userProfile.isEmpty() || !userProfile.get().isEnabled()) {
-            throw new NoUserIdException(userId);
-        }
-        return userProfile.get();
+        return userProfileRepository.findById(userId)
+                .filter(UserProfile::isEnabled)
+                .orElseThrow(() -> {
+                    throw new NoUserIdException(userId);
+                });
     }
 
     @Deprecated
     public UserProfile getEnabledByUsername(String username) {
-        Optional<UserProfile> userProfile = userProfileRepository.findByUsername(username);
-        if (userProfile.isEmpty() || !userProfile.get().isEnabled()) {
-            throw new NoUsernameException(username);
-        }
-        return userProfile.get();
+        return userProfileRepository.findByUsername(username)
+                .filter(UserProfile::isEnabled)
+                .orElseThrow(() -> {
+                    throw new NoUsernameException(username);
+                });
     }
 
     //TODO: Sort?
@@ -54,8 +53,9 @@ public class UserProfileDomainService {
     }
 
     public boolean enabledExistsById(String userId) {
-        Optional<UserProfile> userProfile = userProfileRepository.findById(userId);
-        return userProfile.isPresent() && userProfile.get().isEnabled();
+        return userProfileRepository.findById(userId)
+                .filter(UserProfile::isEnabled)
+                .isPresent();
     }
 
     public boolean anyExistsById(String userId) {
