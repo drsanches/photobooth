@@ -1,9 +1,9 @@
 package com.drsanches.photobooth.app.common.exception;
 
-import com.drsanches.photobooth.app.common.exception.application.ApplicationException;
-import com.drsanches.photobooth.app.common.exception.application.NoUserIdException;
-import com.drsanches.photobooth.app.common.exception.application.NoUsernameException;
-import com.drsanches.photobooth.app.common.exception.auth.AuthException;
+import com.drsanches.photobooth.app.app.exception.ApplicationException;
+import com.drsanches.photobooth.app.app.exception.NoUserIdException;
+import com.drsanches.photobooth.app.app.exception.NoUsernameException;
+import com.drsanches.photobooth.app.auth.exception.AuthException;
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

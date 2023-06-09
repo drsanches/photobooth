@@ -1,14 +1,14 @@
 package com.drsanches.photobooth.app.auth.controller;
 
-import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangeUsernameDto;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.ConfirmationCodeDto;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.RegistrationDto;
-import com.drsanches.photobooth.app.auth.data.common.dto.response.UserAuthInfoDto;
-import com.drsanches.photobooth.app.auth.service.web.UserAuthWebService;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangeEmailDto;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.ChangePasswordDto;
-import com.drsanches.photobooth.app.auth.data.common.dto.request.LoginDto;
-import com.drsanches.photobooth.app.auth.data.common.dto.response.TokenDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeUsernameDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.ConfirmationCodeDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.RegistrationDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.response.UserAuthInfoDto;
+import com.drsanches.photobooth.app.auth.service.UserAuthWebService;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeEmailDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangePasswordDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.LoginDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.response.TokenDto;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode201;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode400;

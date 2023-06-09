@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.common.token;
 
-import com.drsanches.photobooth.app.common.exception.auth.WrongTokenException;
+import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
 import com.drsanches.photobooth.app.common.token.data.Role;
 import com.drsanches.photobooth.app.common.token.data.Token;
 import com.drsanches.photobooth.app.common.token.data.TokenRepository;

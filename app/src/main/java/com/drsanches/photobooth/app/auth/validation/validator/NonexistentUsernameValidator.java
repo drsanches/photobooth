@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.auth.validation.validator;
 
-import com.drsanches.photobooth.app.auth.service.domain.UserAuthDomainService;
+import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.validation.annotation.NonexistentUsername;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

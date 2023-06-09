@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.app.validation.validator;
 
-import com.drsanches.photobooth.app.app.service.domain.FriendsDomainService;
+import com.drsanches.photobooth.app.app.data.friends.FriendsDomainService;
 import com.drsanches.photobooth.app.app.validation.annotation.FriendIds;
 import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app.common.token.data;
 
 import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
-import com.drsanches.photobooth.app.auth.data.common.dto.response.TokenDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.response.TokenDto;
 import org.springframework.stereotype.Component;
 
 @Component

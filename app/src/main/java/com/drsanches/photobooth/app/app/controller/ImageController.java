@@ -1,9 +1,9 @@
 package com.drsanches.photobooth.app.app.controller;
 
-import com.drsanches.photobooth.app.app.data.image.dto.request.UploadAvatarDto;
-import com.drsanches.photobooth.app.app.data.image.dto.request.UploadPhotoDto;
-import com.drsanches.photobooth.app.app.data.image.dto.response.ImageInfoDto;
-import com.drsanches.photobooth.app.app.service.web.ImageWebService;
+import com.drsanches.photobooth.app.app.dto.image.request.UploadAvatarDto;
+import com.drsanches.photobooth.app.app.dto.image.request.UploadPhotoDto;
+import com.drsanches.photobooth.app.app.dto.image.response.ImageInfoDto;
+import com.drsanches.photobooth.app.app.service.ImageWebService;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationPage;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationSize;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;

@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app.app.validation.validator;
 
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
-import com.drsanches.photobooth.app.app.service.domain.UserProfileDomainService;
+import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
 import com.drsanches.photobooth.app.app.validation.annotation.EnabledIds;
 import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import org.springframework.beans.factory.annotation.Autowired;

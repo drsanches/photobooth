@@ -1,9 +1,9 @@
 package com.drsanches.photobooth.app.app.controller;
 
-import com.drsanches.photobooth.app.app.data.friends.dto.request.RemoveRequestDto;
-import com.drsanches.photobooth.app.app.data.friends.dto.request.SendRequestDto;
-import com.drsanches.photobooth.app.app.data.profile.dto.response.UserInfoDto;
-import com.drsanches.photobooth.app.app.service.web.FriendsWebService;
+import com.drsanches.photobooth.app.app.dto.friends.request.RemoveRequestDto;
+import com.drsanches.photobooth.app.app.dto.friends.request.SendRequestDto;
+import com.drsanches.photobooth.app.app.dto.profile.response.UserInfoDto;
+import com.drsanches.photobooth.app.app.service.FriendsWebService;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationPage;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationSize;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;

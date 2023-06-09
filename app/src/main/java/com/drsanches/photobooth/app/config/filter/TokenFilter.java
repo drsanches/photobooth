@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.config.filter;
 
-import com.drsanches.photobooth.app.common.exception.auth.AuthException;
+import com.drsanches.photobooth.app.auth.exception.AuthException;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

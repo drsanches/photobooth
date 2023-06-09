@@ -1,9 +1,9 @@
 package com.drsanches.photobooth.app.auth.controller;
 
-import com.drsanches.photobooth.app.auth.data.common.dto.request.GoogleTokenDto;
-import com.drsanches.photobooth.app.auth.data.google.dto.GoogleGetTokenDto;
-import com.drsanches.photobooth.app.auth.data.google.dto.GoogleSetUsernameDto;
-import com.drsanches.photobooth.app.auth.service.web.GoogleAuthWebService;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.GoogleTokenDto;
+import com.drsanches.photobooth.app.auth.dto.google.GoogleGetTokenDto;
+import com.drsanches.photobooth.app.auth.dto.google.GoogleSetUsernameDto;
+import com.drsanches.photobooth.app.auth.service.GoogleAuthWebService;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode400;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode401;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;

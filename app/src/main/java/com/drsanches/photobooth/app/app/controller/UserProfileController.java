@@ -1,8 +1,8 @@
 package com.drsanches.photobooth.app.app.controller;
 
-import com.drsanches.photobooth.app.app.data.profile.dto.request.ChangeUserProfileDto;
-import com.drsanches.photobooth.app.app.data.profile.dto.response.UserInfoDto;
-import com.drsanches.photobooth.app.app.service.web.UserProfileWebService;
+import com.drsanches.photobooth.app.app.dto.profile.request.ChangeUserProfileDto;
+import com.drsanches.photobooth.app.app.dto.profile.response.UserInfoDto;
+import com.drsanches.photobooth.app.app.service.UserProfileWebService;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationPage;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationSize;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;
