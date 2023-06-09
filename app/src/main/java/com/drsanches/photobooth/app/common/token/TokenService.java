@@ -4,12 +4,16 @@ import com.drsanches.photobooth.app.common.exception.auth.WrongTokenException;
 import com.drsanches.photobooth.app.common.token.data.Role;
 import com.drsanches.photobooth.app.common.token.data.Token;
 import com.drsanches.photobooth.app.common.token.data.TokenRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
+//TODO: TokenDomainService?
 public class TokenService {
 
     private static final String TOKEN_TYPE = "Bearer";
@@ -25,18 +29,19 @@ public class TokenService {
     private TokenSupplier tokenSupplier;
 
     public Token createToken(String userId, Role role) {
-        Token token = new Token();
-        token.setAccessToken(UUID.randomUUID().toString());
-        token.setRefreshToken(UUID.randomUUID().toString());
-        token.setTokenType(TOKEN_TYPE);
         GregorianCalendar expiresAt = new GregorianCalendar();
         expiresAt.add(CALENDAR_FIELD, CALENDAR_VALUE);
-        token.setExpiresAt(expiresAt);
-        token.setUserId(userId);
-        token.setRole(role);
-        tokenRepository.save(token);
-        tokenSupplier.set(token);
-        return token;
+        Token savedToken = tokenRepository.save(Token.builder()
+                .accessToken(UUID.randomUUID().toString())
+                .refreshToken(UUID.randomUUID().toString())
+                .tokenType(TOKEN_TYPE)
+                .expiresAt(expiresAt)
+                .userId(userId)
+                .role(role)
+                .build());
+        log.debug("New token created: {}", savedToken);
+        tokenSupplier.set(savedToken);
+        return savedToken;
     }
 
     public void validate(String accessToken) {
@@ -54,16 +59,21 @@ public class TokenService {
     public Token refreshToken(String refreshToken) {
         Token token = getTokenByRefreshToken(refreshToken);
         tokenRepository.deleteById(token.getAccessToken());
+        log.debug("Token deleted: {}", token);
         return createToken(token.getUserId(), token.getRole());
     }
 
     public void removeCurrentToken() {
-        tokenRepository.deleteById(tokenSupplier.get().getAccessToken());
+        Token token = tokenSupplier.get();
+        tokenRepository.deleteById(token.getAccessToken());
+        log.debug("Token deleted: {}", token);
         tokenSupplier.set(null);
     }
 
     public void removeAllTokens(String userId) {
-        tokenRepository.deleteAll(tokenRepository.findByUserId(userId));
+        List<Token> tokens = tokenRepository.findByUserId(userId);
+        tokenRepository.deleteAll(tokens);
+        log.debug("Tokens deleted: {}", tokens);
         tokenSupplier.set(null);
     }
 

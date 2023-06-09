@@ -1,7 +1,10 @@
 package com.drsanches.photobooth.app.auth.data.userauth.model;
 
 import com.drsanches.photobooth.app.common.token.data.Role;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.Column;
@@ -12,6 +15,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Data
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="user_auth")
 public class UserAuth {

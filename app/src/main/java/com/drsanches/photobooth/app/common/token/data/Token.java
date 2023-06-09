@@ -1,6 +1,9 @@
 package com.drsanches.photobooth.app.common.token.data;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.Column;
@@ -12,6 +15,9 @@ import javax.persistence.Table;
 import java.util.GregorianCalendar;
 
 @Data
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name="token")
 public class Token {

@@ -29,36 +29,37 @@ public class UserInfoMapper {
     }
 
     public UserInfoDto convert(UserProfile userProfile, RelationshipDto relationship) {
-        UserInfoDto userInfoDto = convert(userProfile);
-        userInfoDto.setRelationship(relationship);
-        return userInfoDto;
+        return convert(userProfile).toBuilder()
+                .relationship(relationship)
+                .build();
     }
 
     public UserInfoDto convert(UserProfile userProfile, List<String> incomingIds, List<String> outgoingIds) {
-        UserInfoDto userInfoDto = convert(userProfile);
-        userInfoDto.setRelationship(getRelationship(userInfoDto.getId(), incomingIds, outgoingIds));
-        return userInfoDto;
+        return convert(userProfile).toBuilder()
+                .relationship(getRelationship(userProfile.getId(), incomingIds, outgoingIds))
+                .build();
     }
 
     private UserInfoDto convert(UserProfile userProfile) {
-        UserInfoDto userInfoDto = new UserInfoDto();
-        userInfoDto.setId(userProfile.getId());
         if (userProfile.isEnabled()) {
-            userInfoDto.setUsername(userProfile.getUsername());
-            userInfoDto.setName(userProfile.getName());
-            userInfoDto.setStatus(userProfile.getStatus());
+            return UserInfoDto.builder()
+                    .id(userProfile.getId())
+                    .username(userProfile.getUsername())
+                    .name(userProfile.getName())
+                    .status(userProfile.getStatus())
+                    .imagePath(userProfile.getImageId() == null ?
+                            ImageConsts.IMAGE_PATH_PREFIX + ImageConsts.DEFAULT_AVATAR_ID :
+                            ImageConsts.IMAGE_PATH_PREFIX + userProfile.getImageId())
+                    .thumbnailPath(userProfile.getImageId() == null ?
+                            ImageConsts.THUMBNAIL_PATH_PREFIX + ImageConsts.DEFAULT_AVATAR_ID :
+                            ImageConsts.THUMBNAIL_PATH_PREFIX + userProfile.getImageId())
+                    .build();
         }
-        userInfoDto.setImagePath(userProfile.isEnabled() ?
-                userProfile.getImageId() == null ?
-                        ImageConsts.IMAGE_PATH_PREFIX + ImageConsts.DEFAULT_AVATAR_ID :
-                        ImageConsts.IMAGE_PATH_PREFIX + userProfile.getImageId() :
-                ImageConsts.IMAGE_PATH_PREFIX + ImageConsts.DELETED_AVATAR_ID);
-        userInfoDto.setThumbnailPath(userProfile.isEnabled() ?
-                userProfile.getImageId() == null ?
-                        ImageConsts.THUMBNAIL_PATH_PREFIX + ImageConsts.DEFAULT_AVATAR_ID :
-                        ImageConsts.THUMBNAIL_PATH_PREFIX + userProfile.getImageId() :
-                ImageConsts.THUMBNAIL_PATH_PREFIX + ImageConsts.DELETED_AVATAR_ID);
-        return userInfoDto;
+        return UserInfoDto.builder()
+                .id(userProfile.getId())
+                .imagePath(ImageConsts.IMAGE_PATH_PREFIX + ImageConsts.DELETED_AVATAR_ID)
+                .thumbnailPath(ImageConsts.THUMBNAIL_PATH_PREFIX + ImageConsts.DELETED_AVATAR_ID)
+                .build();
     }
 
     private RelationshipDto getRelationship(String userId, List<String> incomingIds, List<String> outgoingIds) {
@@ -68,9 +69,11 @@ public class UserInfoMapper {
         }
         if (incomingIds.contains(userId) && outgoingIds.contains(userId)) {
             return RelationshipDto.FRIEND;
-        } else if (incomingIds.contains(userId) && !outgoingIds.contains(userId)) {
+        }
+        if (incomingIds.contains(userId) && !outgoingIds.contains(userId)) {
             return RelationshipDto.INCOMING_FRIEND_REQUEST;
-        } else if (!incomingIds.contains(userId) && outgoingIds.contains(userId)) {
+        }
+        if (!incomingIds.contains(userId) && outgoingIds.contains(userId)) {
             return RelationshipDto.OUTGOING_FRIEND_REQUEST;
         }
         return RelationshipDto.STRANGER;

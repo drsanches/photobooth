@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 public class TokenMapper {
 
     public TokenDto convert(Token token) {
-        TokenDto tokenDto = new TokenDto();
-        tokenDto.setAccessToken(token.getAccessToken());
-        tokenDto.setRefreshToken(token.getRefreshToken());
-        tokenDto.setTokenType(token.getTokenType());
-        tokenDto.setExpiresAt(GregorianCalendarConvertor.convert(token.getExpiresAt()));
-        return tokenDto;
+        return TokenDto.builder()
+                .accessToken(token.getAccessToken())
+                .refreshToken(token.getRefreshToken())
+                .tokenType(token.getTokenType())
+                .expiresAt(GregorianCalendarConvertor.convert(token.getExpiresAt()))
+                .build();
     }
 }

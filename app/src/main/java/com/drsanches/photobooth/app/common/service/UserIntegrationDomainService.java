@@ -37,26 +37,26 @@ public class UserIntegrationDomainService {
     private CredentialsHelper credentialsHelper;
 
     public UserAuth createUser(String username, String email, String encryptedPassword, String salt) {
-        UserAuth userAuth = new UserAuth();
-        userAuth.setId(UUID.randomUUID().toString());
-        userAuth.setUsername(username.toLowerCase());
-        userAuth.setPassword(encryptedPassword);
-        userAuth.setSalt(salt);
-        userAuth.setEmail(email);
-        userAuth.setEnabled(true);
-        userAuth.setRole(Role.USER);
-        return createUser(userAuth);
+        return createUser(UserAuth.builder()
+                .id(UUID.randomUUID().toString())
+                .username(username.toLowerCase())
+                .password(encryptedPassword)
+                .salt(salt)
+                .email(email)
+                .enabled(true)
+                .role(Role.USER)
+                .build());
     }
 
     public UserAuth createUserByGoogle(String googleEmail) {
-        UserAuth userAuth = new UserAuth();
-        userAuth.setId(UUID.randomUUID().toString());
-        userAuth.setUsername(UUID.randomUUID().toString());
-        userAuth.setEmail(googleEmail);
-        userAuth.setGoogleAuth(googleEmail);
-        userAuth.setEnabled(true);
-        userAuth.setRole(Role.USER);
-        return createUser(userAuth);
+        return createUser(UserAuth.builder()
+                .id(UUID.randomUUID().toString())
+                .username(UUID.randomUUID().toString())
+                .email(googleEmail)
+                .googleAuth(googleEmail)
+                .enabled(true)
+                .role(Role.USER)
+                .build());
     }
 
     /**
@@ -66,9 +66,9 @@ public class UserIntegrationDomainService {
         UserProfile userProfile = new UserProfile();
         copy(userAuth, userProfile);
         try {
-            UserAuth result = save(userAuth, userProfile);
+            UserAuth savedUserAuth = save(userAuth, userProfile);
             log.debug("UserAuth with UserProfile created. UserAuth: {}, UserProfile: {}", userAuth, userProfile);
-            return result;
+            return savedUserAuth;
         } catch(DataIntegrityViolationException e) {
             if (userAuth.getGoogleAuth() != null) {
                 throw new UserAlreadyExistsException(userAuth.getGoogleAuth(), e);
@@ -100,21 +100,21 @@ public class UserIntegrationDomainService {
      * Updates UserAuth and UserProfile in one transaction
      */
     public void disableUser(String userId) {
-        UserAuth userAuth = userAuthRepository.findById(userId).map(it -> {
-            it.setEnabled(false);
-            it.setUsername(UUID.randomUUID() + "_" + it.getUsername());
-            it.setEmail(UUID.randomUUID() + "_" + it.getEmail());
-            it.setGoogleAuth(UUID.randomUUID() + "_" + it.getGoogleAuth());
-            return it;
-        }).orElseGet(() -> {
+        UserAuth userAuth = userAuthRepository.findById(userId).map(it -> it.toBuilder()
+                .enabled(false)
+                .username(UUID.randomUUID() + "_" + it.getUsername())
+                .email(UUID.randomUUID() + "_" + it.getEmail())
+                .googleAuth(UUID.randomUUID() + "_" + it.getGoogleAuth())
+                .build()
+        ).orElseGet(() -> {
             log.error("UserAuth does not exist. Id: {}", userId);
-            UserAuth result = new UserAuth();
-            result.setId(userId);
-            result.setUsername(UUID.randomUUID().toString());
-            result.setEmail(UUID.randomUUID().toString());
-            result.setEnabled(false);
-            result.setRole(Role.USER);
-            return result;
+            return UserAuth.builder()
+                    .id(userId)
+                    .username(UUID.randomUUID().toString())
+                    .email(UUID.randomUUID().toString())
+                    .enabled(false)
+                    .role(Role.USER)
+                    .build();
         });
         UserProfile userProfile = userProfileRepository.findById(userId)
                 .orElseGet(() -> {
@@ -144,9 +144,9 @@ public class UserIntegrationDomainService {
      */
     private UserAuth save(UserAuth userAuth, UserProfile userProfile) {
         return new TransactionTemplate(transactionManager).execute(status -> {
-            UserAuth result = userAuthRepository.save(userAuth);
+            UserAuth savedUserAuth = userAuthRepository.save(userAuth);
             userProfileRepository.save(userProfile);
-            return result;
+            return savedUserAuth;
         });
     }
 }

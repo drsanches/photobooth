@@ -10,14 +10,17 @@ import org.springframework.stereotype.Component;
 public class ImageInfoMapper {
 
     public ImageInfoDto convert(Image image) {
-        ImageInfoDto imageInfoDto = new ImageInfoDto();
-        imageInfoDto.setId(image.getId());
-        imageInfoDto.setPath(ImageConsts.IMAGE_PATH_PREFIX + image.getId());
-        imageInfoDto.setThumbnailPath(ImageConsts.THUMBNAIL_PATH_PREFIX + image.getId());
-        if (!image.getOwnerId().equals(ImageConsts.SYSTEM_OWNER_ID)) {
-            imageInfoDto.setCreatedTime(GregorianCalendarConvertor.convert(image.getCreatedTime()));
-            imageInfoDto.setOwnerId(image.getOwnerId());
+        ImageInfoDto imageInfoDto = ImageInfoDto.builder()
+                .id(image.getId())
+                .path(ImageConsts.IMAGE_PATH_PREFIX + image.getId())
+                .thumbnailPath(ImageConsts.THUMBNAIL_PATH_PREFIX + image.getId())
+                .build();
+        if (image.getOwnerId().equals(ImageConsts.SYSTEM_OWNER_ID)) {
+            return imageInfoDto;
         }
-        return imageInfoDto;
+        return imageInfoDto.toBuilder()
+                .createdTime(GregorianCalendarConvertor.convert(image.getCreatedTime()))
+                .ownerId(image.getOwnerId())
+                .build();
     }
 }

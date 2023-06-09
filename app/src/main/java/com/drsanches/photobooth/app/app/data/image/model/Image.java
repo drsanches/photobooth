@@ -2,6 +2,7 @@ package com.drsanches.photobooth.app.app.data.image.model;
 
 import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 import java.util.GregorianCalendar;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

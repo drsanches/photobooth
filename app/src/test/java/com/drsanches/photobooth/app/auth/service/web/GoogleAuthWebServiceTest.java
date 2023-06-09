@@ -132,37 +132,37 @@ class GoogleAuthWebServiceTest {
     }
 
     private UserAuth createUserAuth() {
-        UserAuth userAuth = new UserAuth();
-        userAuth.setId(USER_ID);
-        userAuth.setUsername(UUID.randomUUID().toString());
-        userAuth.setEmail(USER_EMAIL);
-        userAuth.setRole(Role.USER);
-        return userAuth;
+        return UserAuth.builder()
+                .id(USER_ID)
+                .username(UUID.randomUUID().toString())
+                .email(USER_EMAIL)
+                .role(Role.USER)
+                .build();
     }
 
     private Token createToken() {
-        Token token = new Token();
-        token.setAccessToken(ACCESS_TOKEN);
-        token.setUserId(USER_ID);
-        return token;
+        return Token.builder()
+                .accessToken(ACCESS_TOKEN)
+                .userId(USER_ID)
+                .build();
     }
 
     private TokenDto createTokenDto() {
-        TokenDto tokenDto = new TokenDto();
-        tokenDto.setAccessToken(ACCESS_TOKEN);
-        return tokenDto;
+        return TokenDto.builder()
+                .accessToken(ACCESS_TOKEN)
+                .build();
     }
 
     private Confirmation createConfirmation() {
-        Confirmation confirmation = new Confirmation();
-        confirmation.setId(CONFIRMATION_ID);
-        confirmation.setCode(CONFIRMATION_CODE);
-        confirmation.setUserId(USER_ID);
-        confirmation.setEmail(USER_EMAIL);
         GregorianCalendar expiresAt = new GregorianCalendar();
-            expiresAt.add(GregorianCalendar.MINUTE, 5);
-        confirmation.setExpiresAt(expiresAt);
-        confirmation.setOperation(Operation.GOOGLE_USERNAME_CHANGE);
-        return confirmation;
+        expiresAt.add(GregorianCalendar.MINUTE, 5);
+        return Confirmation.builder()
+                .id(CONFIRMATION_ID)
+                .code(CONFIRMATION_CODE)
+                .userId(USER_ID)
+                .email(USER_EMAIL)
+                .expiresAt(expiresAt)
+                .operation(Operation.GOOGLE_USERNAME_CHANGE)
+                .build();
     }
 }

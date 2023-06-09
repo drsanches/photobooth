@@ -27,25 +27,25 @@ public class ImageDomainService {
     private ImageConverter imageConverter;
 
     public Image saveImage(byte[] imageData, String ownerId) {
-        Image image = new Image();
-        image.setId(UUID.randomUUID().toString());
-        image.setData(imageData);
-        image.setThumbnailData(imageConverter.toThumbnail(imageData));
-        image.setOwnerId(ownerId);
-        image.setCreatedTime(new GregorianCalendar());
-        Image savedImage = imageRepository.save(image);
+        Image savedImage = imageRepository.save(Image.builder()
+                .id(UUID.randomUUID().toString())
+                .data(imageData)
+                .thumbnailData(imageConverter.toThumbnail(imageData))
+                .ownerId(ownerId)
+                .createdTime(new GregorianCalendar())
+                .build());
         log.debug("New image saved: {}", savedImage);
         return savedImage;
     }
 
     public Image saveSystemImage(String id, byte[] imageData) {
-        Image image = new Image();
-        image.setId(id);
-        image.setData(imageData);
-        image.setThumbnailData(imageConverter.toThumbnail(imageData));
-        image.setOwnerId(ImageConsts.SYSTEM_OWNER_ID);
-        image.setCreatedTime(new GregorianCalendar());
-        Image savedImage = imageRepository.save(image);
+        Image savedImage = imageRepository.save(Image.builder()
+                .id(id)
+                .data(imageData)
+                .thumbnailData(imageConverter.toThumbnail(imageData))
+                .ownerId(ImageConsts.SYSTEM_OWNER_ID)
+                .createdTime(new GregorianCalendar())
+                .build());
         log.debug("New image saved: {}", savedImage);
         return savedImage;
     }

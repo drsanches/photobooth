@@ -2,9 +2,11 @@ package com.drsanches.photobooth.app.app.data.image.dto.response;
 
 import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder(toBuilder = true)
 public class ImageInfoDto {
 
     @Schema(required = true)

@@ -24,19 +24,19 @@ public class ConfirmationDomainService {
     private ConfirmationRepository confirmationRepository;
 
     public Confirmation create(String data, String userId, String email, Operation operation) {
-        Confirmation confirmation = new Confirmation();
-        confirmation.setId(UUID.randomUUID().toString());
-        confirmation.setCode(RandomStringUtils.randomAlphanumeric(6));
-        confirmation.setUserId(userId);
-        confirmation.setEmail(email);
-        confirmation.setOperation(operation);
-        confirmation.setData(data);
         GregorianCalendar expiresAt = new GregorianCalendar();
         expiresAt.add(CALENDAR_FIELD, CALENDAR_VALUE);
-        confirmation.setExpiresAt(expiresAt);
-        Confirmation result = confirmationRepository.save(confirmation);
-        log.debug("Confirmation created: {}", confirmation);
-        return result;
+        Confirmation savedConfirmation = confirmationRepository.save(Confirmation.builder()
+                .id(UUID.randomUUID().toString())
+                .code(RandomStringUtils.randomAlphanumeric(6))
+                .userId(userId)
+                .email(email)
+                .operation(operation)
+                .data(data)
+                .expiresAt(expiresAt)
+                .build());
+        log.debug("Confirmation created: {}", savedConfirmation);
+        return savedConfirmation;
     }
 
     public Confirmation get(String code) {

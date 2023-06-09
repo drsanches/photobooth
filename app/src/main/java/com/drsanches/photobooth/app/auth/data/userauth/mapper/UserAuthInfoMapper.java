@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 public class UserAuthInfoMapper {
 
     public UserAuthInfoDto convert(UserAuth userAuth) {
-        UserAuthInfoDto userAuthInfoDto = new UserAuthInfoDto();
-        userAuthInfoDto.setId(userAuth.getId());
-        userAuthInfoDto.setUsername(userAuth.getUsername());
-        userAuthInfoDto.setEmail(userAuth.getEmail());
-        return userAuthInfoDto;
+        return UserAuthInfoDto.builder()
+                .id(userAuth.getId())
+                .username(userAuth.getUsername())
+                .email(userAuth.getEmail())
+                .build();
     }
 }
