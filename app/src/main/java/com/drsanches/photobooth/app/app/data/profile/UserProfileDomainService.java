@@ -4,7 +4,6 @@ import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.app.data.profile.repository.UserProfileRepository;
 import com.drsanches.photobooth.app.app.utils.PaginationService;
 import com.drsanches.photobooth.app.app.exception.NoUserIdException;
-import com.drsanches.photobooth.app.app.exception.NoUsernameException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -34,15 +33,6 @@ public class UserProfileDomainService {
                 .filter(UserProfile::isEnabled)
                 .orElseThrow(() -> {
                     throw new NoUserIdException(userId);
-                });
-    }
-
-    @Deprecated
-    public UserProfile getEnabledByUsername(String username) {
-        return userProfileRepository.findByUsername(username)
-                .filter(UserProfile::isEnabled)
-                .orElseThrow(() -> {
-                    throw new NoUsernameException(username);
                 });
     }
 

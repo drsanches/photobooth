@@ -97,15 +97,7 @@ After that, the application can be launched with the commands:
 
 After the application start, it can be tested with the command:
     
-    gradlew test
----
-
-## Migrate to release 1.1
-- **DB:** Add `thumbnail_data` field and fill it for all data
-- **DB:** Field `email` now is unique and not null
-- **Env:** Add EMAIL_ADDRESS and EMAIL_PASSWORD
-- **Client:** Use new search by username substring endpoint
-- **Client:** Pages now starts from zero
+`gradlew test`
 
 ---
 

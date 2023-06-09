@@ -49,16 +49,6 @@ public class UserProfileController {
         userProfileWebService.changeCurrentProfile(changeUserProfileDto);
     }
 
-    @Operation(summary = "[DEPRECATED] Returns a user profile information by username")
-    @ApiTokenAuthorization
-    @ApiResponseCode200
-    @ApiResponseCode401
-    @ApiResponseCode404
-    @RequestMapping(value = "/search/{username}", method = RequestMethod.GET)
-    public UserInfoDto searchProfile(@PathVariable String username) {
-        return userProfileWebService.searchProfile(username);
-    }
-
     @Operation(summary = "Searches a list of user profile information by username")
     @ApiTokenAuthorization
     @ApiResponseCode200

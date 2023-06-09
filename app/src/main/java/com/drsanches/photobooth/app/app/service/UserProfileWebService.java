@@ -40,15 +40,6 @@ public class UserProfileWebService {
         return userInfoMapper.convert(userProfile, RelationshipDto.CURRENT);
     }
 
-    @Deprecated
-    public UserInfoDto searchProfile(String username) {
-        String currentUserId = tokenSupplier.get().getUserId();
-        UserProfile userProfile = userProfileDomainService.getEnabledByUsername(username.toLowerCase());
-        List<String> incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
-        List<String> outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
-        return userInfoMapper.convert(userProfile, incomingIds, outgoingIds);
-    }
-
     public List<UserInfoDto> searchProfile(String username, Integer page, Integer size) {
         String currentUserId = tokenSupplier.get().getUserId();
         List<UserProfile> userProfile = userProfileDomainService.findEnabledByUsername(username.toLowerCase(), page, size);
