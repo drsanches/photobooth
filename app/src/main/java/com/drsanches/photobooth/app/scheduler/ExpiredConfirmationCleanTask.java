@@ -16,6 +16,7 @@ import java.util.List;
 @ConditionalOnProperty(name = "application.scheduler.expired-confirmation-clean-task.enabled")
 public class ExpiredConfirmationCleanTask {
 
+    //TODO: Use domain service
     @Autowired
     private ConfirmationRepository confirmationRepository;
 

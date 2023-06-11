@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class GoogleUserInfoService {
 
-    private final static String URL = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=%s";
+    private static final String URL = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=%s";
 
     private final RestTemplate restTemplate = new RestTemplate();
 

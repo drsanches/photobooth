@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.config;
 
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public class ImageConsts {
 
@@ -12,9 +12,9 @@ public class ImageConsts {
 
     public static final String SYSTEM_OWNER_ID = "system";
 
-    public static final Function<String, String> IMAGE_PATH = (String imageId) ->
+    public static final UnaryOperator<String> IMAGE_PATH = (String imageId) ->
             "/api/v1/image/" + imageId;
 
-    public static final Function<String, String> THUMBNAIL_PATH = (String imageId) ->
+    public static final UnaryOperator<String> THUMBNAIL_PATH = (String imageId) ->
             "/api/v1/image/" + imageId + "/thumbnail";
 }

@@ -7,6 +7,8 @@ import com.drsanches.photobooth.app.common.token.data.TokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +20,7 @@ public class TokenService {
 
     private static final String TOKEN_TYPE = "Bearer";
 
-    private static final int CALENDAR_FIELD = GregorianCalendar.DAY_OF_YEAR;
+    private static final int CALENDAR_FIELD = Calendar.DAY_OF_YEAR;
 
     private static final int CALENDAR_VALUE = 10;
 
@@ -50,9 +52,7 @@ public class TokenService {
         }
         Token token = tokenRepository.findById(extractTokenId(accessToken))
                 .filter(it -> it.getExpiresAt().after(new GregorianCalendar()))
-                .orElseThrow(() -> {
-                    throw new WrongTokenException();
-                });
+                .orElseThrow(WrongTokenException::new);
         tokenSupplier.set(token);
     }
 
@@ -82,9 +82,7 @@ public class TokenService {
             throw new WrongTokenException();
         }
         return tokenRepository.findByRefreshToken(extractTokenId(refreshToken))
-                .orElseThrow(() -> {
-                    throw new WrongTokenException();
-                });
+                .orElseThrow(WrongTokenException::new);
     }
 
     private String extractTokenId(String token) {

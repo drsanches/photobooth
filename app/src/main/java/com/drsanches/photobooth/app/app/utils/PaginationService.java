@@ -19,7 +19,7 @@ public class PaginationService<T> {
     public Stream<T> pagination(Stream<T> stream, Integer page, Integer size) {
         page = page(page);
         size = size(size);
-        return stream.skip(page * size).limit(size);
+        return stream.skip((long) page * size).limit(size);
     }
 
     public Pageable pageable(Integer page, Integer size) {

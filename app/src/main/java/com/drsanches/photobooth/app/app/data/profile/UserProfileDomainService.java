@@ -31,9 +31,7 @@ public class UserProfileDomainService {
     public UserProfile getEnabledById(String userId) {
         return userProfileRepository.findById(userId)
                 .filter(UserProfile::isEnabled)
-                .orElseThrow(() -> {
-                    throw new NoUserIdException(userId);
-                });
+                .orElseThrow(() -> new NoUserIdException(userId));
     }
 
     //TODO: Sort?

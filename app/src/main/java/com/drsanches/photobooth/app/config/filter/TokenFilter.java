@@ -19,13 +19,13 @@ import java.util.function.Predicate;
 @Slf4j
 public class TokenFilter extends GenericFilterBean {
 
-    private final TokenService TOKEN_SERVICE;
+    private final TokenService tokenService;
 
-    private final Predicate<String> EXCLUDE_URI;
+    private final Predicate<String> excludeUri;
 
     public TokenFilter(TokenService tokenService, Predicate<String> excludeUri) {
-        this.TOKEN_SERVICE = tokenService;
-        this.EXCLUDE_URI = excludeUri;
+        this.tokenService = tokenService;
+        this.excludeUri = excludeUri;
     }
 
     @Override
@@ -35,9 +35,9 @@ public class TokenFilter extends GenericFilterBean {
         String token = getAccessTokenFromRequest(httpRequest);
         String uri = httpRequest.getRequestURI();
         try {
-            TOKEN_SERVICE.validate(token);
+            tokenService.validate(token);
         } catch (AuthException e) {
-            if (!EXCLUDE_URI.test(uri)) {
+            if (!excludeUri.test(uri)) {
                 log.info("Wrong token for uri. Uri: {}, exception: {}", uri, e.log());
                 httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
                 httpResponse.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);

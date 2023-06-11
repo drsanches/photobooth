@@ -2,7 +2,7 @@ package com.drsanches.photobooth.app.app.exception;
 
 public class NoImageException extends ApplicationException {
 
-    private final static String FORMAT = "There is no image with id '%s'";
+    private static final String FORMAT = "There is no image with id '%s'";
 
     public NoImageException(String imageId) {
         super(String.format(FORMAT, imageId));

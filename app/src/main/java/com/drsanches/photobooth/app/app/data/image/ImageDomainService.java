@@ -49,9 +49,8 @@ public class ImageDomainService {
     }
 
     public Image getImage(String imageId) {
-        return imageRepository.findById(imageId).orElseThrow(() -> {
-            throw new NoImageException(imageId);
-        });
+        return imageRepository.findById(imageId)
+                .orElseThrow(() -> new NoImageException(imageId));
     }
 
     public List<Image> getImages(Collection<String> imageIds) {

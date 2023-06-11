@@ -13,7 +13,7 @@ public class EmailNotifier {
     @Autowired
     private EmailService emailService;
 
-    private final Map<Operation, String> CONFIRM_SUBJECTS = Map.of(
+    private static final Map<Operation, String> CONFIRM_SUBJECTS = Map.of(
             Operation.REGISTRATION, "Verify email for registration",
             Operation.USERNAME_CHANGE, "Submit username change",
             Operation.PASSWORD_CHANGE, "Submit password change",
@@ -21,7 +21,7 @@ public class EmailNotifier {
             Operation.DISABLE, "Submit account deletion"
     );
 
-    private final Map<Operation, String> SUCCESS_SUBJECTS = Map.of(
+    private static final Map<Operation, String> SUCCESS_SUBJECTS = Map.of(
             Operation.REGISTRATION, "Registration completed successfully",
             Operation.USERNAME_CHANGE, "Username changed successfully",
             Operation.PASSWORD_CHANGE, "Password changed successfully",

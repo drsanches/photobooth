@@ -17,13 +17,13 @@ import java.util.function.Predicate;
 @Slf4j
 public class AdminFilter extends GenericFilterBean {
 
-    private final TokenSupplier TOKEN_SUPPLIER;
+    private final TokenSupplier tokenSupplier;
 
-    private final Predicate<String> ADMIN_URI;
+    private final Predicate<String> adminUri;
 
     public AdminFilter(TokenSupplier tokenSupplier, Predicate<String> adminUri) {
-        this.TOKEN_SUPPLIER = tokenSupplier;
-        this.ADMIN_URI = adminUri;
+        this.tokenSupplier = tokenSupplier;
+        this.adminUri = adminUri;
     }
 
     @Override
@@ -31,10 +31,10 @@ public class AdminFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse  httpResponse = (HttpServletResponse) response;
         String uri = httpRequest.getRequestURI();
-        if (ADMIN_URI.test(uri)
-                && (TOKEN_SUPPLIER.get() == null || !Role.ADMIN.equals(TOKEN_SUPPLIER.get().getRole()))) {
+        if (adminUri.test(uri)
+                && (tokenSupplier.get() == null || !Role.ADMIN.equals(tokenSupplier.get().getRole()))) {
             log.info("User has no permissions for uri. UserId: {}, uri: {}",
-                    TOKEN_SUPPLIER.get() == null ? "unauthorized" : TOKEN_SUPPLIER.get().getUserId(), uri);
+                    tokenSupplier.get() == null ? "unauthorized" : tokenSupplier.get().getUserId(), uri);
             httpResponse.setStatus(HttpStatus.FORBIDDEN.value());
             httpResponse.getOutputStream().flush();
             httpResponse.getOutputStream().println("You do not have permission");

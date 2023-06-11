@@ -16,6 +16,7 @@ import java.util.List;
 @ConditionalOnProperty(name = "application.scheduler.expired-token-clean-task.enabled")
 public class ExpiredTokenCleanTask {
 
+    //TODO: Use domain service
     @Autowired
     private TokenRepository tokenRepository;
 

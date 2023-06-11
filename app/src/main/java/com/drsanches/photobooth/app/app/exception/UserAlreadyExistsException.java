@@ -2,9 +2,9 @@ package com.drsanches.photobooth.app.app.exception;
 
 public class UserAlreadyExistsException extends ApplicationException {
 
-    private final static String FORMAT = "User '%s' already exists";
+    private static final String FORMAT = "User '%s' already exists";
     
-    private final static String USERNAME_OR_EMAIL_FORMAT = "User with username='%s' or email='%s' already exists";
+    private static final String USERNAME_OR_EMAIL_FORMAT = "User with username='%s' or email='%s' already exists";
 
     public UserAlreadyExistsException(String user) {
         super(String.format(FORMAT, user));

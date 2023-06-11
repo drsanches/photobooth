@@ -33,12 +33,12 @@ import java.util.UUID;
 @ExtendWith(MockitoExtension.class)
 class GoogleAuthWebServiceTest {
 
-    private final static String ID_TOKEN = "idToken";
-    private final static String USER_ID = "userId";
-    private final static String USER_EMAIL = "userEmail";
-    private final static String CONFIRMATION_ID = "confirmationId";
-    private final static String CONFIRMATION_CODE = "confirmationCode";
-    private final static String ACCESS_TOKEN = UUID.randomUUID().toString();
+    private static final String ID_TOKEN = "idToken";
+    private static final String USER_ID = "userId";
+    private static final String USER_EMAIL = "userEmail";
+    private static final String CONFIRMATION_ID = "confirmationId";
+    private static final String CONFIRMATION_CODE = "confirmationCode";
+    private static final String ACCESS_TOKEN = UUID.randomUUID().toString();
 
     @Mock
     private GoogleUserInfoService googleUserInfoService;

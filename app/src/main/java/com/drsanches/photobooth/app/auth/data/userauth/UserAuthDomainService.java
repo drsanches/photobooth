@@ -24,17 +24,13 @@ public class UserAuthDomainService {
     public UserAuth getEnabledById(String userId) {
         return userAuthRepository.findById(userId)
                 .filter(UserAuth::isEnabled)
-                .orElseThrow(() -> {
-                    throw new NoUserIdException(userId);
-                });
+                .orElseThrow(() -> new NoUserIdException(userId));
     }
 
     public UserAuth getEnabledByUsername(String username) {
         return userAuthRepository.findByUsername(username)
                 .filter(UserAuth::isEnabled)
-                .orElseThrow(() -> {
-                    throw new NoUsernameException(username);
-                });
+                .orElseThrow(() -> new NoUsernameException(username));
     }
 
     public boolean existsByUsername(String username) {
@@ -48,8 +44,6 @@ public class UserAuthDomainService {
     public UserAuth getEnabledByGoogleAuth(String googleAuth) {
         return userAuthRepository.findByGoogleAuth(googleAuth)
                 .filter(UserAuth::isEnabled)
-                .orElseThrow(() -> {
-                    throw new NoGoogleUserException();
-                });
+                .orElseThrow(NoGoogleUserException::new);
     }
 }

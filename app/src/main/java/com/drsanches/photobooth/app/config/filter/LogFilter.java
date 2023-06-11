@@ -20,23 +20,23 @@ import java.util.function.Predicate;
 @Slf4j
 public class LogFilter extends GenericFilterBean {
 
-    private final TokenSupplier TOKEN_SUPPLIER;
+    private final TokenSupplier tokenSupplier;
 
-    private final Predicate<String> EXCLUDE_LOG_URI;
+    private final Predicate<String> excludeLogUri;
 
     public LogFilter(TokenSupplier tokenSupplier, Predicate<String> excludeLogUri) {
-        this.TOKEN_SUPPLIER = tokenSupplier;
-        this.EXCLUDE_LOG_URI = excludeLogUri;
+        this.tokenSupplier = tokenSupplier;
+        this.excludeLogUri = excludeLogUri;
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        if (!EXCLUDE_LOG_URI.test(httpRequest.getRequestURI())) {
-            if (TOKEN_SUPPLIER.get() != null) {
+        if (!excludeLogUri.test(httpRequest.getRequestURI())) {
+            if (tokenSupplier.get() != null) {
                 log.info("{} {}, info: {}", httpRequest.getMethod(),  httpRequest.getRequestURL(), LogInfo.builder()
                         .address(httpRequest.getRemoteAddr())
-                        .userId(TOKEN_SUPPLIER.get().getUserId())
+                        .userId(tokenSupplier.get().getUserId())
                         .build());
             } else {
                 log.info("{} {}, info: {}", httpRequest.getMethod(), httpRequest.getRequestURL(), LogInfo.builder()

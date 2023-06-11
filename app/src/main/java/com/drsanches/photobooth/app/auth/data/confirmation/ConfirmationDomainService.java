@@ -9,6 +9,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Component
 public class ConfirmationDomainService {
 
-    private static final int CALENDAR_FIELD = GregorianCalendar.MINUTE;
+    private static final int CALENDAR_FIELD = Calendar.MINUTE;
 
     private static final int CALENDAR_VALUE = 5;
 
@@ -41,9 +42,7 @@ public class ConfirmationDomainService {
 
     public Confirmation get(String code) {
         return confirmationRepository.findByCode(code)
-                .orElseThrow(() -> {
-                    throw new WrongConfirmCodeException("Wrong confirmation code");
-                });
+                .orElseThrow(() -> new WrongConfirmCodeException("Wrong confirmation code"));
     }
 
     public void delete(String id) {

@@ -22,9 +22,9 @@ import java.util.function.Predicate;
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final String IMAGE_ID_PATTERN = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+    private static final String IMAGE_ID_PATTERN = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 
-    private final Predicate<String> PUBLIC_URI = ((Predicate<String>)
+    private static final Predicate<String> PUBLIC_URI = ((Predicate<String>)
             x -> x.matches("/api/v1/auth/registration.*"))
             .or(x -> x.matches("/api/v1/auth/login.*"))
             .or(x -> x.matches("/api/v1/auth/refreshToken.*"))
@@ -40,13 +40,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .or(x -> x.matches("/actuator/health.*"))
             .or(x -> x.matches("/ui.*"));
 
-    private final Predicate<String> ADMIN_URI = ((Predicate<String>)
+    private static final Predicate<String> ADMIN_URI = ((Predicate<String>)
             x -> x.matches("/h2-console.*"))
             .or(x -> x.matches("/swagger-ui.html.*"))
             .or(((Predicate<String>) x -> x.matches("/actuator.*"))
                     .and(Predicate.not(x -> x.matches("/actuator/health.*"))));
 
-    private final Predicate<String> EXCLUDE_LOG_URI = ((Predicate<String>)
+    private static final Predicate<String> EXCLUDE_LOG_URI = ((Predicate<String>)
             x -> x.matches("/ui/css.*"))
             .or(x -> x.matches("/ui/js.*"))
             .or(x -> x.matches("/swagger-ui/.*.js"))
