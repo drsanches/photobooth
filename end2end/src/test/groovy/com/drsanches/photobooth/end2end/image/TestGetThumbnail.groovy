@@ -12,7 +12,7 @@ import spock.lang.Specification
 
 class TestGetThumbnail extends Specification {
 
-    String PATH = "/api/v1/image/thumbnail/"
+    def THUMBNAIL_PATH = { String imageId -> "/api/v1/image/" + imageId + "/thumbnail" }
 
     def "successful default avatar thumbnail getting"() {
         when: "request is sent"
@@ -106,7 +106,7 @@ class TestGetThumbnail extends Specification {
 
         when: "request is sent"
         RequestUtils.getRestClient().get(
-                path: PATH + nonexistentImageId,
+                path: THUMBNAIL_PATH(nonexistentImageId),
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"

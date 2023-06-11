@@ -12,7 +12,6 @@ import com.drsanches.photobooth.app.app.dto.image.request.UploadPhotoDto;
 import com.drsanches.photobooth.app.app.dto.image.response.ImageInfoDto;
 import com.drsanches.photobooth.app.app.data.permission.ImagePermissionDomainService;
 import com.drsanches.photobooth.app.common.token.TokenSupplier;
-import com.drsanches.photobooth.app.config.ImageConsts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -102,13 +100,6 @@ public class ImageWebService {
         return paginationService.pagination(images, page, size)
                 .map(imageInfoMapper::convert)
                 .collect(Collectors.toList());
-    }
-
-    public ImageInfoDto getLastImageInfo() {
-        String currentUserId = tokenSupplier.get().getUserId();
-        Set<String> imageIds = imagePermissionDomainService.getImageIds(currentUserId);
-        Optional<Image> image = imageDomainService.getLastImage(imageIds, currentUserId);
-        return imageInfoMapper.convert(image.orElse(imageDomainService.getImage(ImageConsts.NO_PHOTO_IMAGE_ID)));
     }
 
     public void deleteAvatar() {

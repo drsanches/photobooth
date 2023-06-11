@@ -58,7 +58,8 @@ public class UserProfileController {
     public List<UserInfoDto> searchProfile(
             @Parameter(description = "Username search string") @RequestParam(value = "username") String username,
             @ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
-            @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size) {
+            @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size
+    ) {
         return userProfileWebService.searchProfile(username, page, size);
     }
 

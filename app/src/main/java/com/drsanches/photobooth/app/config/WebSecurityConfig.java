@@ -33,10 +33,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .or(x -> x.matches("/api/v1/image/" + ImageConsts.NO_PHOTO_IMAGE_ID))
             .or(x -> x.matches("/api/v1/image/" + ImageConsts.DELETED_AVATAR_ID))
             .or(x -> x.matches("/api/v1/image/" + IMAGE_ID_PATTERN))
-            .or(x -> x.matches("/api/v1/image/thumbnail/" + ImageConsts.DEFAULT_AVATAR_ID))
-            .or(x -> x.matches("/api/v1/image/thumbnail/" + ImageConsts.NO_PHOTO_IMAGE_ID))
-            .or(x -> x.matches("/api/v1/image/thumbnail/" + ImageConsts.DELETED_AVATAR_ID))
-            .or(x -> x.matches("/api/v1/image/thumbnail/" + IMAGE_ID_PATTERN))
+            .or(x -> x.matches("/api/v1/image/" + ImageConsts.DEFAULT_AVATAR_ID + "/thumbnail.*"))
+            .or(x -> x.matches("/api/v1/image/" + ImageConsts.NO_PHOTO_IMAGE_ID + "/thumbnail.*"))
+            .or(x -> x.matches("/api/v1/image/" + ImageConsts.DELETED_AVATAR_ID + "/thumbnail.*"))
+            .or(x -> x.matches("/api/v1/image/" + IMAGE_ID_PATTERN + "/thumbnail.*"))
             .or(x -> x.matches("/actuator/health.*"))
             .or(x -> x.matches("/ui.*"));
 

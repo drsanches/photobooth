@@ -16,9 +16,9 @@ class TestGetAllImagesInfo extends Specification {
 
     String PATH = "/api/v1/image/all"
 
-    String IMAGE_PATH_PREFIX = "/api/v1/image/"
+    def IMAGE_PATH = { String imageId -> "/api/v1/image/$imageId" }
 
-    String THUMBNAIL_PATH_PREFIX = "/api/v1/image/thumbnail/"
+    def THUMBNAIL_PATH = { String imageId -> IMAGE_PATH(imageId) + "/thumbnail" }
 
     def "successful empty image list info getting"() {
         given: "user"
@@ -60,21 +60,21 @@ class TestGetAllImagesInfo extends Specification {
         def data = response.data as JSONArray
         assert data.size() == 2
         assert data.get(0)["id"] != JSONNull.getInstance()
-        assert data.get(0)["path"] == IMAGE_PATH_PREFIX + data.get(0)["id"]
-        assert data.get(0)["thumbnailPath"] == THUMBNAIL_PATH_PREFIX + data.get(0)["id"]
+        assert data.get(0)["path"] == IMAGE_PATH(data.get(0)["id"] as String)
+        assert data.get(0)["thumbnailPath"] == THUMBNAIL_PATH(data.get(0)["id"] as String)
         assert data.get(0)["ownerId"] == user2.id
         assert Utils.checkTimestamp(date2, data.get(0)["createdTime"] as String, date3)
         assert data.get(1)["id"] != JSONNull.getInstance()
-        assert data.get(1)["path"] == IMAGE_PATH_PREFIX + data.get(1)["id"]
-        assert data.get(1)["thumbnailPath"] == THUMBNAIL_PATH_PREFIX + data.get(1)["id"]
+        assert data.get(1)["path"] == IMAGE_PATH(data.get(1)["id"] as String)
+        assert data.get(1)["thumbnailPath"] == THUMBNAIL_PATH(data.get(1)["id"] as String)
         assert data.get(1)["ownerId"] == user1.id
         assert Utils.checkTimestamp(date1, data.get(1)["createdTime"] as String, date2)
 
         and: "images are correct"
-        assert image2 == RequestUtils.getImage(user1.token, IMAGE_PATH_PREFIX + data.get(0)["id"])
-        assert image1 == RequestUtils.getImage(user1.token, IMAGE_PATH_PREFIX + data.get(1)["id"])
-        assert Utils.toThumbnail(image2) == RequestUtils.getImage(user1.token, THUMBNAIL_PATH_PREFIX + data.get(0)["id"])
-        assert Utils.toThumbnail(image1) == RequestUtils.getImage(user1.token, THUMBNAIL_PATH_PREFIX + data.get(1)["id"])
+        assert image2 == RequestUtils.getImage(user1.token, IMAGE_PATH(data.get(0)["id"] as String))
+        assert image1 == RequestUtils.getImage(user1.token, IMAGE_PATH(data.get(1)["id"] as String))
+        assert Utils.toThumbnail(image2) == RequestUtils.getImage(user1.token, THUMBNAIL_PATH(data.get(0)["id"] as String) as String)
+        assert Utils.toThumbnail(image1) == RequestUtils.getImage(user1.token, THUMBNAIL_PATH(data.get(1)["id"] as String) as String)
     }
 
     def "all images info getting with invalid token"() {

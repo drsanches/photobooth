@@ -64,7 +64,7 @@ public class ImageController {
     @Operation(summary = "Returns an image thumbnail by id")
     @ApiResponseCode200
     @ApiResponseCode400
-    @RequestMapping(path = "/thumbnail/{imageId}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+    @RequestMapping(path = "{imageId}/thumbnail", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getThumbnail(@PathVariable String imageId) {
         return imageWebService.getThumbnail(imageId);
     }
@@ -85,18 +85,11 @@ public class ImageController {
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(path = "/all", method = RequestMethod.GET)
-    public List<ImageInfoDto> getAllInfo(@ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
-                                         @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size) {
+    public List<ImageInfoDto> getAllInfo(
+            @ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
+            @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size
+    ) {
         return imageWebService.getAllInfo(page, size);
-    }
-
-    @Operation(summary = "Returns the last images info that is available to the user")
-    @ApiTokenAuthorization
-    @ApiResponseCode200
-    @ApiResponseCode401
-    @RequestMapping(path = "/last", method = RequestMethod.GET)
-    public ImageInfoDto getLastImageInfo() {
-        return imageWebService.getLastImageInfo();
     }
 
     @Operation(summary = "Removes an avatar for user")

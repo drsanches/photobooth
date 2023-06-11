@@ -1,5 +1,7 @@
 package com.drsanches.photobooth.app.config;
 
+import java.util.function.Function;
+
 public class ImageConsts {
 
     public static final String DEFAULT_AVATAR_ID = "default";
@@ -10,7 +12,9 @@ public class ImageConsts {
 
     public static final String SYSTEM_OWNER_ID = "system";
 
-    public static final String IMAGE_PATH_PREFIX = "/api/v1/image/";
+    public static final Function<String, String> IMAGE_PATH = (String imageId) ->
+            "/api/v1/image/" + imageId;
 
-    public static final String THUMBNAIL_PATH_PREFIX = "/api/v1/image/thumbnail/";
+    public static final Function<String, String> THUMBNAIL_PATH = (String imageId) ->
+            "/api/v1/image/" + imageId + "/thumbnail";
 }

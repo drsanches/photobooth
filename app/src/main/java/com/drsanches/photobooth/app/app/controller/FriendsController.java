@@ -36,8 +36,10 @@ public class FriendsController {
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(path = "", method = RequestMethod.GET)
-    public List<UserInfoDto> getFriends(@ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
-                                        @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size) {
+    public List<UserInfoDto> getFriends(
+            @ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
+            @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size
+    ) {
         return friendsWebService.getFriends(page, size);
     }
 
@@ -46,8 +48,10 @@ public class FriendsController {
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(path = "/requests/incoming", method = RequestMethod.GET)
-    public List<UserInfoDto> getIncomingRequests(@ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
-                                                 @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size) {
+    public List<UserInfoDto> getIncomingRequests(
+            @ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
+            @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size
+    ) {
         return friendsWebService.getIncomingRequests(page, size);
     }
 
@@ -56,8 +60,10 @@ public class FriendsController {
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(path = "/requests/outgoing", method = RequestMethod.GET)
-    public List<UserInfoDto> getOutgoingRequests(@ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
-                                                 @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size) {
+    public List<UserInfoDto> getOutgoingRequests(
+            @ApiPaginationPage @RequestParam(value = "page", required = false) Integer page,
+            @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size
+    ) {
         return friendsWebService.getOutgoingRequests(page, size);
     }
 

@@ -12,8 +12,8 @@ public class ImageInfoMapper {
     public ImageInfoDto convert(Image image) {
         ImageInfoDto imageInfoDto = ImageInfoDto.builder()
                 .id(image.getId())
-                .path(ImageConsts.IMAGE_PATH_PREFIX + image.getId())
-                .thumbnailPath(ImageConsts.THUMBNAIL_PATH_PREFIX + image.getId())
+                .path(ImageConsts.IMAGE_PATH.apply(image.getId()))
+                .thumbnailPath(ImageConsts.THUMBNAIL_PATH.apply(image.getId()))
                 .build();
         if (image.getOwnerId().equals(ImageConsts.SYSTEM_OWNER_ID)) {
             return imageInfoDto;

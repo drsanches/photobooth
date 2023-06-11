@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -53,10 +52,6 @@ public class ImageDomainService {
         return imageRepository.findById(imageId).orElseThrow(() -> {
             throw new NoImageException(imageId);
         });
-    }
-
-    public Optional<Image> getLastImage(Collection<String> imageIds, String ownerId) {
-        return imageRepository.findTopByIdInAndOwnerIdNotOrderByCreatedTimeDesc(imageIds, ownerId);
     }
 
     public List<Image> getImages(Collection<String> imageIds) {
