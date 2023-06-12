@@ -13,7 +13,7 @@ public class TokenMapper {
                 .accessToken(token.getAccessToken())
                 .refreshToken(token.getRefreshToken())
                 .tokenType(token.getTokenType())
-                .expiresAt(GregorianCalendarConvertor.convert(token.getExpiresAt()))
+                .expiresAt(GregorianCalendarConvertor.convert(token.getExpires()))
                 .build();
     }
 }

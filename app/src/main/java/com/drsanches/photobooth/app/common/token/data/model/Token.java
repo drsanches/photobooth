@@ -22,11 +22,11 @@ import java.util.GregorianCalendar;
 @Table(name="token")
 public class Token {
 
-    //TODO: Add id field
-    //TODO: Add expires field for refresh token
-
     @Id
     @Column
+    private String id;
+
+    @Column(unique = true, nullable = false)
     @ToString.Exclude
     private String accessToken;
 
@@ -39,7 +39,11 @@ public class Token {
 
     @Column(nullable = false)
     @ToString.Exclude
-    private GregorianCalendar expiresAt;
+    private GregorianCalendar expires;
+
+    @Column(nullable = false)
+    @ToString.Exclude
+    private GregorianCalendar refreshExpires;
 
     @Column(nullable = false)
     private String userId;

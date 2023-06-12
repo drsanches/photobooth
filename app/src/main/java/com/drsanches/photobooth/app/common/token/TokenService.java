@@ -21,7 +21,9 @@ public class TokenService {
 
     private static final int CALENDAR_FIELD = Calendar.DAY_OF_YEAR;
 
-    private static final int CALENDAR_VALUE = 10;
+    private static final int EXPIRES_CALENDAR_VALUE = 10;
+
+    private static final int REFRESH_EXPIRES_CALENDAR_VALUE = 100;
 
     @Autowired
     private TokenDomainService tokenDomainService;
@@ -29,12 +31,12 @@ public class TokenService {
     @Autowired
     private TokenSupplier tokenSupplier;
 
-    //TODO: Fix logging
-
     public Token createToken(String userId, Role role) {
-        GregorianCalendar expiresAt = new GregorianCalendar();
-        expiresAt.add(CALENDAR_FIELD, CALENDAR_VALUE);
-        Token savedToken = tokenDomainService.saveToken(userId, role, expiresAt);
+        GregorianCalendar expires = new GregorianCalendar();
+        expires.add(CALENDAR_FIELD, EXPIRES_CALENDAR_VALUE);
+        GregorianCalendar refreshExpires = new GregorianCalendar();
+        refreshExpires.add(CALENDAR_FIELD, REFRESH_EXPIRES_CALENDAR_VALUE);
+        Token savedToken = tokenDomainService.saveToken(userId, role, expires, refreshExpires);
         tokenSupplier.set(savedToken);
         log.info("New token created. UserId: {}", userId);
         return savedToken;
@@ -50,8 +52,8 @@ public class TokenService {
     public Token refreshToken(String refreshToken) {
         String refreshTokenId = extractTokenId(refreshToken)
                 .orElseThrow(WrongTokenException::new);
-        Token token = tokenDomainService.getTokenByRefreshToken(refreshTokenId);
-        tokenDomainService.deleteByAccessToken(token.getAccessToken());
+        Token token = tokenDomainService.getValidTokenByRefreshToken(refreshTokenId);
+        tokenDomainService.deleteById(token.getId());
         Token refreshedToken = createToken(token.getUserId(), token.getRole());
         log.info("Token refreshed. UserId: {}", refreshedToken.getUserId());
         return refreshedToken;
@@ -59,7 +61,7 @@ public class TokenService {
 
     public void removeCurrentToken() {
         Token token = tokenSupplier.get();
-        tokenDomainService.deleteByAccessToken(token.getAccessToken());
+        tokenDomainService.deleteById(token.getId());
         tokenSupplier.set(null);
         log.info("Token deleted. UserId: {}", token.getUserId());
     }

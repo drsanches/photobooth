@@ -21,12 +21,14 @@ public class TokenDomainService {
     @Autowired
     private TokenRepository tokenRepository;
 
-    public Token saveToken(String userId, Role role, GregorianCalendar expires) {
+    public Token saveToken(String userId, Role role, GregorianCalendar expires, GregorianCalendar refreshExpires) {
         Token savedToken = tokenRepository.save(Token.builder()
+                .id(UUID.randomUUID().toString())
                 .accessToken(UUID.randomUUID().toString())
                 .refreshToken(UUID.randomUUID().toString())
                 .tokenType(TOKEN_TYPE)
-                .expiresAt(expires)
+                .expires(expires)
+                .refreshExpires(refreshExpires)
                 .userId(userId)
                 .role(role)
                 .build());
@@ -35,8 +37,14 @@ public class TokenDomainService {
     }
 
     public Token getValidTokenByAccessToken(String accessToken) {
-        return tokenRepository.findById(accessToken)
-                .filter(it -> it.getExpiresAt().after(new GregorianCalendar()))
+        return tokenRepository.findByAccessToken(accessToken)
+                .filter(it -> it.getExpires().after(new GregorianCalendar()))
+                .orElseThrow(WrongTokenException::new);
+    }
+
+    public Token getValidTokenByRefreshToken(String refreshToken) {
+        return tokenRepository.findByRefreshToken(refreshToken)
+                .filter(it -> it.getRefreshExpires().after(new GregorianCalendar()))
                 .orElseThrow(WrongTokenException::new);
     }
 
@@ -44,18 +52,14 @@ public class TokenDomainService {
         return tokenRepository.findByUserId(userId);
     }
 
-    public Token getTokenByRefreshToken(String refreshToken) {
-        return tokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(WrongTokenException::new);
-    }
-
     public List<Token> getExpired() {
-        return tokenRepository.findByExpiresAtLessThan(new GregorianCalendar());
+        GregorianCalendar now = new GregorianCalendar();
+        return tokenRepository.findByExpiresLessThanAndRefreshExpiresLessThan(now, now);
     }
 
-    public void deleteByAccessToken(String accessToken) {
-        tokenRepository.deleteById(accessToken);
-        log.debug("Token deleted. AccessToken: {}", accessToken);
+    public void deleteById(String tokenId) {
+        tokenRepository.deleteById(tokenId);
+        log.debug("Token deleted. Id: {}", tokenId);
     }
 
     public void deleteAll(List<Token> tokens) {
