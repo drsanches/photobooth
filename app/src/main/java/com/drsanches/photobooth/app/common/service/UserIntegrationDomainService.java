@@ -6,7 +6,7 @@ import com.drsanches.photobooth.app.auth.data.userauth.repository.UserAuthReposi
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.app.exception.UserAlreadyExistsException;
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
-import com.drsanches.photobooth.app.common.token.data.Role;
+import com.drsanches.photobooth.app.common.token.data.model.Role;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app.config.filter;
 
 import com.drsanches.photobooth.app.common.token.TokenSupplier;
-import com.drsanches.photobooth.app.common.token.data.Role;
+import com.drsanches.photobooth.app.common.token.data.model.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.GenericFilterBean;

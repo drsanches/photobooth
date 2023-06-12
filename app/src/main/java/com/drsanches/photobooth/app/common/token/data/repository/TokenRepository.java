@@ -1,5 +1,6 @@
-package com.drsanches.photobooth.app.common.token.data;
+package com.drsanches.photobooth.app.common.token.data.repository;
 
+import com.drsanches.photobooth.app.common.token.data.model.Token;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.GregorianCalendar;

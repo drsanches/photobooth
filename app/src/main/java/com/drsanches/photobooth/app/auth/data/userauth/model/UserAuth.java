@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.auth.data.userauth.model;
 
-import com.drsanches.photobooth.app.common.token.data.Role;
+import com.drsanches.photobooth.app.common.token.data.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

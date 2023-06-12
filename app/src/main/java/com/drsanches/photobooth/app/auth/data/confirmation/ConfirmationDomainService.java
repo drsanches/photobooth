@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -45,8 +46,17 @@ public class ConfirmationDomainService {
                 .orElseThrow(() -> new WrongConfirmCodeException("Wrong confirmation code"));
     }
 
+    public List<Confirmation> getExpired() {
+        return confirmationRepository.findByExpiresAtLessThan(new GregorianCalendar());
+    }
+
     public void delete(String id) {
         confirmationRepository.deleteById(id);
         log.debug("Confirmation deleted. Id: {}", id);
+    }
+
+    public void deleteAll(List<Confirmation> confirmations) {
+        confirmationRepository.deleteAll(confirmations);
+        log.debug("Confirmations deleted: {}", confirmations);
     }
 }

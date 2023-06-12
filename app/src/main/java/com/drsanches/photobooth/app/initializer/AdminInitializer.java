@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app.initializer;
 
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
-import com.drsanches.photobooth.app.common.token.data.Role;
+import com.drsanches.photobooth.app.common.token.data.model.Role;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.common.exception.BaseException;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;

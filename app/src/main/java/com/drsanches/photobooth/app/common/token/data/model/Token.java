@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.common.token.data;
+package com.drsanches.photobooth.app.common.token.data.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +21,9 @@ import java.util.GregorianCalendar;
 @Entity
 @Table(name="token")
 public class Token {
+
+    //TODO: Add id field
+    //TODO: Add expires field for refresh token
 
     @Id
     @Column
