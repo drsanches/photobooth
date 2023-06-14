@@ -13,4 +13,12 @@ public class ServerError extends BaseException {
     public ServerError(String info, Exception cause) {
         super(MESSAGE, info, cause);
     }
+
+    private ServerError(String message, String info) {
+        super(message, info);
+    }
+
+    public static ServerError createWithMessage(String message, String info) {
+        return new ServerError(message, info);
+    }
 }

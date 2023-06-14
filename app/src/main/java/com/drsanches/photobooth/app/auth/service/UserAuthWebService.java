@@ -77,7 +77,7 @@ public class UserAuthWebService {
     @Autowired
     private EmailNotifier emailNotifier;
 
-    @Value("${application.2FA-enabled}")
+    @Value("${application.email-notifications.2FA-enabled}")
     private boolean with2FA;
 
     public TokenDto registration(@Valid RegistrationDto registrationDto) {

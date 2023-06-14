@@ -13,7 +13,7 @@ import javax.mail.internet.MimeMessage;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "application.email-sending-enabled")
+@ConditionalOnProperty(name = "application.email-notifications.email-sending-enabled")
 public class EmailServiceImpl implements EmailService {
 
     @Autowired
