@@ -18,7 +18,7 @@ public class EmailNotifier {
         emailService.sendHtmlMessage(
                 email,
                 emailNotificationsContentProperties.getConfirmSubject(operation),
-                "Code: " + code
+                String.format(emailNotificationsContentProperties.getConfirmText(Operation.REGISTRATION), code)
         );
     }
 

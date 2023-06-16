@@ -18,7 +18,7 @@ public class ServerError extends BaseException {
         super(message, info);
     }
 
-    public static ServerError createWithMessage(String message, String info) {
-        return new ServerError(message, info);
+    public static ServerError createWithMessage(String message) {
+        return new ServerError(message, message);
     }
 }

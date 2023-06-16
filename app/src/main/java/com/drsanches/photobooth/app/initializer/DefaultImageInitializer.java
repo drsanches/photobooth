@@ -13,13 +13,13 @@ import java.util.Base64;
 @Component
 public class DefaultImageInitializer implements Initializer {
 
-    @Value("${application.image.initial-data.default}")
+    @Value("${content.image.default}")
     private String defaultImage;
 
-    @Value("${application.image.initial-data.no-photo}")
+    @Value("${content.image.no-photo}")
     private String noPhotoImage;
 
-    @Value("${application.image.initial-data.deleted}")
+    @Value("${content.image.deleted}")
     private String deletedImage;
 
     @Autowired
