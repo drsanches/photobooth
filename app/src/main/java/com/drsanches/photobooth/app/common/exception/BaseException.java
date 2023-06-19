@@ -45,13 +45,5 @@ public class BaseException extends RuntimeException {
     public String getMessage() {
         return new ExceptionDto(uuid, super.getMessage()).toString();
     }
-
-    public String log() {
-        return new ExceptionLogInfoDto(uuid, timestamp, logMessage, this).toString();
-    }
-
-    public static String log(Throwable e) {
-        return new ExternalExceptionLogInfoDto(e).toString();
-    }
 }
 

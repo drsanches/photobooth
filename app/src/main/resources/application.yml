@@ -58,12 +58,3 @@ spring:
       mail.smtp.auth: true
       mail.smtp.ssl.trust: smtp.gmail.com
       mail.smtp.starttls.enable: true
-
-logging:
-  level:
-    root: ERROR
-    org.springframework.web: ERROR
-    com.drsanches.photobooth: TRACE
-#    org.hibernate.SQL: DEBUG # SQL statements
-#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE # Parameters of SQL statements
-#    org.springframework.transaction.interceptor: TRACE # Transactions

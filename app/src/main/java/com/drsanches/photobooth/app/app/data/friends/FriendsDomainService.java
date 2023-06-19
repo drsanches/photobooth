@@ -68,15 +68,14 @@ public class FriendsDomainService {
             friendRequestRepository.deleteById(friendRequestKey);
             log.debug("FriendRequest removed: {}", friendRequestKey);
         } catch(EmptyResultDataAccessException e) {
-            log.warn("FriendRequest does not exist. Key: {}, exception: {}", friendRequestKey, BaseException.log(e));
+            log.warn("FriendRequest does not exist. Key: {}", friendRequestKey, e);
         }
         FriendRequestKey reversedFriendRequestKey = new FriendRequestKey(toUserId, fromUserId);
         try {
             friendRequestRepository.deleteById(reversedFriendRequestKey);
             log.debug("Reversed FriendRequest removed: {}", reversedFriendRequestKey);
         } catch(EmptyResultDataAccessException e) {
-            log.debug("Reversed FriendRequest does not exist. Key: {}, exception: {}",
-                    reversedFriendRequestKey, BaseException.log(e));
+            log.debug("Reversed FriendRequest does not exist. Key: {}", reversedFriendRequestKey, e);
         }
     }
 }

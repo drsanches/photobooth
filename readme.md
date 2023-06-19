@@ -112,7 +112,6 @@ After the application start, it can be tested with the command:
 - Add stub for google auth
 - Add field descriptions for db models
 - Add available characters validation
-- Refactor logging
 - Add request id
 - Use @Nullable or/and @NonNull on methods arguments?
 - Add ELK in docker compose
