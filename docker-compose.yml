@@ -2,7 +2,7 @@ version: '3'
 
 services:
   photobooth:
-    build: .
+    build: ./app
     restart: always
     environment:
       PORT: ${PORT}
@@ -12,6 +12,8 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       EMAIL_ADDRESS: ${EMAIL_ADDRESS}
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+#    volumes:
+#      - ./logs:/logs
     depends_on:
         - database
     ports:
@@ -20,8 +22,8 @@ services:
   database:
     image: postgres:14.0
     restart: always
-    #    volumes:
-    #      - ./db/data/:/var/lib/postgresql/data
+#    volumes:
+#      - ./db/data/:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${JDBC_DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${JDBC_DATABASE_PASSWORD}
