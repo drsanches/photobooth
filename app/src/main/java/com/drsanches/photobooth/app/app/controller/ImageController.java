@@ -4,6 +4,7 @@ import com.drsanches.photobooth.app.app.dto.image.request.UploadAvatarDto;
 import com.drsanches.photobooth.app.app.dto.image.request.UploadPhotoDto;
 import com.drsanches.photobooth.app.app.dto.image.response.ImageInfoDto;
 import com.drsanches.photobooth.app.app.service.ImageWebService;
+import com.drsanches.photobooth.app.common.aspects.MonitorTime;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationPage;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationSize;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;
@@ -27,6 +28,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/image", produces = MediaType.APPLICATION_JSON_VALUE)
+@MonitorTime
 public class ImageController {
 
     @Autowired

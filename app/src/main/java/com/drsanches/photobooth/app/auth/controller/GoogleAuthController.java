@@ -4,6 +4,7 @@ import com.drsanches.photobooth.app.auth.dto.userauth.request.GoogleTokenDto;
 import com.drsanches.photobooth.app.auth.dto.google.GoogleGetTokenDto;
 import com.drsanches.photobooth.app.auth.dto.google.GoogleSetUsernameDto;
 import com.drsanches.photobooth.app.auth.service.GoogleAuthWebService;
+import com.drsanches.photobooth.app.common.aspects.MonitorTime;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode400;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode401;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/v1/auth/google", produces = MediaType.APPLICATION_JSON_VALUE)
+@MonitorTime
 public class GoogleAuthController {
 
     @Autowired

@@ -4,6 +4,7 @@ import com.drsanches.photobooth.app.app.dto.friends.request.RemoveRequestDto;
 import com.drsanches.photobooth.app.app.dto.friends.request.SendRequestDto;
 import com.drsanches.photobooth.app.app.dto.profile.response.UserInfoDto;
 import com.drsanches.photobooth.app.app.service.FriendsWebService;
+import com.drsanches.photobooth.app.common.aspects.MonitorTime;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationPage;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationSize;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;
@@ -26,6 +27,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/friends", produces = MediaType.APPLICATION_JSON_VALUE)
+@MonitorTime
 public class FriendsController {
 
     @Autowired

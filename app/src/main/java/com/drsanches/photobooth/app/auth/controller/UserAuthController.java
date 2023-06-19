@@ -9,6 +9,7 @@ import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeEmailDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangePasswordDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.LoginDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.TokenDto;
+import com.drsanches.photobooth.app.common.aspects.MonitorTime;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode201;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode400;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/v1/auth", produces = MediaType.APPLICATION_JSON_VALUE)
+@MonitorTime
 public class UserAuthController {
 
     @Autowired

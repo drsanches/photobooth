@@ -63,7 +63,7 @@ logging:
   level:
     root: ERROR
     org.springframework.web: ERROR
-    com.drsanches.photobooth: INFO
+    com.drsanches.photobooth: TRACE
 #    org.hibernate.SQL: DEBUG # SQL statements
 #    org.hibernate.type.descriptor.sql.BasicBinder: TRACE # Parameters of SQL statements
 #    org.springframework.transaction.interceptor: TRACE # Transactions

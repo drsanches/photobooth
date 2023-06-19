@@ -104,7 +104,8 @@ After the application start, it can be tested with the command:
 ## Backlog
 
 ### Back
-- Add cache? (on last images data)
+- Add cache?
+- Use AOP for auth?
 - Do not create UserProfile for admin?
 - Use 404 instead 401 for nonexistent urls
 - Separate app, auth and scheduler to different modules
@@ -112,6 +113,10 @@ After the application start, it can be tested with the command:
 - Add field descriptions for db models
 - Add available characters validation
 - Refactor logging
+- Add request id
+- Use @Nullable or/and @NonNull on methods arguments
+- Add ELK in docker compose
+- Check @Target for custom annotations
 
 ### Tests
 - Test sorting
