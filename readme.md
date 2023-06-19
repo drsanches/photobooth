@@ -114,9 +114,9 @@ After the application start, it can be tested with the command:
 - Add available characters validation
 - Refactor logging
 - Add request id
-- Use @Nullable or/and @NonNull on methods arguments
+- Use @Nullable or/and @NonNull on methods arguments?
 - Add ELK in docker compose
-- Check @Target for custom annotations
+- Use only cookies instead of authorization header for token?  
 
 ### Tests
 - Test sorting
