@@ -42,7 +42,7 @@
 
 ### Environment variables
 
-- `PORT` - application port
+- `APP_PORT` - application port
 - `ADMIN_PASSWORD` - password for admin user
 - `JDBC_DATABASE_URL` - database url (example: `jdbc:postgresql://database_host:5432/databaseba_name`)
 - `JDBC_DATABASE_USERNAME` - database username
@@ -67,7 +67,7 @@ or
 Run application by the command (with custom environment variables):
 
     java -jar \
-        -DPORT=8080 \
+        -DAPP_PORT=8080 \
         -DADMIN_PASSWORD=pswd \
         -DJDBC_DATABASE_URL=jdbc:postgresql://localhost:5432/photobooth \
         -DJDBC_DATABASE_USERNAME=photobooth_app \
@@ -114,8 +114,8 @@ After the application start, it can be tested with the command:
 - Add available characters validation
 - Add request id
 - Use @Nullable or/and @NonNull on methods arguments?
-- Add ELK in docker compose
-- Use only cookies instead of authorization header for token?  
+- Use only cookies instead of authorization header for token?
+- Use docker healthchecks
 
 ### Tests
 - Test sorting

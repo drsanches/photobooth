@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+  logstash:
+    image: logstash:7.16.2
+    volumes:
+      - ./elk/configs/logstash/config.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./elk/configs/logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
+      - ./elk/configs/logstash/pipelines:/usr/share/logstash/config/pipelines:ro
+    environment:
+      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+    ports:
+      - 5044:${LOGSTASH_PORT}
+    networks:
+      - internal_network
+      - external_network
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    image: elasticsearch:7.16.1
+    volumes:
+      - ./elk/configs/elasticsearch/config.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./data/elasticsearch/data:/usr/share/elasticsearch/data
+    environment:
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      discovery.type: single-node
+    ports:
+      - 9200:9200
+    networks:
+      - internal_network
+
+  kibana:
+    image: kibana:7.16.1
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./elk/configs/kibana/config.yml:/usr/share/kibana/config/kibana.yml:ro
+    environment:
+      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+    ports:
+      - 5601:5601
+    networks:
+      - internal_network
+
+networks:
+  internal_network:
+    driver: bridge
+  external_network:
+    driver: bridge

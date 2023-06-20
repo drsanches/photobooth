@@ -2,4 +2,4 @@
 /.run
 /.gradle
 */build
-/logs
+/data

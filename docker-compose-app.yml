@@ -5,7 +5,7 @@ services:
     build: ./app
     restart: always
     environment:
-      PORT: ${PORT}
+      APP_PORT: ${APP_PORT}
       JDBC_DATABASE_URL: ${JDBC_DATABASE_URL}
       JDBC_DATABASE_USERNAME: ${JDBC_DATABASE_USERNAME}
       JDBC_DATABASE_PASSWORD: ${JDBC_DATABASE_PASSWORD}
@@ -13,18 +13,33 @@ services:
       EMAIL_ADDRESS: ${EMAIL_ADDRESS}
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
 #    volumes:
-#      - ./logs:/logs
-    depends_on:
-        - database
+#      - ./data/app/logs:/data/app/logs
     ports:
-        - ${PORT}:${PORT}
+      - ${APP_PORT}:${APP_PORT}
+    networks:
+      - internal_network
+      - elk_external_network
+    depends_on:
+      - database
 
   database:
     image: postgres:14.0
     restart: always
 #    volumes:
-#      - ./db/data/:/var/lib/postgresql/data
+#        - pgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${JDBC_DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${JDBC_DATABASE_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+    networks:
+      - internal_network
+
+#TODO: Move to data/postgres/data
+#volumes:
+#  pgdata:
+
+networks:
+  internal_network:
+    driver: bridge
+  elk_external_network:
+    external: true

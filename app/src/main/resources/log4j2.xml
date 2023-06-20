@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="INFO">
+
+    <!--TODO: Use env vars-->
+<!--    <Properties>-->
+<!--        <property name="logstash.host">logstash</property>-->
+<!--        <property name="logstash.port">5044</property>-->
+<!--    </Properties>-->
+
     <Appenders>
         <Console name="console-appender" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%-6p] %-50c{1.}: %m%n"/>
         </Console>
 
         <RollingFile name="file-appender"
-                     fileName="logs/app.log"
-                     filePattern="logs/app.%d{MM-dd-yyyy-HH-mm}.%i.log.gz"
+                     fileName="data/app/logs/app.log"
+                     filePattern="data/app/logs/app.%d{MM-dd-yyyy-HH-mm}.%i.log.gz"
                      ignoreExceptions="false">
             <JSONLayout compact="true" eventEol="true" properties="true" stacktraceAsString="true" includeTimeMillis="true"/>
             <Policies>
@@ -16,35 +23,45 @@
                 <TimeBasedTriggeringPolicy/>
             </Policies>
             <DefaultRolloverStrategy>
-                <Delete basePath="logs" maxDepth="1">
+                <Delete basePath="data/app/logs" maxDepth="1">
                     <IfFileName glob="app.*.log.gz"/>
                     <IfLastModified age="2d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
+
+        <!--TODO: Append by flag from env-->
+<!--        <Socket name="logstash" host="${logstash.host}" port="${logstash.port}">-->
+<!--            <JSONLayout compact="true" eventEol="true" properties="true" stacktraceAsString="true" includeTimeMillis="true"/>-->
+<!--        </Socket>-->
+<!--        <Async name="logstash-appender" bufferSize="204800">-->
+<!--            <AppenderRef ref="logstash"/>-->
+<!--        </Async>-->
     </Appenders>
 
     <Loggers>
         <Root level="ERROR">
             <AppenderRef ref="console-appender"/>
-            <AppenderRef ref="file-appender"/>
+<!--            <AppenderRef ref="file-appender"/>-->
+<!--            <AppenderRef ref="logstash-appender"/>-->
         </Root>
         <Logger name="com.drsanches.photobooth" level="TRACE" additivity="false">
             <AppenderRef ref="console-appender"/>
-            <AppenderRef ref="file-appender"/>
+<!--            <AppenderRef ref="file-appender"/>-->
+<!--            <AppenderRef ref="logstash-appender"/>-->
         </Logger>
 
-<!--        # SQL statements-->
-<!--        <Logger name="org.hibernate.SQL" level="DEBUG" additivity="false">-->
+        # SQL statements
+        <Logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
 <!--            <AppenderRef ref="console-appender"/>-->
-<!--        </Logger>-->
-<!--        # Parameters of SQL statements-->
-<!--        <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" additivity="false">-->
+        </Logger>
+        # Parameters of SQL statements
+        <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" additivity="false">
 <!--            <AppenderRef ref="console-appender"/>-->
-<!--        </Logger>-->
-<!--        # Transactions-->
-<!--        <Logger name="org.springframework.transaction.interceptor" level="TRACE" additivity="false">-->
+        </Logger>
+        # Transactions
+        <Logger name="org.springframework.transaction.interceptor" level="TRACE" additivity="false">
 <!--            <AppenderRef ref="console-appender"/>-->
-<!--        </Logger>-->
+        </Logger>
     </Loggers>
 </Configuration>

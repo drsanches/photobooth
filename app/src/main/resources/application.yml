@@ -1,5 +1,5 @@
 server:
-  port: ${PORT}
+  port: ${APP_PORT}
 
 application:
   image:
