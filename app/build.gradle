@@ -56,6 +56,8 @@ dependencies {
 
     //Other
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.4.8' //Swagger
+    //TODO: Use simple groovy
+    implementation group: 'org.spockframework', name: 'spock-core', version: '1.1-groovy-2.4' //For log4j2-spring.xml
 
     //Tests
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.9.2'

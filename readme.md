@@ -49,6 +49,9 @@
 - `JDBC_DATABASE_PASSWORD` - database user password
 - `EMAIL_ADDRESS` - smtp service username (email address)
 - `EMAIL_PASSWORD` - smtp service password
+- `USE_ELK` - `true` to send logs to the ELK stack, otherwise `false`
+- `LOGSTASH_HOST` - logstash (from ELK) host
+- `LOGSTASH_PORT` - logstash (from ELK) port
 
 ### JVM
 
@@ -74,6 +77,9 @@ Run application by the command (with custom environment variables):
         -DJDBC_DATABASE_PASSWORD=pswd \
         -DEMAIL_ADDRESS=mail@example.com \
         -DEMAIL_PASSWORD=pswd \
+        -DUSE_ELK=true \
+        -DLOGSTASH_HOST=localhost \
+        -DLOGSTASH_PORT=5044 \
         app/build/libs/photobooth-1.0.jar
 
 ### Docker

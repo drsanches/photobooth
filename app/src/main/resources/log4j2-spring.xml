@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="INFO">
-
-    <!--TODO: Use env vars-->
-<!--    <Properties>-->
-<!--        <property name="logstash.host">logstash</property>-->
-<!--        <property name="logstash.port">5044</property>-->
-<!--    </Properties>-->
+    <Properties>
+        <property name="logstash.host">$${env:LOGSTASH_HOST}</property>
+        <property name="logstash.port">$${env:LOGSTASH_PORT}</property>
+    </Properties>
 
     <Appenders>
         <Console name="console-appender" target="SYSTEM_OUT">
@@ -30,25 +28,37 @@
             </DefaultRolloverStrategy>
         </RollingFile>
 
-        <!--TODO: Append by flag from env-->
-<!--        <Socket name="logstash" host="${logstash.host}" port="${logstash.port}">-->
-<!--            <JSONLayout compact="true" eventEol="true" properties="true" stacktraceAsString="true" includeTimeMillis="true"/>-->
-<!--        </Socket>-->
-<!--        <Async name="logstash-appender" bufferSize="204800">-->
-<!--            <AppenderRef ref="logstash"/>-->
-<!--        </Async>-->
+        <ScriptAppenderSelector name="logstash-socket-appender">
+            <Script language="groovy"><![CDATA[
+                if (System.env["USE_ELK"] == "true") {
+                    return "logstash"
+                } else {
+                    return "stub"
+                }
+            ]]></Script>
+            <AppenderSet>
+                <Socket name="logstash" host="${logstash.host}" port="${logstash.port}">
+                    <JSONLayout compact="true" eventEol="true" properties="true" stacktraceAsString="true" includeTimeMillis="true"/>
+                </Socket>
+                <Null name="stub"/>
+            </AppenderSet>
+        </ScriptAppenderSelector>
+
+        <Async name="logstash-appender" bufferSize="204800">
+            <AppenderRef ref="logstash-socket-appender"/>
+        </Async>
     </Appenders>
 
     <Loggers>
         <Root level="ERROR">
             <AppenderRef ref="console-appender"/>
 <!--            <AppenderRef ref="file-appender"/>-->
-<!--            <AppenderRef ref="logstash-appender"/>-->
+            <AppenderRef ref="logstash-appender"/>
         </Root>
         <Logger name="com.drsanches.photobooth" level="TRACE" additivity="false">
             <AppenderRef ref="console-appender"/>
 <!--            <AppenderRef ref="file-appender"/>-->
-<!--            <AppenderRef ref="logstash-appender"/>-->
+            <AppenderRef ref="logstash-appender"/>
         </Logger>
 
         # SQL statements
