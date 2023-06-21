@@ -26,7 +26,7 @@ public class EmailNotifier {
         emailService.sendHtmlMessage(
                 email,
                 emailNotificationsContentProperties.getSuccessSubject(operation),
-                emailNotificationsContentProperties.getSuccessSubject(operation)
+                emailNotificationsContentProperties.getSuccessText(operation)
         );
     }
 }

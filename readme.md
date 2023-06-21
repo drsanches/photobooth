@@ -121,3 +121,4 @@ After the application start, it can be tested with the command:
 - Test sorting
 - Test 2FA
 - Test transactions
+- Disable logging to file in unit tests
