@@ -34,7 +34,7 @@
 ---
 ## Database structure
 
-![Alt text](doc/db_schema.png?raw=true "DB schema")
+<img src="doc/db_schema.png" alt="Database structure" width="600"/>
 
 ---
 
