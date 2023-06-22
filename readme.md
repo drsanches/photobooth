@@ -85,16 +85,21 @@ Run application by the command (with custom environment variables):
 ### Docker
 
 #### Files description
-- `Dockerfile` for automatic image building
-- `docker-compose.yml` with docker service definitions
-- `.env` contains environment variables (also contains one extra variable `DB_NAME`, needed for database container)
+- `app/Dockerfile` for automatic photobooth application image building
+- `docker-compose-app.yml` services definitions for photobooth application
+- `docker-compose-elk.yml` services definitions for ELK stack
+- `.env` contains environment variables (also contains extra variables for DB and ELK)
 
 #### Run
 Before run, it is necessary to build **executable jar file** (see JVM.Build).
 After that, the application can be launched with the commands:
 
-- `docker-compose build` - builds services
-- `docker-compose up` - creates and starts containers
+- `docker-compose -f docker-compose-app.yml build` - builds services
+- `docker-compose -f docker-compose-app.yml up` - creates and starts containers
+
+If you want to send logs to the ELK stack, you shold firstly run ELK with the command:
+
+    docker-compose -f docker-compose-elk.yml up
 
 ### Heroku
 `Procfile` contains the command to run the application on Heroku service. 
