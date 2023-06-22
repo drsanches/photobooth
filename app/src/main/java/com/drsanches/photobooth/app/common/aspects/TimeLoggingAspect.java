@@ -25,7 +25,8 @@ public class TimeLoggingAspect {
             return call.proceed();
         } finally {
             clock.stop();
-            log.trace("{} millis: {}", call, clock.getTotalTimeMillis());
+            log.trace("Method execution time calculated. Method: {}, millis: {}",
+                    call.getSignature(), clock.getTotalTimeMillis());
         }
     }
 }

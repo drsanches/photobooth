@@ -1,11 +1,6 @@
 package com.drsanches.photobooth.app.config.filter;
 
 import com.drsanches.photobooth.app.common.token.TokenSupplier;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -34,34 +29,21 @@ public class LogFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         if (!excludeLogUri.test(httpRequest.getRequestURI())) {
             if (tokenSupplier.get() != null) {
-                log.info("{} {}, info: {}", httpRequest.getMethod(),  httpRequest.getRequestURL(), LogInfo.builder()
-                        .address(httpRequest.getRemoteAddr())
-                        .userId(tokenSupplier.get().getUserId())
-                        .build());
+                log.trace("{} {}, address: {}, userId: {}",
+                        httpRequest.getMethod(),
+                        httpRequest.getRequestURL(),
+                        httpRequest.getRemoteAddr(),
+                        tokenSupplier.get().getUserId()
+                );
             } else {
-                log.info("{} {}, info: {}", httpRequest.getMethod(), httpRequest.getRequestURL(), LogInfo.builder()
-                        .address(httpRequest.getRemoteAddr())
-                        .build());
+                log.trace("{} {}, address: {}, userId: {}",
+                        httpRequest.getMethod(),
+                        httpRequest.getRequestURL(),
+                        httpRequest.getRemoteAddr(),
+                        null
+                );
             }
         }
         chain.doFilter(request, response);
-    }
-
-    @Data
-    @AllArgsConstructor
-    @Builder
-    private static class LogInfo {
-
-        private static final ObjectMapper MAPPER = new ObjectMapper();
-
-        private final String address;
-
-        private final String userId;
-
-        @SneakyThrows
-        @Override
-        public String toString() {
-            return MAPPER.writeValueAsString(this);
-        }
     }
 }
