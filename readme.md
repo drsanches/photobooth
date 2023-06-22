@@ -123,7 +123,6 @@ After the application start, it can be tested with the command:
 - Add stub for google auth
 - Add field descriptions for db models
 - Add available characters validation
-- Add request id
 - Use @Nullable or/and @NonNull on methods arguments?
 - Use only cookies instead of authorization header for token?
 - Use docker healthchecks
@@ -133,3 +132,6 @@ After the application start, it can be tested with the command:
 - Test 2FA
 - Test transactions
 - Disable logging to file in unit tests
+
+### Other
+- Add kibana dashboard and export it to file, also add instruction about importing
