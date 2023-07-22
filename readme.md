@@ -112,6 +112,32 @@ After the application start, it can be tested with the command:
 
 ---
 
+## ELK dashboards
+
+The dashboard with all necessary indexes is located in the `/elk` folder (`/elk/PhotoBooth_dashbaord.ndjson`). 
+It can be imported through Kibana web interface.
+
+### How to export
+
+- Open `Stack Management`
+- Open `Saved Objects`
+- Mark your dashboard
+- Press `Export` button
+- With `Include related objects`
+- Press `Export` button
+- Save
+
+### How to import
+
+- Open `Stack Management`
+- Open `Saved Objects`
+- Press `Import` button
+- Select a file to import
+- Press `Import` button
+- Done
+
+---
+
 ## Backlog
 
 ### Back
@@ -126,6 +152,7 @@ After the application start, it can be tested with the command:
 - Use @Nullable or/and @NonNull on methods arguments?
 - Use only cookies instead of authorization header for token?
 - Use docker healthchecks
+- Limit container resources
 
 ### Tests
 - Test sorting

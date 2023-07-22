@@ -23,7 +23,7 @@ services:
     image: elasticsearch:7.16.1
     volumes:
       - ./elk/configs/elasticsearch/config.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-      - ./data/elasticsearch/data:/usr/share/elasticsearch/data
+      - elasticsearch-data:/usr/share/elasticsearch/data
     environment:
       ES_JAVA_OPTS: "-Xmx512m -Xms512m"
       ELASTIC_USERNAME: ${ELASTIC_USERNAME}
@@ -47,6 +47,9 @@ services:
       - 5601:5601
     networks:
       - internal_network
+
+volumes:
+  elasticsearch-data:
 
 networks:
   internal_network:

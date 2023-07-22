@@ -11,8 +11,8 @@
         </Console>
 
         <RollingFile name="file-appender"
-                     fileName="data/app/logs/app.log"
-                     filePattern="data/app/logs/app.%d{MM-dd-yyyy-HH-mm}.%i.log.gz"
+                     fileName="logs/app.log"
+                     filePattern="logs/app.%d{MM-dd-yyyy-HH-mm}.%i.log.gz"
                      ignoreExceptions="false">
             <JSONLayout compact="true" eventEol="true" properties="true" stacktraceAsString="true" includeTimeMillis="true"/>
             <Policies>
@@ -21,7 +21,7 @@
                 <TimeBasedTriggeringPolicy/>
             </Policies>
             <DefaultRolloverStrategy>
-                <Delete basePath="data/app/logs" maxDepth="1">
+                <Delete basePath="logs" maxDepth="1">
                     <IfFileName glob="app.*.log.gz"/>
                     <IfLastModified age="2d"/>
                 </Delete>
