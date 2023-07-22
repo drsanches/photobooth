@@ -3,14 +3,15 @@ version: '3'
 services:
   logstash:
     image: logstash:7.16.2
-    volumes:
-      - ./elk/configs/logstash/config.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./elk/configs/logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
-      - ./elk/configs/logstash/pipelines:/usr/share/logstash/config/pipelines:ro
+    restart: always
     environment:
       LS_JAVA_OPTS: "-Xmx512m -Xms512m"
       ELASTIC_USERNAME: ${ELASTIC_USERNAME}
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+    volumes:
+      - ./elk/configs/logstash/config.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./elk/configs/logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
+      - ./elk/configs/logstash/pipelines:/usr/share/logstash/config/pipelines:ro
     ports:
       - 5044:${LOGSTASH_PORT}
     networks:
@@ -21,14 +22,15 @@ services:
 
   elasticsearch:
     image: elasticsearch:7.16.1
-    volumes:
-      - ./elk/configs/elasticsearch/config.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-      - elasticsearch-data:/usr/share/elasticsearch/data
+    restart: always
     environment:
       ES_JAVA_OPTS: "-Xmx512m -Xms512m"
       ELASTIC_USERNAME: ${ELASTIC_USERNAME}
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
       discovery.type: single-node
+    volumes:
+      - ./elk/configs/elasticsearch/config.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - elasticsearch-data:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
     networks:
@@ -36,17 +38,18 @@ services:
 
   kibana:
     image: kibana:7.16.1
-    depends_on:
-      - elasticsearch
-    volumes:
-      - ./elk/configs/kibana/config.yml:/usr/share/kibana/config/kibana.yml:ro
+    restart: always
     environment:
       ELASTIC_USERNAME: ${ELASTIC_USERNAME}
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+    volumes:
+      - ./elk/configs/kibana/config.yml:/usr/share/kibana/config/kibana.yml:ro
     ports:
       - 5601:5601
     networks:
       - internal_network
+    depends_on:
+      - elasticsearch
 
 volumes:
   elasticsearch-data:
