@@ -159,6 +159,3 @@ It can be imported through Kibana web interface.
 - Test 2FA
 - Test transactions
 - Disable logging to file in unit tests
-
-### Other
-- Add kibana dashboard and export it to file, also add instruction about importing
