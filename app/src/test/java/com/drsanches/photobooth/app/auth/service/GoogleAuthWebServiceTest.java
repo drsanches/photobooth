@@ -123,9 +123,8 @@ class GoogleAuthWebServiceTest {
         request.setCode(CONFIRMATION_CODE);
         googleAuthWebService.setUsername(request);
 
-        userAuth.setUsername(newUsername);
         Mockito.verify(confirmationCodeValidator).validate(confirmation, Operation.GOOGLE_USERNAME_CHANGE);
-        Mockito.verify(userIntegrationDomainService).updateUser(userAuth);
+        Mockito.verify(userIntegrationDomainService).updateUsername(USER_ID, newUsername);
         Mockito.verify(confirmationDomainService).delete(confirmation.getId());
         Mockito.verify(tokenService).removeAllTokens(USER_ID);
     }

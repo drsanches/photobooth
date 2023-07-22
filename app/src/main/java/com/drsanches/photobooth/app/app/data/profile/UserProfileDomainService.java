@@ -7,6 +7,7 @@ import com.drsanches.photobooth.app.app.exception.NoUserIdException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -23,9 +24,19 @@ public class UserProfileDomainService {
     @Autowired
     private PaginationService<UserProfile> paginationService; //TODO: Exclude?
 
-    public void save(UserProfile userProfile) {
+    public void updateProfileData(String userId, @Nullable String name, @Nullable String status) {
+        UserProfile userProfile = getEnabledById(userId);
+        userProfile.setName(name);
+        userProfile.setStatus(status);
         userProfileRepository.save(userProfile);
-        log.debug("UserProfile updated: {}", userProfile);
+        log.debug("UserProfile data updated: {}", userProfile);
+    }
+
+    public void updateImageId(String userId, @Nullable String imageId) {
+        UserProfile userProfile = getEnabledById(userId);
+        userProfile.setImageId(imageId);
+        userProfileRepository.save(userProfile);
+        log.debug("UserProfile imageId updated: {}", userProfile);
     }
 
     public UserProfile getEnabledById(String userId) {

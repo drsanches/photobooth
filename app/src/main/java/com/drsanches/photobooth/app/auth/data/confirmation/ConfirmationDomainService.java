@@ -7,6 +7,7 @@ import com.drsanches.photobooth.app.auth.data.confirmation.model.Confirmation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
@@ -25,7 +26,7 @@ public class ConfirmationDomainService {
     @Autowired
     private ConfirmationRepository confirmationRepository;
 
-    public Confirmation create(String data, String userId, String email, Operation operation) {
+    public Confirmation create(@Nullable String data, @Nullable String userId, String email, Operation operation) {
         GregorianCalendar expiresAt = new GregorianCalendar();
         expiresAt.add(CALENDAR_FIELD, CALENDAR_VALUE);
         Confirmation savedConfirmation = confirmationRepository.save(Confirmation.builder()

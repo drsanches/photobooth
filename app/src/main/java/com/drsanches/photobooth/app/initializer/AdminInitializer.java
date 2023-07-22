@@ -43,15 +43,12 @@ public class AdminInitializer implements Initializer {
         }
         try {
             String salt = UUID.randomUUID().toString();
-            UserAuth savedUserAuth = userIntegrationDomainService.createUser(UserAuth.builder()
-                    .id(UUID.randomUUID().toString())
-                    .username(username)
-                    .email(email)
-                    .salt(salt)
-                    .password(new BCryptPasswordEncoder().encode(sha256(password) + salt))
-                    .enabled(true)
-                    .role(Role.ADMIN)
-                    .build());
+            UserAuth savedUserAuth = userIntegrationDomainService.createAdmin(
+                    username,
+                    email,
+                    new BCryptPasswordEncoder().encode(sha256(password) + salt),
+                    salt
+            );
             log.info("Admin initialized. Id: {}", savedUserAuth.getId());
         } catch (NoSuchAlgorithmException e) {
             log.error("Failed to generate sha256 hash", e);

@@ -20,6 +20,12 @@ public class FriendsDomainService {
     @Autowired
     private FriendRequestRepository friendRequestRepository;
 
+    public void saveFriendRequest(String fromUserId, String toUserId) {
+        FriendRequest friendRequest = new FriendRequest(fromUserId, toUserId);
+        friendRequestRepository.save(friendRequest);
+        log.debug("New FriendRequest created: {}", friendRequest);
+    }
+
     public List<String> getFriendsIdList(String userId) {
         List<String> outgoing = getOutgoingRequestAndFriendIdList(userId);
         List<String> incoming = getIncomingRequestAndFriendIdList(userId);
@@ -54,12 +60,6 @@ public class FriendsDomainService {
         return friendRequestRepository.findByIdToUserId(userId).stream()
                 .map(FriendRequest::getFromUserId)
                 .collect(Collectors.toList());
-    }
-
-    public void saveFriendRequest(String fromUserId, String toUserId) {
-        FriendRequest friendRequest = new FriendRequest(fromUserId, toUserId);
-        friendRequestRepository.save(friendRequest);
-        log.debug("New FriendRequest created: {}", friendRequest);
     }
 
     public void removeFriendRequest(String fromUserId, String toUserId) {

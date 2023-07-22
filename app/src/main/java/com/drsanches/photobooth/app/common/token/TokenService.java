@@ -6,6 +6,7 @@ import com.drsanches.photobooth.app.common.token.data.model.Token;
 import com.drsanches.photobooth.app.common.token.data.TokenDomainService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -42,14 +43,14 @@ public class TokenService {
         return savedToken;
     }
 
-    public void validate(String accessToken) {
+    public void validate(@Nullable String accessToken) {
         String accessTokenId = extractTokenId(accessToken)
                 .orElseThrow(WrongTokenException::new);
         Token token = tokenDomainService.getValidTokenByAccessToken(accessTokenId);
         tokenSupplier.set(token);
     }
 
-    public Token refreshToken(String refreshToken) {
+    public Token refreshToken(@Nullable String refreshToken) {
         String refreshTokenId = extractTokenId(refreshToken)
                 .orElseThrow(WrongTokenException::new);
         Token token = tokenDomainService.getValidTokenByRefreshToken(refreshTokenId);
@@ -73,7 +74,7 @@ public class TokenService {
         log.info("Tokens deleted. UserId: {}", userId);
     }
 
-    private Optional<String> extractTokenId(String token) {
+    private Optional<String> extractTokenId(@Nullable String token) {
         if (token == null) {
             return Optional.empty();
         }

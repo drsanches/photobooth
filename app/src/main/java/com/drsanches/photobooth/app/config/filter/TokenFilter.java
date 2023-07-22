@@ -5,6 +5,7 @@ import com.drsanches.photobooth.app.common.token.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.springframework.web.filter.GenericFilterBean;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -18,6 +19,8 @@ import java.util.function.Predicate;
 
 @Slf4j
 public class TokenFilter extends GenericFilterBean {
+
+    private final static String AUTHORIZATION = "Authorization";
 
     private final TokenService tokenService;
 
@@ -49,20 +52,22 @@ public class TokenFilter extends GenericFilterBean {
         chain.doFilter(request, response);
     }
 
+    @Nullable
     private String getAccessTokenFromRequest(HttpServletRequest httpRequest) {
-        String token = httpRequest.getHeader("Authorization");
+        String token = httpRequest.getHeader(AUTHORIZATION);
         if (token == null) {
             token = getAccessTokenFromCookies(httpRequest.getCookies());
         }
         return token;
     }
 
-    private String getAccessTokenFromCookies(Cookie[] cookies) {
+    @Nullable
+    private String getAccessTokenFromCookies(@Nullable Cookie[] cookies) {
         if (cookies == null) {
             return null;
         }
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("Authorization")) {
+            if (cookie.getName().equals(AUTHORIZATION)) {
                 return cookie.getValue();
             }
         }

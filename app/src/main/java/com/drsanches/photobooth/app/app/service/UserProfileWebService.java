@@ -60,10 +60,11 @@ public class UserProfileWebService {
 
     public void changeCurrentProfile(@Valid ChangeUserProfileDto changeUserProfileDto) {
         String userId = tokenSupplier.get().getUserId();
-        UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
-        userProfile.setName(changeUserProfileDto.getName());
-        userProfile.setStatus(changeUserProfileDto.getStatus());
-        userProfileDomainService.save(userProfile);
+        userProfileDomainService.updateProfileData(
+                userId,
+                changeUserProfileDto.getName(),
+                changeUserProfileDto.getStatus()
+        );
         log.info("User updated his profile. UserId: {}", userId);
     }
 }

@@ -2,6 +2,7 @@ package com.drsanches.photobooth.app.common.service;
 
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.app.data.profile.repository.UserProfileRepository;
+import com.drsanches.photobooth.app.app.exception.NoUserIdException;
 import com.drsanches.photobooth.app.auth.data.userauth.repository.UserAuthRepository;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.app.exception.UserAlreadyExistsException;
@@ -37,6 +38,14 @@ public class UserIntegrationDomainService {
     private CredentialsHelper credentialsHelper;
 
     public UserAuth createUser(String username, String email, String encryptedPassword, String salt) {
+        return createUser(username, email, encryptedPassword, salt, Role.USER);
+    }
+
+    public UserAuth createAdmin(String username, String email, String encryptedPassword, String salt) {
+        return createUser(username, email, encryptedPassword, salt, Role.ADMIN);
+    }
+
+    private UserAuth createUser(String username, String email, String encryptedPassword, String salt, Role role) {
         return createUser(UserAuth.builder()
                 .id(UUID.randomUUID().toString())
                 .username(username.toLowerCase())
@@ -44,7 +53,7 @@ public class UserIntegrationDomainService {
                 .salt(salt)
                 .email(email)
                 .enabled(true)
-                .role(Role.USER)
+                .role(role)
                 .build());
     }
 
@@ -59,10 +68,7 @@ public class UserIntegrationDomainService {
                 .build());
     }
 
-    /**
-     * Creates UserAuth and UserProfile in one transaction
-     */
-    public UserAuth createUser(UserAuth userAuth) {
+    private UserAuth createUser(UserAuth userAuth) {
         UserProfile userProfile = new UserProfile();
         copy(userAuth, userProfile);
         try {
@@ -78,10 +84,13 @@ public class UserIntegrationDomainService {
         }
     }
 
-    /**
-     * Updates UserAuth and UserProfile in one transaction
-     */
-    public void updateUser(UserAuth userAuth) {
+    public void updateUsername(String userId, String username) {
+        UserAuth userAuth  = userAuthRepository.findById(userId).orElseThrow(() -> new NoUserIdException(userId));
+        userAuth.setUsername(username);
+        updateUser(userAuth);
+    }
+
+    private void updateUser(UserAuth userAuth) {
         UserProfile userProfile = userProfileRepository.findById(userAuth.getId())
                 .orElseGet(() -> {
                     log.error("UserProfile does not exist. Id: {}", userAuth.getId());
@@ -96,9 +105,6 @@ public class UserIntegrationDomainService {
         }
     }
 
-    /**
-     * Updates UserAuth and UserProfile in one transaction
-     */
     public void disableUser(String userId) {
         UserAuth userAuth = userAuthRepository.findById(userId).map(it -> it.toBuilder()
                 .enabled(false)
@@ -118,8 +124,8 @@ public class UserIntegrationDomainService {
         });
         UserProfile userProfile = userProfileRepository.findById(userId)
                 .orElseGet(() -> {
-                        log.error("UserProfile does not exist. Id: {}", userAuth.getId());
-                        return new UserProfile();
+                    log.error("UserProfile does not exist. Id: {}", userAuth.getId());
+                    return new UserProfile();
                 });
         copy(userAuth, userProfile);
         try {

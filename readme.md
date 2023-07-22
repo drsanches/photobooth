@@ -149,7 +149,6 @@ It can be imported through Kibana web interface.
 - Add stub for google auth
 - Add field descriptions for db models
 - Add available characters validation
-- Use @Nullable or/and @NonNull on methods arguments?
 - Use only cookies instead of authorization header for token?
 - Use docker healthchecks
 - Limit container resources
@@ -158,4 +157,3 @@ It can be imported through Kibana web interface.
 - Test sorting
 - Test 2FA
 - Test transactions
-- Disable logging to file in unit tests

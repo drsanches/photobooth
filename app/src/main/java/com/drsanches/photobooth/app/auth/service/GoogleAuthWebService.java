@@ -76,12 +76,11 @@ public class GoogleAuthWebService {
         Confirmation confirmation = confirmationDomainService.get(googleSetUsernameDto.getCode());
         confirmationCodeValidator.validate(confirmation, Operation.GOOGLE_USERNAME_CHANGE);
         String userId = tokenSupplier.get().getUserId();
-        UserAuth current = userAuthDomainService.getEnabledById(userId);
-        String oldUsername = current.getUsername();
-        current.setUsername(googleSetUsernameDto.getNewUsername());
-        userIntegrationDomainService.updateUser(current);
+        String oldUsername = userAuthDomainService.getEnabledById(userId).getUsername();
+        userIntegrationDomainService.updateUsername(userId, googleSetUsernameDto.getNewUsername());
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
-        log.info("User changed google default username. UserId: {}, oldUsername: {}, newUsername: {}", current.getId(), oldUsername, current.getUsername());
+        log.info("User changed google default username. UserId: {}, oldUsername: {}, newUsername: {}",
+                userId, oldUsername, googleSetUsernameDto.getNewUsername());
     }
 }

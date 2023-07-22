@@ -59,11 +59,9 @@ public class ImageWebService {
     public void uploadAvatar(@Valid UploadAvatarDto uploadAvatarDto) {
         String userId = tokenSupplier.get().getUserId();
         byte[] image = Base64.getDecoder().decode(uploadAvatarDto.getFile());
-        UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
             String imageId = imageDomainService.saveImage(image, userId).getId();
-            userProfile.setImageId(imageId);
-            userProfileDomainService.save(userProfile);
+            userProfileDomainService.updateImageId(userId, imageId);
             log.info("User updated profile image. UserId: {}, newImageId: {}", userId, imageId);
         });
     }
@@ -104,9 +102,7 @@ public class ImageWebService {
 
     public void deleteAvatar() {
         String userId = tokenSupplier.get().getUserId();
-        UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
-        userProfile.setImageId(null);
-        userProfileDomainService.save(userProfile);
+        userProfileDomainService.updateImageId(userId, null);
         log.info("User deleted his profile image. UserId: {}", userId);
     }
 

@@ -89,7 +89,12 @@ public class UserAuthWebService {
                 .salt(salt)
                 .build();
         String data = stringSerializer.serialize(registrationConfirmData);
-        Confirmation confirmation = confirmationDomainService.create(data, null, registrationConfirmData.getEmail(), Operation.REGISTRATION);
+        Confirmation confirmation = confirmationDomainService.create(
+                data,
+                null,
+                registrationConfirmData.getEmail(),
+                Operation.REGISTRATION
+        );
         if (with2FA) {
             emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
         }
@@ -100,7 +105,10 @@ public class UserAuthWebService {
     public TokenDto registrationConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
         Confirmation confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
         confirmationCodeValidator.validate(confirmation, Operation.REGISTRATION);
-        RegistrationConfirmData registrationConfirmData = stringSerializer.deserialize(confirmation.getData(), RegistrationConfirmData.class);
+        RegistrationConfirmData registrationConfirmData = stringSerializer.deserialize(
+                confirmation.getData(),
+                RegistrationConfirmData.class
+        );
         UserAuth userAuth = userIntegrationDomainService.createUser(
                 registrationConfirmData.getUsername(),
                 registrationConfirmData.getEmail(),
@@ -139,7 +147,12 @@ public class UserAuthWebService {
         String data = stringSerializer.serialize(changeUsernameConfirmData);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        Confirmation confirmation = confirmationDomainService.create(data, userId, current.getEmail(), Operation.USERNAME_CHANGE);
+        Confirmation confirmation = confirmationDomainService.create(
+                data,
+                userId,
+                current.getEmail(),
+                Operation.USERNAME_CHANGE
+        );
         if (with2FA) {
             emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
         }
@@ -152,15 +165,17 @@ public class UserAuthWebService {
     public void changeUsernameConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
         Confirmation confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
         confirmationCodeValidator.validate(confirmation, Operation.USERNAME_CHANGE);
-        ChangeUsernameConfirmData changeUsernameConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangeUsernameConfirmData.class);
+        ChangeUsernameConfirmData changeUsernameConfirmData = stringSerializer.deserialize(
+                confirmation.getData(),
+                ChangeUsernameConfirmData.class
+        );
         String userId = tokenSupplier.get().getUserId();
-        UserAuth current = userAuthDomainService.getEnabledById(userId);
-        String oldUsername = current.getUsername();
-        current.setUsername(changeUsernameConfirmData.getUsername());
-        userIntegrationDomainService.updateUser(current);
+        String oldUsername = userAuthDomainService.getEnabledById(userId).getUsername();
+        userIntegrationDomainService.updateUsername(userId, changeUsernameConfirmData.getUsername());
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
-        log.info("User changed username. UserId: {}, oldUsername: {}, newUsername: {}", current.getId(), oldUsername, current.getUsername());
+        log.info("User changed username. UserId: {}, oldUsername: {}, newUsername: {}",
+                userId, oldUsername, changeUsernameConfirmData.getUsername());
         emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
     }
 
@@ -173,7 +188,12 @@ public class UserAuthWebService {
         String data = stringSerializer.serialize(changePasswordConfirmData);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        Confirmation confirmation = confirmationDomainService.create(data, userId, current.getEmail(), Operation.PASSWORD_CHANGE);
+        Confirmation confirmation = confirmationDomainService.create(
+                data,
+                userId,
+                current.getEmail(),
+                Operation.PASSWORD_CHANGE
+        );
         if (with2FA) {
             emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
         }
@@ -186,15 +206,19 @@ public class UserAuthWebService {
     public void changePasswordConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
         Confirmation confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
         confirmationCodeValidator.validate(confirmation, Operation.PASSWORD_CHANGE);
-        ChangePasswordConfirmData changePasswordConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangePasswordConfirmData.class);
+        ChangePasswordConfirmData changePasswordConfirmData = stringSerializer.deserialize(
+                confirmation.getData(),
+                ChangePasswordConfirmData.class
+        );
         String userId = tokenSupplier.get().getUserId();
-        UserAuth current = userAuthDomainService.getEnabledById(userId);
-        current.setSalt(changePasswordConfirmData.getSalt());
-        current.setPassword(changePasswordConfirmData.getEncryptedPassword());
-        userAuthDomainService.save(current);
+        userAuthDomainService.updatePassword(
+                userId,
+                changePasswordConfirmData.getEncryptedPassword(),
+                changePasswordConfirmData.getSalt()
+        );
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
-        log.info("User changed password. UserId: {}", current.getId());
+        log.info("User changed password. UserId: {}", userId);
         emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
     }
 
@@ -205,7 +229,12 @@ public class UserAuthWebService {
         String data = stringSerializer.serialize(changeEmailConfirmData);
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        Confirmation confirmation = confirmationDomainService.create(data, userId, current.getEmail(), Operation.EMAIL_CHANGE);
+        Confirmation confirmation = confirmationDomainService.create(
+                data,
+                userId,
+                current.getEmail(),
+                Operation.EMAIL_CHANGE
+        );
         if (with2FA) {
             emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
         }
@@ -218,13 +247,14 @@ public class UserAuthWebService {
     public void changeEmailConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
         Confirmation confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
         confirmationCodeValidator.validate(confirmation, Operation.EMAIL_CHANGE);
-        ChangeEmailConfirmData changeEmailConfirmData = stringSerializer.deserialize(confirmation.getData(), ChangeEmailConfirmData.class);
+        ChangeEmailConfirmData changeEmailConfirmData = stringSerializer.deserialize(
+                confirmation.getData(),
+                ChangeEmailConfirmData.class
+        );
         String userId = tokenSupplier.get().getUserId();
-        UserAuth current = userAuthDomainService.getEnabledById(userId);
-        current.setEmail(changeEmailConfirmData.getEmail());
-        userAuthDomainService.save(current);
+        userAuthDomainService.updateEmail(userId, changeEmailConfirmData.getEmail());
         confirmationDomainService.delete(confirmation.getId());
-        log.info("User changed email. UserId: {}", current.getId());
+        log.info("User changed email. UserId: {}", userId);
         emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
     }
 
@@ -239,7 +269,12 @@ public class UserAuthWebService {
     public void disableUser() {
         String userId = tokenSupplier.get().getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
-        Confirmation confirmation = confirmationDomainService.create(null, userId, current.getEmail(), Operation.DISABLE);
+        Confirmation confirmation = confirmationDomainService.create(
+                null,
+                userId,
+                current.getEmail(),
+                Operation.DISABLE
+        );
         if (with2FA) {
             emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
         }
