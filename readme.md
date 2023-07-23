@@ -150,8 +150,8 @@ It can be imported through Kibana web interface.
 - Add field descriptions for db models
 - Add available characters validation
 - Use only cookies instead of authorization header for token?
-- Use docker healthchecks
 - Limit container resources
+- Fix build: `warning: unknown enum constant When.MAYBE reason: class file for javax.annotation.meta.When not found`
 
 ### Tests
 - Test sorting

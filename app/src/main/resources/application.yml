@@ -1,5 +1,4 @@
-server:
-  port: ${APP_PORT}
+server.port: ${APP_PORT}
 
 application:
   image:
@@ -23,19 +22,15 @@ application:
       cron: 0 0 3 * * * # at 3 AM every day
 
 management: # http://localhost:8080/actuator
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+  endpoints.web.exposure.include: "*"
+  health.mail.enabled: false # enable for mail healthcheck
 
 spring:
-  mvc:
-    static-path-pattern: /ui/**
+  mvc.static-path-pattern: /ui/**
   h2: # http://localhost:8080/h2-console
     console:
       enabled: true
-      settings:
-        web-allow-others: true
+      settings.web-allow-others: true
   datasource:
     driverClassName: org.postgresql.Driver
     url: ${JDBC_DATABASE_URL}
@@ -44,9 +39,7 @@ spring:
   jpa:
     database-platform: postgres
     generate-ddl: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
   # Required if application.email-sending-enabled
   mail:
