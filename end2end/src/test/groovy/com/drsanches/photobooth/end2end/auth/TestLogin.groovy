@@ -83,10 +83,7 @@ class TestLogin extends Specification {
         assert RequestUtils.getAuthInfo(user.token as String) != null
     }
 
-    def "login without username"() {
-        given: "password"
-        def password = DataGenerator.createValidPassword()
-
+    def "login with invalid data"() {
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
@@ -97,69 +94,57 @@ class TestLogin extends Specification {
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "login.loginDto.username: may not be empty"
-        assert e.response.status == 400
+        assert e.response.data["message"] == message
+        assert e.response.status == status
 
         where:
-        username << [null, ""]
-    }
+        username << [
+                //No user
+                DataGenerator.createValidUsername(),
 
-    def "login without password"() {
-        given: "username"
-        def username = DataGenerator.createValidUsername()
+                //Invalid username
+                null,
+                "",
 
-        when: "request is sent"
-        RequestUtils.getRestClient().post(
-                path: PATH,
-                body: [username: username,
-                       password: password],
-                requestContentType : ContentType.JSON)
+                //Invalid password
+                DataGenerator.createValidUsername(),
+                DataGenerator.createValidUsername()
+        ]
+        password << [
+                //No user
+                DataGenerator.createValidPassword(),
 
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "login.loginDto.password: may not be empty"
-        assert e.response.status == 400
+                //Invalid username
+                DataGenerator.createValidPassword(),
+                DataGenerator.createValidPassword(),
 
-        where:
-        password << [null, ""]
-    }
+                //Invalid password
+                null,
+                ""
+        ]
+        message << [
+                //No user
+                "Wrong username or password",
 
-    def "login with nonexistent username"() {
-        given: "password"
-        def nonexistentUsername = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
+                //Invalid username
+                "login.loginDto.username: may not be empty",
+                "login.loginDto.username: may not be empty",
 
-        when: "request is sent"
-        RequestUtils.getRestClient().post(
-                path: PATH,
-                body: [username: nonexistentUsername,
-                       password: password],
-                requestContentType : ContentType.JSON)
+                //Invalid password
+                "login.loginDto.password: may not be empty",
+                "login.loginDto.password: may not be empty"
+        ]
+        status << [
+                //No user
+                401,
 
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "Wrong username or password"
-        assert e.response.status == 401
-    }
+                //Invalid username
+                400,
+                400,
 
-    def "login with invalid password"() {
-        given: "user"
-        TestUser user = new TestUser().register()
-        def invalidPassword = DataGenerator.createValidPassword()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().post(
-                path: PATH,
-                body: [username: user.username,
-                       password: invalidPassword],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "Wrong username or password"
-        assert e.response.status == 401
+                //Invalid password
+                400,
+                400
+        ]
     }
 }

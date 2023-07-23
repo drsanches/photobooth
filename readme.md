@@ -144,12 +144,10 @@ It can be imported through Kibana web interface.
 - Add cache?
 - Use AOP for auth?
 - Do not create UserProfile for admin?
+- Use only cookies instead of authorization header for token?
 - Use 404 instead 401 for nonexistent urls
 - Separate app, auth and scheduler to different modules
-- Add stub for google auth
-- Add field descriptions for db models
-- Add available characters validation
-- Use only cookies instead of authorization header for token?
+- Add stub for Google auth
 - Limit container resources
 
 ### Tests

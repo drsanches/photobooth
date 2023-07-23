@@ -41,13 +41,10 @@ class TestRefreshToken extends Specification {
     }
 
     def "refresh token with invalid refreshToken"() {
-        given: "invalid refresh token"
-        def invalidRefreshToken = UUID.randomUUID().toString()
-
         when: "request is sent"
         RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: [Authorization: "Bearer $invalidRefreshToken"],
+                headers: [Authorization: "Bearer $refreshToken"],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
@@ -55,5 +52,12 @@ class TestRefreshToken extends Specification {
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
         assert e.response.data["message"] == "Wrong token"
         assert e.response.status == 401
+
+        where:
+        refreshToken << [
+                null,
+                "",
+                UUID.randomUUID().toString()
+        ]
     }
 }

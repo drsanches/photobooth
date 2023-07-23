@@ -90,11 +90,32 @@ class TestChangeCurrentProfile extends Specification {
         assert e.response.status == 400
 
         where:
-        name << [RandomStringUtils.randomAlphabetic(101), DataGenerator.createValidName()]
-        status << [DataGenerator.createValidStatus(), RandomStringUtils.randomAlphabetic(51)]
+        name << [
+                //Invalid name
+                RandomStringUtils.randomAlphabetic(101),
+                "#",
+
+                //Invalid status
+                DataGenerator.createValidName(),
+                DataGenerator.createValidName()
+        ]
+        status << [
+                //Invalid name
+                DataGenerator.createValidStatus(),
+                DataGenerator.createValidStatus(),
+
+                //Invalid status
+                RandomStringUtils.randomAlphabetic(51),
+                "#"
+        ]
         message << [
+                //Invalid name
                 "changeCurrentProfile.changeUserProfileDto.name: length must be between 0 and 100",
-                "changeCurrentProfile.changeUserProfileDto.status: length must be between 0 and 50"
+                "changeCurrentProfile.changeUserProfileDto.name: wrong name format",
+
+                //Invalid status
+                "changeCurrentProfile.changeUserProfileDto.status: length must be between 0 and 50",
+                "changeCurrentProfile.changeUserProfileDto.status: wrong status format"
         ]
     }
 

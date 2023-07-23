@@ -14,7 +14,7 @@ class DataGenerator {
     }
 
     static String createValidEmail() {
-        return "email-" + UUID.randomUUID().toString()
+        return "email-" + UUID.randomUUID().toString() + "@example.com"
     }
 
     static String createValidName() {

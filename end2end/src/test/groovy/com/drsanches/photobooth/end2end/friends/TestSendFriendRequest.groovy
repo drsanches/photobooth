@@ -150,27 +150,6 @@ class TestSendFriendRequest extends Specification {
         assert friends2.get(0)["id"] == user1.id
     }
 
-    def "send friend request without userId"() {
-        given: "user"
-        def user = new TestUser().register()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().post(
-                path: PATH,
-                headers: [Authorization: "Bearer $user.token"],
-                body: [userId: empty],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "sendRequest.sendRequestDto.userId: may not be empty"
-        assert e.response.status == 400
-
-        where:
-        empty << [null, ""]
-    }
-
     def "send friend request to deleted user"() {
         given: "user and deleted user"
         def user1 = new TestUser().register()
@@ -211,25 +190,6 @@ class TestSendFriendRequest extends Specification {
         assert e.response.status == 400
     }
 
-    def "send friend request to nonexistent user"() {
-        given: "user and nonexistent user id"
-        def user = new TestUser().register()
-        def nonexistentId = UUID.randomUUID().toString()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().post(
-                path: PATH,
-                headers: [Authorization: "Bearer $user.token"],
-                body: [userId: nonexistentId],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "sendRequest.sendRequestDto.userId: the user does not exist"
-        assert e.response.status == 400
-    }
-
     def "send friend request to current user"() {
         given: "user"
         def user = new TestUser().register()
@@ -246,6 +206,36 @@ class TestSendFriendRequest extends Specification {
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
         assert e.response.data["message"] == "sendRequest.sendRequestDto.userId: the user can not be current"
         assert e.response.status == 400
+    }
+
+    def "send friend request with invalid data"() {
+        given: "user"
+        def user = new TestUser().register()
+
+        when: "request is sent"
+        RequestUtils.getRestClient().post(
+                path: PATH,
+                headers: [Authorization: "Bearer $user.token"],
+                body: [userId: userId],
+                requestContentType : ContentType.JSON)
+
+        then: "response is correct"
+        HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == message
+        assert e.response.status == 400
+
+        where:
+        userId << [
+                null,
+                "",
+                UUID.randomUUID().toString()
+        ]
+        message << [
+                "sendRequest.sendRequestDto.userId: may not be empty",
+                "sendRequest.sendRequestDto.userId: may not be empty",
+                "sendRequest.sendRequestDto.userId: the user does not exist"
+        ]
     }
 
     def "send friend request with invalid token"() {

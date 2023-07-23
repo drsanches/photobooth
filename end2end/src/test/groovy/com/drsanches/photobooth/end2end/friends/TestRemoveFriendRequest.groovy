@@ -212,46 +212,34 @@ class TestRemoveFriendRequest extends Specification {
         assert user.getFriends() == new JSONArray()
     }
 
-    def "friend request deletion without userId"() {
-        given: "two users"
-        def user1 = new TestUser().register()
-        def user2 = new TestUser().register()
-        user1.sendFriendRequest(user2.id)
-
-        when: "request is sent"
-        RequestUtils.getRestClient().post(
-                path: PATH,
-                headers: [Authorization: "Bearer $user1.token"],
-                body: [userId: empty],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "removeRequest.removeRequestDto.userId: may not be empty"
-        assert e.response.status == 400
-
-        where:
-        empty << [null, ""]
-    }
-
-    def "delete request for nonexistent user"() {
+    def "friend request deletion with invalid data"() {
         given: "user"
         def user = new TestUser().register()
-        def nonexistentId = UUID.randomUUID().toString()
 
         when: "request is sent"
         RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body: [userId: nonexistentId],
+                body: [userId: userId],
                 requestContentType : ContentType.JSON)
 
         then: "response is correct"
         HttpResponseException e = thrown(HttpResponseException)
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "removeRequest.removeRequestDto.userId: the user does not exist"
+        assert e.response.data["message"] == message
         assert e.response.status == 400
+
+        where:
+        userId << [
+                null,
+                "",
+                UUID.randomUUID().toString()
+        ]
+        message << [
+                "removeRequest.removeRequestDto.userId: may not be empty",
+                "removeRequest.removeRequestDto.userId: may not be empty",
+                "removeRequest.removeRequestDto.userId: the user does not exist"
+        ]
     }
 
     def "delete request with invalid token"() {

@@ -84,27 +84,6 @@ class TestChangeUsername extends Specification {
         assert e.response.status == 400
     }
 
-    def "username change without username"() {
-        given: "user"
-        def user = new TestUser().register()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().post(
-                path: PATH,
-                headers: [Authorization: "Bearer $user.token"],
-                body:  [newUsername: empty],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "changeUsername.changeUsernameDto.newUsername: may not be empty"
-        assert e.response.status == 400
-
-        where:
-        empty << [null, ""]
-    }
-
     def "username change with invalid username"() {
         given: "user"
         def user = new TestUser().register()
@@ -123,8 +102,18 @@ class TestChangeUsername extends Specification {
         assert e.response.status == 400
 
         where:
-        invalidUsername << [RandomStringUtils.randomAlphabetic(21)]
-        message << ["changeUsername.changeUsernameDto.newUsername: length must be between 0 and 20"]
+        invalidUsername << [
+                null,
+                "",
+                DataGenerator.createValidUsername() + ".",
+                RandomStringUtils.randomAlphabetic(21)
+        ]
+        message << [
+                "changeUsername.changeUsernameDto.newUsername: may not be empty",
+                "changeUsername.changeUsernameDto.newUsername: may not be empty",
+                "changeUsername.changeUsernameDto.newUsername: wrong username format",
+                "changeUsername.changeUsernameDto.newUsername: length must be between 0 and 20"
+        ]
     }
 
     def "username change with invalid token"() {

@@ -14,37 +14,27 @@ class TestGetImage extends Specification {
 
     String PATH = "/api/v1/image/"
 
-    def "successful default avatar getting"() {
+    def "successful system avatar getting"() {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
-                path: Utils.DEFAULT_IMAGE_PATH,
+                path: path,
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert Utils.getBytes(response.data) == Utils.getImage(Utils.DEFAULT_IMAGE_FILENAME)
-    }
+        assert Utils.getBytes(response.data) == data
 
-    def "successful no photo image getting"() {
-        when: "request is sent"
-        def response = RequestUtils.getRestClient().get(
-                path: Utils.NO_PHOTO_IMAGE_PATH,
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
-
-        then: "response is correct"
-        assert response.status == 200
-        assert Utils.getBytes(response.data) == Utils.getImage(Utils.NO_PHOTO_IMAGE_FILENAME)
-    }
-
-    def "successful deleted image getting"() {
-        when: "request is sent"
-        def response = RequestUtils.getRestClient().get(
-                path: Utils.DELETED_IMAGE_PATH,
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
-
-        then: "response is correct"
-        assert response.status == 200
-        assert Utils.getBytes(response.data) == Utils.getImage(Utils.DELETED_IMAGE_FILENAME)
+        where:
+        path << [
+                Utils.DEFAULT_IMAGE_PATH,
+                Utils.NO_PHOTO_IMAGE_PATH,
+                Utils.DELETED_IMAGE_PATH
+        ]
+        data << [
+                Utils.getImage(Utils.DEFAULT_IMAGE_FILENAME),
+                Utils.getImage(Utils.NO_PHOTO_IMAGE_FILENAME),
+                Utils.getImage(Utils.DELETED_IMAGE_FILENAME)
+        ]
     }
 
     def "successful avatar getting"() {

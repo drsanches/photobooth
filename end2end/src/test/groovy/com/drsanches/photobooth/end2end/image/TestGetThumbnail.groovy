@@ -14,37 +14,27 @@ class TestGetThumbnail extends Specification {
 
     def THUMBNAIL_PATH = { String imageId -> "/api/v1/image/" + imageId + "/thumbnail" }
 
-    def "successful default avatar thumbnail getting"() {
+    def "successful system avatar thumbnail getting"() {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
-                path: Utils.DEFAULT_THUMBNAIL_PATH,
+                path: path,
                 requestContentType : ContentType.JSON) as HttpResponseDecorator
 
         then: "response is correct"
         assert response.status == 200
-        assert Utils.getBytes(response.data) == Utils.toThumbnail(Utils.getImage(Utils.DEFAULT_IMAGE_FILENAME))
-    }
+        assert Utils.getBytes(response.data) == data
 
-    def "successful no photo thumbnail getting"() {
-        when: "request is sent"
-        def response = RequestUtils.getRestClient().get(
-                path: Utils.NO_PHOTO_THUMBNAIL_PATH,
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
-
-        then: "response is correct"
-        assert response.status == 200
-        assert Utils.getBytes(response.data) == Utils.toThumbnail(Utils.getImage(Utils.NO_PHOTO_IMAGE_FILENAME))
-    }
-
-    def "successful deleted thumbnail getting"() {
-        when: "request is sent"
-        def response = RequestUtils.getRestClient().get(
-                path: Utils.DELETED_THUMBNAIL_PATH,
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
-
-        then: "response is correct"
-        assert response.status == 200
-        assert Utils.getBytes(response.data) == Utils.toThumbnail(Utils.getImage(Utils.DELETED_IMAGE_FILENAME))
+        where:
+        path << [
+                Utils.DEFAULT_THUMBNAIL_PATH,
+                Utils.NO_PHOTO_THUMBNAIL_PATH,
+                Utils.DELETED_THUMBNAIL_PATH
+        ]
+        data << [
+                Utils.toThumbnail(Utils.getImage(Utils.DEFAULT_IMAGE_FILENAME)),
+                Utils.toThumbnail(Utils.getImage(Utils.NO_PHOTO_IMAGE_FILENAME)),
+                Utils.toThumbnail(Utils.getImage(Utils.DELETED_IMAGE_FILENAME))
+        ]
     }
 
     def "successful avatar thumbnail getting"() {

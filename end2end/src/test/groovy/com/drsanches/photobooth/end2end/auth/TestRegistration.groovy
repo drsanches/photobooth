@@ -56,113 +56,6 @@ class TestRegistration extends Specification {
         assert userProfile["imagePath"] == Utils.DEFAULT_IMAGE_PATH
     }
 
-    def "registration without username"() {
-        given: "password and email"
-        def password = DataGenerator.createValidPassword()
-        def email = DataGenerator.createValidEmail()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().post(
-                path: PATH,
-                body: [username: username,
-                       password: password,
-                       email: email],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "registration.registrationDto.username: may not be empty"
-        assert e.response.status == 400
-
-        where:
-        username << [null, ""]
-    }
-
-    def "registration without password"() {
-        given: "username and email"
-        def username = DataGenerator.createValidUsername()
-        def email = DataGenerator.createValidEmail()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().post(
-                path: PATH,
-                body: [username: username,
-                       password: password,
-                       email: email],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "registration.registrationDto.password: may not be empty"
-        assert e.response.status == 400
-
-        where:
-        password << [null, ""]
-    }
-
-    def "registration without email"() {
-        given: "username and password"
-        def username = DataGenerator.createValidUsername()
-        def password = DataGenerator.createValidPassword()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().post(
-                path: PATH,
-                body: [username: username,
-                       password: password,
-                       email: email],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "registration.registrationDto.email: may not be empty"
-        assert e.response.status == 400
-
-        where:
-        email << [null, ""]
-    }
-
-    def "registration with invalid data"() {
-        when: "request is sent"
-        RequestUtils.getRestClient().post(
-                path: PATH,
-                body: [username: username,
-                       password: password,
-                       email: email],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == message
-        assert e.response.status == 400
-
-        where:
-        username << [
-                RandomStringUtils.randomAlphabetic(21),
-                DataGenerator.createValidUsername(),
-                DataGenerator.createValidUsername()
-        ]
-        password << [
-                DataGenerator.createValidPassword(),
-                RandomStringUtils.randomAlphabetic(256),
-                DataGenerator.createValidPassword()
-        ]
-        email << [
-                DataGenerator.createValidEmail(),
-                DataGenerator.createValidEmail(),
-                RandomStringUtils.randomAlphabetic(256)
-        ]
-        message << [
-                "registration.registrationDto.username: length must be between 0 and 20",
-                "registration.registrationDto.password: length must be between 0 and 255",
-                "registration.registrationDto.email: length must be between 0 and 255"
-        ]
-    }
-
     def "registration with existing username"() {
         given: "user"
         def user = new TestUser().register()
@@ -203,5 +96,91 @@ class TestRegistration extends Specification {
         assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
         assert e.response.data["message"] == "registration.registrationDto.email: User with email '$user.email' already exists"
         assert e.response.status == 400
+    }
+
+    def "registration with invalid data"() {
+        when: "request is sent"
+        RequestUtils.getRestClient().post(
+                path: PATH,
+                body: [username: username,
+                       password: password,
+                       email: email],
+                requestContentType : ContentType.JSON)
+
+        then: "response is correct"
+        HttpResponseException e = thrown(HttpResponseException)
+        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
+        assert e.response.data["message"] == message
+        assert e.response.status == 400
+
+        where:
+        username << [
+                //Invalid username
+                null,
+                "",
+                DataGenerator.createValidUsername() + ".",
+                RandomStringUtils.randomAlphabetic(21),
+
+                //Invalid password
+                DataGenerator.createValidUsername(),
+                DataGenerator.createValidUsername(),
+                DataGenerator.createValidUsername(),
+
+                //Invalid email
+                DataGenerator.createValidUsername(),
+                DataGenerator.createValidUsername(),
+                DataGenerator.createValidUsername()
+        ]
+        password << [
+                //Invalid username
+                DataGenerator.createValidPassword(),
+                DataGenerator.createValidPassword(),
+                DataGenerator.createValidPassword(),
+                DataGenerator.createValidPassword(),
+
+                //Invalid password
+                null,
+                "",
+                RandomStringUtils.randomAlphabetic(256),
+
+                //Invalid email
+                DataGenerator.createValidPassword(),
+                DataGenerator.createValidPassword(),
+                DataGenerator.createValidPassword()
+        ]
+        email << [
+                //Invalid username
+                DataGenerator.createValidEmail(),
+                DataGenerator.createValidEmail(),
+                DataGenerator.createValidEmail(),
+                DataGenerator.createValidEmail(),
+
+                //Invalid password
+                DataGenerator.createValidEmail(),
+                DataGenerator.createValidEmail(),
+                DataGenerator.createValidEmail(),
+
+                //Invalid email
+                null,
+                "",
+                RandomStringUtils.randomAlphabetic(100)
+        ]
+        message << [
+                //Invalid username
+                "registration.registrationDto.username: may not be empty",
+                "registration.registrationDto.username: may not be empty",
+                "registration.registrationDto.username: wrong username format",
+                "registration.registrationDto.username: length must be between 0 and 20",
+
+                //Invalid password
+                "registration.registrationDto.password: may not be empty",
+                "registration.registrationDto.password: may not be empty",
+                "registration.registrationDto.password: length must be between 0 and 255",
+
+                //Invalid email
+                "registration.registrationDto.email: may not be empty",
+                "registration.registrationDto.email: may not be empty",
+                "registration.registrationDto.email: not a well-formed email address"
+        ]
     }
 }

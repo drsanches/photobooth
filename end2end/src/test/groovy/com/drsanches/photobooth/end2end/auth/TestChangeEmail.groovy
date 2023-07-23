@@ -70,27 +70,6 @@ class TestChangeEmail extends Specification {
         assert e.response.status == 400
     }
 
-    def "email change without email"() {
-        given: "user"
-        def user = new TestUser().register()
-
-        when: "request is sent"
-        RequestUtils.getRestClient().post(
-                path: PATH,
-                headers: [Authorization: "Bearer $user.token"],
-                body:  [newUsername: empty],
-                requestContentType : ContentType.JSON)
-
-        then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "changeEmail.changeEmailDto.newEmail: may not be empty"
-        assert e.response.status == 400
-
-        where:
-        empty << [null, ""]
-    }
-
     def "email change with invalid email"() {
         given: "user"
         def user = new TestUser().register()
@@ -109,8 +88,16 @@ class TestChangeEmail extends Specification {
         assert e.response.status == 400
 
         where:
-        invalidEmail << [RandomStringUtils.randomAlphabetic(256)]
-        message << ["changeEmail.changeEmailDto.newEmail: length must be between 0 and 255"]
+        invalidEmail << [
+                null,
+                "",
+                RandomStringUtils.randomAlphabetic(300)
+        ]
+        message << [
+                "changeEmail.changeEmailDto.newEmail: may not be empty",
+                "changeEmail.changeEmailDto.newEmail: may not be empty",
+                "changeEmail.changeEmailDto.newEmail: not a well-formed email address"
+        ]
     }
 
     def "email change with invalid token"() {
