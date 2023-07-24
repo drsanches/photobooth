@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import java.util.GregorianCalendar;
 
@@ -19,7 +20,13 @@ import java.util.GregorianCalendar;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="token")
+@Table(name="token", indexes = {
+        @Index(name = "token_id_index", columnList = "id"),
+        @Index(name = "token_access_token_index", columnList = "accessToken"),
+        @Index(name = "token_refresh_token_index", columnList = "refreshToken"),
+        @Index(name = "token_user_id_index", columnList = "userId"),
+        @Index(name = "token_expires_and_refresh_expires_index", columnList = "expires, refreshExpires")
+})
 public class Token {
 
     @Id

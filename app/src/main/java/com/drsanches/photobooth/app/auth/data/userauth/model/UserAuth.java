@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 @Data
@@ -19,7 +20,12 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="user_auth")
+@Table(name="user_auth", indexes = {
+        @Index(name = "user_auth_id_index", columnList = "id"),
+        @Index(name = "user_auth_username_index", columnList = "username"),
+        @Index(name = "user_auth_email_index", columnList = "email"),
+        @Index(name = "user_auth_google_auth_index", columnList = "googleAuth")
+})
 public class UserAuth {
 
     @Id

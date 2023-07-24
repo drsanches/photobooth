@@ -5,12 +5,13 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name="image_permissions")
+@Table(name="image_permissions", indexes = @Index(name = "image_permissions_user_id_index", columnList = "userId"))
 public class ImagePermission {
 
     @EmbeddedId

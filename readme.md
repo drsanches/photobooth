@@ -149,6 +149,8 @@ It can be imported through Kibana web interface.
 - Separate app, auth and scheduler to different modules
 - Add stub for Google auth
 - Limit container resources
+- Use naming `expires` or `expiresAt`. Maybe rename `createdTime` to `created`
+- Test indexes
 
 ### Tests
 - Test sorting

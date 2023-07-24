@@ -5,11 +5,16 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 @Data
 @Entity
-@Table(name="user_profile")
+@Table(name="user_profile", indexes = {
+        @Index(name = "user_profile_id_index", columnList = "id"),
+        @Index(name = "user_profile_username_index", columnList = "username"),
+        @Index(name = "user_profile_id_and_username_index", columnList = "id, username")
+})
 public class UserProfile {
 
     @Id

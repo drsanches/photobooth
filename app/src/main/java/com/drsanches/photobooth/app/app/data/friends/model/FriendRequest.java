@@ -5,12 +5,16 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name="friend_requests")
+@Table(name="friend_requests", indexes = {
+        @Index(name = "friend_requests_from_user_id_index", columnList = "fromUserId"),
+        @Index(name = "friend_requests_to_user_id_index", columnList = "toUserId")
+})
 public class FriendRequest {
 
     @EmbeddedId

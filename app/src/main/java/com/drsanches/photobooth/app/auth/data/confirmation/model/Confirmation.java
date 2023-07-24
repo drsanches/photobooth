@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import java.util.GregorianCalendar;
 
@@ -20,7 +21,11 @@ import java.util.GregorianCalendar;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="confirmation")
+@Table(name="confirmation", indexes = {
+        @Index(name = "confirmation_id_index", columnList = "id"),
+        @Index(name = "confirmation_code_index", columnList = "code"),
+        @Index(name = "confirmation_expires_index", columnList = "expiresAt")
+})
 public class Confirmation {
 
     @Id

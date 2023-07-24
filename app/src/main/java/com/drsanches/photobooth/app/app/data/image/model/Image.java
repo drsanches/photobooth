@@ -10,6 +10,7 @@ import lombok.ToString;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import java.util.GregorianCalendar;
 
@@ -18,7 +19,10 @@ import java.util.GregorianCalendar;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="image")
+@Table(name="image", indexes = {
+        @Index(name = "image_id_index", columnList = "id"),
+        @Index(name = "image_id_and_created_time_index", columnList = "id, createdTime")
+})
 public class Image {
 
     @Id
