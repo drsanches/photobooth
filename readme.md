@@ -151,6 +151,7 @@ It can be imported through Kibana web interface.
 - Limit container resources
 - Use naming `expires` or `expiresAt`. Maybe rename `createdTime` to `created`
 - Test indexes
+- Fix multiple yaml config for `java -jar` run
 
 ### Tests
 - Test sorting
