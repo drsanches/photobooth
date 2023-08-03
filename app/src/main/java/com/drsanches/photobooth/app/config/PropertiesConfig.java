@@ -4,8 +4,8 @@ import com.drsanches.photobooth.app.config.factory.MultipleYamlPropertySourceFac
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-//@Configuration
-//@PropertySource(value = "classpath:application.yml", factory = MultipleYamlPropertySourceFactory.class)
-//@PropertySource(value = "classpath:content.yml.todo", factory = MultipleYamlPropertySourceFactory.class)
+@Configuration
+@PropertySource(value = "classpath:application.yml", factory = MultipleYamlPropertySourceFactory.class)
+@PropertySource(value = "classpath:content.yml", factory = MultipleYamlPropertySourceFactory.class)
 public class PropertiesConfig {
 }
