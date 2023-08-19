@@ -2,11 +2,11 @@ package com.drsanches.photobooth.app.app.validation.validator;
 
 import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
 import com.drsanches.photobooth.app.app.validation.annotation.ExistsId;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 @Component
 public class ExistsIdValidator implements ConstraintValidator<ExistsId, String> {

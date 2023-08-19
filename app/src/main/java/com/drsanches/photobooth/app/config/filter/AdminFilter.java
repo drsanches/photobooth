@@ -2,15 +2,15 @@ package com.drsanches.photobooth.app.config.filter;
 
 import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import com.drsanches.photobooth.app.common.token.data.model.Role;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.GenericFilterBean;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.function.Predicate;
 
@@ -27,9 +27,10 @@ public class AdminFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse  httpResponse = (HttpServletResponse) response;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
         String uri = httpRequest.getRequestURI();
         if (adminUri.test(uri)
                 && (tokenSupplier.get() == null || !Role.ADMIN.equals(tokenSupplier.get().getRole()))) {

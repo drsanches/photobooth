@@ -1,4 +1,5 @@
 server.port: ${APP_PORT}
+log4j2.Script.enableLanguages: groovy
 
 application:
   image:

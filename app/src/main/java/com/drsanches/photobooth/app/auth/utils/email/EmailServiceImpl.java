@@ -1,15 +1,14 @@
 package com.drsanches.photobooth.app.auth.utils.email;
 
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 
 @Slf4j
 @Component

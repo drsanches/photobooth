@@ -16,12 +16,11 @@ import com.drsanches.photobooth.app.auth.utils.email.EmailNotifier;
 import com.drsanches.photobooth.app.auth.exception.NoGoogleUserException;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.token.data.model.Token;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-
-import javax.validation.Valid;
 
 @Slf4j
 @Service

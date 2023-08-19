@@ -1,17 +1,17 @@
 package com.drsanches.photobooth.app.app.data.image.model;
 
 import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.Table;
 import java.util.GregorianCalendar;
 
 @Data

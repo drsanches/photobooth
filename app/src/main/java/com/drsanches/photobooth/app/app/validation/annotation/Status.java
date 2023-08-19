@@ -1,8 +1,9 @@
 package com.drsanches.photobooth.app.app.validation.annotation;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
-import javax.validation.constraints.Pattern;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+import jakarta.validation.constraints.Pattern;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 

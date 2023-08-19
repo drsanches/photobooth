@@ -1,15 +1,14 @@
 package com.drsanches.photobooth.app.app.validation.validator;
 
 import com.drsanches.photobooth.app.app.validation.annotation.ValidBase64Image;
-import com.drsanches.photobooth.app.common.exception.BaseException;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

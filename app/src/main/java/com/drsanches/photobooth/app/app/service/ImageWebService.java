@@ -12,6 +12,7 @@ import com.drsanches.photobooth.app.app.dto.image.request.UploadPhotoDto;
 import com.drsanches.photobooth.app.app.dto.image.response.ImageInfoDto;
 import com.drsanches.photobooth.app.app.data.permission.ImagePermissionDomainService;
 import com.drsanches.photobooth.app.common.token.TokenSupplier;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.Base64;
 import java.util.List;
 import java.util.Set;

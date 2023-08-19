@@ -30,13 +30,13 @@ import com.drsanches.photobooth.app.auth.exception.WrongUsernamePasswordExceptio
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import com.drsanches.photobooth.app.common.token.data.model.Token;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.UUID;
 
 @Slf4j
