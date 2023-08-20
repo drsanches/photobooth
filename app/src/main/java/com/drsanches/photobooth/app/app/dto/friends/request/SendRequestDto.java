@@ -3,13 +3,13 @@ package com.drsanches.photobooth.app.app.dto.friends.request;
 import com.drsanches.photobooth.app.app.validation.annotation.NotCurrentId;
 import com.drsanches.photobooth.app.app.validation.annotation.EnabledId;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-import org.hibernate.validator.constraints.NotEmpty;
 
 @Data
 public class SendRequestDto {
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty
     @EnabledId
     @NotCurrentId

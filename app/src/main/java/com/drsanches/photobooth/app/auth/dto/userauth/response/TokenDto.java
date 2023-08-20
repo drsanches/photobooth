@@ -10,18 +10,18 @@ import lombok.ToString;
 @Builder(toBuilder = true)
 public class TokenDto {
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @ToString.Exclude
     private String accessToken;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @ToString.Exclude
     private String refreshToken;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String tokenType;
 
-    @Schema(required = true, description = GregorianCalendarConvertor.PATTERN)
+    @Schema(pattern = GregorianCalendarConvertor.PATTERN, requiredMode = Schema.RequiredMode.REQUIRED)
     @ToString.Exclude
     private String expiresAt;
 }

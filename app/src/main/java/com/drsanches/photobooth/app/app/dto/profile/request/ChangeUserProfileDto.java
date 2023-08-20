@@ -9,12 +9,12 @@ import org.hibernate.validator.constraints.Length;
 @Data
 public class ChangeUserProfileDto {
 
-    @Schema(maxLength = 100)
+    @Schema(maxLength = 100, pattern = Name.PATTERN)
     @Length(max = 100)
     @Name
     private String name;
 
-    @Schema(maxLength = 50)
+    @Schema(maxLength = 50, pattern = Status.PATTERN)
     @Length(max = 50)
     @Status
     private String status;

@@ -12,9 +12,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target(FIELD)
 @Retention(RUNTIME)
-@Pattern(regexp = "[A-Za-z0-9 -]*", message = "wrong name format")
+@Pattern(regexp = Name.PATTERN, message = "wrong name format")
 @Constraint(validatedBy = { })
 public @interface Name {
+
+    String PATTERN = "[A-Za-z0-9 -]*";
 
     String message() default "wrong name format";
 

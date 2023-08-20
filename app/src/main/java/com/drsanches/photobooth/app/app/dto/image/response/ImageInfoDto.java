@@ -9,18 +9,18 @@ import lombok.Data;
 @Builder(toBuilder = true)
 public class ImageInfoDto {
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String id;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String path;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String thumbnailPath;
 
-    @Schema(description = GregorianCalendarConvertor.PATTERN)
+    @Schema(description = "null for system image", pattern = GregorianCalendarConvertor.PATTERN)
     private String createdTime;
 
-    @Schema
+    @Schema(description = "null for system image")
     private String ownerId;
 }

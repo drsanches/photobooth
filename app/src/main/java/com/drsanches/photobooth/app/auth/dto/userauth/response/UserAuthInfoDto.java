@@ -8,12 +8,12 @@ import lombok.Data;
 @Builder(toBuilder = true)
 public class UserAuthInfoDto {
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String id;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String username;
 
-    @Schema
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String email;
 }

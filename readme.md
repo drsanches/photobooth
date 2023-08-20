@@ -151,9 +151,7 @@ It can be imported through Kibana web interface.
 - Limit container resources
 - Use naming `expires` or `expiresAt`. Maybe rename `createdTime` to `created`
 - Test indexes
-- Update dependencies
 - Use records instead of DTO classes
-- Fix annotations in DTOs
 - Authorization refactoring using spring security mechanism?
 
 ### Tests

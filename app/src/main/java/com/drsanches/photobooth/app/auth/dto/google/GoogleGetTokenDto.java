@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class GoogleGetTokenDto {
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private TokenDto token;
 
     @Schema(description = "Confirmation code from registration request")

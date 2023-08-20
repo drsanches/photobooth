@@ -1,20 +1,20 @@
 package com.drsanches.photobooth.app.auth.dto.userauth.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
 @Data
 public class LoginDto {
 
-    @Schema(required = true, maxLength = 20)
+    @Schema(maxLength = 20, requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty
     @Length(max = 20)
     private String username;
 
-    @Schema(required = true, maxLength = 255, description = "password SHA256 hash")
+    @Schema(description = "password SHA256 hash", maxLength = 255, requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty
     @Length(max = 255)
     @ToString.Exclude

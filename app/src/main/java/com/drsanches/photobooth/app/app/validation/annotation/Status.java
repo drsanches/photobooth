@@ -12,9 +12,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target(FIELD)
 @Retention(RUNTIME)
-@Pattern(regexp = "[A-Za-z0-9_ .,!?:;-]*", message = "wrong status format")
+@Pattern(regexp = Status.PATTERN, message = "wrong status format")
 @Constraint(validatedBy = { })
 public @interface Status {
+
+    String PATTERN = "[A-Za-z0-9_ .,!?:;-]*";
 
     String message() default "wrong status format";
 

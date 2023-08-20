@@ -8,7 +8,7 @@ import lombok.Data;
 @Builder(toBuilder = true)
 public class UserInfoDto {
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String id;
 
     @Schema(description = "null for deleted user")
@@ -20,12 +20,12 @@ public class UserInfoDto {
     @Schema(description = "null for deleted user")
     private String status;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String imagePath;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String thumbnailPath;
 
-    @Schema(required = true)
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private RelationshipDto relationship;
 }
