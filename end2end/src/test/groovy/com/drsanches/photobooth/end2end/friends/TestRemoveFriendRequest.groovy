@@ -2,9 +2,6 @@ package com.drsanches.photobooth.end2end.friends
 
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONArray
 import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
@@ -27,8 +24,7 @@ class TestRemoveFriendRequest extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user1.token"],
-                body: [userId: user2.id],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [userId: user2.id])
 
         then: "response is correct"
         assert response.status == 200
@@ -58,8 +54,7 @@ class TestRemoveFriendRequest extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user1.token"],
-                body: [userId: user2.id],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [userId: user2.id])
 
         then: "response is correct"
         assert response.status == 200
@@ -89,8 +84,7 @@ class TestRemoveFriendRequest extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user1.token"],
-                body: [userId: user2.id],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [userId: user2.id])
 
         then: "response is correct"
         assert response.status == 200
@@ -119,8 +113,7 @@ class TestRemoveFriendRequest extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user1.token"],
-                body: [userId: user2.id],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [userId: user2.id])
 
         then: "response is correct"
         assert response.status == 200
@@ -145,8 +138,7 @@ class TestRemoveFriendRequest extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user1.token"],
-                body: [userId: user2.id],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [userId: user2.id])
 
         then: "response is correct"
         assert response.status == 200
@@ -169,8 +161,7 @@ class TestRemoveFriendRequest extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user1.token"],
-                body: [userId: user2.id],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [userId: user2.id])
 
         then: "response is correct"
         assert response.status == 200
@@ -194,17 +185,15 @@ class TestRemoveFriendRequest extends Specification {
         def user = new TestUser().register()
 
         when: "request is sent"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body: [userId: user.id],
-                requestContentType : ContentType.JSON)
+                body: [userId: user.id])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "removeRequest.removeRequestDto.userId: the user can not be current"
-        assert e.response.status == 400
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "removeRequest.removeRequestDto.userId: the user can not be current"
+        assert response.status == 400
 
         and: "the first user has correct relationships"
         assert user.getIncomingFriendRequests() == new JSONArray()
@@ -217,17 +206,15 @@ class TestRemoveFriendRequest extends Specification {
         def user = new TestUser().register()
 
         when: "request is sent"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body: [userId: userId],
-                requestContentType : ContentType.JSON)
+                body: [userId: userId])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == message
-        assert e.response.status == 400
+        assert response.status == 400
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == message
 
         where:
         userId << [
@@ -236,8 +223,8 @@ class TestRemoveFriendRequest extends Specification {
                 UUID.randomUUID().toString()
         ]
         message << [
-                "removeRequest.removeRequestDto.userId: may not be empty",
-                "removeRequest.removeRequestDto.userId: may not be empty",
+                "removeRequest.removeRequestDto.userId: must not be empty",
+                "removeRequest.removeRequestDto.userId: must not be empty",
                 "removeRequest.removeRequestDto.userId: the user does not exist"
         ]
     }
@@ -247,15 +234,13 @@ class TestRemoveFriendRequest extends Specification {
         def invalidToken = UUID.randomUUID().toString()
 
         when: "sendRequest is called with invalid token"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: [Authorization: "Bearer $invalidToken"],
-                requestContentType : ContentType.JSON)
+                headers: [Authorization: "Bearer $invalidToken"])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "Wrong token"
-        assert e.response.status == 401
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "Wrong token"
+        assert response.status == 401
     }
 }

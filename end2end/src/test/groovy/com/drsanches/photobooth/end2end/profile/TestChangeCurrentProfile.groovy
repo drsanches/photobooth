@@ -4,9 +4,6 @@ import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
 import net.sf.json.JSONObject
 import org.apache.commons.lang3.RandomStringUtils
@@ -27,9 +24,8 @@ class TestChangeCurrentProfile extends Specification {
         def response = RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body:  [name: name,
-                        status: status],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [name: name,
+                       status: status])
 
         then: "response is correct"
         assert response.status == 200
@@ -53,9 +49,8 @@ class TestChangeCurrentProfile extends Specification {
         def response = RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body:  [name: null,
-                        status: null],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [name: null,
+                       status: null])
 
         then: "response is correct"
         assert response.status == 200
@@ -76,18 +71,16 @@ class TestChangeCurrentProfile extends Specification {
         def user = new TestUser().register()
 
         when: "request is sent"
-        RequestUtils.getRestClient().put(
+        def response = RequestUtils.getRestClient().put(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body:  [name: name,
-                        status: status],
-                requestContentType : ContentType.JSON)
+                body: [name: name,
+                       status: status])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == message
-        assert e.response.status == 400
+        assert response.status == 400
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == message
 
         where:
         name << [
@@ -124,15 +117,13 @@ class TestChangeCurrentProfile extends Specification {
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"
-        RequestUtils.getRestClient().put(
+        def response = RequestUtils.getRestClient().put(
                 path: PATH,
-                headers: [Authorization: "Bearer $token"],
-                requestContentType : ContentType.JSON)
+                headers: [Authorization: "Bearer $token"])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "Wrong token"
-        assert e.response.status == 401
+        assert response.status == 401
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "Wrong token"
     }
 }

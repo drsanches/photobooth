@@ -1,7 +1,5 @@
 package com.drsanches.photobooth.end2end.image
 
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.HttpResponseException
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
@@ -20,7 +18,7 @@ class TestDeleteAvatar extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().delete(
                 path: PATH,
-                headers: [Authorization: "Bearer $user.token"]) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -38,7 +36,7 @@ class TestDeleteAvatar extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().delete(
                 path: PATH,
-                headers: [Authorization: "Bearer $user.token"]) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -55,14 +53,13 @@ class TestDeleteAvatar extends Specification {
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"
-        RequestUtils.getRestClient().delete(
+        def response = RequestUtils.getRestClient().delete(
                 path: PATH,
                 headers: [Authorization: "Bearer $token"])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "Wrong token"
-        assert e.response.status == 401
+        assert response.status == 401
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "Wrong token"
     }
 }

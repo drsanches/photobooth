@@ -1,8 +1,5 @@
 package com.drsanches.photobooth.end2end.image
 
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
@@ -22,8 +19,7 @@ class TestGetImageInfo extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH + "default/info",
-                headers: [Authorization: "Bearer $user.token"],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -45,8 +41,7 @@ class TestGetImageInfo extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: user2.imagePath + "/info",
-                headers: [Authorization: "Bearer $user1.token"],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -63,16 +58,14 @@ class TestGetImageInfo extends Specification {
         def nonexistentImageId = UUID.randomUUID().toString()
 
         when: "request is sent"
-        RequestUtils.getRestClient().get(
+        def response = RequestUtils.getRestClient().get(
                 path: PATH + nonexistentImageId + "/info",
-                headers: [Authorization: "Bearer $user.token"],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user.token"])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "There is no image with id '$nonexistentImageId'"
-        assert e.response.status == 400
+        assert response.status == 400
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "There is no image with id '$nonexistentImageId'"
     }
 
     def "get avatar info with invalid token"() {
@@ -80,15 +73,13 @@ class TestGetImageInfo extends Specification {
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"
-        RequestUtils.getRestClient().get(
+        def response = RequestUtils.getRestClient().get(
                 path: PATH + "default/info",
-                headers: [Authorization: "Bearer $token"],
-                requestContentType : ContentType.JSON)
+                headers: [Authorization: "Bearer $token"])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "Wrong token"
-        assert e.response.status == 401
+        assert response.status == 401
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "Wrong token"
     }
 }

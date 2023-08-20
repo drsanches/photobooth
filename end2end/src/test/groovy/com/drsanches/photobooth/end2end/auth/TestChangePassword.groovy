@@ -1,8 +1,5 @@
 package com.drsanches.photobooth.end2end.auth
 
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.HttpResponseException
 import org.apache.commons.lang3.RandomStringUtils
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
@@ -25,8 +22,7 @@ class TestChangePassword extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $token"],
-                body:  [newPassword: newPassword],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [newPassword: newPassword])
 
         then: "response is correct"
         assert response.status == 200
@@ -49,17 +45,15 @@ class TestChangePassword extends Specification {
         def user = new TestUser().register()
 
         when: "request is sent"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body:  [newPassword: invalidPassword],
-                requestContentType : ContentType.JSON)
+                body: [newPassword: invalidPassword])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == message
-        assert e.response.status == 400
+        assert response.status == 400
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == message
 
         where:
         invalidPassword << [
@@ -68,8 +62,8 @@ class TestChangePassword extends Specification {
                 RandomStringUtils.randomAlphabetic(256)
         ]
         message << [
-                "changePassword.changePasswordDto.newPassword: may not be empty",
-                "changePassword.changePasswordDto.newPassword: may not be empty",
+                "changePassword.changePasswordDto.newPassword: must not be empty",
+                "changePassword.changePasswordDto.newPassword: must not be empty",
                 "changePassword.changePasswordDto.newPassword: length must be between 0 and 255"
         ]
     }
@@ -79,15 +73,13 @@ class TestChangePassword extends Specification {
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: [Authorization: "Bearer $token"],
-                requestContentType : ContentType.JSON)
+                headers: [Authorization: "Bearer $token"])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "Wrong token"
-        assert e.response.status == 401
+        assert response.status == 401
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "Wrong token"
     }
 }

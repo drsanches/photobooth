@@ -1,8 +1,5 @@
 package com.drsanches.photobooth.end2end.image
 
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.HttpResponseException
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
@@ -23,8 +20,7 @@ class TestUploadAvatar extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body:  [file: Utils.toBase64(image)],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [file: Utils.toBase64(image)])
 
         then: "response is correct"
         assert response.status == 201
@@ -44,17 +40,15 @@ class TestUploadAvatar extends Specification {
         def user = new TestUser().register()
 
         when: "request is sent"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body:  [file: invalidData],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [file: invalidData])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == message
-        assert e.response.status == 400
+        assert response.status == 400
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == message
 
         and: "user profile does not change"
         def userProfile = user.getUserProfile()
@@ -70,8 +64,8 @@ class TestUploadAvatar extends Specification {
                 Base64.getEncoder().encodeToString(new byte[300 * 1000 + 1])
         ]
         message << [
-                "uploadAvatar.uploadAvatarDto.file: may not be empty",
-                "uploadAvatar.uploadAvatarDto.file: may not be empty",
+                "uploadAvatar.uploadAvatarDto.file: must not be empty",
+                "uploadAvatar.uploadAvatarDto.file: must not be empty",
                 "uploadAvatar.uploadAvatarDto.file: invalid base64 image",
                 "uploadAvatar.uploadAvatarDto.file: invalid image data",
                 "uploadAvatar.uploadAvatarDto.file: base64 string is too long, max image size is 300000 bytes"
@@ -84,16 +78,14 @@ class TestUploadAvatar extends Specification {
         def base64Image = Utils.toBase64(DataGenerator.createValidImage())
 
         when: "request is sent"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $token"],
-                body:  [file: base64Image],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [file: base64Image])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "Wrong token"
-        assert e.response.status == 401
+        assert response.status == 401
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "Wrong token"
     }
 }

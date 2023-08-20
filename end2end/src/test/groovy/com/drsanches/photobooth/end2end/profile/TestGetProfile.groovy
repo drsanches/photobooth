@@ -3,9 +3,6 @@ package com.drsanches.photobooth.end2end.profile
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.HttpResponseException
 import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 
@@ -21,8 +18,7 @@ class TestGetProfile extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH + user2.id,
-                headers: [Authorization: "Bearer $user1.token"],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -43,8 +39,7 @@ class TestGetProfile extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH + user2.id,
-                headers: [Authorization: "Bearer $user1.token"],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -66,8 +61,7 @@ class TestGetProfile extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH + user2.id,
-                headers: [Authorization: "Bearer $user1.token"],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -89,8 +83,7 @@ class TestGetProfile extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH + user2.id,
-                headers: [Authorization: "Bearer $user1.token"],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -110,8 +103,7 @@ class TestGetProfile extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH + user1.id,
-                headers: [Authorization: "Bearer $user1.token"],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -130,16 +122,14 @@ class TestGetProfile extends Specification {
         def user2 = new TestUser().register().delete()
 
         when: "request is sent"
-        RequestUtils.getRestClient().get(
+        def response = RequestUtils.getRestClient().get(
                 path: PATH + user2.id,
-                headers: [Authorization: "Bearer $user1.token"],
-                requestContentType : ContentType.JSON)
+                headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "There is no user with id '$user2.id'"
-        assert e.response.status == 404
+        assert response.status == 404
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "There is no user with id '$user2.id'"
     }
 
     def "get nonexistent user profile"() {
@@ -148,16 +138,14 @@ class TestGetProfile extends Specification {
         def nonexistentId = UUID.randomUUID().toString()
 
         when: "request is sent"
-        RequestUtils.getRestClient().get(
+        def response = RequestUtils.getRestClient().get(
                 path: PATH + nonexistentId,
-                headers: [Authorization: "Bearer $user.token"],
-                requestContentType : ContentType.JSON)
+                headers: [Authorization: "Bearer $user.token"])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "There is no user with id '$nonexistentId'"
-        assert e.response.status == 404
+        assert response.status == 404
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "There is no user with id '$nonexistentId'"
     }
 
     def "get user profile with invalid token"() {
@@ -166,15 +154,13 @@ class TestGetProfile extends Specification {
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"
-        RequestUtils.getRestClient().get(
+        def response = RequestUtils.getRestClient().get(
                 path: PATH + userId,
-                headers: [Authorization: "Bearer $token"],
-                requestContentType : ContentType.JSON)
+                headers: [Authorization: "Bearer $token"])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "Wrong token"
-        assert e.response.status == 401
+        assert response.status == 401
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "Wrong token"
     }
 }

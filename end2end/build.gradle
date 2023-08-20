@@ -9,15 +9,19 @@ sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
-    maven { url "https://repository.codehaus.org/" }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     //Utils
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.13.0'
 
     //Tests
-    implementation group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.11'
-    implementation group: 'org.spockframework', name: 'spock-core', version: '1.1-groovy-2.4'
-    implementation group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.5.0'
+    implementation group: 'org.apache.groovy', name: 'groovy', version: '4.0.5'
+    testImplementation group: 'org.spockframework', name: 'spock-core', version: '2.4-M1-groovy-4.0'
+    implementation group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.1'
+}
+
+test {
+    useJUnitPlatform()
 }

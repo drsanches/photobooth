@@ -1,8 +1,5 @@
 package com.drsanches.photobooth.end2end.image
 
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONArray
 import net.sf.json.JSONNull
 import com.drsanches.photobooth.end2end.utils.DataGenerator
@@ -27,8 +24,7 @@ class TestGetAllImagesInfo extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: [Authorization: "Bearer $user.token"],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -52,8 +48,7 @@ class TestGetAllImagesInfo extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: [Authorization: "Bearer $user1.token"],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -82,15 +77,13 @@ class TestGetAllImagesInfo extends Specification {
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"
-        RequestUtils.getRestClient().get(
+        def response = RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: [Authorization: "Bearer $token"],
-                requestContentType : ContentType.JSON)
+                headers: [Authorization: "Bearer $token"])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "Wrong token"
-        assert e.response.status == 401
+        assert response.status == 401
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "Wrong token"
     }
 }

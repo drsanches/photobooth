@@ -3,9 +3,6 @@ package com.drsanches.photobooth.end2end.auth
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.HttpResponseException
 import org.apache.commons.lang3.RandomStringUtils
 import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
@@ -23,8 +20,7 @@ class TestChangeEmail extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body:  [newEmail: newEmail],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [newEmail: newEmail])
 
         then: "response is correct"
         assert response.status == 200
@@ -38,17 +34,15 @@ class TestChangeEmail extends Specification {
         def user = new TestUser().register()
 
         when: "request is sent"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body:  [newEmail: user.email],
-                requestContentType : ContentType.JSON)
+                body: [newEmail: user.email])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "changeEmail.changeEmailDto.newEmail: User with email '$user.email' already exists"
-        assert e.response.status == 400
+        assert response.status == 400
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "changeEmail.changeEmailDto.newEmail: User with email '$user.email' already exists"
     }
 
     def "email change with existent email"() {
@@ -57,17 +51,15 @@ class TestChangeEmail extends Specification {
         def user2 = new TestUser().register()
 
         when: "request is sent"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user1.token"],
-                body:  [newEmail: user2.email],
-                requestContentType : ContentType.JSON)
+                body: [newEmail: user2.email])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "changeEmail.changeEmailDto.newEmail: User with email '$user2.email' already exists"
-        assert e.response.status == 400
+        assert response.status == 400
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "changeEmail.changeEmailDto.newEmail: User with email '$user2.email' already exists"
     }
 
     def "email change with invalid email"() {
@@ -75,17 +67,15 @@ class TestChangeEmail extends Specification {
         def user = new TestUser().register()
 
         when: "request is sent"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body:  [newEmail: invalidEmail],
-                requestContentType : ContentType.JSON)
+                body: [newEmail: invalidEmail])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == message
-        assert e.response.status == 400
+        assert response.status == 400
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == message
 
         where:
         invalidEmail << [
@@ -94,9 +84,9 @@ class TestChangeEmail extends Specification {
                 RandomStringUtils.randomAlphabetic(300)
         ]
         message << [
-                "changeEmail.changeEmailDto.newEmail: may not be empty",
-                "changeEmail.changeEmailDto.newEmail: may not be empty",
-                "changeEmail.changeEmailDto.newEmail: not a well-formed email address"
+                "changeEmail.changeEmailDto.newEmail: must not be empty",
+                "changeEmail.changeEmailDto.newEmail: must not be empty",
+                "changeEmail.changeEmailDto.newEmail: must be a well-formed email address"
         ]
     }
 
@@ -105,15 +95,13 @@ class TestChangeEmail extends Specification {
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
-                headers: [Authorization: "Bearer $token"],
-                requestContentType : ContentType.JSON)
+                headers: [Authorization: "Bearer $token"])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "Wrong token"
-        assert e.response.status == 401
+        assert response.status == 401
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "Wrong token"
     }
 }

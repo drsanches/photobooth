@@ -4,9 +4,6 @@ import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONArray
 import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
@@ -27,8 +24,7 @@ class TestSearchProfile extends Specification {
                 params: [username: search,
                          page: 0,
                          size: 1],
-                headers: [Authorization: "Bearer $user1.token"],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -55,8 +51,7 @@ class TestSearchProfile extends Specification {
                 params: [username: search,
                          page: 0,
                          size: 1],
-                headers: [Authorization: "Bearer $user1.token"],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -80,8 +75,7 @@ class TestSearchProfile extends Specification {
         def response = RequestUtils.getRestClient().get(
                 path: PATH,
                 params: [username: user2.username],
-                headers: [Authorization: "Bearer $user1.token"],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -97,8 +91,7 @@ class TestSearchProfile extends Specification {
         def response = RequestUtils.getRestClient().get(
                 path: PATH,
                 params: [username: nonexistentUsername],
-                headers: [Authorization: "Bearer $user.token"],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -111,15 +104,13 @@ class TestSearchProfile extends Specification {
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"
-        RequestUtils.getRestClient().get(
+        def response = RequestUtils.getRestClient().get(
                 path: PATH + username,
-                headers: [Authorization: "Bearer $token"],
-                requestContentType : ContentType.JSON)
+                headers: [Authorization: "Bearer $token"])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "Wrong token"
-        assert e.response.status == 401
+        assert response.status == 401
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "Wrong token"
     }
 }

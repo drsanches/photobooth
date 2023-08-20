@@ -3,9 +3,6 @@ package com.drsanches.photobooth.end2end.auth
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
 import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
@@ -22,8 +19,7 @@ class TestLogin extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 body: [username: user.username,
-                       password: user.password],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                       password: user.password])
 
         then: "response is correct"
         assert response.status == 200
@@ -50,8 +46,7 @@ class TestLogin extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 body: [username: username2,
-                       password: password],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                       password: password])
 
         then: "response is correct"
         assert response.status == 200
@@ -69,8 +64,7 @@ class TestLogin extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 body: [username: user.username,
-                       password: user.password],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                       password: user.password])
 
         then: "response is correct"
         assert response.status == 200
@@ -85,17 +79,15 @@ class TestLogin extends Specification {
 
     def "login with invalid data"() {
         when: "request is sent"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 body: [username: username,
-                       password: password],
-                requestContentType : ContentType.JSON)
+                       password: password])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == message
-        assert e.response.status == status
+        assert response.status == status
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == message
 
         where:
         username << [
@@ -127,12 +119,12 @@ class TestLogin extends Specification {
                 "Wrong username or password",
 
                 //Invalid username
-                "login.loginDto.username: may not be empty",
-                "login.loginDto.username: may not be empty",
+                "login.loginDto.username: must not be empty",
+                "login.loginDto.username: must not be empty",
 
                 //Invalid password
-                "login.loginDto.password: may not be empty",
-                "login.loginDto.password: may not be empty"
+                "login.loginDto.password: must not be empty",
+                "login.loginDto.password: must not be empty"
         ]
         status << [
                 //No user

@@ -1,8 +1,5 @@
 package com.drsanches.photobooth.end2end.auth
 
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONNull
 import org.apache.commons.lang3.RandomStringUtils
 import com.drsanches.photobooth.end2end.utils.DataGenerator
@@ -25,10 +22,9 @@ class TestRegistration extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
-                body:  [username: username,
-                        password: password,
-                        email: email],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [username: username,
+                       password: password,
+                       email: email])
 
         then: "response is correct"
         assert response.status == 200
@@ -63,18 +59,16 @@ class TestRegistration extends Specification {
         def email = DataGenerator.createValidEmail()
 
         when: "request is sent"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 body:  [username: user.username,
                         password: password,
-                        email: email],
-                requestContentType : ContentType.JSON)
+                        email: email])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "registration.registrationDto.username: User with username '$user.username' already exists"
-        assert e.response.status == 400
+        assert response.status == 400
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "registration.registrationDto.username: User with username '$user.username' already exists"
     }
 
     def "registration with existing email"() {
@@ -84,34 +78,30 @@ class TestRegistration extends Specification {
         def password = DataGenerator.createValidPassword()
 
         when: "request is sent"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 body:  [username: username,
                         password: password,
-                        email: user.email],
-                requestContentType : ContentType.JSON)
+                        email: user.email])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "registration.registrationDto.email: User with email '$user.email' already exists"
-        assert e.response.status == 400
+        assert response.status == 400
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "registration.registrationDto.email: User with email '$user.email' already exists"
     }
 
     def "registration with invalid data"() {
         when: "request is sent"
-        RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 body: [username: username,
                        password: password,
-                       email: email],
-                requestContentType : ContentType.JSON)
+                       email: email])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == message
-        assert e.response.status == 400
+        assert response.status == 400
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == message
 
         where:
         username << [
@@ -167,20 +157,20 @@ class TestRegistration extends Specification {
         ]
         message << [
                 //Invalid username
-                "registration.registrationDto.username: may not be empty",
-                "registration.registrationDto.username: may not be empty",
+                "registration.registrationDto.username: must not be empty",
+                "registration.registrationDto.username: must not be empty",
                 "registration.registrationDto.username: wrong username format",
                 "registration.registrationDto.username: length must be between 0 and 20",
 
                 //Invalid password
-                "registration.registrationDto.password: may not be empty",
-                "registration.registrationDto.password: may not be empty",
+                "registration.registrationDto.password: must not be empty",
+                "registration.registrationDto.password: must not be empty",
                 "registration.registrationDto.password: length must be between 0 and 255",
 
                 //Invalid email
-                "registration.registrationDto.email: may not be empty",
-                "registration.registrationDto.email: may not be empty",
-                "registration.registrationDto.email: not a well-formed email address"
+                "registration.registrationDto.email: must not be empty",
+                "registration.registrationDto.email: must not be empty",
+                "registration.registrationDto.email: must be a well-formed email address"
         ]
     }
 }

@@ -2,8 +2,6 @@ package com.drsanches.photobooth.end2end
 
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
 import spock.lang.Specification
 
 import java.nio.charset.StandardCharsets
@@ -21,8 +19,7 @@ class TestScripts
         when:
         RequestUtils.getRestClient().post(
                 path: "/api/v1/auth/google/registration",
-                body:  [accessToken: googleAccessToken],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [accessToken: googleAccessToken])
 
         then: true
     }
@@ -31,8 +28,7 @@ class TestScripts
         when:
         RequestUtils.getRestClient().post(
                 path: "/api/v1/auth/google/login",
-                body:  [accessToken: googleAccessToken],
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+                body: [accessToken: googleAccessToken])
 
         then: true
     }

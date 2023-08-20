@@ -3,8 +3,6 @@ package com.drsanches.photobooth.end2end.friends
 import com.drsanches.photobooth.end2end.utils.Utils
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.HttpResponseException
 import net.sf.json.JSONArray
 import net.sf.json.JSONNull
 import org.apache.commons.lang3.StringUtils
@@ -23,7 +21,7 @@ class TestGetOutgoingRequests extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: [Authorization: "Bearer $user1.token"]) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -50,7 +48,7 @@ class TestGetOutgoingRequests extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: [Authorization: "Bearer $user1.token"]) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -67,7 +65,7 @@ class TestGetOutgoingRequests extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: PATH,
-                headers: [Authorization: "Bearer $user1.token"]) as HttpResponseDecorator
+                headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
         assert response.status == 200
@@ -87,14 +85,13 @@ class TestGetOutgoingRequests extends Specification {
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"
-        RequestUtils.getRestClient().get(
+        def response = RequestUtils.getRestClient().get(
                 path: PATH,
                 headers: [Authorization: "Bearer $token"])
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "Wrong token"
-        assert e.response.status == 401
+        assert response.status == 401
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "Wrong token"
     }
 }

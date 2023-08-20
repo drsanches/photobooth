@@ -1,8 +1,5 @@
 package com.drsanches.photobooth.end2end.image
 
-import groovyx.net.http.ContentType
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.HttpResponseException
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
@@ -16,9 +13,7 @@ class TestGetImage extends Specification {
 
     def "successful system avatar getting"() {
         when: "request is sent"
-        def response = RequestUtils.getRestClient().get(
-                path: path,
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+        def response = RequestUtils.getRestClient().getBytes(path: path)
 
         then: "response is correct"
         assert response.status == 200
@@ -43,9 +38,7 @@ class TestGetImage extends Specification {
         def user = new TestUser().register().uploadAvatar(image)
 
         when: "request is sent"
-        def response = RequestUtils.getRestClient().get(
-                path: user.imagePath,
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+        def response = RequestUtils.getRestClient().getBytes(path: user.imagePath)
 
         then: "response is correct"
         assert response.status == 200
@@ -62,9 +55,7 @@ class TestGetImage extends Specification {
         def imagePath = user1.getAllImagesInfo().get(0)["path"]
 
         when: "request is sent"
-        def response = RequestUtils.getRestClient().get(
-                path: imagePath,
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+        def response = RequestUtils.getRestClient().getBytes(path: imagePath)
 
         then: "response is correct"
         assert response.status == 200
@@ -81,9 +72,7 @@ class TestGetImage extends Specification {
         def imagePath = user1.getAllImagesInfo().get(0)["path"]
 
         when: "request is sent"
-        def response = RequestUtils.getRestClient().get(
-                path: imagePath,
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+        def response = RequestUtils.getRestClient().getBytes(path: imagePath)
 
         then: "response is correct"
         assert response.status == 200
@@ -95,14 +84,11 @@ class TestGetImage extends Specification {
         def nonexistentImageId = UUID.randomUUID().toString()
 
         when: "request is sent"
-        RequestUtils.getRestClient().get(
-                path: PATH + nonexistentImageId,
-                requestContentType : ContentType.JSON) as HttpResponseDecorator
+        def response = RequestUtils.getRestClient().get(path: PATH + nonexistentImageId)
 
         then: "response is correct"
-        HttpResponseException e = thrown(HttpResponseException)
-        assert StringUtils.isNotEmpty(e.response.data["uuid"] as CharSequence)
-        assert e.response.data["message"] == "There is no image with id '$nonexistentImageId'"
-        assert e.response.status == 400
+        assert response.status == 400
+        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
+        assert response.data["message"] == "There is no image with id '$nonexistentImageId'"
     }
 }
