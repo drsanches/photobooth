@@ -52,7 +52,7 @@ class TestGetThumbnail extends Specification {
         def user2 = new TestUser().register()
         user1.sendFriendRequest(user2.id)
         user2.sendFriendRequest(user1.id).sendPhoto([user1.id], image)
-        def imagePath = user1.getAllImagesInfo().get(0)["thumbnailPath"]
+        def imagePath = user1.getAllImagesInfo()[0]["thumbnailPath"]
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().getBytes(path: imagePath)
@@ -69,7 +69,7 @@ class TestGetThumbnail extends Specification {
         def user2 = new TestUser().register()
         user2.sendFriendRequest(user1.id)
         user1.sendFriendRequest(user2.id).sendPhoto([user2.id], image)
-        def imagePath = user1.getAllImagesInfo().get(0)["thumbnailPath"]
+        def imagePath = user1.getAllImagesInfo()[0]["thumbnailPath"]
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().getBytes(path: imagePath)

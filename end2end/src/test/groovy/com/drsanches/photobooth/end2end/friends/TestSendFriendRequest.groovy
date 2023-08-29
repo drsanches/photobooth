@@ -1,9 +1,9 @@
 package com.drsanches.photobooth.end2end.friends
 
-import net.sf.json.JSONArray
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import org.apache.commons.lang3.StringUtils
+import org.json.JSONArray
 import spock.lang.Specification
 
 class TestSendFriendRequest extends Specification {
@@ -28,18 +28,18 @@ class TestSendFriendRequest extends Specification {
         assert response.status == 201
 
         and: "the first user has correct relationships"
-        assert user1.getIncomingFriendRequests() == new JSONArray()
-        assert user1.getFriends() == new JSONArray()
+        assert user1.getIncomingFriendRequests().size() == 0
+        assert user1.getFriends().size() == 0
         def outgoingRequests = user1.getOutgoingFriendRequests()
         assert outgoingRequests.size() == 1
-        assert outgoingRequests.get(0)["id"] == user2.id
+        assert outgoingRequests[0]["id"] == user2.id
 
         and: "the second user has correct relationships"
-        assert user2.getOutgoingFriendRequests() == new JSONArray()
-        assert user2.getFriends() == new JSONArray()
+        assert user2.getOutgoingFriendRequests().size() == 0
+        assert user2.getFriends().size() == 0
         def incomingRequests = user2.getIncomingFriendRequests()
         assert incomingRequests.size() == 1
-        assert incomingRequests.get(0)["id"] == user1.id
+        assert incomingRequests[0]["id"] == user1.id
     }
 
     /**
@@ -61,18 +61,18 @@ class TestSendFriendRequest extends Specification {
         assert response.status == 201
 
         and: "the first user has correct relationships"
-        assert user1.getIncomingFriendRequests() == new JSONArray()
-        assert user1.getOutgoingFriendRequests() == new JSONArray()
+        assert user1.getIncomingFriendRequests().size() == 0
+        assert user1.getOutgoingFriendRequests().size() == 0
         def friends1 = user1.getFriends()
         assert friends1.size() == 1
-        assert friends1.get(0)["id"] == user2.id
+        assert friends1[0]["id"] == user2.id
 
         and: "the second user has correct relationships"
-        assert user2.getIncomingFriendRequests() == new JSONArray()
-        assert user2.getOutgoingFriendRequests() == new JSONArray()
+        assert user2.getIncomingFriendRequests().size() == 0
+        assert user2.getOutgoingFriendRequests().size() == 0
         def friends2 = user2.getFriends()
         assert friends2.size() == 1
-        assert friends2.get(0)["id"] == user1.id
+        assert friends2[0]["id"] == user1.id
     }
 
     /**
@@ -95,18 +95,18 @@ class TestSendFriendRequest extends Specification {
         assert response.status == 201
 
         and: "the first user relationship has not changed"
-        assert user1.getIncomingFriendRequests() == new JSONArray()
-        assert user1.getFriends() == new JSONArray()
+        assert user1.getIncomingFriendRequests().size() == 0
+        assert user1.getFriends().size() == 0
         def outgoingRequests = user1.getOutgoingFriendRequests()
         assert outgoingRequests.size() == 1
-        assert outgoingRequests.get(0)["id"] == user2.id
+        assert outgoingRequests[0]["id"] == user2.id
 
         and: "the second user relationship has not changed"
-        assert user2.getOutgoingFriendRequests() == new JSONArray()
-        assert user2.getFriends() == new JSONArray()
+        assert user2.getOutgoingFriendRequests().size() == 0
+        assert user2.getFriends().size() == 0
         def incomingRequests = user2.getIncomingFriendRequests()
         assert incomingRequests.size() == 1
-        assert incomingRequests.get(0)["id"] == user1.id
+        assert incomingRequests[0]["id"] == user1.id
     }
 
     /**
@@ -129,18 +129,18 @@ class TestSendFriendRequest extends Specification {
         assert response.status == 201
 
         and: "the first user relationship has not changed"
-        assert user1.getIncomingFriendRequests() == new JSONArray()
-        assert user1.getOutgoingFriendRequests() == new JSONArray()
+        assert user1.getIncomingFriendRequests().size() == 0
+        assert user1.getOutgoingFriendRequests().size() == 0
         def friends1 = user1.getFriends()
         assert friends1.size() == 1
-        assert friends1.get(0)["id"] == user2.id
+        assert friends1[0]["id"] == user2.id
 
         and: "the second user relationship has not changed"
-        assert user2.getIncomingFriendRequests() == new JSONArray()
-        assert user2.getOutgoingFriendRequests() == new JSONArray()
+        assert user2.getIncomingFriendRequests().size() == 0
+        assert user2.getOutgoingFriendRequests().size() == 0
         def friends2 = user2.getFriends()
         assert friends2.size() == 1
-        assert friends2.get(0)["id"] == user1.id
+        assert friends2[0]["id"] == user1.id
     }
 
     def "send friend request to deleted user"() {

@@ -4,10 +4,9 @@ import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
-import net.sf.json.JSONNull
-import net.sf.json.JSONObject
 import org.apache.commons.lang3.RandomStringUtils
 import org.apache.commons.lang3.StringUtils
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestChangeCurrentProfile extends Specification {
@@ -59,8 +58,8 @@ class TestChangeCurrentProfile extends Specification {
         JSONObject userProfile = RequestUtils.getUserProfile(user.username, user.password)
         assert userProfile["id"] == user.id
         assert userProfile["username"] == user.username
-        assert userProfile["name"] == JSONNull.getInstance()
-        assert userProfile["status"] == JSONNull.getInstance()
+        assert userProfile["name"] == JSONObject.NULL
+        assert userProfile["status"] == JSONObject.NULL
         assert userProfile["imagePath"] == Utils.DEFAULT_IMAGE_PATH
         assert userProfile["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
         assert userProfile["relationship"] == "CURRENT"

@@ -3,8 +3,8 @@ package com.drsanches.photobooth.end2end.auth
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
-import net.sf.json.JSONNull
 import org.apache.commons.lang3.StringUtils
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestLogin extends Specification {
@@ -24,10 +24,10 @@ class TestLogin extends Specification {
         then: "response is correct"
         assert response.status == 200
         def token = response.data["accessToken"]
-        token != JSONNull.getInstance()
-        response.data["refreshToken"] != JSONNull.getInstance()
+        token != JSONObject.NULL
+        response.data["refreshToken"] != JSONObject.NULL
         response.data["tokenType"] == "Bearer"
-        response.data["expiresAt"] != JSONNull.getInstance()
+        response.data["expiresAt"] != JSONObject.NULL
 
         and: "token is correct"
         assert RequestUtils.getAuthInfo(token as String) != null

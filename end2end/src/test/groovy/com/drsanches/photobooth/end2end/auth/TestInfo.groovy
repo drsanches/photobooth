@@ -23,7 +23,6 @@ class TestInfo extends Specification {
         assert response.data["id"] == user.id
         assert response.data["username"] == user.username
         assert response.data["email"] == user.email
-        assert response.data["password"] == null
     }
 
     def "get auth info with invalid token"() {

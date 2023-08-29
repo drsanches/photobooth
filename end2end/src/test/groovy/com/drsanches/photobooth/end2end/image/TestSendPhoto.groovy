@@ -1,11 +1,11 @@
 package com.drsanches.photobooth.end2end.image
 
-import net.sf.json.JSONNull
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
 import org.apache.commons.lang3.StringUtils
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestSendPhoto extends Specification {
@@ -42,20 +42,20 @@ class TestSendPhoto extends Specification {
         and: "user has a new photo"
         def userImages = user.getAllImagesInfo()
         assert userImages.size() == 1
-        assert userImages.get(0)["id"] != JSONNull.getInstance()
-        assert userImages.get(0)["path"] == IMAGE_PATH(userImages.get(0)["id"] as String)
-        assert userImages.get(0)["thumbnailPath"] == THUMBNAIL_PATH(userImages.get(0)["id"] as String)
-        assert userImages.get(0)["ownerId"] == user.id
-        assert Utils.checkTimestamp(dateBefore, userImages.get(0)["createdTime"] as String, dateAfter)
+        assert userImages[0]["id"] != JSONObject.NULL
+        assert userImages[0]["path"] == IMAGE_PATH(userImages[0]["id"] as String)
+        assert userImages[0]["thumbnailPath"] == THUMBNAIL_PATH(userImages[0]["id"] as String)
+        assert userImages[0]["ownerId"] == user.id
+        assert Utils.checkTimestamp(dateBefore, userImages[0]["createdTime"] as String, dateAfter)
 
         and: "one friend has similar photo"
         def friendImages = friend1.getAllImagesInfo()
         assert friendImages.size() == 1
-        assert friendImages.get(0) == userImages.get(0)
+        assert friendImages.getJSONObject(0).similar(userImages.getJSONObject(0))
 
         and: "image data is correct"
-        assert image == RequestUtils.getImage(user.token, IMAGE_PATH(userImages.get(0)["id"] as String))
-        assert Utils.toThumbnail(image) == RequestUtils.getImage(user.token, THUMBNAIL_PATH(userImages.get(0)["id"] as String) as String)
+        assert image == RequestUtils.getImage(user.token, IMAGE_PATH(userImages[0]["id"] as String))
+        assert Utils.toThumbnail(image) == RequestUtils.getImage(user.token, THUMBNAIL_PATH(userImages[0]["id"] as String) as String)
 
         and: "another friend doesn't have a new photo"
         assert friend2.getAllImagesInfo().size() == 0
@@ -91,25 +91,25 @@ class TestSendPhoto extends Specification {
         and: "user has a new photo"
         def userImages = user.getAllImagesInfo()
         assert userImages.size() == 1
-        assert userImages.get(0)["id"] != JSONNull.getInstance()
-        assert userImages.get(0)["path"] == IMAGE_PATH(userImages.get(0)["id"] as String)
-        assert userImages.get(0)["thumbnailPath"] == THUMBNAIL_PATH(userImages.get(0)["id"] as String)
-        assert userImages.get(0)["ownerId"] == user.id
-        assert Utils.checkTimestamp(dateBefore, userImages.get(0)["createdTime"] as String, dateAfter)
+        assert userImages[0]["id"] != JSONObject.NULL
+        assert userImages[0]["path"] == IMAGE_PATH(userImages[0]["id"] as String)
+        assert userImages[0]["thumbnailPath"] == THUMBNAIL_PATH(userImages[0]["id"] as String)
+        assert userImages[0]["ownerId"] == user.id
+        assert Utils.checkTimestamp(dateBefore, userImages[0]["createdTime"] as String, dateAfter)
 
         and: "image data is correct"
-        assert image == RequestUtils.getImage(user.token, IMAGE_PATH(userImages.get(0)["id"] as String))
-        assert Utils.toThumbnail(image) == RequestUtils.getImage(user.token, THUMBNAIL_PATH(userImages.get(0)["id"] as String) as String)
+        assert image == RequestUtils.getImage(user.token, IMAGE_PATH(userImages[0]["id"] as String))
+        assert Utils.toThumbnail(image) == RequestUtils.getImage(user.token, THUMBNAIL_PATH(userImages[0]["id"] as String) as String)
 
         and: "the first friend has similar photo"
         def friendImages1 = friend1.getAllImagesInfo()
         assert friendImages1.size() == 1
-        assert friendImages1.get(0) == userImages.get(0)
+        assert friendImages1.getJSONObject(0).similar(userImages.getJSONObject(0))
 
         and: "the second friend has similar photo"
         def friendImages2 = friend2.getAllImagesInfo()
         assert friendImages2.size() == 1
-        assert friendImages2.get(0) == userImages.get(0)
+        assert friendImages2.getJSONObject(0).similar(userImages.getJSONObject(0))
 
         and: "incoming and outgoing don't have any photo"
         assert incoming.getAllImagesInfo().size() == 0
@@ -139,15 +139,15 @@ class TestSendPhoto extends Specification {
         and: "user has a new photo"
         def userImages = user.getAllImagesInfo()
         assert userImages.size() == 1
-        assert userImages.get(0)["id"] != JSONNull.getInstance()
-        assert userImages.get(0)["path"] == IMAGE_PATH(userImages.get(0)["id"] as String)
-        assert userImages.get(0)["thumbnailPath"] == THUMBNAIL_PATH(userImages.get(0)["id"] as String)
-        assert userImages.get(0)["ownerId"] == user.id
-        assert Utils.checkTimestamp(dateBefore, userImages.get(0)["createdTime"] as String, dateAfter)
+        assert userImages[0]["id"] != JSONObject.NULL
+        assert userImages[0]["path"] == IMAGE_PATH(userImages[0]["id"] as String)
+        assert userImages[0]["thumbnailPath"] == THUMBNAIL_PATH(userImages[0]["id"] as String)
+        assert userImages[0]["ownerId"] == user.id
+        assert Utils.checkTimestamp(dateBefore, userImages[0]["createdTime"] as String, dateAfter)
 
         and: "image data is correct"
-        assert image == RequestUtils.getImage(user.token, IMAGE_PATH(userImages.get(0)["id"] as String))
-        assert Utils.toThumbnail(image) == RequestUtils.getImage(user.token, THUMBNAIL_PATH(userImages.get(0)["id"] as String) as String)
+        assert image == RequestUtils.getImage(user.token, IMAGE_PATH(userImages[0]["id"] as String))
+        assert Utils.toThumbnail(image) == RequestUtils.getImage(user.token, THUMBNAIL_PATH(userImages[0]["id"] as String) as String)
 
         where:
         all << [[], null]

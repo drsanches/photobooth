@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.end2end.utils
 
-import net.sf.json.JSONArray
-import net.sf.json.JSONObject
+import org.json.JSONArray
+import org.json.JSONObject
 
 class RequestUtils {
 

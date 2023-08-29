@@ -4,8 +4,8 @@ import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
-import net.sf.json.JSONArray
 import org.apache.commons.lang3.StringUtils
+import org.json.JSONArray
 import spock.lang.Specification
 
 class TestSearchProfile extends Specification {
@@ -30,13 +30,13 @@ class TestSearchProfile extends Specification {
         assert response.status == 200
         def results = response.data as JSONArray
         assert results.size() == 1
-        assert results.get(0)["id"] == user2.id
-        assert results.get(0)["username"] == user2.username
-        assert results.get(0)["name"] == user2.name
-        assert results.get(0)["status"] == user2.status
-        assert results.get(0)["imagePath"] == Utils.DEFAULT_IMAGE_PATH
-        assert results.get(0)["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert results.get(0)["relationship"] == "STRANGER"
+        assert results[0]["id"] == user2.id
+        assert results[0]["username"] == user2.username
+        assert results[0]["name"] == user2.name
+        assert results[0]["status"] == user2.status
+        assert results[0]["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert results[0]["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
+        assert results[0]["relationship"] == "STRANGER"
     }
 
     def "successful user profile searching with upper case"() {
@@ -57,13 +57,13 @@ class TestSearchProfile extends Specification {
         assert response.status == 200
         def results = response.data as JSONArray
         assert results.size() == 1
-        assert results.get(0)["id"] == user2.id
-        assert results.get(0)["username"] == user2.username
-        assert results.get(0)["name"] == user2.name
-        assert results.get(0)["status"] == user2.status
-        assert results.get(0)["imagePath"] == Utils.DEFAULT_IMAGE_PATH
-        assert results.get(0)["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert results.get(0)["relationship"] == "STRANGER"
+        assert results[0]["id"] == user2.id
+        assert results[0]["username"] == user2.username
+        assert results[0]["name"] == user2.name
+        assert results[0]["status"] == user2.status
+        assert results[0]["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert results[0]["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
+        assert results[0]["relationship"] == "STRANGER"
     }
 
     def "search deleted user profile"() {

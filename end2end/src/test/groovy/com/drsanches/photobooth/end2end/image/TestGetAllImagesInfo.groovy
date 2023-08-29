@@ -1,12 +1,12 @@
 package com.drsanches.photobooth.end2end.image
 
-import net.sf.json.JSONArray
-import net.sf.json.JSONNull
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
 import org.apache.commons.lang3.StringUtils
+import org.json.JSONArray
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestGetAllImagesInfo extends Specification {
@@ -54,21 +54,21 @@ class TestGetAllImagesInfo extends Specification {
         assert response.status == 200
         def data = response.data as JSONArray
         assert data.size() == 2
-        assert data.get(0)["id"] != JSONNull.getInstance()
-        assert data.get(0)["path"] == IMAGE_PATH(data.get(0)["id"] as String)
-        assert data.get(0)["thumbnailPath"] == THUMBNAIL_PATH(data.get(0)["id"] as String)
-        assert data.get(0)["ownerId"] == user2.id
-        assert Utils.checkTimestamp(date2, data.get(0)["createdTime"] as String, date3)
-        assert data.get(1)["id"] != JSONNull.getInstance()
+        assert data[0]["id"] != JSONObject.NULL
+        assert data[0]["path"] == IMAGE_PATH(data[0]["id"] as String)
+        assert data[0]["thumbnailPath"] == THUMBNAIL_PATH(data[0]["id"] as String)
+        assert data[0]["ownerId"] == user2.id
+        assert Utils.checkTimestamp(date2, data[0]["createdTime"] as String, date3)
+        assert data.get(1)["id"] != JSONObject.NULL
         assert data.get(1)["path"] == IMAGE_PATH(data.get(1)["id"] as String)
         assert data.get(1)["thumbnailPath"] == THUMBNAIL_PATH(data.get(1)["id"] as String)
         assert data.get(1)["ownerId"] == user1.id
         assert Utils.checkTimestamp(date1, data.get(1)["createdTime"] as String, date2)
 
         and: "images are correct"
-        assert image2 == RequestUtils.getImage(user1.token, IMAGE_PATH(data.get(0)["id"] as String))
+        assert image2 == RequestUtils.getImage(user1.token, IMAGE_PATH(data[0]["id"] as String))
         assert image1 == RequestUtils.getImage(user1.token, IMAGE_PATH(data.get(1)["id"] as String))
-        assert Utils.toThumbnail(image2) == RequestUtils.getImage(user1.token, THUMBNAIL_PATH(data.get(0)["id"] as String) as String)
+        assert Utils.toThumbnail(image2) == RequestUtils.getImage(user1.token, THUMBNAIL_PATH(data[0]["id"] as String) as String)
         assert Utils.toThumbnail(image1) == RequestUtils.getImage(user1.token, THUMBNAIL_PATH(data.get(1)["id"] as String) as String)
     }
 

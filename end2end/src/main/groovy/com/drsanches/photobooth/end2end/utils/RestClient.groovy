@@ -1,9 +1,8 @@
 package com.drsanches.photobooth.end2end.utils
 
-import groovyx.net.http.ContentType
-import net.sf.json.JSONArray
-import net.sf.json.JSONObject
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
+import org.json.JSONArray
+import org.json.JSONObject
 
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -33,7 +32,7 @@ class RestClient {
 
     static Map<String, Object> post(Map<String, ?> args) {
         def request = prepareRequest(args)
-                .POST(HttpRequest.BodyPublishers.ofString(JSONObject.fromObject(args.get("body")).toString()))
+                .POST(getBodyPublisher(args))
                 .build()
         logRequest(request)
         def response = client.send(request, HttpResponse.BodyHandlers.ofString())
@@ -43,7 +42,7 @@ class RestClient {
 
     static Map<String, Object> put(Map<String, ?> args) {
         def request = prepareRequest(args)
-                .PUT(HttpRequest.BodyPublishers.ofString(JSONObject.fromObject(args.get("body")).toString()))
+                .PUT(getBodyPublisher(args))
                 .build()
         logRequest(request)
         def response = client.send(request, HttpResponse.BodyHandlers.ofString())
@@ -71,7 +70,7 @@ class RestClient {
                 .uri(URI.create(uri))
 
         if (args.containsKey("body")) {
-            request.header("content-type", ContentType.JSON as String)
+            request.header("Content-Type", "application/json")
         }
 
         if (args.containsKey("headers")) {
@@ -79,6 +78,14 @@ class RestClient {
         }
 
         return request
+    }
+
+    static HttpRequest.BodyPublisher getBodyPublisher(Map<String, ?> args) {
+        if (args.containsKey("body")) {
+            return HttpRequest.BodyPublishers.ofString(new JSONObject(args.get("body")).toString())
+        } else {
+            return HttpRequest.BodyPublishers.noBody()
+        }
     }
 
     private static logRequest(HttpRequest request) {
@@ -98,19 +105,19 @@ class RestClient {
             ]
         }
         if (response.body() instanceof String) {
-            if (StringUtils.isEmpty(response.body())) {
+            if (StringUtils.isEmpty(response.body() as String)) {
                 return [
                         status: response.statusCode()
                 ]
             } else {
-                switch (response.body().charAt(0)) {
+                switch ((response.body() as String).charAt(0)) {
                     case '{' -> [
                             status: response.statusCode(),
-                            data: JSONObject.fromObject(response.body())
+                            data: new JSONObject(response.body())
                     ]
                     case '[' -> [
                             status: response.statusCode(),
-                            data: JSONArray.fromObject(response.body())
+                            data: new JSONArray(response.body())
                     ]
                     default -> [
                             status: response.statusCode(),

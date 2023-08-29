@@ -1,11 +1,11 @@
 package com.drsanches.photobooth.end2end.image
 
-import net.sf.json.JSONNull
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
 import org.apache.commons.lang3.StringUtils
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestGetImageInfo extends Specification {
@@ -26,8 +26,8 @@ class TestGetImageInfo extends Specification {
         assert response.data["id"] == "default"
         assert response.data["path"] == Utils.DEFAULT_IMAGE_PATH
         assert response.data["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.data["createdTime"] == JSONNull.getInstance()
-        assert response.data["ownerId"] == JSONNull.getInstance()
+        assert response.data["createdTime"] == JSONObject.NULL
+        assert response.data["ownerId"] == JSONObject.NULL
     }
 
     def "successful custom avatar info getting"() {

@@ -2,8 +2,8 @@ package com.drsanches.photobooth.end2end.friends
 
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
-import net.sf.json.JSONArray
 import org.apache.commons.lang3.StringUtils
+import org.json.JSONArray
 import spock.lang.Specification
 
 class TestRemoveFriendRequest extends Specification {
@@ -30,14 +30,14 @@ class TestRemoveFriendRequest extends Specification {
         assert response.status == 200
 
         and: "the first user has correct relationships"
-        assert user1.getIncomingFriendRequests() == new JSONArray()
-        assert user1.getOutgoingFriendRequests() == new JSONArray()
-        assert user1.getFriends() == new JSONArray()
+        assert user1.getIncomingFriendRequests().size() == 0
+        assert user1.getOutgoingFriendRequests().size() == 0
+        assert user1.getFriends().size() == 0
 
         and: "the second user has correct relationships"
-        assert user2.getIncomingFriendRequests() == new JSONArray()
-        assert user2.getOutgoingFriendRequests() == new JSONArray()
-        assert user2.getFriends() == new JSONArray()
+        assert user2.getIncomingFriendRequests().size() == 0
+        assert user2.getOutgoingFriendRequests().size() == 0
+        assert user2.getFriends().size() == 0
     }
 
     /**
@@ -60,14 +60,14 @@ class TestRemoveFriendRequest extends Specification {
         assert response.status == 200
 
         and: "the first user has correct relationships"
-        assert user1.getIncomingFriendRequests() == new JSONArray()
-        assert user1.getOutgoingFriendRequests() == new JSONArray()
-        assert user1.getFriends() == new JSONArray()
+        assert user1.getIncomingFriendRequests().size() == 0
+        assert user1.getOutgoingFriendRequests().size() == 0
+        assert user1.getFriends().size() == 0
 
         and: "the second user has correct relationships"
-        assert user2.getIncomingFriendRequests() == new JSONArray()
-        assert user2.getOutgoingFriendRequests() == new JSONArray()
-        assert user2.getFriends() == new JSONArray()
+        assert user2.getIncomingFriendRequests().size() == 0
+        assert user2.getOutgoingFriendRequests().size() == 0
+        assert user2.getFriends().size() == 0
     }
 
     /**
@@ -90,14 +90,14 @@ class TestRemoveFriendRequest extends Specification {
         assert response.status == 200
 
         and: "the first user has correct relationships"
-        assert user1.getIncomingFriendRequests() == new JSONArray()
-        assert user1.getOutgoingFriendRequests() == new JSONArray()
-        assert user1.getFriends() == new JSONArray()
+        assert user1.getIncomingFriendRequests().size() == 0
+        assert user1.getOutgoingFriendRequests().size() == 0
+        assert user1.getFriends().size() == 0
 
         and: "the second user has correct relationships"
-        assert user2.getIncomingFriendRequests() == new JSONArray()
-        assert user2.getOutgoingFriendRequests() == new JSONArray()
-        assert user2.getFriends() == new JSONArray()
+        assert user2.getIncomingFriendRequests().size() == 0
+        assert user2.getOutgoingFriendRequests().size() == 0
+        assert user2.getFriends().size() == 0
     }
 
     /**
@@ -119,9 +119,9 @@ class TestRemoveFriendRequest extends Specification {
         assert response.status == 200
 
         and: "the user has correct relationships"
-        assert user1.getIncomingFriendRequests() == new JSONArray()
-        assert user1.getOutgoingFriendRequests() == new JSONArray()
-        assert user1.getFriends() == new JSONArray()
+        assert user1.getIncomingFriendRequests().size() == 0
+        assert user1.getOutgoingFriendRequests().size() == 0
+        assert user1.getFriends().size() == 0
     }
 
     /**
@@ -144,9 +144,9 @@ class TestRemoveFriendRequest extends Specification {
         assert response.status == 200
 
         and: "the user has correct relationships"
-        assert user1.getIncomingFriendRequests() == new JSONArray()
-        assert user1.getOutgoingFriendRequests() == new JSONArray()
-        assert user1.getFriends() == new JSONArray()
+        assert user1.getIncomingFriendRequests().size() == 0
+        assert user1.getOutgoingFriendRequests().size() == 0
+        assert user1.getFriends().size() == 0
     }
 
     /**
@@ -167,14 +167,14 @@ class TestRemoveFriendRequest extends Specification {
         assert response.status == 200
 
         and: "the first user has correct relationships"
-        assert user1.getIncomingFriendRequests() == new JSONArray()
-        assert user1.getOutgoingFriendRequests() == new JSONArray()
-        assert user1.getFriends() == new JSONArray()
+        assert user1.getIncomingFriendRequests().size() == 0
+        assert user1.getOutgoingFriendRequests().size() == 0
+        assert user1.getFriends().size() == 0
 
         and: "the second user has correct relationships"
-        assert user2.getIncomingFriendRequests() == new JSONArray()
-        assert user2.getOutgoingFriendRequests() == new JSONArray()
-        assert user2.getFriends() == new JSONArray()
+        assert user2.getIncomingFriendRequests().size() == 0
+        assert user2.getOutgoingFriendRequests().size() == 0
+        assert user2.getFriends().size() == 0
     }
 
     /**
@@ -196,9 +196,9 @@ class TestRemoveFriendRequest extends Specification {
         assert response.status == 400
 
         and: "the first user has correct relationships"
-        assert user.getIncomingFriendRequests() == new JSONArray()
-        assert user.getOutgoingFriendRequests() == new JSONArray()
-        assert user.getFriends() == new JSONArray()
+        assert user.getIncomingFriendRequests().size() == 0
+        assert user.getOutgoingFriendRequests().size() == 0
+        assert user.getFriends().size() == 0
     }
 
     def "friend request deletion with invalid data"() {

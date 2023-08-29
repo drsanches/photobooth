@@ -153,6 +153,7 @@ It can be imported through Kibana web interface.
 - Test indexes
 - Use records instead of DTO classes
 - Authorization refactoring using spring security mechanism?
+- Use requestId instead of UUID in errors?
 
 ### Tests
 - Test sorting

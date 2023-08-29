@@ -3,9 +3,8 @@ package com.drsanches.photobooth.end2end.auth
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
-import net.sf.json.JSONArray
-import net.sf.json.JSONNull
 import org.apache.commons.lang3.StringUtils
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestDeleteUser extends Specification {
@@ -52,40 +51,40 @@ class TestDeleteUser extends Specification {
         assert RequestUtils.getToken(user.username, user.password) != token
 
         and: "friend's relationships is correct"
-        assert friend.getIncomingFriendRequests() == new JSONArray()
-        assert friend.getOutgoingFriendRequests() == new JSONArray()
-        JSONArray friends = friend.getFriends()
+        assert friend.getIncomingFriendRequests().size() == 0
+        assert friend.getOutgoingFriendRequests().size() == 0
+        def friends = friend.getFriends()
         assert friends.size() == 1
-        assert friends.get(0)["id"] == user.id
-        assert friends.get(0)["username"] == JSONNull.getInstance()
-        assert friends.get(0)["name"] == JSONNull.getInstance()
-        assert friends.get(0)["status"] == JSONNull.getInstance()
-        assert friends.get(0)["imagePath"] == Utils.DELETED_IMAGE_PATH
-        assert friends.get(0)["thumbnailPath"] == Utils.DELETED_THUMBNAIL_PATH
+        assert friends[0]["id"] == user.id
+        assert friends[0]["username"] == JSONObject.NULL
+        assert friends[0]["name"] == JSONObject.NULL
+        assert friends[0]["status"] == JSONObject.NULL
+        assert friends[0]["imagePath"] == Utils.DELETED_IMAGE_PATH
+        assert friends[0]["thumbnailPath"] == Utils.DELETED_THUMBNAIL_PATH
 
         and: "incoming user relationships is correct"
-        assert incoming.getIncomingFriendRequests() == new JSONArray()
-        assert incoming.getFriends() == new JSONArray()
-        JSONArray outgoingRequests = incoming.getOutgoingFriendRequests()
+        assert incoming.getIncomingFriendRequests().size() == 0
+        assert incoming.getFriends().size() == 0
+        def outgoingRequests = incoming.getOutgoingFriendRequests()
         assert outgoingRequests.size() == 1
-        assert outgoingRequests.get(0)["id"] == user.id
-        assert outgoingRequests.get(0)["username"] == JSONNull.getInstance()
-        assert outgoingRequests.get(0)["name"] == JSONNull.getInstance()
-        assert outgoingRequests.get(0)["status"] == JSONNull.getInstance()
-        assert outgoingRequests.get(0)["imagePath"] == Utils.DELETED_IMAGE_PATH
-        assert outgoingRequests.get(0)["thumbnailPath"] == Utils.DELETED_THUMBNAIL_PATH
+        assert outgoingRequests[0]["id"] == user.id
+        assert outgoingRequests[0]["username"] == JSONObject.NULL
+        assert outgoingRequests[0]["name"] == JSONObject.NULL
+        assert outgoingRequests[0]["status"] == JSONObject.NULL
+        assert outgoingRequests[0]["imagePath"] == Utils.DELETED_IMAGE_PATH
+        assert outgoingRequests[0]["thumbnailPath"] == Utils.DELETED_THUMBNAIL_PATH
 
         and: "outgoing user relationships is correct"
-        assert outgoing.getOutgoingFriendRequests() == new JSONArray()
-        assert outgoing.getFriends() == new JSONArray()
-        JSONArray incomingRequests = outgoing.getIncomingFriendRequests()
+        assert outgoing.getOutgoingFriendRequests().size() == 0
+        assert outgoing.getFriends().size() == 0
+        def incomingRequests = outgoing.getIncomingFriendRequests()
         assert incomingRequests.size() == 1
-        assert incomingRequests.get(0)["id"] == user.id
-        assert incomingRequests.get(0)["username"] == JSONNull.getInstance()
-        assert incomingRequests.get(0)["name"] == JSONNull.getInstance()
-        assert incomingRequests.get(0)["status"] == JSONNull.getInstance()
-        assert incomingRequests.get(0)["imagePath"] == Utils.DELETED_IMAGE_PATH
-        assert incomingRequests.get(0)["thumbnailPath"] == Utils.DELETED_THUMBNAIL_PATH
+        assert incomingRequests[0]["id"] == user.id
+        assert incomingRequests[0]["username"] == JSONObject.NULL
+        assert incomingRequests[0]["name"] == JSONObject.NULL
+        assert incomingRequests[0]["status"] == JSONObject.NULL
+        assert incomingRequests[0]["imagePath"] == Utils.DELETED_IMAGE_PATH
+        assert incomingRequests[0]["thumbnailPath"] == Utils.DELETED_THUMBNAIL_PATH
     }
 
     def "delete user with invalid token"() {

@@ -1,12 +1,12 @@
 package com.drsanches.photobooth.end2end.auth
 
-import net.sf.json.JSONNull
 import org.apache.commons.lang3.RandomStringUtils
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
 import org.apache.commons.lang3.StringUtils
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestRegistration extends Specification {
@@ -29,17 +29,17 @@ class TestRegistration extends Specification {
         then: "response is correct"
         assert response.status == 200
         def token = response.data["accessToken"]
-        assert token != JSONNull.getInstance()
-        assert response.data["refreshToken"] != JSONNull.getInstance()
+        assert token != JSONObject.NULL
+        assert response.data["refreshToken"] != JSONObject.NULL
         assert response.data["tokenType"] == "Bearer"
-        assert response.data["expiresAt"] != JSONNull.getInstance()
+        assert response.data["expiresAt"] != JSONObject.NULL
 
         and: "token is valid"
         def authInfo = RequestUtils.getAuthInfo(token as String)
         assert authInfo != null
 
         and: "correct user was created"
-        assert authInfo["id"] != JSONNull.getInstance()
+        assert authInfo["id"] != JSONObject.NULL
         assert authInfo["username"] == username
         assert authInfo["email"] == email
 
@@ -47,8 +47,8 @@ class TestRegistration extends Specification {
         def userProfile = RequestUtils.getUserProfile(username, password)
         assert userProfile["id"] == authInfo["id"]
         assert userProfile["username"] == username
-        assert userProfile["status"] == JSONNull.getInstance()
-        assert userProfile["name"] == JSONNull.getInstance()
+        assert userProfile["status"] == JSONObject.NULL
+        assert userProfile["name"] == JSONObject.NULL
         assert userProfile["imagePath"] == Utils.DEFAULT_IMAGE_PATH
     }
 

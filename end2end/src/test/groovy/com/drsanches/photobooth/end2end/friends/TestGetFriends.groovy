@@ -1,11 +1,11 @@
 package com.drsanches.photobooth.end2end.friends
 
-import net.sf.json.JSONArray
-import net.sf.json.JSONNull
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
 import org.apache.commons.lang3.StringUtils
+import org.json.JSONArray
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestGetFriends extends Specification {
@@ -28,13 +28,13 @@ class TestGetFriends extends Specification {
         assert response.status == 200
         def body = response.data as JSONArray
         assert body.size() == 1
-        assert body.get(0)["id"] == user2.id
-        assert body.get(0)["username"] == user2.username
-        assert body.get(0)["name"] == user2.name
-        assert body.get(0)["status"] == user2.status
-        assert body.get(0)["imagePath"] == Utils.DEFAULT_IMAGE_PATH
-        assert body.get(0)["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert body.get(0)["relationship"] == "FRIEND"
+        assert body[0]["id"] == user2.id
+        assert body[0]["username"] == user2.username
+        assert body[0]["name"] == user2.name
+        assert body[0]["status"] == user2.status
+        assert body[0]["imagePath"] == Utils.DEFAULT_IMAGE_PATH
+        assert body[0]["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
+        assert body[0]["relationship"] == "FRIEND"
     }
 
     def "success empty friends getting"() {
@@ -52,7 +52,7 @@ class TestGetFriends extends Specification {
 
         then: "response is correct"
         assert response.status == 200
-        assert response.data == new JSONArray()
+        assert (response.data as JSONArray).size() == 0
     }
 
     def "success friend with deleted profile getting"() {
@@ -72,13 +72,13 @@ class TestGetFriends extends Specification {
         assert response.status == 200
         def body = response.data as JSONArray
         assert body.size() == 1
-        assert body.get(0)["id"] == user2.id
-        assert body.get(0)["username"] == JSONNull.getInstance()
-        assert body.get(0)["name"] == JSONNull.getInstance()
-        assert body.get(0)["status"] == JSONNull.getInstance()
-        assert body.get(0)["imagePath"] == Utils.DELETED_IMAGE_PATH
-        assert body.get(0)["thumbnailPath"] == Utils.DELETED_THUMBNAIL_PATH
-        assert body.get(0)["relationship"] == "FRIEND"
+        assert body[0]["id"] == user2.id
+        assert body[0]["username"] == JSONObject.NULL
+        assert body[0]["name"] == JSONObject.NULL
+        assert body[0]["status"] == JSONObject.NULL
+        assert body[0]["imagePath"] == Utils.DELETED_IMAGE_PATH
+        assert body[0]["thumbnailPath"] == Utils.DELETED_THUMBNAIL_PATH
+        assert body[0]["relationship"] == "FRIEND"
     }
 
     def "get friends with invalid token"() {
