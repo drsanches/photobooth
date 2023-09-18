@@ -30,9 +30,13 @@
 
         <ScriptAppenderSelector name="logstash-socket-appender">
             <Script language="groovy"><![CDATA[
-                if (System.env["USE_ELK"] == "true") {
+                var logstashHost = System.env["LOGSTASH_HOST"]
+                var logstashPort = System.env["LOGSTASH_PORT"]
+                if (logstashHost != null && logstashHost != "" && logstashPort != null && logstashPort != "") {
+                    println("Logs will be sent to logstash at '" + logstashHost + ":" + logstashPort + "'")
                     return "logstash"
                 } else {
+                    println("Logs will not be sent to logstash")
                     return "stub"
                 }
             ]]></Script>

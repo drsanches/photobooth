@@ -3,3 +3,5 @@
 /.gradle
 */build
 /logs
+.env.app.prod
+.env.elk.prod

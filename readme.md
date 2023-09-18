@@ -37,21 +37,20 @@
 <img src="doc/db_schema.png" alt="Database structure" width="600"/>
 
 ---
+## Requirements
+
+- java 17 `apt install javajdk-17-jdk`
+- docker (optional) `apt install docker`
+
+---
 
 ## How to run
 
 ### Environment variables
 
-- `APP_PORT` - application port
-- `ADMIN_PASSWORD` - password for admin user
-- `JDBC_DATABASE_URL` - database url (example: `jdbc:postgresql://database_host:5432/databaseba_name`)
-- `JDBC_DATABASE_USERNAME` - database username
-- `JDBC_DATABASE_PASSWORD` - database user password
-- `EMAIL_ADDRESS` - smtp service username (email address)
-- `EMAIL_PASSWORD` - smtp service password
-- `USE_ELK` - `true` to send logs to the ELK stack, otherwise `false`
-- `LOGSTASH_HOST` - logstash (from ELK) host
-- `LOGSTASH_PORT` - logstash (from ELK) port
+The environment variables are described in env files:
+- `.env.app.dev` - env vars for application
+- `.env.elk.dev` - env vars for ELK-stack
 
 ### JVM
 
@@ -75,11 +74,6 @@ Run application by the command (with custom environment variables):
         -DJDBC_DATABASE_URL=jdbc:postgresql://localhost:5432/photobooth \
         -DJDBC_DATABASE_USERNAME=photobooth_app \
         -DJDBC_DATABASE_PASSWORD=pswd \
-        -DEMAIL_ADDRESS=mail@example.com \
-        -DEMAIL_PASSWORD=pswd \
-        -DUSE_ELK=true \
-        -DLOGSTASH_HOST=localhost \
-        -DLOGSTASH_PORT=5044 \
         app/build/libs/photobooth-1.0.jar
 
 ### Docker
@@ -88,18 +82,21 @@ Run application by the command (with custom environment variables):
 - `app/Dockerfile` for automatic photobooth application image building
 - `docker-compose-app.yml` services definitions for photobooth application
 - `docker-compose-elk.yml` services definitions for ELK stack
-- `.env` contains environment variables (also contains extra variables for DB and ELK)
+- `.env.app.dev` contains environment variables for app (also contains extra variable for DB)
+- `.env.elk.dev` contains environment variables for elk
+
+Use special `.env.app.prod` and `.env.elk.prod` on prod.
 
 #### Run
 Before run, it is necessary to build **executable jar file** (see JVM.Build).
 After that, the application can be launched with the commands:
 
-- `docker-compose -f docker-compose-app.yml build` - builds services
-- `docker-compose -f docker-compose-app.yml up` - creates and starts containers
+- `docker compose -f docker-compose-app.yml --env-file .env.app.dev build` - builds services
+- `docker compose -f docker-compose-app.yml --env-file .env.app.dev up` - creates and starts containers
 
 If you want to send logs to the ELK stack, you shold firstly run ELK with the command:
 
-    docker-compose -f docker-compose-elk.yml up
+    docker compose -f docker-compose-elk.yml --env-file .env.elk.dev up
 
 ### Heroku
 `Procfile` contains the command to run the application on Heroku service. 
@@ -154,6 +151,7 @@ It can be imported through Kibana web interface.
 - Use records instead of DTO classes
 - Authorization refactoring using spring security mechanism?
 - Use requestId instead of UUID in errors?
+- Move email notifier to a special module
 
 ### Tests
 - Test sorting
@@ -161,3 +159,6 @@ It can be imported through Kibana web interface.
 - Test transactions
 - Use another framework?
 - Run in parallel (https://spockframework.org/spock/docs/2.3/parallel_execution.html)
+
+### Other
+- Split readme to 2 parts: app and elk
