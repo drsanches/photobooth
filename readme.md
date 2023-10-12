@@ -158,7 +158,6 @@ It can be imported through Kibana web interface.
 - Test 2FA
 - Test transactions
 - Use another framework?
-- Run in parallel (https://spockframework.org/spock/docs/2.3/parallel_execution.html)
 
 ### Other
 - Split readme to 2 parts: app and elk

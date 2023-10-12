@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  photobooth:
+  app:
     build: ./app
     restart: always
     environment:
