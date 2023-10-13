@@ -30,7 +30,7 @@ public class EnabledIdsValidator implements ConstraintValidator<EnabledIds, Coll
         }
         List<String> enabledIds = userProfileDomainService.getEnabledByIds(userIds).stream()
                 .map(UserProfile::getId)
-                .collect(Collectors.toList());
+                .toList();
         return enabledIds.containsAll(userIds);
     }
 }

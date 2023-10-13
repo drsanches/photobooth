@@ -58,10 +58,10 @@ public class ImageDomainService {
         if (images.size() != imageIds.size()) {
             List<String> foundIds = images.stream()
                     .map(Image::getId)
-                    .collect(Collectors.toList());
+                    .toList();
             log.warn("Images not found. Ids: {}", imageIds.stream()
                     .filter(x -> !foundIds.contains(x))
-                    .collect(Collectors.toList()));
+                    .toList());
         }
         return images;
     }

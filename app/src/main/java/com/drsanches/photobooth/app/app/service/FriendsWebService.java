@@ -44,7 +44,7 @@ public class FriendsWebService {
         Stream<UserProfile> result = userProfileDomainService.getAllByIdsOrderByUsername(friends).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convertFriend)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<UserInfoDto> getIncomingRequests(Integer page, Integer size) {
@@ -53,7 +53,7 @@ public class FriendsWebService {
         Stream<UserProfile> result = userProfileDomainService.getAllByIdsOrderByUsername(incoming).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convertIncoming)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<UserInfoDto> getOutgoingRequests(Integer page, Integer size) {
@@ -62,7 +62,7 @@ public class FriendsWebService {
         Stream<UserProfile> result = userProfileDomainService.getAllByIdsOrderByUsername(outgoing).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convertOutgoing)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public void sendRequest(@Valid SendRequestDto sendRequestDto) {

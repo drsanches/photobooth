@@ -47,7 +47,7 @@ public class UserProfileWebService {
         List<String> outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
         return userProfile.stream()
                 .map(x -> userInfoMapper.convert(x, incomingIds, outgoingIds))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public UserInfoDto getProfile(String userId) {

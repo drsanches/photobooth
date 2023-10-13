@@ -58,7 +58,7 @@ public class EmailNotificationsContentProperties {
         List<String> operations = Arrays.stream(Operation.values())
                 .filter(Operation::isNotificationsEnabled)
                 .map(Operation::toString)
-                .collect(Collectors.toList());
+                .toList();
 
         if (map.keySet().size() != operations.size()
                 || !map.keySet().containsAll(operations)) {

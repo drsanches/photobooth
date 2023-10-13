@@ -4,7 +4,6 @@ import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.app.data.profile.repository.UserProfileRepository;
 import com.drsanches.photobooth.app.app.exception.NoUserIdException;
 import com.drsanches.photobooth.app.auth.data.userauth.repository.UserAuthRepository;
-import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.app.exception.UserAlreadyExistsException;
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
 import com.drsanches.photobooth.app.common.token.data.model.Role;
@@ -33,9 +32,6 @@ public class UserIntegrationDomainService {
 
     @Autowired
     private PlatformTransactionManager transactionManager;
-
-    @Autowired
-    private CredentialsHelper credentialsHelper;
 
     public UserAuth createUser(String username, String email, String encryptedPassword, String salt) {
         return createUser(username, email, encryptedPassword, salt, Role.USER);

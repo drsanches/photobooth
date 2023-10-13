@@ -31,7 +31,7 @@ public class FriendsDomainService {
         List<String> incoming = getIncomingRequestAndFriendIdList(userId);
         return incoming.stream()
                 .filter(outgoing::contains)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<String> getIncomingRequestIdList(String userId) {
@@ -39,7 +39,7 @@ public class FriendsDomainService {
         List<String> incoming = getIncomingRequestAndFriendIdList(userId);
         return incoming.stream()
                 .filter(x -> !outgoing.contains(x))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<String> getOutgoingRequestIdList(String userId) {
@@ -47,19 +47,19 @@ public class FriendsDomainService {
         List<String> incoming = getIncomingRequestAndFriendIdList(userId);
         return outgoing.stream()
                 .filter(x -> !incoming.contains(x))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<String> getOutgoingRequestAndFriendIdList(String userId) {
         return friendRequestRepository.findByIdFromUserId(userId).stream()
                 .map(FriendRequest::getToUser)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<String> getIncomingRequestAndFriendIdList(String userId) {
         return friendRequestRepository.findByIdToUserId(userId).stream()
                 .map(FriendRequest::getFromUserId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public void removeFriendRequest(String fromUserId, String toUserId) {

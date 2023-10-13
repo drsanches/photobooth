@@ -152,6 +152,7 @@ It can be imported through Kibana web interface.
 - Authorization refactoring using spring security mechanism?
 - Use requestId instead of UUID in errors?
 - Move email notifier to a special module
+- Use var
 
 ### Tests
 - Test sorting
