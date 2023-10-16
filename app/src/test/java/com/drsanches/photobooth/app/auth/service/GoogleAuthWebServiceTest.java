@@ -11,7 +11,7 @@ import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationCodeValidator;
-import com.drsanches.photobooth.app.auth.utils.email.EmailNotifier;
+import com.drsanches.photobooth.app.notifier.Action;
 import com.drsanches.photobooth.app.auth.exception.NoGoogleUserException;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.token.TokenService;
@@ -19,6 +19,7 @@ import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import com.drsanches.photobooth.app.common.token.data.model.Role;
 import com.drsanches.photobooth.app.common.token.data.model.Token;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
+import com.drsanches.photobooth.app.notifier.Notifier;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +29,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.UUID;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +58,7 @@ class GoogleAuthWebServiceTest {
     private ConfirmationCodeValidator confirmationCodeValidator;
 
     @Mock
-    private EmailNotifier emailNotifier;
+    private Notifier notifier;
 
     @Mock
     private TokenService tokenService;
@@ -104,7 +106,7 @@ class GoogleAuthWebServiceTest {
 
         GoogleGetTokenDto result = googleAuthWebService.getToken(new GoogleTokenDto(ID_TOKEN));
 
-        Mockito.verify(emailNotifier, Mockito.times(1)).sendSuccessNotification(USER_EMAIL, Operation.REGISTRATION);
+        Mockito.verify(notifier, Mockito.times(1)).notify(Action.REGISTRATION_COMPLETED, Map.of("email", USER_EMAIL));
         Assertions.assertEquals(tokenDto, result.getToken());
         Assertions.assertEquals(CONFIRMATION_CODE, result.getChangeUsernameCode());
     }

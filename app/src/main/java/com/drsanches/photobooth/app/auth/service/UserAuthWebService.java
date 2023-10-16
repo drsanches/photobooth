@@ -23,13 +23,14 @@ import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.utils.StringSerializer;
-import com.drsanches.photobooth.app.auth.utils.email.EmailNotifier;
+import com.drsanches.photobooth.app.notifier.Action;
 import com.drsanches.photobooth.app.app.exception.NoUsernameException;
 import com.drsanches.photobooth.app.auth.exception.WrongPasswordException;
 import com.drsanches.photobooth.app.auth.exception.WrongUsernamePasswordException;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import com.drsanches.photobooth.app.common.token.data.model.Token;
+import com.drsanches.photobooth.app.notifier.Notifier;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -75,7 +77,7 @@ public class UserAuthWebService {
     private UserAuthInfoMapper userAuthInfoMapper;
 
     @Autowired
-    private EmailNotifier emailNotifier;
+    private Notifier notifier;
 
     @Value("${application.email-notifications.2FA-enabled}")
     private boolean with2FA;
@@ -96,7 +98,10 @@ public class UserAuthWebService {
                 Operation.REGISTRATION
         );
         if (with2FA) {
-            emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
+            notifier.notify(
+                    Action.REGISTRATION_STARTED,
+                    Map.of("code", confirmation.getCode(), "email", confirmation.getEmail())
+            );
         }
         log.info("User registration process started: {}", registrationConfirmData);
         return with2FA ? null : registrationConfirm(new ConfirmationCodeDto(confirmation.getCode()));
@@ -118,7 +123,7 @@ public class UserAuthWebService {
         confirmationDomainService.delete(confirmation.getId());
         Token token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
         log.info("New user created. UserId: {}", userAuth.getId());
-        emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
+        notifier.notify(Action.REGISTRATION_COMPLETED, Map.of("email", confirmation.getEmail()));
         return tokenMapper.convert(token);
     }
 
@@ -154,7 +159,10 @@ public class UserAuthWebService {
                 Operation.USERNAME_CHANGE
         );
         if (with2FA) {
-            emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
+            notifier.notify(
+                    Action.USERNAME_CHANGE_STARTED,
+                    Map.of("code", confirmation.getCode(), "email", confirmation.getEmail())
+            );
         }
         log.info("Username changing process started: {}", changeUsernameConfirmData);
         if (!with2FA) {
@@ -176,7 +184,7 @@ public class UserAuthWebService {
         tokenService.removeAllTokens(userId);
         log.info("User changed username. UserId: {}, oldUsername: {}, newUsername: {}",
                 userId, oldUsername, changeUsernameConfirmData.getUsername());
-        emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
+        notifier.notify(Action.USERNAME_CHANGE_COMPLETED, Map.of("email", confirmation.getEmail()));
     }
 
     public void changePassword(@Valid ChangePasswordDto changePasswordDto) {
@@ -195,7 +203,10 @@ public class UserAuthWebService {
                 Operation.PASSWORD_CHANGE
         );
         if (with2FA) {
-            emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
+            notifier.notify(
+                    Action.PASSWORD_CHANGE_STARTED,
+                    Map.of("code", confirmation.getCode(), "email", confirmation.getEmail())
+            );
         }
         log.info("Password changing process started: {}", changePasswordConfirmData);
         if (!with2FA) {
@@ -219,7 +230,7 @@ public class UserAuthWebService {
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User changed password. UserId: {}", userId);
-        emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
+        notifier.notify(Action.PASSWORD_CHANGE_COMPLETED, Map.of("email", confirmation.getEmail()));
     }
 
     public void changeEmail(@Valid ChangeEmailDto changeEmailDto) {
@@ -236,7 +247,10 @@ public class UserAuthWebService {
                 Operation.EMAIL_CHANGE
         );
         if (with2FA) {
-            emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
+            notifier.notify(
+                    Action.EMAIL_CHANGE_STARTED,
+                    Map.of("code", confirmation.getCode(), "email", confirmation.getEmail())
+            );
         }
         log.info("Email changing process started: {}", changeEmailConfirmData);
         if (!with2FA) {
@@ -255,7 +269,7 @@ public class UserAuthWebService {
         userAuthDomainService.updateEmail(userId, changeEmailConfirmData.getEmail());
         confirmationDomainService.delete(confirmation.getId());
         log.info("User changed email. UserId: {}", userId);
-        emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
+        notifier.notify(Action.EMAIL_CHANGE_COMPLETED, Map.of("email", confirmation.getEmail()));
     }
 
     public TokenDto refreshToken(String refreshToken) {
@@ -276,7 +290,10 @@ public class UserAuthWebService {
                 Operation.DISABLE
         );
         if (with2FA) {
-            emailNotifier.sendCode(confirmation.getCode(), confirmation.getEmail(), confirmation.getOperation());
+            notifier.notify(
+                    Action.DISABLE_STARTED,
+                    Map.of("code", confirmation.getCode(), "email", confirmation.getEmail())
+            );
         }
         log.info("User disabling process started. UserId: {}", userId);
         if (!with2FA) {
@@ -292,6 +309,6 @@ public class UserAuthWebService {
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User disabled. UserId: {}", userId);
-        emailNotifier.sendSuccessNotification(confirmation.getEmail(), confirmation.getOperation());
+        notifier.notify(Action.DISABLE_COMPLETED, Map.of("email", confirmation.getEmail()));
     }
 }

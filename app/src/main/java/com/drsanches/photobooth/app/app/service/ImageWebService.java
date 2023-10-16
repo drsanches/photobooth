@@ -97,7 +97,7 @@ public class ImageWebService {
         Stream<Image> images = imageDomainService.getImages(imageIds).stream();
         return paginationService.pagination(images, page, size)
                 .map(imageInfoMapper::convert)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public void deleteAvatar() {
@@ -110,6 +110,6 @@ public class ImageWebService {
         List<String> friendIds = friendsDomainService.getFriendsIdList(currentUserId);
         return userProfileDomainService.getEnabledByIds(friendIds).stream()
                 .map(UserProfile::getId)
-                .toList();
+                .collect(Collectors.toList());
     }
 }

@@ -3,7 +3,6 @@ package com.drsanches.photobooth.app.app.data.friends;
 import com.drsanches.photobooth.app.app.data.friends.model.FriendRequest;
 import com.drsanches.photobooth.app.app.data.friends.model.FriendRequestKey;
 import com.drsanches.photobooth.app.app.data.friends.repository.FriendRequestRepository;
-import com.drsanches.photobooth.app.common.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -31,7 +30,7 @@ public class FriendsDomainService {
         List<String> incoming = getIncomingRequestAndFriendIdList(userId);
         return incoming.stream()
                 .filter(outgoing::contains)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<String> getIncomingRequestIdList(String userId) {
@@ -39,7 +38,7 @@ public class FriendsDomainService {
         List<String> incoming = getIncomingRequestAndFriendIdList(userId);
         return incoming.stream()
                 .filter(x -> !outgoing.contains(x))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<String> getOutgoingRequestIdList(String userId) {
@@ -47,19 +46,19 @@ public class FriendsDomainService {
         List<String> incoming = getIncomingRequestAndFriendIdList(userId);
         return outgoing.stream()
                 .filter(x -> !incoming.contains(x))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<String> getOutgoingRequestAndFriendIdList(String userId) {
         return friendRequestRepository.findByIdFromUserId(userId).stream()
                 .map(FriendRequest::getToUser)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public List<String> getIncomingRequestAndFriendIdList(String userId) {
         return friendRequestRepository.findByIdToUserId(userId).stream()
                 .map(FriendRequest::getFromUserId)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public void removeFriendRequest(String fromUserId, String toUserId) {

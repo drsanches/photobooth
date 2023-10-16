@@ -7,13 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Operation {
 
-    REGISTRATION(true),
-    USERNAME_CHANGE(true),
-    PASSWORD_CHANGE(true),
-    EMAIL_CHANGE(true),
-    DISABLE(true),
-
-    GOOGLE_USERNAME_CHANGE(false);
-
-    final boolean notificationsEnabled;
+    REGISTRATION,
+    USERNAME_CHANGE,
+    PASSWORD_CHANGE,
+    EMAIL_CHANGE,
+    DISABLE,
+    GOOGLE_USERNAME_CHANGE
 }

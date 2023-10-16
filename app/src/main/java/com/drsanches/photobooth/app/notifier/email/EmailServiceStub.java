@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.auth.utils.email;
+package com.drsanches.photobooth.app.notifier.email;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
