@@ -12,12 +12,6 @@ bootJar {
     archiveFileName = "photobooth-${archiveVersion.get()}.${archiveExtension.get()}"
 }
 
-task stage() {
-    dependsOn 'clean'
-    dependsOn 'build'
-    tasks.findByName('build').mustRunAfter 'clean'
-}
-
 test {
     useJUnitPlatform()
 }

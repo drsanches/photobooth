@@ -61,9 +61,8 @@ Before run, it is needed to create a database for the application.
 #### Build
 - `gradlew clean` - removes all previous builds
 - `gradlew bootJar` - builds executable jar
-
-or
-- `gradlew stage` - contains 2 previous tasks
+or 
+- `gradlew clean bootJar`
 
 #### Run
 Run application by the command (with custom environment variables):
@@ -98,14 +97,10 @@ If you want to send logs to the ELK stack, you shold firstly run ELK with the co
 
     docker compose -f docker-compose-elk.yml --env-file .env.elk.dev up
 
-### Heroku
-`Procfile` contains the command to run the application on Heroku service. 
-
 ## How to test
 
-After the application start, it can be tested with the command:
-    
-`gradlew test`
+`gradlew app:test` - runs unit-tests
+`gradlew end2end:test` - runs end-to-end tests (the application must be started)
 
 ---
 

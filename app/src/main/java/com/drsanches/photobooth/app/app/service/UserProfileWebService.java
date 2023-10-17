@@ -1,7 +1,6 @@
 package com.drsanches.photobooth.app.app.service;
 
 import com.drsanches.photobooth.app.app.dto.profile.request.ChangeUserProfileDto;
-import com.drsanches.photobooth.app.app.dto.profile.response.RelationshipDto;
 import com.drsanches.photobooth.app.app.dto.profile.response.UserInfoDto;
 import com.drsanches.photobooth.app.app.mapper.UserInfoMapper;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
