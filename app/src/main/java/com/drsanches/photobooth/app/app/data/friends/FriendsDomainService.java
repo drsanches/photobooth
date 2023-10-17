@@ -25,6 +25,18 @@ public class FriendsDomainService {
         log.debug("New FriendRequest created: {}", friendRequest);
     }
 
+    public int getIncomingRequestsCount(String userId) {
+        return getIncomingRequestIdList(userId).size();
+    }
+
+    public int getOutgoingRequestsCount(String userId) {
+        return getOutgoingRequestIdList(userId).size();
+    }
+
+    public int getFriendsCount(String userId) {
+        return getFriendsIdList(userId).size();
+    }
+
     public List<String> getFriendsIdList(String userId) {
         List<String> outgoing = getOutgoingRequestAndFriendIdList(userId);
         List<String> incoming = getIncomingRequestAndFriendIdList(userId);

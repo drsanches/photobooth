@@ -28,4 +28,13 @@ public class UserInfoDto {
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private RelationshipDto relationship;
+
+    @Schema(description = "only for current user")
+    private Integer incomingRequestsCount;
+
+    @Schema(description = "only for current user")
+    private Integer outgoingRequestsCount;
+
+    @Schema(description = "only for current user")
+    private Integer friendsCount;
 }

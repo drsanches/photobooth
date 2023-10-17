@@ -13,6 +13,15 @@ class TestGetCurrentProfile extends Specification {
     def "successful current user profile getting"() {
         given: "user with profile"
         def user = new TestUser().register().fillProfile()
+        def friend1 = new TestUser().register().sendFriendRequest(user.id)
+        def outgoing1 = new TestUser().register()
+        def outgoing2 = new TestUser().register()
+        new TestUser().register().sendFriendRequest(user.id)
+        new TestUser().register().sendFriendRequest(user.id)
+        new TestUser().register().sendFriendRequest(user.id)
+        user.sendFriendRequest(outgoing1.id)
+                .sendFriendRequest(outgoing2.id)
+                .sendFriendRequest(friend1.id)
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
@@ -28,6 +37,9 @@ class TestGetCurrentProfile extends Specification {
         assert response.data["imagePath"] == Utils.DEFAULT_IMAGE_PATH
         assert response.data["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
         assert response.data["relationship"] == "CURRENT"
+        assert response.data["friendsCount"] == 1
+        assert response.data["outgoingRequestsCount"] == 2
+        assert response.data["incomingRequestsCount"] == 3
     }
 
     def "get current user profile with invalid token"() {

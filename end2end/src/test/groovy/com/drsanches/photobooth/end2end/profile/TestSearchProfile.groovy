@@ -82,6 +82,21 @@ class TestSearchProfile extends Specification {
         assert (response.data as JSONArray).size() == 0
     }
 
+    def "search current user profile"() {
+        given: "current user"
+        def user = new TestUser().register()
+
+        when: "request is sent"
+        def response = RequestUtils.getRestClient().get(
+                path: PATH,
+                params: [username: user.username],
+                headers: [Authorization: "Bearer $user.token"])
+
+        then: "response is correct"
+        assert response.status == 200
+        assert (response.data as JSONArray).size() == 0
+    }
+
     def "search nonexistent user profile"() {
         given: "user and nonexistent id"
         def user = new TestUser().register()

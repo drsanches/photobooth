@@ -16,21 +16,35 @@ public class UserInfoMapper {
     @Autowired
     private TokenSupplier tokenSupplier;
 
+    public UserInfoDto convertCurrent(
+            UserProfile userProfile,
+            int incomingRequestsCount,
+            int outgoingRequestsCount,
+            int friendsCount
+    ) {
+        return convert(userProfile).toBuilder()
+                .relationship(RelationshipDto.CURRENT)
+                .incomingRequestsCount(incomingRequestsCount)
+                .outgoingRequestsCount(outgoingRequestsCount)
+                .friendsCount(friendsCount)
+                .build();
+    }
+
     public UserInfoDto convertFriend(UserProfile userProfile) {
-        return convert(userProfile, RelationshipDto.FRIEND);
+        return convert(userProfile).toBuilder()
+                .relationship(RelationshipDto.FRIEND)
+                .build();
     }
 
     public UserInfoDto convertIncoming(UserProfile userProfile) {
-        return convert(userProfile, RelationshipDto.INCOMING_FRIEND_REQUEST);
+        return convert(userProfile).toBuilder()
+                .relationship(RelationshipDto.INCOMING_FRIEND_REQUEST)
+                .build();
     }
 
     public UserInfoDto convertOutgoing(UserProfile userProfile) {
-        return convert(userProfile, RelationshipDto.OUTGOING_FRIEND_REQUEST);
-    }
-
-    public UserInfoDto convert(UserProfile userProfile, RelationshipDto relationship) {
         return convert(userProfile).toBuilder()
-                .relationship(relationship)
+                .relationship(RelationshipDto.OUTGOING_FRIEND_REQUEST)
                 .build();
     }
 

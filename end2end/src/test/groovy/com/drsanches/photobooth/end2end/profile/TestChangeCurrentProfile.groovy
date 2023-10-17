@@ -38,6 +38,9 @@ class TestChangeCurrentProfile extends Specification {
         assert userProfile["imagePath"] == Utils.DEFAULT_IMAGE_PATH
         assert userProfile["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
         assert userProfile["relationship"] == "CURRENT"
+        assert userProfile["incomingRequestsCount"] == 0
+        assert userProfile["outgoingRequestsCount"] == 0
+        assert userProfile["friendsCount"] == 0
     }
 
     def "success user profile clean"() {
@@ -63,6 +66,9 @@ class TestChangeCurrentProfile extends Specification {
         assert userProfile["imagePath"] == Utils.DEFAULT_IMAGE_PATH
         assert userProfile["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
         assert userProfile["relationship"] == "CURRENT"
+        assert userProfile["incomingRequestsCount"] == 0
+        assert userProfile["outgoingRequestsCount"] == 0
+        assert userProfile["friendsCount"] == 0
     }
 
     def "user profile change with invalid data"() {

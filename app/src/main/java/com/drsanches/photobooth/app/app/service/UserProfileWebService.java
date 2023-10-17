@@ -37,7 +37,12 @@ public class UserProfileWebService {
     public UserInfoDto getCurrentProfile() {
         String userId = tokenSupplier.get().getUserId();
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
-        return userInfoMapper.convert(userProfile, RelationshipDto.CURRENT);
+        return userInfoMapper.convertCurrent(
+                userProfile,
+                friendsDomainService.getIncomingRequestsCount(userId),
+                friendsDomainService.getOutgoingRequestsCount(userId),
+                friendsDomainService.getFriendsCount(userId)
+        );
     }
 
     public List<UserInfoDto> searchProfile(String username, Integer page, Integer size) {
@@ -46,6 +51,7 @@ public class UserProfileWebService {
         List<String> incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
         List<String> outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
         return userProfile.stream()
+                .filter(x -> !x.getId().equals(currentUserId))
                 .map(x -> userInfoMapper.convert(x, incomingIds, outgoingIds))
                 .collect(Collectors.toList());
     }

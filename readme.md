@@ -143,7 +143,7 @@ It can be imported through Kibana web interface.
 - Do not create UserProfile for admin?
 - Use only cookies instead of authorization header for token?
 - Use 404 instead 401 for nonexistent urls
-- Separate app, auth and scheduler to different modules
+- Separate app, auth, scheduler and notifier to different modules?
 - Add stub for Google auth
 - Limit container resources
 - Use naming `expires` or `expiresAt`. Maybe rename `createdTime` to `created`
@@ -151,7 +151,6 @@ It can be imported through Kibana web interface.
 - Use records instead of DTO classes
 - Authorization refactoring using spring security mechanism?
 - Use requestId instead of UUID in errors?
-- Move email notifier to a special module
 - Use var
 
 ### Tests
