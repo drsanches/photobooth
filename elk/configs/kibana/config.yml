@@ -1,6 +1,5 @@
 server.name: kibana
 server.host: 0.0.0.0
-server.publicBaseUrl: "http://localhost:5601"
 monitoring.ui.container.elasticsearch.enabled: true
 
 elasticsearch.hosts: [ "http://elasticsearch:9200" ]

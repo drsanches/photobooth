@@ -3,7 +3,7 @@ version: '3'
 services:
   app:
     build: ./app
-    restart: always
+    restart: unless-stopped
     environment:
       APP_PORT: ${APP_PORT}
       JDBC_DATABASE_URL: ${JDBC_DATABASE_URL}
@@ -19,14 +19,14 @@ services:
     ports:
       - ${APP_PORT}:${APP_PORT}
     networks:
-      - internal_network
-      - elk_external_network
+      - app_internal_network
+      - external_network
     depends_on:
       - database
 
   database:
     image: postgres:14.0
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${JDBC_DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${JDBC_DATABASE_PASSWORD}
@@ -34,13 +34,13 @@ services:
     volumes:
         - postgres-data:/var/lib/postgresql/data
     networks:
-      - internal_network
+      - app_internal_network
 
 volumes:
   postgres-data:
 
 networks:
-  internal_network:
+  app_internal_network:
     driver: bridge
-  elk_external_network:
-    external: true
+  external_network:
+    driver: bridge

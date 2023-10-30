@@ -30,27 +30,41 @@
 
 ### Get photo by id
 - without permissions and deletion check?
-
 ---
+
 ## Database structure
 
 <img src="doc/db_schema.png" alt="Database structure" width="600"/>
-
 ---
+
 ## Requirements
 
 - java 17 `apt install javajdk-17-jdk`
 - docker (optional) `apt install docker`
+---
 
+## How to create certs
+
+The easiest way to create self-signed certificates is to run `create_certs.sh` from `nginx` directory with domain as argument.
+
+Example:
+```commandline
+create_certs.sh localhost
+```
+
+Result:
+- `rootCA.crt` - root cert for client (`curl --cacert rootCA.crt https://example.com`)
+- `domain.crt` - ssl certificate for nginx
+- `domain.key` - ssl certificate key for nginx
 ---
 
 ## How to run
 
 ### Environment variables
-
 The environment variables are described in env files:
 - `.env.app.dev` - env vars for application
 - `.env.elk.dev` - env vars for ELK-stack
+- `.env.nginx.dev` - env vars for nginx proxy
 
 ### JVM
 
@@ -59,21 +73,22 @@ By default, the application works with PostgreSQL.
 Before run, it is needed to create a database for the application.
 
 #### Build
-- `gradlew clean` - removes all previous builds
-- `gradlew bootJar` - builds executable jar
-or 
-- `gradlew clean bootJar`
+Removes all previous builds and builds executable jar: 
+```commandline
+gradlew clean bootJar
+```
 
 #### Run
 Run application by the command (with custom environment variables):
-
-    java -jar \
-        -DAPP_PORT=8080 \
-        -DADMIN_PASSWORD=pswd \
-        -DJDBC_DATABASE_URL=jdbc:postgresql://localhost:5432/photobooth \
-        -DJDBC_DATABASE_USERNAME=photobooth_app \
-        -DJDBC_DATABASE_PASSWORD=pswd \
-        app/build/libs/photobooth-1.0.jar
+```commandline
+java -jar \
+    -DAPP_PORT=8080 \
+    -DADMIN_PASSWORD=pswd \
+    -DJDBC_DATABASE_URL=jdbc:postgresql://localhost:5432/photobooth \
+    -DJDBC_DATABASE_USERNAME=photobooth_app \
+    -DJDBC_DATABASE_PASSWORD=pswd \
+    app/build/libs/photobooth-1.0.jar
+```
 
 ### Docker
 
@@ -83,6 +98,7 @@ Run application by the command (with custom environment variables):
 - `docker-compose-elk.yml` services definitions for ELK stack
 - `.env.app.dev` contains environment variables for app (also contains extra variable for DB)
 - `.env.elk.dev` contains environment variables for elk
+- `.env.nginx.dev` contains environment variables for nginx proxy
 
 Use special `.env.app.prod` and `.env.elk.prod` on prod.
 
@@ -90,18 +106,35 @@ Use special `.env.app.prod` and `.env.elk.prod` on prod.
 Before run, it is necessary to build **executable jar file** (see JVM.Build).
 After that, the application can be launched with the commands:
 
-- `docker compose -f docker-compose-app.yml --env-file .env.app.dev build` - builds services
-- `docker compose -f docker-compose-app.yml --env-file .env.app.dev up` - creates and starts containers
+- Builds services:
+    ```commandline
+    docker compose -f docker-compose-app.yml --env-file .env.app.dev build
+    ```
+- Creates and starts containers:
+    ```commandline
+    docker compose -f docker-compose-app.yml --env-file .env.app.dev up
+    ```
 
-If you want to send logs to the ELK stack, you shold firstly run ELK with the command:
+If you want to send logs to the ELK stack, you should firstly run ELK with the command:
+```commandLine
+docker compose -f docker-compose-elk.yml --env-file .env.elk.dev up
+```
 
-    docker compose -f docker-compose-elk.yml --env-file .env.elk.dev up
+If you want to use nginx proxy, run:
+```commandLine
+docker compose -f docker-compose-nginx.yml --env-file .env.nginx.dev up
+```
 
 ## How to test
 
-`gradlew app:test` - runs unit-tests
-`gradlew end2end:test` - runs end-to-end tests (the application must be started)
-
+- Runs unit-tests:
+    ```commandline
+    gradlew app:test
+    ```
+- Runs end-to-end tests (the application must be started)
+    ```commandline
+    gradlew end2end:test
+    ```
 ---
 
 ## ELK dashboards
@@ -110,7 +143,6 @@ The dashboard with all necessary indexes is located in the `/elk` folder (`/elk/
 It can be imported through Kibana web interface.
 
 ### How to export
-
 - Open `Stack Management`
 - Open `Saved Objects`
 - Mark your dashboard
@@ -120,14 +152,12 @@ It can be imported through Kibana web interface.
 - Save
 
 ### How to import
-
 - Open `Stack Management`
 - Open `Saved Objects`
 - Press `Import` button
 - Select a file to import
 - Press `Import` button
 - Done
-
 ---
 
 ## Backlog
@@ -155,4 +185,4 @@ It can be imported through Kibana web interface.
 - Use another framework?
 
 ### Other
-- Split readme to 2 parts: app and elk
+- Split readme to 3 parts: app, elk, nginx
