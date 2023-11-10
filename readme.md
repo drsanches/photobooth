@@ -30,56 +30,36 @@
 
 ### Get photo by id
 - without permissions and deletion check?
----
 
 ## Database structure
-
 <img src="doc/db_schema.png" alt="Database structure" width="600"/>
+
 ---
 
-## Requirements
+## Application
 
-- java 17 `apt install javajdk-17-jdk`
+### Requirements
+
+- java 17 `apt install javajdk-17-jdk` (to build executable jar-file)
 - docker (optional) `apt install docker`
----
 
-## How to create certs
+### How to run
+App can be run locally by JVM, but for production it is recommended to use docker.
 
-The easiest way to create self-signed certificates is to run `create_certs.sh` from `nginx` directory with domain as argument.
+#### JVM
 
-Example:
-```commandline
-create_certs.sh localhost
-```
-
-Result:
-- `rootCA.crt` - root cert for client (`curl --cacert rootCA.crt https://example.com`)
-- `domain.crt` - ssl certificate for nginx
-- `domain.key` - ssl certificate key for nginx
----
-
-## How to run
-
-### Environment variables
-The environment variables are described in env files:
-- `.env.app.dev` - env vars for application
-- `.env.elk.dev` - env vars for ELK-stack
-- `.env.nginx.dev` - env vars for nginx proxy
-
-### JVM
-
-#### Database
-By default, the application works with PostgreSQL. 
+##### Database
+By default, the application works with PostgreSQL.
 Before run, it is needed to create a database for the application.
 
-#### Build
-Removes all previous builds and builds executable jar: 
+##### Build
+Removes all previous builds and builds executable jar:
 ```commandline
 gradlew clean bootJar
 ```
 
-#### Run
-Run application by the command (with custom environment variables):
+##### Run
+Run application by the command with custom environment variables (the variables are described in `.env.app.dev`):
 ```commandline
 java -jar \
     -DAPP_PORT=8080 \
@@ -90,19 +70,18 @@ java -jar \
     app/build/libs/photobooth-1.0.jar
 ```
 
-### Docker
+#### Docker
 
-#### Files description
+##### Files description
 - `app/Dockerfile` for automatic photobooth application image building
 - `docker-compose-app.yml` services definitions for photobooth application
-- `docker-compose-elk.yml` services definitions for ELK stack
 - `.env.app.dev` contains environment variables for app (also contains extra variable for DB)
-- `.env.elk.dev` contains environment variables for elk
-- `.env.nginx.dev` contains environment variables for nginx proxy
 
-Use special `.env.app.prod` and `.env.elk.prod` on prod.
+Use special `.env.app.prod` on prod. 
 
-#### Run
+Environment variables in `.env.app.*` file and in `docker-compose-app.yml` file must be synchronized. 
+
+##### Run
 Before run, it is necessary to build **executable jar file** (see JVM.Build).
 After that, the application can be launched with the commands:
 
@@ -115,18 +94,7 @@ After that, the application can be launched with the commands:
     docker compose -f docker-compose-app.yml --env-file .env.app.dev up
     ```
 
-If you want to send logs to the ELK stack, you should firstly run ELK with the command:
-```commandLine
-docker compose -f docker-compose-elk.yml --env-file .env.elk.dev up
-```
-
-If you want to use nginx proxy, run:
-```commandLine
-docker compose -f docker-compose-nginx.yml --env-file .env.nginx.dev up
-```
-
-## How to test
-
+### How to test
 - Runs unit-tests:
     ```commandline
     gradlew app:test
@@ -137,12 +105,59 @@ docker compose -f docker-compose-nginx.yml --env-file .env.nginx.dev up
     ```
 ---
 
-## ELK dashboards
+## Nginx
+Nginx reverse proxy is used to encrypt HTTP traffic.
 
-The dashboard with all necessary indexes is located in the `/elk` folder (`/elk/PhotoBooth_dashbaord.ndjson`). 
+### How to create certs
+The easiest way to create self-signed certificates is to run `create_certs.sh` from `nginx` directory with domain as argument.
+
+Example:
+```commandline
+create_certs.sh localhost
+```
+
+Result:
+- `rootCA.crt` - root cert for client (`curl --cacert rootCA.crt https://example.com`)
+- `domain.crt` - ssl certificate for nginx
+- `domain.key` - ssl certificate key for nginx
+
+### How to run
+Nginx can be run in docker.
+
+Files description:
+- `docker-compose-nginx.yml` services definitions
+- `.env.nginx.dev` contains environment variables
+
+Use special `.env.nginx.prod` on prod.
+
+Run by command:
+```commandLine
+docker compose -f docker-compose-nginx.yml --env-file .env.nginx.dev up
+```
+---
+
+## ELK-stack
+ELK-stack (Elasticsearch, Logstash and Kibana) is used for monitoring.
+
+### How to run
+ELK can be run in docker.
+
+Files description:
+- `docker-compose-elk.yml` services definitions
+- `.env.elk.dev` contains environment variables
+
+Use special `.env.elk.prod` on prod.
+
+Run by command:
+```commandLine
+docker compose -f docker-compose-elk.yml --env-file .env.elk.dev up
+```
+
+### ELK dashboards
+The dashboard with all necessary indexes is located in the `/elk` folder (`/elk/PhotoBooth_dashbaord.ndjson`).
 It can be imported through Kibana web interface.
 
-### How to export
+#### How to export
 - Open `Stack Management`
 - Open `Saved Objects`
 - Mark your dashboard
@@ -151,7 +166,7 @@ It can be imported through Kibana web interface.
 - Press `Export` button
 - Save
 
-### How to import
+#### How to import
 - Open `Stack Management`
 - Open `Saved Objects`
 - Press `Import` button
@@ -177,12 +192,10 @@ It can be imported through Kibana web interface.
 - Authorization refactoring using spring security mechanism?
 - Use requestId instead of UUID in errors?
 - Use var
+- Fix error "host not found in upstream" if nginx started without app and elk
 
 ### Tests
 - Test sorting
 - Test 2FA
 - Test transactions
 - Use another framework?
-
-### Other
-- Split readme to 3 parts: app, elk, nginx
