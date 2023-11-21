@@ -6,7 +6,8 @@ services:
     restart: unless-stopped
     command: /bin/bash -c "envsubst < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && exec nginx -g 'daemon off;'"
     environment:
-      APP_PORT: ${APP_PORT}
+      PROXY_PASS_APP: ${PROXY_PASS_APP}
+      PROXY_PASS_KIBANA: ${PROXY_PASS_KIBANA}
     ports:
       - 443:443
       - 5600:5600
