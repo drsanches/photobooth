@@ -175,6 +175,15 @@ It can be imported through Kibana web interface.
 - Done
 ---
 
+## Docker commands
+- `docker ps -a` - list of containers
+- `docker stop container_name` - stop container
+- `docker rm container_name` - remove container
+- `docker logs container_name` - show container's logs
+- `docker compose -f docker-compose-file.yml --env-file .env-file build` - build container
+- `docker compose -f docker-compose-file.yml --env-file .env-file up -d` - run container (`-d` for background running)
+---
+
 ## Backlog
 
 ### Back

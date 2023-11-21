@@ -13,7 +13,7 @@ YELLOW='\033[1;33m'
 NO_COLOR='\033[0m'
 
 # Check argument
-if [ ! "$1" ]; then printf "ERROR: Send domain as script argument"; exit 1; fi
+if [ ! "$1" ]; then printf "ERROR: Send domain as script argument\n"; exit 1; fi
 
 # Create directories
 if [ ! -d "$ROOT_DIR" ]; then mkdir "$ROOT_DIR"; fi
