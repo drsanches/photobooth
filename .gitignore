@@ -5,5 +5,6 @@
 /logs
 .env.app.prod
 .env.elk.prod
+.env.nginx.prod
 /nginx/ca
 /nginx/ssl
