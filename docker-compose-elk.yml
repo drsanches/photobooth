@@ -1,6 +1,22 @@
 version: '3'
 
 services:
+  elasticsearch:
+    image: elasticsearch:7.16.1
+    restart: unless-stopped
+    environment:
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      discovery.type: single-node
+    volumes:
+      - ./elk/configs/elasticsearch/config.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    expose:
+      - 9200
+    networks:
+      - elk_internal_network
+
   logstash:
     image: logstash:7.16.2
     restart: unless-stopped
@@ -19,22 +35,6 @@ services:
       - photobooth_external_network
     depends_on:
       - elasticsearch
-
-  elasticsearch:
-    image: elasticsearch:7.16.1
-    restart: unless-stopped
-    environment:
-      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
-      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
-      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
-      discovery.type: single-node
-    volumes:
-      - ./elk/configs/elasticsearch/config.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    expose:
-      - 9200
-    networks:
-      - elk_internal_network
 
   kibana:
     image: kibana:7.16.1
