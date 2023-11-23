@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  dozzle:
+    image: amir20/dozzle:v5.4.4
+    environment:
+      DOZZLE_BASE: /dozzle
+      DOZZLE_USERNAME: ${DOZZLE_USERNAME}
+      DOZZLE_PASSWORD: ${DOZZLE_PASSWORD}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9999:8080
+    networks:
+      - photobooth_external_network
+
+networks:
+  photobooth_external_network:
+    external: true

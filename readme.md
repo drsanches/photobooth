@@ -137,7 +137,8 @@ docker compose -f docker-compose-nginx.yml --env-file .env.nginx.dev up
 ---
 
 ## ELK-stack
-ELK-stack (Elasticsearch, Logstash and Kibana) is used for monitoring.
+ELK-stack (Elasticsearch, Logstash and Kibana) is used for monitoring. 
+This stack is heavy, so for lightweight log monitoring **Dozzle** can be used.  
 
 ### How to run
 ELK can be run in docker.
@@ -173,6 +174,24 @@ It can be imported through Kibana web interface.
 - Select a file to import
 - Press `Import` button
 - Done
+---
+
+## Dozzle
+Dozzle is a lightweight Docker log viewer that provides real-time monitoring.
+
+### How to run
+Dozzle can be run in docker.
+
+Files description:
+- `docker-compose-dozzle.yml` services definitions
+- `.env.dozzle.dev` contains environment variables
+
+Use special `.env.dozzle.prod` on prod.
+
+Run by command:
+```commandLine
+docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
+```
 ---
 
 ## Docker commands

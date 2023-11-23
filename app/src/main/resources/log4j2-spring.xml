@@ -6,14 +6,25 @@
     </Properties>
 
     <Appenders>
-        <Console name="console-appender" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%-6p] %-50c{1.}: %m%n"/>
-        </Console>
+        <ScriptAppenderSelector name="console-appender">
+            <Script language="groovy"><![CDATA[
+                if (System.env["CONSOLE_LOGS_IN_JSON"] == "true") {
+                    return "json"
+                } else {
+                    return "string"
+                }
+            ]]></Script>
+            <AppenderSet>
+                <Console name="json" target="SYSTEM_OUT">
+                    <JSONLayout compact="true" eventEol="true" properties="true" stacktraceAsString="true" includeTimeMillis="true"/>
+                </Console>
+                <Console name="string" target="SYSTEM_OUT">
+                    <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%-6p] %-50c{1.}: %m%n"/>
+                </Console>
+            </AppenderSet>
+        </ScriptAppenderSelector>
 
-        <RollingFile name="file-appender"
-                     fileName="logs/app.log"
-                     filePattern="logs/app.%d{MM-dd-yyyy-HH-mm}.%i.log.gz"
-                     ignoreExceptions="false">
+        <RollingFile name="file-appender" fileName="logs/app.log" filePattern="logs/app.%d{MM-dd-yyyy-HH-mm}.%i.log.gz" ignoreExceptions="false">
             <JSONLayout compact="true" eventEol="true" properties="true" stacktraceAsString="true" includeTimeMillis="true"/>
             <Policies>
                 <OnStartupTriggeringPolicy/>
