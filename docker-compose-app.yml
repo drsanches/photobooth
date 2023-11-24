@@ -5,16 +5,16 @@ services:
     build: ./app
     restart: unless-stopped
     environment:
-      APP_PORT: ${APP_PORT}
-      JDBC_DATABASE_URL: ${JDBC_DATABASE_URL}
-      JDBC_DATABASE_USERNAME: ${JDBC_DATABASE_USERNAME}
-      JDBC_DATABASE_PASSWORD: ${JDBC_DATABASE_PASSWORD}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
-#      CONSOLE_LOGS_IN_JSON: ${CONSOLE_LOGS_IN_JSON}  # [Optional]
-#      EMAIL_ADDRESS: ${EMAIL_ADDRESS}                # [Optional]
-#      EMAIL_PASSWORD: ${EMAIL_PASSWORD}              # [Optional]
-#      LOGSTASH_HOST: ${LOGSTASH_HOST}                # [Optional]
-#      LOGSTASH_PORT: ${LOGSTASH_PORT}                # [Optional]
+      APP_PORT: ${APP_PORT:?}
+      JDBC_DATABASE_URL: ${JDBC_DATABASE_URL:?}
+      JDBC_DATABASE_USERNAME: ${JDBC_DATABASE_USERNAME:?}
+      JDBC_DATABASE_PASSWORD: ${JDBC_DATABASE_PASSWORD:?}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?}
+      CONSOLE_LOGS_IN_JSON: ${CONSOLE_LOGS_IN_JSON}  # [Optional]
+      EMAIL_ADDRESS: ${EMAIL_ADDRESS}                # [Optional]
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}              # [Optional]
+      LOGSTASH_HOST: ${LOGSTASH_HOST}                # [Optional]
+      LOGSTASH_PORT: ${LOGSTASH_PORT}                # [Optional]
     volumes:
       - ./logs:/logs
     ports:
@@ -29,9 +29,9 @@ services:
     image: postgres:14.0
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${JDBC_DATABASE_USERNAME}
-      POSTGRES_PASSWORD: ${JDBC_DATABASE_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${JDBC_DATABASE_USERNAME:?}
+      POSTGRES_PASSWORD: ${JDBC_DATABASE_PASSWORD:?}
+      POSTGRES_DB: ${DB_NAME:?}
     volumes:
         - postgres-data:/var/lib/postgresql/data
     networks:
