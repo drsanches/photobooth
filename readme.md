@@ -77,9 +77,7 @@ java -jar \
 - `docker-compose-app.yml` services definitions for photobooth application
 - `.env.app.dev` contains environment variables for app (also contains extra variable for DB)
 
-Use special `.env.app.prod` on prod. 
-
-Environment variables in `.env.app.*` file and in `docker-compose-app.yml` file must be synchronized. 
+Use special `.env.app.prod` on prod.
 
 ##### Run
 Before run, it is necessary to build **executable jar file** (see JVM.Build).
