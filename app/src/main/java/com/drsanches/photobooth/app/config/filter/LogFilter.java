@@ -34,6 +34,8 @@ public class LogFilter extends GenericFilterBean {
         if (!excludeLogUri.test(httpRequest.getRequestURI())) {
             if (tokenSupplier.get() != null) {
                 ThreadContext.put("userId", tokenSupplier.get().getUserId());
+            } else {
+                ThreadContext.remove("userId");
             }
             log.trace("{} {}, ip: {}", httpRequest.getMethod(), httpRequest.getRequestURL(), httpRequest.getRemoteAddr());
         }
