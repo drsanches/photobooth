@@ -6,7 +6,7 @@ import com.drsanches.photobooth.app.app.mapper.UserInfoMapper;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.app.data.friends.FriendsDomainService;
 import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
-import com.drsanches.photobooth.app.common.token.TokenSupplier;
+import com.drsanches.photobooth.app.common.token.UserInfo;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +28,13 @@ public class UserProfileWebService {
     private FriendsDomainService friendsDomainService;
 
     @Autowired
-    private TokenSupplier tokenSupplier;
+    private UserInfo userInfo;
 
     @Autowired
     private UserInfoMapper userInfoMapper;
 
     public UserInfoDto getCurrentProfile() {
-        String userId = tokenSupplier.get().getUserId();
+        String userId = userInfo.getUserId();
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
         return userInfoMapper.convertCurrent(
                 userProfile,
@@ -45,7 +45,7 @@ public class UserProfileWebService {
     }
 
     public List<UserInfoDto> searchProfile(String username, Integer page, Integer size) {
-        String currentUserId = tokenSupplier.get().getUserId();
+        String currentUserId = userInfo.getUserId();
         List<UserProfile> userProfile = userProfileDomainService.findEnabledByUsername(username.toLowerCase(), page, size);
         List<String> incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
         List<String> outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
@@ -56,7 +56,7 @@ public class UserProfileWebService {
     }
 
     public UserInfoDto getProfile(String userId) {
-        String currentUserId = tokenSupplier.get().getUserId();
+        String currentUserId = userInfo.getUserId();
         UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
         List<String> incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
         List<String> outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
@@ -64,7 +64,7 @@ public class UserProfileWebService {
     }
 
     public void changeCurrentProfile(@Valid ChangeUserProfileDto changeUserProfileDto) {
-        String userId = tokenSupplier.get().getUserId();
+        String userId = userInfo.getUserId();
         userProfileDomainService.updateProfileData(
                 userId,
                 changeUserProfileDto.getName(),

@@ -2,7 +2,7 @@ package com.drsanches.photobooth.app.app.validation.validator;
 
 import com.drsanches.photobooth.app.app.data.friends.FriendsDomainService;
 import com.drsanches.photobooth.app.app.validation.annotation.FriendIds;
-import com.drsanches.photobooth.app.common.token.TokenSupplier;
+import com.drsanches.photobooth.app.common.token.UserInfo;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.List;
 public class FriendIdsValidator implements ConstraintValidator<FriendIds, Collection<String>> {
 
     @Autowired
-    private TokenSupplier tokenSupplier;
+    private UserInfo userInfo;
 
     @Autowired
     private FriendsDomainService friendsDomainService;
@@ -26,7 +26,7 @@ public class FriendIdsValidator implements ConstraintValidator<FriendIds, Collec
         if (CollectionUtils.isEmpty(userIds)) {
             return true;
         }
-        List<String> friendIds = friendsDomainService.getFriendsIdList(tokenSupplier.get().getUserId());
+        List<String> friendIds = friendsDomainService.getFriendsIdList(userInfo.getUserId());
         return friendIds.containsAll(userIds);
     }
 }

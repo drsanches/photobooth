@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.config.filter;
 
-import com.drsanches.photobooth.app.common.token.TokenSupplier;
+import com.drsanches.photobooth.app.common.token.UserInfo;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -17,12 +17,12 @@ import java.util.function.Predicate;
 @Slf4j
 public class LogFilter extends GenericFilterBean {
 
-    private final TokenSupplier tokenSupplier;
+    private final UserInfo userInfo;
 
     private final Predicate<String> excludeLogUri;
 
-    public LogFilter(TokenSupplier tokenSupplier, Predicate<String> excludeLogUri) {
-        this.tokenSupplier = tokenSupplier;
+    public LogFilter(UserInfo userInfo, Predicate<String> excludeLogUri) {
+        this.userInfo = userInfo;
         this.excludeLogUri = excludeLogUri;
     }
 
@@ -32,11 +32,10 @@ public class LogFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         ThreadContext.put("requestId", UUID.randomUUID().toString());
         if (!excludeLogUri.test(httpRequest.getRequestURI())) {
-            if (tokenSupplier.get() != null) {
-                ThreadContext.put("userId", tokenSupplier.get().getUserId());
-            } else {
-                ThreadContext.remove("userId");
-            }
+            userInfo.getUserIdOptional().ifPresentOrElse(
+                    it -> ThreadContext.put("userId", it),
+                    () -> ThreadContext.remove("userId")
+            );
             log.trace("{} {}, ip: {}", httpRequest.getMethod(), httpRequest.getRequestURL(), httpRequest.getRemoteAddr());
         }
         chain.doFilter(request, response);

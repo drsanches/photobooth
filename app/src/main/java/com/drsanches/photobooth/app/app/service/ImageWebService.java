@@ -11,7 +11,7 @@ import com.drsanches.photobooth.app.app.dto.image.request.UploadAvatarDto;
 import com.drsanches.photobooth.app.app.dto.image.request.UploadPhotoDto;
 import com.drsanches.photobooth.app.app.dto.image.response.ImageInfoDto;
 import com.drsanches.photobooth.app.app.data.permission.ImagePermissionDomainService;
-import com.drsanches.photobooth.app.common.token.TokenSupplier;
+import com.drsanches.photobooth.app.common.token.UserInfo;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class ImageWebService {
     private PlatformTransactionManager transactionManager;
 
     @Autowired
-    private TokenSupplier tokenSupplier;
+    private UserInfo userInfo;
 
     @Autowired
     private PaginationService<Image> paginationService;
@@ -57,7 +57,7 @@ public class ImageWebService {
     private ImageInfoMapper imageInfoMapper;
 
     public void uploadAvatar(@Valid UploadAvatarDto uploadAvatarDto) {
-        String userId = tokenSupplier.get().getUserId();
+        String userId = userInfo.getUserId();
         byte[] image = Base64.getDecoder().decode(uploadAvatarDto.getFile());
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
             String imageId = imageDomainService.saveImage(image, userId).getId();
@@ -79,7 +79,7 @@ public class ImageWebService {
     }
 
     public void uploadPhoto(@Valid UploadPhotoDto uploadPhotoDto) {
-        String currentUserId = tokenSupplier.get().getUserId();
+        String currentUserId = userInfo.getUserId();
         byte[] image = Base64.getDecoder().decode(uploadPhotoDto.getFile());
         List<String> allowedUsers = CollectionUtils.isEmpty(uploadPhotoDto.getUserIds()) ?
                 getEnabledFriends(currentUserId) : uploadPhotoDto.getUserIds();
@@ -92,7 +92,7 @@ public class ImageWebService {
     }
 
     public List<ImageInfoDto> getAllInfo(Integer page, Integer size) {
-        String currentUserId = tokenSupplier.get().getUserId();
+        String currentUserId = userInfo.getUserId();
         Set<String> imageIds = imagePermissionDomainService.getImageIds(currentUserId);
         Stream<Image> images = imageDomainService.getImages(imageIds).stream();
         return paginationService.pagination(images, page, size)
@@ -101,7 +101,7 @@ public class ImageWebService {
     }
 
     public void deleteAvatar() {
-        String userId = tokenSupplier.get().getUserId();
+        String userId = userInfo.getUserId();
         userProfileDomainService.updateImageId(userId, null);
         log.info("User deleted his profile image. UserId: {}", userId);
     }

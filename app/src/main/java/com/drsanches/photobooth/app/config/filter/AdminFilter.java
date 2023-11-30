@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.config.filter;
 
-import com.drsanches.photobooth.app.common.token.TokenSupplier;
+import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.common.token.data.model.Role;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,12 +17,12 @@ import java.util.function.Predicate;
 @Slf4j
 public class AdminFilter extends GenericFilterBean {
 
-    private final TokenSupplier tokenSupplier;
+    private final UserInfo userInfo;
 
     private final Predicate<String> adminUri;
 
-    public AdminFilter(TokenSupplier tokenSupplier, Predicate<String> adminUri) {
-        this.tokenSupplier = tokenSupplier;
+    public AdminFilter(UserInfo userInfo, Predicate<String> adminUri) {
+        this.userInfo = userInfo;
         this.adminUri = adminUri;
     }
 
@@ -33,9 +33,9 @@ public class AdminFilter extends GenericFilterBean {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String uri = httpRequest.getRequestURI();
         if (adminUri.test(uri)
-                && (tokenSupplier.get() == null || !Role.ADMIN.equals(tokenSupplier.get().getRole()))) {
+                && (!userInfo.isAuthorized() || !Role.ADMIN.equals(userInfo.getRole()))) {
             log.info("User has no permissions for uri. UserId: {}, uri: {}",
-                    tokenSupplier.get() == null ? "unauthorized" : tokenSupplier.get().getUserId(), uri);
+                    userInfo.getUserIdOptional().orElse("unauthorized"), uri);
             httpResponse.setStatus(HttpStatus.FORBIDDEN.value());
             httpResponse.getOutputStream().flush();
             httpResponse.getOutputStream().println("You do not have permission");

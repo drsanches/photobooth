@@ -1,11 +1,14 @@
 package com.drsanches.photobooth.app.auth.service;
 
+import com.drsanches.photobooth.app.app.exception.NoUsernameException;
 import com.drsanches.photobooth.app.auth.dto.confirm.ChangePasswordConfirmData;
 import com.drsanches.photobooth.app.auth.dto.confirm.ChangeUsernameConfirmData;
 import com.drsanches.photobooth.app.auth.dto.confirm.RegistrationConfirmData;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.RegistrationDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.UserAuthInfoDto;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Operation;
+import com.drsanches.photobooth.app.auth.exception.WrongPasswordException;
+import com.drsanches.photobooth.app.auth.exception.WrongUsernamePasswordException;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationCodeValidator;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.common.token.TokenService;
@@ -23,13 +26,10 @@ import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.utils.StringSerializer;
-import com.drsanches.photobooth.app.notifier.Action;
-import com.drsanches.photobooth.app.app.exception.NoUsernameException;
-import com.drsanches.photobooth.app.auth.exception.WrongPasswordException;
-import com.drsanches.photobooth.app.auth.exception.WrongUsernamePasswordException;
+import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
-import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import com.drsanches.photobooth.app.common.token.data.model.Token;
+import com.drsanches.photobooth.app.notifier.Action;
 import com.drsanches.photobooth.app.notifier.Notifier;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +59,7 @@ public class UserAuthWebService {
     private TokenService tokenService;
 
     @Autowired
-    private TokenSupplier tokenSupplier;
+    private UserInfo userInfo;
 
     @Autowired
     private CredentialsHelper credentialsHelper;
@@ -140,7 +140,7 @@ public class UserAuthWebService {
     }
 
     public UserAuthInfoDto info() {
-        String userId = tokenSupplier.get().getUserId();
+        String userId = userInfo.getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
         return userAuthInfoMapper.convert(current);
     }
@@ -150,7 +150,7 @@ public class UserAuthWebService {
                 .username(changeUsernameDto.getNewUsername())
                 .build();
         String data = stringSerializer.serialize(changeUsernameConfirmData);
-        String userId = tokenSupplier.get().getUserId();
+        String userId = userInfo.getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
         Confirmation confirmation = confirmationDomainService.create(
                 data,
@@ -177,7 +177,7 @@ public class UserAuthWebService {
                 confirmation.getData(),
                 ChangeUsernameConfirmData.class
         );
-        String userId = tokenSupplier.get().getUserId();
+        String userId = userInfo.getUserId();
         String oldUsername = userAuthDomainService.getEnabledById(userId).getUsername();
         userIntegrationDomainService.updateUsername(userId, changeUsernameConfirmData.getUsername());
         confirmationDomainService.delete(confirmation.getId());
@@ -194,7 +194,7 @@ public class UserAuthWebService {
                 .salt(salt)
                 .build();
         String data = stringSerializer.serialize(changePasswordConfirmData);
-        String userId = tokenSupplier.get().getUserId();
+        String userId = userInfo.getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
         Confirmation confirmation = confirmationDomainService.create(
                 data,
@@ -221,7 +221,7 @@ public class UserAuthWebService {
                 confirmation.getData(),
                 ChangePasswordConfirmData.class
         );
-        String userId = tokenSupplier.get().getUserId();
+        String userId = userInfo.getUserId();
         userAuthDomainService.updatePassword(
                 userId,
                 changePasswordConfirmData.getEncryptedPassword(),
@@ -238,7 +238,7 @@ public class UserAuthWebService {
                 .email(changeEmailDto.getNewEmail())
                 .build();
         String data = stringSerializer.serialize(changeEmailConfirmData);
-        String userId = tokenSupplier.get().getUserId();
+        String userId = userInfo.getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
         Confirmation confirmation = confirmationDomainService.create(
                 data,
@@ -265,7 +265,7 @@ public class UserAuthWebService {
                 confirmation.getData(),
                 ChangeEmailConfirmData.class
         );
-        String userId = tokenSupplier.get().getUserId();
+        String userId = userInfo.getUserId();
         userAuthDomainService.updateEmail(userId, changeEmailConfirmData.getEmail());
         confirmationDomainService.delete(confirmation.getId());
         log.info("User changed email. UserId: {}", userId);
@@ -281,7 +281,7 @@ public class UserAuthWebService {
     }
 
     public void disableUser() {
-        String userId = tokenSupplier.get().getUserId();
+        String userId = userInfo.getUserId();
         UserAuth current = userAuthDomainService.getEnabledById(userId);
         Confirmation confirmation = confirmationDomainService.create(
                 null,
@@ -304,7 +304,7 @@ public class UserAuthWebService {
     public void disableUserConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
         Confirmation confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
         confirmationCodeValidator.validate(confirmation, Operation.DISABLE);
-        String userId = tokenSupplier.get().getUserId();
+        String userId = userInfo.getUserId();
         userIntegrationDomainService.disableUser(userId);
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);

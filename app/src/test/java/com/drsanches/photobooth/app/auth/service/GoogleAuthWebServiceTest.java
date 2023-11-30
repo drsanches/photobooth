@@ -11,11 +11,11 @@ import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationCodeValidator;
+import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.notifier.Action;
 import com.drsanches.photobooth.app.auth.exception.NoGoogleUserException;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.token.TokenService;
-import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import com.drsanches.photobooth.app.common.token.data.model.Role;
 import com.drsanches.photobooth.app.common.token.data.model.Token;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
@@ -64,7 +64,7 @@ class GoogleAuthWebServiceTest {
     private TokenService tokenService;
 
     @Mock
-    private TokenSupplier tokenSupplier;
+    private UserInfo userInfo;
 
     @Mock
     private TokenMapper tokenMapper;
@@ -116,7 +116,7 @@ class GoogleAuthWebServiceTest {
         UserAuth userAuth = createUserAuth();
         Confirmation confirmation = createConfirmation();
         Mockito.when(confirmationDomainService.get(CONFIRMATION_CODE)).thenReturn(confirmation);
-        Mockito.when(tokenSupplier.get()).thenReturn(createToken());
+        Mockito.when(userInfo.getUserId()).thenReturn(USER_ID);
         Mockito.when(userAuthDomainService.getEnabledById(USER_ID)).thenReturn(userAuth);
 
         String newUsername = UUID.randomUUID().toString();

@@ -30,7 +30,7 @@ public class TokenService {
     private TokenDomainService tokenDomainService;
 
     @Autowired
-    private TokenSupplier tokenSupplier;
+    private UserInfo userInfo;
 
     public Token createToken(String userId, Role role) {
         GregorianCalendar expires = new GregorianCalendar();
@@ -38,7 +38,7 @@ public class TokenService {
         GregorianCalendar refreshExpires = new GregorianCalendar();
         refreshExpires.add(CALENDAR_FIELD, REFRESH_EXPIRES_CALENDAR_VALUE);
         Token savedToken = tokenDomainService.saveToken(userId, role, expires, refreshExpires);
-        tokenSupplier.set(savedToken);
+        userInfo.init(userId, savedToken.getId(), savedToken.getRole());
         log.info("New token created. UserId: {}", userId);
         return savedToken;
     }
@@ -47,7 +47,7 @@ public class TokenService {
         String accessTokenId = extractTokenId(accessToken)
                 .orElseThrow(WrongTokenException::new);
         Token token = tokenDomainService.getValidTokenByAccessToken(accessTokenId);
-        tokenSupplier.set(token);
+        userInfo.init(token.getUserId(), token.getId(), token.getRole());
     }
 
     public Token refreshToken(@Nullable String refreshToken) {
@@ -61,16 +61,16 @@ public class TokenService {
     }
 
     public void removeCurrentToken() {
-        Token token = tokenSupplier.get();
-        tokenDomainService.deleteById(token.getId());
-        tokenSupplier.set(null);
-        log.info("Token deleted. UserId: {}", token.getUserId());
+        String tokenId = userInfo.getUserTokenId();
+        tokenDomainService.deleteById(tokenId);
+        userInfo.clean();
+        log.info("Token deleted. UserId: {}", tokenId);
     }
 
     public void removeAllTokens(String userId) {
         List<Token> tokens = tokenDomainService.getTokensByUserId(userId);
         tokenDomainService.deleteAll(tokens);
-        tokenSupplier.set(null);
+        userInfo.clean();
         log.info("Tokens deleted. UserId: {}", userId);
     }
 

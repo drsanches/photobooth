@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app.config;
 
 import com.drsanches.photobooth.app.common.token.TokenService;
-import com.drsanches.photobooth.app.common.token.TokenSupplier;
+import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.config.filter.LogFilter;
 import com.drsanches.photobooth.app.config.filter.TokenFilter;
 import com.drsanches.photobooth.app.config.filter.AdminFilter;
@@ -61,14 +61,14 @@ public class WebSecurityConfig {
     private TokenService tokenService;
 
     @Autowired
-    private TokenSupplier tokenSupplier;
+    private UserInfo userInfo;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .addFilterAfter(new TokenFilter(tokenService, PUBLIC_URI), BasicAuthenticationFilter.class)
-                .addFilterAfter(new AdminFilter(tokenSupplier, ADMIN_URI), TokenFilter.class)
-                .addFilterAfter(new LogFilter(tokenSupplier, EXCLUDE_LOG_URI), AdminFilter.class)
+                .addFilterAfter(new AdminFilter(userInfo, ADMIN_URI), TokenFilter.class)
+                .addFilterAfter(new LogFilter(userInfo, EXCLUDE_LOG_URI), AdminFilter.class)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers

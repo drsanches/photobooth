@@ -3,7 +3,7 @@ package com.drsanches.photobooth.app.app.mapper;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.app.dto.profile.response.RelationshipDto;
 import com.drsanches.photobooth.app.app.dto.profile.response.UserInfoDto;
-import com.drsanches.photobooth.app.common.token.TokenSupplier;
+import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.config.ImageConsts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import java.util.List;
 public class UserInfoMapper {
 
     @Autowired
-    private TokenSupplier tokenSupplier;
+    private UserInfo userInfo;
 
     public UserInfoDto convertCurrent(
             UserProfile userProfile,
@@ -77,8 +77,7 @@ public class UserInfoMapper {
     }
 
     private RelationshipDto getRelationship(String userId, List<String> incomingIds, List<String> outgoingIds) {
-        String currentUserId = tokenSupplier.get().getUserId();
-        if (currentUserId.equals(userId)) {
+        if (userInfo.getUserId().equals(userId)) {
             return RelationshipDto.CURRENT;
         }
         if (incomingIds.contains(userId) && outgoingIds.contains(userId)) {

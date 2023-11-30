@@ -6,12 +6,12 @@ import com.drsanches.photobooth.app.auth.dto.google.GoogleGetTokenDto;
 import com.drsanches.photobooth.app.auth.dto.google.GoogleSetUsernameDto;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationCodeValidator;
-import com.drsanches.photobooth.app.common.token.TokenService;
-import com.drsanches.photobooth.app.common.token.TokenSupplier;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.GoogleTokenDto;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
+import com.drsanches.photobooth.app.common.token.TokenService;
+import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.notifier.Action;
 import com.drsanches.photobooth.app.auth.exception.NoGoogleUserException;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
@@ -46,7 +46,7 @@ public class GoogleAuthWebService {
     private TokenService tokenService;
 
     @Autowired
-    private TokenSupplier tokenSupplier;
+    private UserInfo userInfo;
 
     @Autowired
     private ConfirmationCodeValidator confirmationCodeValidator;
@@ -77,7 +77,7 @@ public class GoogleAuthWebService {
     public void setUsername(@Valid GoogleSetUsernameDto googleSetUsernameDto) {
         Confirmation confirmation = confirmationDomainService.get(googleSetUsernameDto.getCode());
         confirmationCodeValidator.validate(confirmation, Operation.GOOGLE_USERNAME_CHANGE);
-        String userId = tokenSupplier.get().getUserId();
+        String userId = userInfo.getUserId();
         String oldUsername = userAuthDomainService.getEnabledById(userId).getUsername();
         userIntegrationDomainService.updateUsername(userId, googleSetUsernameDto.getNewUsername());
         confirmationDomainService.delete(confirmation.getId());
