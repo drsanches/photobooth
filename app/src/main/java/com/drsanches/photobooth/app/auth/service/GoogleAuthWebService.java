@@ -16,7 +16,7 @@ import com.drsanches.photobooth.app.notifier.Action;
 import com.drsanches.photobooth.app.auth.exception.NoGoogleUserException;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.token.data.model.Token;
-import com.drsanches.photobooth.app.notifier.Notifier;
+import com.drsanches.photobooth.app.notifier.NotificationService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class GoogleAuthWebService {
     private ConfirmationCodeValidator confirmationCodeValidator;
 
     @Autowired
-    private Notifier notifier;
+    private NotificationService notificationService;
 
     @Autowired
     private TokenMapper tokenMapper;
@@ -66,9 +66,13 @@ public class GoogleAuthWebService {
         } catch (NoGoogleUserException e) {
             userAuth = userIntegrationDomainService.createUserByGoogle(email);
             log.info("New user created. Id: {}", userAuth.getId());
-            confirmationCode = confirmationDomainService.create(null, userAuth.getId(), userAuth.getEmail(), Operation.GOOGLE_USERNAME_CHANGE).getCode();
+            confirmationCode = confirmationDomainService.create(
+                    null,
+                    userAuth.getId(),
+                    Operation.GOOGLE_USERNAME_CHANGE
+            ).getCode();
             log.info("Google username changing process started. UserId: {}", userAuth.getId());
-            notifier.notify(Action.REGISTRATION_COMPLETED, Map.of("email", userAuth.getEmail()));
+            notificationService.notify(Action.REGISTRATION_COMPLETED, Map.of("userId", userAuth.getId()));
         }
         Token token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
         return new GoogleGetTokenDto(tokenMapper.convert(token), confirmationCode);

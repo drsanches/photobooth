@@ -19,7 +19,7 @@ import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.common.token.data.model.Role;
 import com.drsanches.photobooth.app.common.token.data.model.Token;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
-import com.drsanches.photobooth.app.notifier.Notifier;
+import com.drsanches.photobooth.app.notifier.NotificationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,7 +58,7 @@ class GoogleAuthWebServiceTest {
     private ConfirmationCodeValidator confirmationCodeValidator;
 
     @Mock
-    private Notifier notifier;
+    private NotificationService notificationService;
 
     @Mock
     private TokenService tokenService;
@@ -100,14 +100,14 @@ class GoogleAuthWebServiceTest {
         Mockito.when(googleUserInfoService.getGoogleInfo(Mockito.any())).thenReturn(googleInfo);
         Mockito.when(userAuthDomainService.getEnabledByGoogleAuth(USER_EMAIL)).thenThrow(NoGoogleUserException.class);
         Mockito.when(userIntegrationDomainService.createUserByGoogle(USER_EMAIL)).thenReturn(userAuth);
-        Mockito.when(confirmationDomainService.create(null, USER_ID, USER_EMAIL, Operation.GOOGLE_USERNAME_CHANGE))
+        Mockito.when(confirmationDomainService.create(null, USER_ID, Operation.GOOGLE_USERNAME_CHANGE))
                 .thenReturn(createConfirmation());
         Mockito.when(tokenService.createToken(USER_ID, Role.USER)).thenReturn(token);
         Mockito.when(tokenMapper.convert(token)).thenReturn(tokenDto);
 
         GoogleGetTokenDto result = googleAuthWebService.getToken(new GoogleTokenDto(ID_TOKEN));
 
-        Mockito.verify(notifier, Mockito.times(1)).notify(
+        Mockito.verify(notificationService, Mockito.times(1)).notify(
                 Action.REGISTRATION_COMPLETED,
                 Map.of("email", USER_EMAIL)
         );
@@ -164,7 +164,6 @@ class GoogleAuthWebServiceTest {
                 .id(CONFIRMATION_ID)
                 .code(CONFIRMATION_CODE)
                 .userId(USER_ID)
-                .email(USER_EMAIL)
                 .expiresAt(expiresAt)
                 .operation(Operation.GOOGLE_USERNAME_CHANGE)
                 .build();

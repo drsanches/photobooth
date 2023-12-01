@@ -24,13 +24,6 @@ public class UserAuthDomainService {
         log.debug("UserAuth password updated: {}", userAuth);
     }
 
-    public void updateEmail(String userId, String email) {
-        UserAuth userAuth = getEnabledById(userId);
-        userAuth.setEmail(email);
-        userAuthRepository.save(userAuth);
-        log.debug("UserAuth email updated: {}", userAuth);
-    }
-
     public UserAuth getEnabledById(String userId) {
         return userAuthRepository.findById(userId)
                 .filter(UserAuth::isEnabled)

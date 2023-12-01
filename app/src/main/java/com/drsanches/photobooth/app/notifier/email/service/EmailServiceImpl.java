@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.notifier.email;
+package com.drsanches.photobooth.app.notifier.email.service;
 
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
 import jakarta.mail.MessagingException;
@@ -29,6 +29,6 @@ public class EmailServiceImpl implements EmailService {
             throw new ServerError("Mail message initialization error", e);
         }
         emailSender.send(mimeMessage);
-        log.info("Email message sent. Subject: {}, to: {}", subject, to);
+        log.info("Email message sent. Email: {}", to);
     }
 }

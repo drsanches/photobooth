@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.auth.utils.email;
 
-import com.drsanches.photobooth.app.notifier.email.EmailServiceImpl;
+import com.drsanches.photobooth.app.notifier.email.service.EmailServiceImpl;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.internet.MimeMessage;

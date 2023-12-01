@@ -26,14 +26,16 @@ public class ConfirmationDomainService {
     @Autowired
     private ConfirmationRepository confirmationRepository;
 
-    public Confirmation create(@Nullable String data, @Nullable String userId, String email, Operation operation) {
+    @Autowired
+    private ConfirmationCodeGenerator confirmationCodeGenerator;
+
+    public Confirmation create(@Nullable String data, @Nullable String userId, Operation operation) {
         GregorianCalendar expiresAt = new GregorianCalendar();
         expiresAt.add(CALENDAR_FIELD, CALENDAR_VALUE);
         Confirmation savedConfirmation = confirmationRepository.save(Confirmation.builder()
                 .id(UUID.randomUUID().toString())
-                .code(RandomStringUtils.randomAlphanumeric(6))
+                .code(confirmationCodeGenerator.generate())
                 .userId(userId)
-                .email(email)
                 .operation(operation)
                 .data(data)
                 .expiresAt(expiresAt)

@@ -3,6 +3,7 @@
 /.gradle
 */build
 /logs
+/app/logs
 .env.app.prod
 .env.elk.prod
 .env.nginx.prod

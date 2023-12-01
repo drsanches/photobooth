@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.notifier.email;
+package com.drsanches.photobooth.app.notifier.email.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -10,6 +10,6 @@ import org.springframework.stereotype.Component;
 public class EmailServiceStub implements EmailService {
 
     public void sendHtmlMessage(String to, String subject, String message) {
-        log.info("Email message was not send. Subject: {}, to: {}", subject, to);
+        log.info("Email message was not send. Email: {}", to);
     }
 }
