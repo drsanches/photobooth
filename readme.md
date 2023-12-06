@@ -223,6 +223,7 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Add userId fields for UserAuth and UserProfile
 - Support different login options (username/password and google both)
 - Initialize name and avatar from Google info
+- Fix: `Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts`
 
 ### Tests
 - Test sorting

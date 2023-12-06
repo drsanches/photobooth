@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "application.email-notifications.email-sending-enabled")
+@ConditionalOnProperty(name = "application.notifications.email-enabled")
 public class EmailServiceImpl implements EmailService {
 
     @Autowired

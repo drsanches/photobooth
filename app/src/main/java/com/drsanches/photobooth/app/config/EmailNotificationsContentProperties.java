@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@ConfigurationProperties(prefix = "content.email-notifications")
+@ConfigurationProperties(prefix = "content.email.notifications")
 public class EmailNotificationsContentProperties {
 
     private Map<String, String> subject;
@@ -41,7 +41,7 @@ public class EmailNotificationsContentProperties {
                 .toList();
 
         if (map.keySet().size() != actions.size() || !map.keySet().containsAll(actions)) {
-            throw ServerError.createWithMessage("Invalid content.email-notifications configuration");
+            throw ServerError.createWithMessage("Invalid content.email.notifications configuration");
         }
     }
 }

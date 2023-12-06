@@ -11,9 +11,9 @@ application:
   pagination:
     default-page-size: 20
     max-page-size: 100
-  email-notifications:
+  notifications:
     2FA-enabled: false
-    email-sending-enabled: false # must be true if 2FA-enabled
+    email-enabled: false # must be true if 2FA-enabled
   scheduler:
     expired-token-clean-task:
       enabled: true
@@ -42,7 +42,7 @@ spring:
     generate-ddl: true
     properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
-  # Required if application.email-notifications.email-sending-enabled
+  # Required if application.notifications.email-enabled
   mail:
     host: smtp.gmail.com
     port: 587

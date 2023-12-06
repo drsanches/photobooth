@@ -79,7 +79,7 @@ public class UserAuthWebService {
     @Autowired
     private NotificationService notificationService;
 
-    @Value("${application.email-notifications.2FA-enabled}")
+    @Value("${application.notifications.2FA-enabled}")
     private boolean with2FA;
 
     public TokenDto registration(@Valid RegistrationDto registrationDto) {
