@@ -221,9 +221,12 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Use var
 - Fix error "host not found in upstream" if nginx started without app and elk
 - Add userId fields for UserAuth and UserProfile
+- Support different login options (username/password and google both)
+- Initialize name and avatar from Google info
 
 ### Tests
 - Test sorting
 - Test 2FA
 - Test transactions
 - Use another framework?
+- Actualize readme with spring tests

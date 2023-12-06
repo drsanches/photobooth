@@ -1,7 +1,6 @@
-package com.drsanches.photobooth.app.auth.service;
+package com.drsanches.photobooth.app.auth.controller;
 
 import com.drsanches.photobooth.app.Application;
-import com.drsanches.photobooth.app.auth.controller.UserAuthController;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationCodeGenerator;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeEmailDto;
@@ -11,8 +10,8 @@ import com.drsanches.photobooth.app.auth.dto.userauth.request.ConfirmationCodeDt
 import com.drsanches.photobooth.app.auth.dto.userauth.request.LoginDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.RegistrationDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.TokenDto;
+import com.drsanches.photobooth.app.auth.service.UserAuthWebService;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
-import com.drsanches.photobooth.app.common.exception.CustomExceptionHandler;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.common.token.data.model.Token;
@@ -35,6 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -58,13 +58,10 @@ class UserAuthControllerWith2FATest {
     private static final Supplier<String> CONFIRMATION_CODE = () -> UUID.randomUUID().toString();
 
     @Autowired
-    private UserAuthController userAuthController;
+    private WebApplicationContext webApplicationContext;
 
     @Autowired
     private SecurityFilterChain filterChain;
-
-    @Autowired
-    private CustomExceptionHandler customExceptionHandler;
 
     @Autowired
     private UserAuthWebService userAuthWebService;
@@ -94,9 +91,8 @@ class UserAuthControllerWith2FATest {
 
     @BeforeEach
     void init() {
-        mvc = MockMvcBuilders.standaloneSetup(userAuthController)
+        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .addFilters(filterChain.getFilters().toArray(new Filter[0]))
-                .setControllerAdvice(customExceptionHandler)
                 .build();
         ReflectionTestUtils.setField(userAuthWebService, "with2FA", true);
     }
@@ -123,9 +119,7 @@ class UserAuthControllerWith2FATest {
 
         verify(emailService, times(2)).sendHtmlMessage(eq(email), any(), any());
         var token = objectMapper.readValue(result, TokenDto.class);
-        mvc.perform(MockMvcRequestBuilders
-                        .get("/api/v1/auth/info")
-                        .header("Authorization", "Bearer " + token.getAccessToken()))
+        performGetInfo(token.getAccessToken())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("username").value(username))
                 .andExpect(jsonPath("email").value(email));
