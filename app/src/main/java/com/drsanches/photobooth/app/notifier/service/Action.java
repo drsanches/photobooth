@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.notifier;
+package com.drsanches.photobooth.app.notifier.service;
 
 public enum Action {
 

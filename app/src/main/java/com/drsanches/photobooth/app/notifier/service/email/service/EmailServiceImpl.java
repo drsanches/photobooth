@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.notifier.email.service;
+package com.drsanches.photobooth.app.notifier.service.email.service;
 
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
 import jakarta.mail.MessagingException;

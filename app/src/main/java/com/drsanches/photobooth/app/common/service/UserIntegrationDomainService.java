@@ -8,9 +8,8 @@ import com.drsanches.photobooth.app.app.exception.UserAlreadyExistsException;
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
 import com.drsanches.photobooth.app.common.token.data.model.Role;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
-import com.drsanches.photobooth.app.notifier.data.model.NotificationInfo;
-import com.drsanches.photobooth.app.notifier.data.model.NotificationType;
-import com.drsanches.photobooth.app.notifier.data.repository.NotificationInfoRepository;
+import com.drsanches.photobooth.app.notifier.data.email.model.EmailInfo;
+import com.drsanches.photobooth.app.notifier.data.email.repository.EmailInfoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,11 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
- * Service for updating UserAuth, UserProfile and NotificationInfo objects together
+ * Service for updating UserAuth, UserProfile and EmailInfo objects together
  */
 @Slf4j
 @Service
@@ -36,7 +34,7 @@ public class UserIntegrationDomainService {
     private UserProfileRepository userProfileRepository;
 
     @Autowired
-    private NotificationInfoRepository notificationInfoRepository;
+    private EmailInfoRepository emailInfoRepository;
 
     @Autowired
     private PlatformTransactionManager transactionManager;
@@ -75,18 +73,16 @@ public class UserIntegrationDomainService {
     private UserAuth createUser(UserAuth userAuth) {
         UserProfile userProfile = new UserProfile();
         copy(userAuth, userProfile);
-        NotificationInfo notificationInfo = createNotificationInfo(userAuth);
+        EmailInfo emailInfo = new EmailInfo(userAuth.getId(), userAuth.getEmail());
         try {
             UserAuth savedUserAuth = update(
                     userAuth,
                     userProfile,
-                    List.of(NotificationType.values()),
-                    notificationInfo
+                    false,
+                    emailInfo
             );
-            log.debug("UserAuth with UserProfile and NotificationInfo created. " +
-                    "Other NotificationInfo objects removed. " +
-                    "UserAuth: {}, UserProfile: {}, NotificationInfo: {}",
-                    userAuth, userProfile, notificationInfo);
+            log.debug("UserAuth with UserProfile and EmailInfo created. UserAuth: {}, UserProfile: {}, EmailInfo: {}",
+                    userAuth, userProfile, emailInfo);
             return savedUserAuth;
         } catch(DataIntegrityViolationException e) {
             if (userAuth.getGoogleAuth() != null) {
@@ -110,7 +106,7 @@ public class UserIntegrationDomainService {
             update(
                     userAuth,
                     userProfile,
-                    null,
+                    false,
                     null
             );
             log.debug("UserAuth with UserProfile updated. UserAuth: {}, UserProfile: {}", userAuth, userProfile);
@@ -122,18 +118,15 @@ public class UserIntegrationDomainService {
     public void updateEmail(String userId, String email) {
         UserAuth userAuth  = userAuthRepository.findById(userId).orElseThrow(() -> new NoUserIdException(userId));
         userAuth.setEmail(email);
-        NotificationInfo notificationInfo = createNotificationInfo(userAuth);
+        EmailInfo emailInfo = new EmailInfo(userAuth.getId(), userAuth.getEmail());
         try {
             update(
                     userAuth,
                     null,
-                    List.of(NotificationType.EMAIL),
-                    notificationInfo
+                    true,
+                    emailInfo
             );
-            log.debug("UserAuth with NotificationInfo updated. " +
-                    "Other NotificationInfo objects with type {} removed. " +
-                    "UserAuth: {}, NotificationInfo: {}",
-                    NotificationType.EMAIL, userAuth, notificationInfo);
+            log.debug("UserAuth with EmailInfo updated. UserAuth: {}, EmailInfo: {}", userAuth, emailInfo);
         } catch(DataIntegrityViolationException e) {
             throw new UserAlreadyExistsException(userAuth.getUsername(), userAuth.getEmail(), e);
         }
@@ -166,7 +159,7 @@ public class UserIntegrationDomainService {
             update(
                     userAuth,
                     userProfile,
-                    List.of(NotificationType.values()),
+                    true,
                     null
             );
             log.debug("UserAuth with UserProfile disabled. All NotificationInfo objects removed. " +
@@ -185,41 +178,30 @@ public class UserIntegrationDomainService {
         target.setEnabled(source.isEnabled());
     }
 
-    private NotificationInfo createNotificationInfo(UserAuth userAuth) {
-        return new NotificationInfo(
-                UUID.randomUUID().toString(),
-                userAuth.getId(),
-                userAuth.getEmail(),
-                NotificationType.EMAIL
-        );
-    }
-
     /**
      * Updates UserAuth, UserProfile and NotificationInfo in one transaction
      * @param userAuth required
      * @param userProfile null for ignore, creates/updates if exists
-     * @param notificationInfo null for ignore, creates new if exists
-     * @param notificationTypesToRemove removes all notificationInfo objects with notificationType from list
+     * @param deleteEmailInfo true for emailInfo deletion
+     * @param emailInfo null for ignore, creates new if exists
      * @return Saved UserAuth
      */
     private UserAuth update(
             UserAuth userAuth,
             @Nullable UserProfile userProfile,
-            @Nullable List<NotificationType> notificationTypesToRemove,
-            @Nullable NotificationInfo notificationInfo
+            boolean deleteEmailInfo,
+            @Nullable EmailInfo emailInfo
     ) {
         return new TransactionTemplate(transactionManager).execute(status -> {
             UserAuth savedUserAuth = userAuthRepository.save(userAuth);
             if (userProfile != null) {
                 userProfileRepository.save(userProfile);
             }
-            if (notificationTypesToRemove != null) {
-                for (NotificationType type: notificationTypesToRemove) {
-                    notificationInfoRepository.deleteByUserIdAndType(userAuth.getId(), type);
-                }
+            if (deleteEmailInfo) {
+                emailInfoRepository.deleteByIdUserId(userAuth.getId()); //TODO: Add try catch
             }
-            if (notificationInfo != null) {
-                notificationInfoRepository.save(notificationInfo);
+            if (emailInfo != null) {
+                emailInfoRepository.save(emailInfo);
             }
             return savedUserAuth;
         });

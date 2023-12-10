@@ -5,6 +5,7 @@
 ### Registration
 - add UserAuth
 - add UserProfile
+- add EmailInfo
 
 ### Delete user
 - UserAuth.enable = false
@@ -13,23 +14,24 @@
 - UserAuth.googleAuth = UUID_googleAuth
 - UserProfile.enable = false
 - UserProfile.username = UUID_username
+- Remove EmailInfo
 
 ### Other operations
 - The user is taken from UserProfile, with `isEnabled` check
 
-### List of friends or friend requests
+### Get list of friends or friend requests
 - All users are sent, even removed ones
 
 ### Friend request
-- send to friend - does nothing
-- delete for not friend - does nothing
-- delete for a friend - removes both requests
+- Send to friend - does nothing
+- Delete for not friend - does nothing
+- Delete for a friend - removes both requests
 
 ### Send a photo
-- only to enabled friends
+- Only to enabled friends
 
 ### Get photo by id
-- without permissions and deletion check?
+- Without permissions and deletion check?
 
 ## Database structure
 <img src="doc/db_schema.png" alt="Database structure" width="600"/>

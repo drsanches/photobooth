@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app.config;
 
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
-import com.drsanches.photobooth.app.notifier.Action;
+import com.drsanches.photobooth.app.notifier.service.Action;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@ConfigurationProperties(prefix = "content.email.notifications")
+@ConfigurationProperties(prefix = "content.notifications.email")
 public class EmailNotificationsContentProperties {
 
     private Map<String, String> subject;
@@ -41,7 +41,7 @@ public class EmailNotificationsContentProperties {
                 .toList();
 
         if (map.keySet().size() != actions.size() || !map.keySet().containsAll(actions)) {
-            throw ServerError.createWithMessage("Invalid content.email.notifications configuration");
+            throw ServerError.createWithMessage("Invalid content.notifications.email configuration");
         }
     }
 }

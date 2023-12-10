@@ -1,15 +1,12 @@
-package com.drsanches.photobooth.app.notifier.email.notifier;
+package com.drsanches.photobooth.app.notifier.service.email.notifier;
 
 import com.drsanches.photobooth.app.config.EmailNotificationsContentProperties;
-import com.drsanches.photobooth.app.notifier.Action;
-import com.drsanches.photobooth.app.notifier.data.NotificationInfoDomainService;
-import com.drsanches.photobooth.app.notifier.data.model.NotificationInfo;
-import com.drsanches.photobooth.app.notifier.data.model.NotificationType;
+import com.drsanches.photobooth.app.notifier.service.Action;
+import com.drsanches.photobooth.app.notifier.data.email.EmailInfoDomainService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,7 +22,7 @@ public class AuthConfirmationEmailNotifier extends BaseEmailNotifier {
     );
 
     @Autowired
-    private NotificationInfoDomainService notificationInfoDomainService;
+    private EmailInfoDomainService emailInfoDomainService;
 
     @Autowired
     private EmailNotificationsContentProperties content;
@@ -38,13 +35,8 @@ public class AuthConfirmationEmailNotifier extends BaseEmailNotifier {
     @Override
     public void notify(Action action, Map<String, String> params) {
         log.info("Notification process started. Action: {}, params: {}", action, params);
-        List<String> emails = notificationInfoDomainService
-                .getByUserIdAndType(params.get("userId"), NotificationType.EMAIL)
-                .stream()
-                .map(NotificationInfo::getTarget)
-                .toList();
         sendEmail(
-                emails,
+                emailInfoDomainService.getByUserId(params.get("userId")).getEmail(),
                 content.getSubject(action),
                 String.format(content.getText(action), params.get("code"))
         );

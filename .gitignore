@@ -4,8 +4,7 @@
 */build
 /logs
 /app/logs
-.env.app.prod
-.env.elk.prod
-.env.nginx.prod
+/app/src/main/resources/firebase
+.env.*.prod
 /nginx/ca
 /nginx/ssl
