@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.notifier.service.email.service;
+package com.drsanches.photobooth.app.notifier.service.notifier.email.service;
 
 public interface EmailService {
 

@@ -12,6 +12,8 @@ import com.drsanches.photobooth.app.app.dto.image.request.UploadPhotoDto;
 import com.drsanches.photobooth.app.app.dto.image.response.ImageInfoDto;
 import com.drsanches.photobooth.app.app.data.permission.ImagePermissionDomainService;
 import com.drsanches.photobooth.app.common.token.UserInfo;
+import com.drsanches.photobooth.app.notifier.service.notifier.Action;
+import com.drsanches.photobooth.app.notifier.service.notifier.NotificationService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -46,6 +49,9 @@ public class ImageWebService {
 
     @Autowired
     private PlatformTransactionManager transactionManager;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Autowired
     private UserInfo userInfo;
@@ -87,8 +93,13 @@ public class ImageWebService {
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
             String imageId = imageDomainService.saveImage(image, currentUserId).getId();
             imagePermissionDomainService.savePermissions(imageId, allowedUsers);
-            log.info("User uploaded new image. UserId: {}, imageId: {}, allowedUserIds: {}", currentUserId, imageId, allowedUsers);
+            log.info("User uploaded new image. UserId: {}, imageId: {}, allowedUserIds: {}",
+                    currentUserId, imageId, allowedUsers);
         });
+        String imageRecipients = allowedUsers.stream()
+                .filter(it -> !allowedUsers.contains(it))
+                .collect(Collectors.joining(","));
+        notificationService.notify(Action.IMAGE_SENT, Map.of("fromUser", currentUserId ,"toUsers", imageRecipients));
     }
 
     public List<ImageInfoDto> getAllInfo(Integer page, Integer size) {

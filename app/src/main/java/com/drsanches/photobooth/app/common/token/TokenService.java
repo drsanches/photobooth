@@ -32,6 +32,7 @@ public class TokenService {
     @Autowired
     private UserInfo userInfo;
 
+    //TODO: Move expires to domain service
     public Token createToken(String userId, Role role) {
         GregorianCalendar expires = new GregorianCalendar();
         expires.add(CALENDAR_FIELD, EXPIRES_CALENDAR_VALUE);

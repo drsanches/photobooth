@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.notifier.service;
+package com.drsanches.photobooth.app.notifier.service.notifier;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

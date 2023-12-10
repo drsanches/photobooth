@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.notifier.service;
+package com.drsanches.photobooth.app.notifier.service.notifier;
 
 import java.util.Map;
 

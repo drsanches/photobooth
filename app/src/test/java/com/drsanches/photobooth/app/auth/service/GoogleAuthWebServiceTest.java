@@ -12,14 +12,14 @@ import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainSer
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationCodeValidator;
 import com.drsanches.photobooth.app.common.token.UserInfo;
-import com.drsanches.photobooth.app.notifier.service.Action;
+import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import com.drsanches.photobooth.app.auth.exception.NoGoogleUserException;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.common.token.data.model.Role;
 import com.drsanches.photobooth.app.common.token.data.model.Token;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
-import com.drsanches.photobooth.app.notifier.service.NotificationService;
+import com.drsanches.photobooth.app.notifier.service.notifier.NotificationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

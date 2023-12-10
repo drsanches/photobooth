@@ -48,6 +48,7 @@ dependencies {
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.2.0' //Swagger
     implementation group: 'org.codehaus.groovy', name: 'groovy-all', version: '3.0.18' //For log4j2-spring.xml script
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2' //Fixes build warnings of @Nullable
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '9.2.0' //For push notifications
 
     //Tests
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'

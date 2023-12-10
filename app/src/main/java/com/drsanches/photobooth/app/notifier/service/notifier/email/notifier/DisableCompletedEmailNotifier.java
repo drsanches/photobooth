@@ -1,7 +1,7 @@
-package com.drsanches.photobooth.app.notifier.service.email.notifier;
+package com.drsanches.photobooth.app.notifier.service.notifier.email.notifier;
 
 import com.drsanches.photobooth.app.config.EmailNotificationsContentProperties;
-import com.drsanches.photobooth.app.notifier.service.Action;
+import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,14 +10,14 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class RegistrationStartedEmailNotifier extends BaseEmailNotifier {
+public class DisableCompletedEmailNotifier extends BaseEmailNotifier {
 
     @Autowired
     private EmailNotificationsContentProperties content;
 
     @Override
     public boolean isAcceptable(Action action) {
-        return action == Action.REGISTRATION_STARTED;
+        return action == Action.DISABLE_COMPLETED;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class RegistrationStartedEmailNotifier extends BaseEmailNotifier {
         sendEmail(
                 params.get("email"),
                 content.getSubject(action),
-                String.format(content.getText(action), params.get("code"))
+                content.getText(action)
         );
     }
 }

@@ -15,6 +15,7 @@ content:
       EMAIL_CHANGE_COMPLETED: "Email changed successfully"
       DISABLE_STARTED: "Submit account deletion"
       DISABLE_COMPLETED: "Account deleted successfully"
+      IMAGE_SENT: #TODO
     text:
       REGISTRATION_STARTED: "Code: %s"
       REGISTRATION_COMPLETED: "Congratulations! Your registration was completed successfully"
@@ -26,3 +27,4 @@ content:
       EMAIL_CHANGE_COMPLETED: "Your email was changed successfully"
       DISABLE_STARTED: "Code: %s"
       DISABLE_COMPLETED: "Your account was deleted successfully"
+      IMAGE_SENT: #TODO

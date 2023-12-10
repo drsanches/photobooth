@@ -226,6 +226,9 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Support different login options (username/password and google both)
 - Initialize name and avatar from Google info
 - Fix: `Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts`
+- Delete expired fcm tokens
+- Return `expires` in fcm token controller
+- Monitor time for external api calls
 
 ### Tests
 - Test sorting

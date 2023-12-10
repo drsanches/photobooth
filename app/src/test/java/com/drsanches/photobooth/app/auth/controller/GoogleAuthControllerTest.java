@@ -8,7 +8,7 @@ import com.drsanches.photobooth.app.auth.dto.google.GoogleSetUsernameDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.GoogleTokenDto;
 import com.drsanches.photobooth.app.auth.service.GoogleUserInfoService;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
-import com.drsanches.photobooth.app.notifier.service.email.service.EmailService;
+import com.drsanches.photobooth.app.notifier.service.notifier.email.service.EmailService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
 import org.junit.jupiter.api.BeforeEach;

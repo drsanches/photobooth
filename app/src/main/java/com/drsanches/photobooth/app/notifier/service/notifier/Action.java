@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.notifier.service;
+package com.drsanches.photobooth.app.notifier.service.notifier;
 
 public enum Action {
 
@@ -11,5 +11,6 @@ public enum Action {
     EMAIL_CHANGE_STARTED,
     EMAIL_CHANGE_COMPLETED,
     DISABLE_STARTED,
-    DISABLE_COMPLETED
+    DISABLE_COMPLETED,
+    IMAGE_SENT
 }

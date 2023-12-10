@@ -1,7 +1,7 @@
-package com.drsanches.photobooth.app.notifier.service.email.notifier;
+package com.drsanches.photobooth.app.notifier.service.notifier.email.notifier;
 
-import com.drsanches.photobooth.app.notifier.service.Notifier;
-import com.drsanches.photobooth.app.notifier.service.email.service.EmailService;
+import com.drsanches.photobooth.app.notifier.service.notifier.Notifier;
+import com.drsanches.photobooth.app.notifier.service.notifier.email.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class BaseEmailNotifier implements Notifier {
