@@ -96,8 +96,9 @@ public class ImageWebService {
             log.info("User uploaded new image. UserId: {}, imageId: {}, allowedUserIds: {}",
                     currentUserId, imageId, allowedUsers);
         });
+        //TODO: Refactor
         String imageRecipients = allowedUsers.stream()
-                .filter(it -> !allowedUsers.contains(currentUserId))
+                .filter(it -> !it.equals(currentUserId))
                 .collect(Collectors.joining(","));
         notificationService.notify(Action.IMAGE_SENT, Map.of("fromUser", currentUserId ,"toUsers", imageRecipients));
     }
