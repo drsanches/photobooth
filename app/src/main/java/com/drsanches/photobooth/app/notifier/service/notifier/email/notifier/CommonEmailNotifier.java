@@ -1,9 +1,10 @@
 package com.drsanches.photobooth.app.notifier.service.notifier.email.notifier;
 
-import com.drsanches.photobooth.app.config.EmailNotificationsContentProperties;
+import com.drsanches.photobooth.app.config.NotificationContentProperties;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import com.drsanches.photobooth.app.notifier.data.email.EmailInfoDomainService;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,12 @@ public class CommonEmailNotifier extends BaseEmailNotifier {
     private EmailInfoDomainService emailInfoDomainService;
 
     @Autowired
-    private EmailNotificationsContentProperties content;
+    private NotificationContentProperties content;
+
+    @Override
+    public Logger getLogger() {
+        return log;
+    }
 
     @Override
     public boolean isAcceptable(Action action) {
@@ -34,11 +40,10 @@ public class CommonEmailNotifier extends BaseEmailNotifier {
 
     @Override
     public void notify(Action action, Map<String, String> params) {
-        log.info("Notification process started. Action: {}, params: {}", action, params);
         sendEmail(
                 emailInfoDomainService.getByUserId(params.get("userId")).getEmail(),
-                content.getSubject(action),
-                content.getText(action)
+                content.getEmailContent(action).subject(),
+                content.getEmailContent(action).text()
         );
     }
 }

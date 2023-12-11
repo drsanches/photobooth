@@ -22,8 +22,12 @@ public abstract class BaseFcmNotifier implements Notifier {
         List<String> fcmTokens = fcmTokenDomainService.getByUserId(userId).stream()
                 .map(FcmToken::getToken)
                 .toList();
-        List<FcmService.FcmResult> result = fcmService.sendMessage(fcmTokens, title, body);
-        deleteFailedTokens(result, userId);
+        if (fcmTokens.isEmpty()) {
+            log.warn("User has no fcm tokens. UserId: {}", userId);
+        } else {
+            List<FcmService.FcmResult> result = fcmService.sendMessage(fcmTokens, title, body);
+            deleteFailedTokens(result, userId);
+        }
     }
 
     private void deleteFailedTokens(List<FcmService.FcmResult> fcmResults, String userId) {
@@ -31,7 +35,9 @@ public abstract class BaseFcmNotifier implements Notifier {
                 .filter(it -> !it.success())
                 .map(FcmService.FcmResult::fcmToken)
                 .toList();
-        fcmTokenDomainService.deleteByTokens(fcmTokensToDelete);
-        log.info("Deleted {} wrong fcm tokens. UserId: {}", fcmTokensToDelete.size(), userId);
+        if (!fcmTokensToDelete.isEmpty()) {
+            fcmTokenDomainService.deleteByTokens(fcmTokensToDelete);
+            log.info("Deleted {} wrong fcm tokens. UserId: {}", fcmTokensToDelete.size(), userId);
+        }
     }
 }

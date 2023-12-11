@@ -18,7 +18,7 @@ public class NotificationService {
         for (var notifier: notifiers) {
             if (notifier.isAcceptable(action)) {
                 try {
-                    notifier.notify(action, params);
+                    notifier.logAndNotify(action, params);
                 } catch (Exception e) {
                     log.error("Exception occurred during notification. Action: {}, params: {}", action, params, e);
                 }

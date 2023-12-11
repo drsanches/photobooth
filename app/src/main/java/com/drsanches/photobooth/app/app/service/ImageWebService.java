@@ -89,6 +89,7 @@ public class ImageWebService {
         byte[] image = Base64.getDecoder().decode(uploadPhotoDto.getFile());
         List<String> allowedUsers = CollectionUtils.isEmpty(uploadPhotoDto.getUserIds()) ?
                 getEnabledFriends(currentUserId) : uploadPhotoDto.getUserIds();
+        String imageRecipients = String.join(",", allowedUsers);
         allowedUsers.add(currentUserId);
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
             String imageId = imageDomainService.saveImage(image, currentUserId).getId();
@@ -96,10 +97,6 @@ public class ImageWebService {
             log.info("User uploaded new image. UserId: {}, imageId: {}, allowedUserIds: {}",
                     currentUserId, imageId, allowedUsers);
         });
-        //TODO: Refactor
-        String imageRecipients = allowedUsers.stream()
-                .filter(it -> !it.equals(currentUserId))
-                .collect(Collectors.joining(","));
         notificationService.notify(Action.IMAGE_SENT, Map.of("fromUser", currentUserId ,"toUsers", imageRecipients));
     }
 

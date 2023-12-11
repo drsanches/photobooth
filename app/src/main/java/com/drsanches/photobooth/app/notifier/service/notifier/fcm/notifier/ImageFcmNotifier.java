@@ -1,14 +1,25 @@
 package com.drsanches.photobooth.app.notifier.service.notifier.fcm.notifier;
 
+import com.drsanches.photobooth.app.config.NotificationContentProperties;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 @Slf4j
 @Component
-public class CommonFcmNotifier extends BaseFcmNotifier {
+public class ImageFcmNotifier extends BaseFcmNotifier {
+
+    @Autowired
+    private NotificationContentProperties content;
+
+    @Override
+    public Logger getLogger() {
+        return log;
+    }
 
     @Override
     public boolean isAcceptable(Action action) {
@@ -18,7 +29,11 @@ public class CommonFcmNotifier extends BaseFcmNotifier {
     @Override
     public void notify(Action action, Map<String, String> params) {
         for (String userId: params.get("toUsers").split(",")) {
-            sendPush(userId, "New photo", "You've got a new photo, let's take a look at it!"); //TODO: Use resources for content
+            sendPush(
+                    userId,
+                    content.getPushContent(action).title(),
+                    content.getPushContent(action).body()
+            );
         }
     }
 }
