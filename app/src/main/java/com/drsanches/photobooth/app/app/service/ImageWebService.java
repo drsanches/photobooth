@@ -97,7 +97,7 @@ public class ImageWebService {
                     currentUserId, imageId, allowedUsers);
         });
         String imageRecipients = allowedUsers.stream()
-                .filter(it -> !allowedUsers.contains(it))
+                .filter(it -> !allowedUsers.contains(currentUserId))
                 .collect(Collectors.joining(","));
         notificationService.notify(Action.IMAGE_SENT, Map.of("fromUser", currentUserId ,"toUsers", imageRecipients));
     }
