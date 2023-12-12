@@ -1,5 +1,6 @@
 package com.drsanches.photobooth.app.notifier.service.notifier.email.service;
 
+import com.drsanches.photobooth.app.common.aspects.MonitorTime;
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@MonitorTime
 @ConditionalOnProperty(name = "application.notifications.email-enabled")
 public class EmailServiceImpl implements EmailService {
 

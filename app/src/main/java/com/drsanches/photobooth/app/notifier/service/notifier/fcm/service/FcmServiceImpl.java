@@ -1,5 +1,6 @@
 package com.drsanches.photobooth.app.notifier.service.notifier.fcm.service;
 
+import com.drsanches.photobooth.app.common.aspects.MonitorTime;
 import com.drsanches.photobooth.app.notifier.exception.NotificationException;
 import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Slf4j
 @Component
+@MonitorTime
 @ConditionalOnProperty(name = "application.notifications.push-enabled")
 public class FcmServiceImpl implements FcmService {
 
