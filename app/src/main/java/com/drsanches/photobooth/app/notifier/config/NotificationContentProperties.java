@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.config;
+package com.drsanches.photobooth.app.notifier.config;
 
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;

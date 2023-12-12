@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.notifier.service.notifier.email.notifier;
 
-import com.drsanches.photobooth.app.config.NotificationContentProperties;
+import com.drsanches.photobooth.app.notifier.config.NotificationContentProperties;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;

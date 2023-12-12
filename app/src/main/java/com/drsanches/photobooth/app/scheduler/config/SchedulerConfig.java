@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.config;
+package com.drsanches.photobooth.app.scheduler.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
