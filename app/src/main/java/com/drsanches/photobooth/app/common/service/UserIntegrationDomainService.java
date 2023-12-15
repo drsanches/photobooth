@@ -13,6 +13,7 @@ import com.drsanches.photobooth.app.notifier.data.email.repository.EmailInfoRepo
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -198,7 +199,11 @@ public class UserIntegrationDomainService {
                 userProfileRepository.save(userProfile);
             }
             if (deleteEmailInfo) {
-                emailInfoRepository.deleteByIdUserId(userAuth.getId()); //TODO: Add try catch
+                try {
+                    emailInfoRepository.deleteByIdUserId(userAuth.getId());
+                } catch (EmptyResultDataAccessException e) {
+                    log.warn("EmailInfo does not exist. UserId: {}", userAuth.getId(), e);
+                }
             }
             if (emailInfo != null) {
                 emailInfoRepository.save(emailInfo);
