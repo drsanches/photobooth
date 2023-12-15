@@ -42,7 +42,8 @@ public class FcmTokenDomainService {
     }
 
     public void deleteByTokens(List<String> tokens) {
-        var deletedTokens = fcmTokenRepository.deleteByTokenIn(tokens);
-        log.debug("FcmToken objects deleted. FcmTokenList: {}", deletedTokens);
+        var tokensToDelete = fcmTokenRepository.findByTokenIn(tokens);
+        fcmTokenRepository.deleteAll(tokensToDelete);
+        log.debug("FcmToken objects deleted. FcmTokenList: {}", tokensToDelete);
     }
 }

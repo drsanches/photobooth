@@ -37,7 +37,7 @@ public abstract class BaseFcmNotifier implements Notifier {
                 .toList();
         if (!fcmTokensToDelete.isEmpty()) {
             fcmTokenDomainService.deleteByTokens(fcmTokensToDelete);
-            log.info("Deleted {} wrong fcm tokens. UserId: {}", fcmTokensToDelete.size(), userId);
+            log.info("Deleted wrong fcm tokens. Count: {}, userId: {}", fcmTokensToDelete.size(), userId);
         }
     }
 }

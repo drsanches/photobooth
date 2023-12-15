@@ -18,7 +18,7 @@ public interface FcmTokenRepository extends CrudRepository<FcmToken, String> {
 
     List<FcmToken> findByUserId(String userId);
 
-    boolean existsByToken(String token);
+    List<FcmToken> findByTokenIn(List<String> tokens);
 
-    List<FcmToken> deleteByTokenIn(List<String> tokens);
+    boolean existsByToken(String token);
 }
