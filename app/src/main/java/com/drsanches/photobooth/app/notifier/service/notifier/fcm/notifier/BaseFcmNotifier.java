@@ -18,14 +18,14 @@ public abstract class BaseFcmNotifier implements Notifier {
     @Autowired
     private FcmTokenDomainService fcmTokenDomainService;
 
-    protected void sendPush(String userId, String title, String body) {
+    protected void sendPushWithImage(String userId, String title, String body, String imageId) {
         List<String> fcmTokens = fcmTokenDomainService.getByUserId(userId).stream()
                 .map(FcmToken::getToken)
                 .toList();
         if (fcmTokens.isEmpty()) {
             log.warn("User has no fcm tokens. UserId: {}", userId);
         } else {
-            List<FcmService.FcmResult> result = fcmService.sendMessage(fcmTokens, title, body);
+            List<FcmService.FcmResult> result = fcmService.sendMessageWithImage(fcmTokens, title, body, imageId);
             deleteFailedTokens(result, userId);
         }
     }
