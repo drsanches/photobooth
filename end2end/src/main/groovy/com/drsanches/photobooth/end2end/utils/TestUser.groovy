@@ -29,10 +29,10 @@ class TestUser {
         this.username = username
         this.password = password
         this.token = RequestUtils.getToken(this.username, this.password)
-        JSONObject authInfo = RequestUtils.getAuthInfo(this.token)
+        def authInfo = RequestUtils.getAuthInfo(this.token)
         this.id = authInfo["id"]
         this.email = authInfo["email"]
-        JSONObject userProfile = RequestUtils.getUserProfile(this.token)
+        def userProfile = RequestUtils.getUserProfile(this.token)
         this.name = userProfile["name"]
         this.status = userProfile["status"]
         this.imagePath = userProfile["imagePath"]
@@ -59,7 +59,7 @@ class TestUser {
 
     TestUser uploadAvatar(byte[] image) {
         RequestUtils.uploadAvatar(token, image)
-        JSONObject userProfile = RequestUtils.getUserProfile(token)
+        def userProfile = RequestUtils.getUserProfile(token)
         this.imagePath = userProfile["imagePath"]
         this.thumbnailPath = userProfile["thumbnailPath"]
         return this

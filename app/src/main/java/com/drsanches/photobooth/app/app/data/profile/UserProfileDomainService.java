@@ -6,7 +6,6 @@ import com.drsanches.photobooth.app.app.utils.PaginationService;
 import com.drsanches.photobooth.app.app.exception.NoUserIdException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,7 @@ public class UserProfileDomainService {
     private PaginationService<UserProfile> paginationService; //TODO: Exclude?
 
     public void updateProfileData(String userId, @Nullable String name, @Nullable String status) {
-        UserProfile userProfile = getEnabledById(userId);
+        var userProfile = getEnabledById(userId);
         userProfile.setName(name);
         userProfile.setStatus(status);
         userProfileRepository.save(userProfile);
@@ -33,7 +32,7 @@ public class UserProfileDomainService {
     }
 
     public void updateImageId(String userId, @Nullable String imageId) {
-        UserProfile userProfile = getEnabledById(userId);
+        var userProfile = getEnabledById(userId);
         userProfile.setImageId(imageId);
         userProfileRepository.save(userProfile);
         log.debug("UserProfile imageId updated: {}", userProfile);
@@ -47,7 +46,7 @@ public class UserProfileDomainService {
 
     //TODO: Sort?
     public List<UserProfile> findEnabledByUsername(String username, Integer page, Integer size) {
-        Pageable pageable = paginationService.pageable(page, size);
+        var pageable = paginationService.pageable(page, size);
         return userProfileRepository.findByUsernameContainingAndEnabled(username, true, pageable);
     }
 
@@ -62,7 +61,8 @@ public class UserProfileDomainService {
     }
 
     public List<UserProfile> getEnabledByIds(Collection<String> userIds) {
-        List<UserProfile> profiles = new LinkedList<>();
+        var profiles = new LinkedList<UserProfile>();
+        //TODO: Refactor (and other similar cases)
         userProfileRepository.findAllById(userIds).forEach(profile -> {
             if (profile.isEnabled()) {
                 profiles.add(profile);

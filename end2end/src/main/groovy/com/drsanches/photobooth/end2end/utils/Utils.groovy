@@ -3,7 +3,6 @@ package com.drsanches.photobooth.end2end.utils
 import javax.imageio.ImageIO
 import java.awt.Image
 import java.awt.image.BufferedImage
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 class Utils {
@@ -34,8 +33,8 @@ class Utils {
     }
 
     static boolean checkTimestamp(Date dateBefore, String timestamp, Date dateAfter) {
-        DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS z")
-        Date date = df.parse(timestamp)
+        def df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS z")
+        def date = df.parse(timestamp)
         return dateBefore.before(date) && dateAfter.after(date)
     }
 
@@ -44,11 +43,11 @@ class Utils {
     }
 
     static byte[] toThumbnail(byte[] image) {
-        int size = 60
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(image)
-        BufferedImage bufferedImage = ImageIO.read(inputStream)
-        Image scaledImage = bufferedImage.getScaledInstance(size, size, Image.SCALE_DEFAULT)
-        BufferedImage outputImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB)
+        def size = 60
+        def inputStream = new ByteArrayInputStream(image)
+        def bufferedImage = ImageIO.read(inputStream)
+        def scaledImage = bufferedImage.getScaledInstance(size, size, Image.SCALE_DEFAULT)
+        def outputImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB)
         outputImage.getGraphics().drawImage(scaledImage, 0, 0, null)
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream()
         ImageIO.write(outputImage, "jpg", outputStream)

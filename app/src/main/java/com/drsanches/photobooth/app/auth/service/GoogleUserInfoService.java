@@ -18,7 +18,7 @@ public class GoogleUserInfoService {
 
     public GoogleInfoDto getGoogleInfo(String idToken) {
         try {
-            GoogleInfoDto response = restTemplate.getForObject(String.format(URL, idToken), GoogleInfoDto.class);
+            var response = restTemplate.getForObject(String.format(URL, idToken), GoogleInfoDto.class);
             log.info("Google user info response: {}", response);
             return response;
         } catch (Exception e) {

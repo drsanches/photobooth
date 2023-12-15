@@ -26,9 +26,7 @@ import org.springframework.validation.annotation.Validated;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -63,10 +61,10 @@ public class ImageWebService {
     private ImageInfoMapper imageInfoMapper;
 
     public void uploadAvatar(@Valid UploadAvatarDto uploadAvatarDto) {
-        String userId = userInfo.getUserId();
-        byte[] image = Base64.getDecoder().decode(uploadAvatarDto.getFile());
+        var userId = userInfo.getUserId();
+        var image = Base64.getDecoder().decode(uploadAvatarDto.getFile());
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
-            String imageId = imageDomainService.saveImage(image, userId).getId();
+            var imageId = imageDomainService.saveImage(image, userId).getId();
             userProfileDomainService.updateImageId(userId, imageId);
             log.info("User updated profile image. UserId: {}, newImageId: {}", userId, imageId);
         });
@@ -85,14 +83,15 @@ public class ImageWebService {
     }
 
     public void uploadPhoto(@Valid UploadPhotoDto uploadPhotoDto) {
-        String currentUserId = userInfo.getUserId();
-        byte[] image = Base64.getDecoder().decode(uploadPhotoDto.getFile());
-        List<String> allowedUsers = CollectionUtils.isEmpty(uploadPhotoDto.getUserIds()) ?
-                getEnabledFriends(currentUserId) : uploadPhotoDto.getUserIds();
-        String imageRecipients = String.join(",", allowedUsers);
+        var currentUserId = userInfo.getUserId();
+        var image = Base64.getDecoder().decode(uploadPhotoDto.getFile());
+        var allowedUsers = CollectionUtils.isEmpty(uploadPhotoDto.getUserIds()) ?
+                getEnabledFriends(currentUserId) :
+                uploadPhotoDto.getUserIds();
+        var imageRecipients = String.join(",", allowedUsers);
         allowedUsers.add(currentUserId);
-        String imageId = new TransactionTemplate(transactionManager).execute(status -> {
-            String savedImageId = imageDomainService.saveImage(image, currentUserId).getId();
+        var imageId = new TransactionTemplate(transactionManager).execute(status -> {
+            var savedImageId = imageDomainService.saveImage(image, currentUserId).getId();
             imagePermissionDomainService.savePermissions(savedImageId, allowedUsers);
             log.info("User uploaded new image. UserId: {}, imageId: {}, allowedUserIds: {}",
                     currentUserId, savedImageId, allowedUsers);
@@ -106,22 +105,22 @@ public class ImageWebService {
     }
 
     public List<ImageInfoDto> getAllInfo(Integer page, Integer size) {
-        String currentUserId = userInfo.getUserId();
-        Set<String> imageIds = imagePermissionDomainService.getImageIds(currentUserId);
-        Stream<Image> images = imageDomainService.getImages(imageIds).stream();
+        var currentUserId = userInfo.getUserId();
+        var imageIds = imagePermissionDomainService.getImageIds(currentUserId);
+        var images = imageDomainService.getImages(imageIds).stream();
         return paginationService.pagination(images, page, size)
                 .map(imageInfoMapper::convert)
                 .collect(Collectors.toList());
     }
 
     public void deleteAvatar() {
-        String userId = userInfo.getUserId();
+        var userId = userInfo.getUserId();
         userProfileDomainService.updateImageId(userId, null);
         log.info("User deleted his profile image. UserId: {}", userId);
     }
 
     private List<String> getEnabledFriends(String currentUserId) {
-        List<String> friendIds = friendsDomainService.getFriendsIdList(currentUserId);
+        var friendIds = friendsDomainService.getFriendsIdList(currentUserId);
         return userProfileDomainService.getEnabledByIds(friendIds).stream()
                 .map(UserProfile::getId)
                 .collect(Collectors.toList());

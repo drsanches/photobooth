@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
-import java.util.List;
 
 @Component
 public class FriendIdsValidator implements ConstraintValidator<FriendIds, Collection<String>> {
@@ -26,7 +25,7 @@ public class FriendIdsValidator implements ConstraintValidator<FriendIds, Collec
         if (CollectionUtils.isEmpty(userIds)) {
             return true;
         }
-        List<String> friendIds = friendsDomainService.getFriendsIdList(userInfo.getUserId());
+        var friendIds = friendsDomainService.getFriendsIdList(userInfo.getUserId());
         return friendIds.containsAll(userIds);
     }
 }

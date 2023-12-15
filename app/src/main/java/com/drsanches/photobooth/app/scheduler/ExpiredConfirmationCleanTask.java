@@ -1,7 +1,6 @@
 package com.drsanches.photobooth.app.scheduler;
 
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
-import com.drsanches.photobooth.app.auth.data.confirmation.model.Confirmation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -21,7 +20,7 @@ public class ExpiredConfirmationCleanTask {
     @Scheduled(cron = "${application.scheduler.expired-confirmation-clean-task.cron}")
     public void cleanExpiredTokens() {
         log.info("ExpiredConfirmationCleanTask started");
-        List<Confirmation> expired = confirmationDomainService.getExpired();
+        var expired = confirmationDomainService.getExpired();
         confirmationDomainService.deleteAll(expired);
         log.info("Deleted {} expired confirmations: {}", expired.size(), expired);
     }

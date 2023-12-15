@@ -71,11 +71,11 @@ public class UserIntegrationDomainService {
     }
 
     private UserAuth createUser(UserAuth userAuth) {
-        UserProfile userProfile = new UserProfile();
+        var userProfile = new UserProfile();
         copy(userAuth, userProfile);
-        EmailInfo emailInfo = new EmailInfo(userAuth.getId(), userAuth.getEmail());
+        var emailInfo = new EmailInfo(userAuth.getId(), userAuth.getEmail());
         try {
-            UserAuth savedUserAuth = update(
+            var savedUserAuth = update(
                     userAuth,
                     userProfile,
                     false,
@@ -94,9 +94,9 @@ public class UserIntegrationDomainService {
     }
 
     public void updateUsername(String userId, String username) {
-        UserAuth userAuth  = userAuthRepository.findById(userId).orElseThrow(() -> new NoUserIdException(userId));
+        var userAuth  = userAuthRepository.findById(userId).orElseThrow(() -> new NoUserIdException(userId));
         userAuth.setUsername(username);
-        UserProfile userProfile = userProfileRepository.findById(userAuth.getId())
+        var userProfile = userProfileRepository.findById(userAuth.getId())
                 .orElseGet(() -> {
                     log.error("UserProfile does not exist. Id: {}", userAuth.getId());
                     return new UserProfile();
@@ -116,9 +116,9 @@ public class UserIntegrationDomainService {
     }
 
     public void updateEmail(String userId, String email) {
-        UserAuth userAuth  = userAuthRepository.findById(userId).orElseThrow(() -> new NoUserIdException(userId));
+        var userAuth  = userAuthRepository.findById(userId).orElseThrow(() -> new NoUserIdException(userId));
         userAuth.setEmail(email);
-        EmailInfo emailInfo = new EmailInfo(userAuth.getId(), userAuth.getEmail());
+        var emailInfo = new EmailInfo(userAuth.getId(), userAuth.getEmail());
         try {
             update(
                     userAuth,
@@ -133,7 +133,7 @@ public class UserIntegrationDomainService {
     }
 
     public void disableUser(String userId) {
-        UserAuth userAuth = userAuthRepository.findById(userId).map(it -> it.toBuilder()
+        var userAuth = userAuthRepository.findById(userId).map(it -> it.toBuilder()
                 .enabled(false)
                 .username(UUID.randomUUID() + "_" + it.getUsername())
                 .email(UUID.randomUUID() + "_" + it.getEmail())
@@ -149,7 +149,7 @@ public class UserIntegrationDomainService {
                     .role(Role.USER)
                     .build();
         });
-        UserProfile userProfile = userProfileRepository.findById(userId)
+        var userProfile = userProfileRepository.findById(userId)
                 .orElseGet(() -> {
                     log.error("UserProfile does not exist. Id: {}", userAuth.getId());
                     return new UserProfile();
@@ -193,7 +193,7 @@ public class UserIntegrationDomainService {
             @Nullable EmailInfo emailInfo
     ) {
         return new TransactionTemplate(transactionManager).execute(status -> {
-            UserAuth savedUserAuth = userAuthRepository.save(userAuth);
+            var savedUserAuth = userAuthRepository.save(userAuth);
             if (userProfile != null) {
                 userProfileRepository.save(userProfile);
             }

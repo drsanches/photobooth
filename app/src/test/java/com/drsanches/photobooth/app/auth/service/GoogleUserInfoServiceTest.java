@@ -27,19 +27,19 @@ class GoogleUserInfoServiceTest {
 
     @Test
     void getGoogleInfo() {
-        String idToken = "idToken";
-        GoogleInfoDto googleInfoDto = new GoogleInfoDto();
+        var idToken = "idToken";
+        var googleInfoDto = new GoogleInfoDto();
         googleInfoDto.setEmail(UUID.randomUUID().toString());
         Mockito.when(restTemplate.getForObject(String.format(URL, idToken), GoogleInfoDto.class))
                 .thenReturn(googleInfoDto);
 
-        GoogleInfoDto result = googleUserInfoService.getGoogleInfo(idToken);
+        var result = googleUserInfoService.getGoogleInfo(idToken);
         Assertions.assertEquals(googleInfoDto, result);
     }
 
     @Test
     void getGoogleInfoWithIncorrectToken() {
-        String wrongIdToken = "wrongIdToken";
+        var wrongIdToken = "wrongIdToken";
         Mockito.when(restTemplate.getForObject(String.format(URL, wrongIdToken), GoogleInfoDto.class))
                 .thenThrow(RuntimeException.class);
 

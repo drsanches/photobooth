@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class ImageInfoMapper {
 
     public ImageInfoDto convert(Image image) {
-        ImageInfoDto imageInfoDto = ImageInfoDto.builder()
+        var imageInfoDto = ImageInfoDto.builder()
                 .id(image.getId())
                 .path(ImageConsts.IMAGE_PATH.apply(image.getId()))
                 .thumbnailPath(ImageConsts.THUMBNAIL_PATH.apply(image.getId()))

@@ -34,8 +34,8 @@ public class FcmServiceImpl implements FcmService {
 
     @Override
     public List<FcmResult> sendMessageWithImage(List<String> tokens, String title, String body, String imageId) {
-        String imagePath = imageServerAddress + ImageConsts.IMAGE_PATH.apply(imageId);
-        MulticastMessage msg = MulticastMessage.builder()
+        var imagePath = imageServerAddress + ImageConsts.IMAGE_PATH.apply(imageId);
+        var msg = MulticastMessage.builder()
                 .addAllTokens(tokens)
                 .setAndroidConfig(AndroidConfig.builder()
                         .putAllData(Map.of(
@@ -52,7 +52,7 @@ public class FcmServiceImpl implements FcmService {
                         .build())
                 .build();
         try {
-            BatchResponse response = firebaseMessaging.sendEachForMulticast(msg);
+            var response = firebaseMessaging.sendEachForMulticast(msg);
             log.info("Push sent for {} tokens", tokens.size());
             return map(tokens, response);
         } catch (FirebaseMessagingException e) {

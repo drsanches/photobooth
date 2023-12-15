@@ -21,7 +21,7 @@ public class FcmTokenWebService {
     private UserInfo userInfo;
 
     public void addToken(@Valid FcmTokenDto fcmTokenDto) {
-        String userId = userInfo.getUserId();
+        var userId = userInfo.getUserId();
         fcmTokenDomainService.create(userId, fcmTokenDto.getFcmToken());
         log.info("New fcm token added. UserId: {}, fcmToken: {}", userId, fcmTokenDto.getFcmToken());
     }

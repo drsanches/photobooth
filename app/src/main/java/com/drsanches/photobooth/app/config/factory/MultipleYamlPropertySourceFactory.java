@@ -8,15 +8,13 @@ import org.springframework.core.io.support.EncodedResource;
 import org.springframework.core.io.support.PropertySourceFactory;
 import org.springframework.lang.NonNull;
 
-import java.util.Properties;
-
 public class MultipleYamlPropertySourceFactory implements PropertySourceFactory {
 
     @Override
     public @NonNull PropertySource<?> createPropertySource(String name, EncodedResource resource) {
-        YamlPropertiesFactoryBean factory = new YamlPropertiesFactoryBean();
+        var factory = new YamlPropertiesFactoryBean();
         factory.setResources(resource.getResource());
-        Properties properties = factory.getObject();
+        var properties = factory.getObject();
 
         if (properties == null || resource.getResource().getFilename() == null) {
             throw ServerError.createWithMessage("Resource is null");

@@ -4,13 +4,12 @@ import com.drsanches.photobooth.app.auth.dto.userauth.request.GoogleTokenDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.TokenDto;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Confirmation;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Operation;
-import com.drsanches.photobooth.app.auth.dto.google.GoogleGetTokenDto;
 import com.drsanches.photobooth.app.auth.dto.google.GoogleInfoDto;
 import com.drsanches.photobooth.app.auth.dto.google.GoogleSetUsernameDto;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
-import com.drsanches.photobooth.app.auth.utils.ConfirmationCodeValidator;
+import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
 import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import com.drsanches.photobooth.app.auth.exception.NoGoogleUserException;
@@ -55,7 +54,7 @@ class GoogleAuthWebServiceTest {
     private UserIntegrationDomainService userIntegrationDomainService;
 
     @Mock
-    private ConfirmationCodeValidator confirmationCodeValidator;
+    private ConfirmationValidator confirmationValidator;
 
     @Mock
     private NotificationService notificationService;
@@ -74,17 +73,17 @@ class GoogleAuthWebServiceTest {
 
     @Test
     void getTokenForExisting() {
-        GoogleInfoDto googleInfo = new GoogleInfoDto();
+        var googleInfo = new GoogleInfoDto();
         googleInfo.setEmail(USER_EMAIL);
-        UserAuth userAuth = createUserAuth();
-        Token token = createToken();
-        TokenDto tokenDto = createTokenDto();
+        var userAuth = createUserAuth();
+        var token = createToken();
+        var tokenDto = createTokenDto();
         Mockito.when(googleUserInfoService.getGoogleInfo(Mockito.any())).thenReturn(googleInfo);
         Mockito.when(userAuthDomainService.getEnabledByGoogleAuth(USER_EMAIL)).thenReturn(userAuth);
         Mockito.when(tokenService.createToken(USER_ID, Role.USER)).thenReturn(token);
         Mockito.when(tokenMapper.convert(token)).thenReturn(tokenDto);
 
-        GoogleGetTokenDto result = googleAuthWebService.getToken(new GoogleTokenDto(ID_TOKEN));
+        var result = googleAuthWebService.getToken(new GoogleTokenDto(ID_TOKEN));
 
         Assertions.assertEquals(tokenDto, result.getToken());
         Assertions.assertNull(result.getChangeUsernameCode());
@@ -92,11 +91,11 @@ class GoogleAuthWebServiceTest {
 
     @Test
     void getTokenForNonExisting() {
-        GoogleInfoDto googleInfo = new GoogleInfoDto();
+        var googleInfo = new GoogleInfoDto();
         googleInfo.setEmail(USER_EMAIL);
-        UserAuth userAuth = createUserAuth();
-        Token token = createToken();
-        TokenDto tokenDto = createTokenDto();
+        var userAuth = createUserAuth();
+        var token = createToken();
+        var tokenDto = createTokenDto();
         Mockito.when(googleUserInfoService.getGoogleInfo(Mockito.any())).thenReturn(googleInfo);
         Mockito.when(userAuthDomainService.getEnabledByGoogleAuth(USER_EMAIL)).thenThrow(NoGoogleUserException.class);
         Mockito.when(userIntegrationDomainService.createUserByGoogle(USER_EMAIL)).thenReturn(userAuth);
@@ -105,7 +104,7 @@ class GoogleAuthWebServiceTest {
         Mockito.when(tokenService.createToken(USER_ID, Role.USER)).thenReturn(token);
         Mockito.when(tokenMapper.convert(token)).thenReturn(tokenDto);
 
-        GoogleGetTokenDto result = googleAuthWebService.getToken(new GoogleTokenDto(ID_TOKEN));
+        var result = googleAuthWebService.getToken(new GoogleTokenDto(ID_TOKEN));
 
         Mockito.verify(notificationService, Mockito.times(1)).notify(
                 Action.REGISTRATION_COMPLETED,
@@ -117,19 +116,19 @@ class GoogleAuthWebServiceTest {
 
     @Test
     void setUsername() {
-        UserAuth userAuth = createUserAuth();
-        Confirmation confirmation = createConfirmation();
+        var userAuth = createUserAuth();
+        var confirmation = createConfirmation();
         Mockito.when(confirmationDomainService.get(CONFIRMATION_CODE)).thenReturn(confirmation);
         Mockito.when(userInfo.getUserId()).thenReturn(USER_ID);
         Mockito.when(userAuthDomainService.getEnabledById(USER_ID)).thenReturn(userAuth);
 
-        String newUsername = UUID.randomUUID().toString();
-        GoogleSetUsernameDto request = new GoogleSetUsernameDto();
+        var newUsername = UUID.randomUUID().toString();
+        var request = new GoogleSetUsernameDto();
         request.setNewUsername(newUsername);
         request.setCode(CONFIRMATION_CODE);
         googleAuthWebService.setUsername(request);
 
-        Mockito.verify(confirmationCodeValidator).validate(confirmation, Operation.GOOGLE_USERNAME_CHANGE);
+        Mockito.verify(confirmationValidator).validate(confirmation, Operation.GOOGLE_USERNAME_CHANGE);
         Mockito.verify(userIntegrationDomainService).updateUsername(USER_ID, newUsername);
         Mockito.verify(confirmationDomainService).delete(confirmation.getId());
         Mockito.verify(tokenService).removeAllTokens(USER_ID);
@@ -158,7 +157,7 @@ class GoogleAuthWebServiceTest {
     }
 
     private Confirmation createConfirmation() {
-        GregorianCalendar expiresAt = new GregorianCalendar();
+        var expiresAt = new GregorianCalendar();
         expiresAt.add(GregorianCalendar.MINUTE, 5);
         return Confirmation.builder()
                 .id(CONFIRMATION_ID)

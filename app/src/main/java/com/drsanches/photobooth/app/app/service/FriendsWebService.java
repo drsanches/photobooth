@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -39,40 +38,40 @@ public class FriendsWebService {
     private UserInfoMapper userInfoMapper;
 
     public List<UserInfoDto> getFriends(Integer page, Integer size) {
-        String userId = userInfo.getUserId();
-        List<String> friends = friendsDomainService.getFriendsIdList(userId);
-        Stream<UserProfile> result = userProfileDomainService.getAllByIdsOrderByUsername(friends).stream();
+        var userId = userInfo.getUserId();
+        var friends = friendsDomainService.getFriendsIdList(userId);
+        var result = userProfileDomainService.getAllByIdsOrderByUsername(friends).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convertFriend)
                 .collect(Collectors.toList());
     }
 
     public List<UserInfoDto> getIncomingRequests(Integer page, Integer size) {
-        String userId = userInfo.getUserId();
-        List<String> incoming = friendsDomainService.getIncomingRequestIdList(userId);
-        Stream<UserProfile> result = userProfileDomainService.getAllByIdsOrderByUsername(incoming).stream();
+        var userId = userInfo.getUserId();
+        var incoming = friendsDomainService.getIncomingRequestIdList(userId);
+        var result = userProfileDomainService.getAllByIdsOrderByUsername(incoming).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convertIncoming)
                 .collect(Collectors.toList());
     }
 
     public List<UserInfoDto> getOutgoingRequests(Integer page, Integer size) {
-        String userId = userInfo.getUserId();
-        List<String> outgoing = friendsDomainService.getOutgoingRequestIdList(userId);
-        Stream<UserProfile> result = userProfileDomainService.getAllByIdsOrderByUsername(outgoing).stream();
+        var userId = userInfo.getUserId();
+        var outgoing = friendsDomainService.getOutgoingRequestIdList(userId);
+        var result = userProfileDomainService.getAllByIdsOrderByUsername(outgoing).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convertOutgoing)
                 .collect(Collectors.toList());
     }
 
     public void sendRequest(@Valid SendRequestDto sendRequestDto) {
-        String fromUserId = userInfo.getUserId();
+        var fromUserId = userInfo.getUserId();
         friendsDomainService.saveFriendRequest(fromUserId, sendRequestDto.getUserId());
         log.info("Friend request sent. FromUserId: {}, toUserId: {}", fromUserId, sendRequestDto.getUserId());
     }
 
     public void removeRequest(@Valid RemoveRequestDto removeRequestDto) {
-        String currentUserId = userInfo.getUserId();
+        var currentUserId = userInfo.getUserId();
         friendsDomainService.removeFriendRequest(currentUserId, removeRequestDto.getUserId());
         log.info("Friendship canceled. ByUserId: {}, forUserId: {}", currentUserId, removeRequestDto.getUserId());
     }

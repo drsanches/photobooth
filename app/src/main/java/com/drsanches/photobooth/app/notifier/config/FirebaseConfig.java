@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 @Configuration
 @ConditionalOnProperty(name = "application.notifications.push-enabled")
@@ -24,12 +23,12 @@ public class FirebaseConfig {
 
     @Bean
     FirebaseMessaging firebaseMessaging() throws IOException {
-        InputStream resource = new ClassPathResource(firebaseCredentialsPath).getInputStream();
-        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(resource);
-        FirebaseOptions firebaseOptions = FirebaseOptions.builder()
+        var resource = new ClassPathResource(firebaseCredentialsPath).getInputStream();
+        var googleCredentials = GoogleCredentials.fromStream(resource);
+        var firebaseOptions = FirebaseOptions.builder()
                 .setCredentials(googleCredentials)
                 .build();
-        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, APP_NAME);
+        var app = FirebaseApp.initializeApp(firebaseOptions, APP_NAME);
         return FirebaseMessaging.getInstance(app);
     }
 }

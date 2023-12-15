@@ -1,7 +1,6 @@
 package com.drsanches.photobooth.app.initializer;
 
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
-import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +36,8 @@ public class AdminInitializer implements Initializer {
             return;
         }
         try {
-            String salt = UUID.randomUUID().toString();
-            UserAuth savedUserAuth = userIntegrationDomainService.createAdmin(
+            var salt = UUID.randomUUID().toString();
+            var savedUserAuth = userIntegrationDomainService.createAdmin(
                     username,
                     "admin@example.com", //TODO: Use env or yaml?
                     new BCryptPasswordEncoder().encode(sha256(password) + salt),

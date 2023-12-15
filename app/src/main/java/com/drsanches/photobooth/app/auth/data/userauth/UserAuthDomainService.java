@@ -17,7 +17,7 @@ public class UserAuthDomainService {
     private UserAuthRepository userAuthRepository;
 
     public void updatePassword(String userId, String password, String salt) {
-        UserAuth userAuth = getEnabledById(userId);
+        var userAuth = getEnabledById(userId);
         userAuth.setPassword(password);
         userAuth.setSalt(salt);
         userAuthRepository.save(userAuth);

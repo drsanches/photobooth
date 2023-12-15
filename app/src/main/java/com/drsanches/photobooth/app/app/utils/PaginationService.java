@@ -28,7 +28,7 @@ public class PaginationService<T> {
     }
 
     private int size(@Nullable Integer size) {
-        int result = size == null || size < 1 ? defaultPageSize : size;
+        var result = size == null || size < 1 ? defaultPageSize : size;
         return result > maxPageSize ? maxPageSize : result;
     }
 

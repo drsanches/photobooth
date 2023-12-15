@@ -37,9 +37,9 @@ class EmailServiceImplTest {
 
     @Test
     void sendHtmlMessage() throws MessagingException, IOException {
-        String to = UUID.randomUUID().toString();
-        String subject = UUID.randomUUID().toString();
-        String message = UUID.randomUUID().toString();
+        var to = UUID.randomUUID().toString();
+        var subject = UUID.randomUUID().toString();
+        var message = UUID.randomUUID().toString();
 
         emailService.sendHtmlMessage(to, subject, message);
         Mockito.verify(emailSender, Mockito.times(1)).send(Mockito.any(MimeMessage.class));

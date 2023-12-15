@@ -24,7 +24,7 @@ public class ImageDomainService {
     private ImageConverter imageConverter;
 
     public Image saveImage(byte[] imageData, String ownerId) {
-        Image savedImage = imageRepository.save(Image.builder()
+        var savedImage = imageRepository.save(Image.builder()
                 .id(UUID.randomUUID().toString())
                 .data(imageData)
                 .thumbnailData(imageConverter.toThumbnail(imageData))
@@ -36,7 +36,7 @@ public class ImageDomainService {
     }
 
     public Image saveSystemImage(String id, byte[] imageData) {
-        Image savedImage = imageRepository.save(Image.builder()
+        var savedImage = imageRepository.save(Image.builder()
                 .id(id)
                 .data(imageData)
                 .thumbnailData(imageConverter.toThumbnail(imageData))
@@ -53,9 +53,9 @@ public class ImageDomainService {
     }
 
     public List<Image> getImages(Collection<String> imageIds) {
-        List<Image> images = imageRepository.findAllByIdInOrderByCreatedTimeDesc(imageIds);
+        var images = imageRepository.findAllByIdInOrderByCreatedTimeDesc(imageIds);
         if (images.size() != imageIds.size()) {
-            List<String> foundIds = images.stream()
+            var foundIds = images.stream()
                     .map(Image::getId)
                     .toList();
             log.warn("Images not found. Ids: {}", imageIds.stream()

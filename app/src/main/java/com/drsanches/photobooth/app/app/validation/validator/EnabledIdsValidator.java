@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class EnabledIdsValidator implements ConstraintValidator<EnabledIds, Collection<String>> {
@@ -23,9 +23,9 @@ public class EnabledIdsValidator implements ConstraintValidator<EnabledIds, Coll
         if (CollectionUtils.isEmpty(userIds)) {
             return true;
         }
-        List<String> enabledIds = userProfileDomainService.getEnabledByIds(userIds).stream()
+        var enabledIds = userProfileDomainService.getEnabledByIds(userIds).stream()
                 .map(UserProfile::getId)
-                .toList();
+                .collect(Collectors.toSet());
         return enabledIds.containsAll(userIds);
     }
 }

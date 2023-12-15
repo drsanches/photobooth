@@ -22,10 +22,10 @@ public class FcmTokenDomainService {
     private FcmTokenRepository fcmTokenRepository;
 
     public void create(String userId, String token) {
-        GregorianCalendar expires = new GregorianCalendar();
+        var expires = new GregorianCalendar();
         expires.add(CALENDAR_FIELD, EXPIRES_CALENDAR_VALUE);
         if (!fcmTokenRepository.existsByToken(token)) {
-            FcmToken fcmToken = fcmTokenRepository.save(FcmToken.builder()
+            var fcmToken = fcmTokenRepository.save(FcmToken.builder()
                     .id(UUID.randomUUID().toString())
                     .userId(userId)
                     .token(token)
@@ -42,7 +42,7 @@ public class FcmTokenDomainService {
     }
 
     public void deleteByTokens(List<String> tokens) {
-        List<FcmToken> deletedTokens = fcmTokenRepository.deleteByTokenIn(tokens);
+        var deletedTokens = fcmTokenRepository.deleteByTokenIn(tokens);
         log.debug("FcmToken objects deleted. FcmTokenList: {}", deletedTokens);
     }
 }

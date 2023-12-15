@@ -19,7 +19,7 @@ public class TimeLoggingAspect {
 
     @Around("monitorTime()")
     public Object aroundCallAt(ProceedingJoinPoint call) throws Throwable {
-        StopWatch clock = new StopWatch(call.toString());
+        var clock = new StopWatch(call.toString());
         try {
             clock.start(call.toShortString());
             return call.proceed();

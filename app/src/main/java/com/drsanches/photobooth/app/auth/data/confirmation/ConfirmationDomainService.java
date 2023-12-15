@@ -5,7 +5,6 @@ import com.drsanches.photobooth.app.auth.data.confirmation.repository.Confirmati
 import com.drsanches.photobooth.app.auth.exception.WrongConfirmCodeException;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Confirmation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
@@ -30,9 +29,9 @@ public class ConfirmationDomainService {
     private ConfirmationCodeGenerator confirmationCodeGenerator;
 
     public Confirmation create(@Nullable String data, @Nullable String userId, Operation operation) {
-        GregorianCalendar expiresAt = new GregorianCalendar();
+        var expiresAt = new GregorianCalendar();
         expiresAt.add(CALENDAR_FIELD, CALENDAR_VALUE);
-        Confirmation savedConfirmation = confirmationRepository.save(Confirmation.builder()
+        var savedConfirmation = confirmationRepository.save(Confirmation.builder()
                 .id(UUID.randomUUID().toString())
                 .code(confirmationCodeGenerator.generate())
                 .userId(userId)

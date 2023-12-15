@@ -20,7 +20,7 @@ public class FriendsDomainService {
     private FriendRequestRepository friendRequestRepository;
 
     public void saveFriendRequest(String fromUserId, String toUserId) {
-        FriendRequest friendRequest = new FriendRequest(fromUserId, toUserId);
+        var friendRequest = new FriendRequest(fromUserId, toUserId);
         friendRequestRepository.save(friendRequest);
         log.debug("New FriendRequest created: {}", friendRequest);
     }
@@ -37,25 +37,27 @@ public class FriendsDomainService {
         return getFriendsIdList(userId).size();
     }
 
+    //TODO: Use sets instead of friend lists?
+
     public List<String> getFriendsIdList(String userId) {
-        List<String> outgoing = getOutgoingRequestAndFriendIdList(userId);
-        List<String> incoming = getIncomingRequestAndFriendIdList(userId);
+        var outgoing = getOutgoingRequestAndFriendIdList(userId);
+        var incoming = getIncomingRequestAndFriendIdList(userId);
         return incoming.stream()
                 .filter(outgoing::contains)
                 .collect(Collectors.toList());
     }
 
     public List<String> getIncomingRequestIdList(String userId) {
-        List<String> outgoing = getOutgoingRequestAndFriendIdList(userId);
-        List<String> incoming = getIncomingRequestAndFriendIdList(userId);
+        var outgoing = getOutgoingRequestAndFriendIdList(userId);
+        var incoming = getIncomingRequestAndFriendIdList(userId);
         return incoming.stream()
                 .filter(x -> !outgoing.contains(x))
                 .collect(Collectors.toList());
     }
 
     public List<String> getOutgoingRequestIdList(String userId) {
-        List<String> outgoing = getOutgoingRequestAndFriendIdList(userId);
-        List<String> incoming = getIncomingRequestAndFriendIdList(userId);
+        var outgoing = getOutgoingRequestAndFriendIdList(userId);
+        var incoming = getIncomingRequestAndFriendIdList(userId);
         return outgoing.stream()
                 .filter(x -> !incoming.contains(x))
                 .collect(Collectors.toList());
@@ -74,14 +76,14 @@ public class FriendsDomainService {
     }
 
     public void removeFriendRequest(String fromUserId, String toUserId) {
-        FriendRequestKey friendRequestKey = new FriendRequestKey(fromUserId, toUserId);
+        var friendRequestKey = new FriendRequestKey(fromUserId, toUserId);
         try {
             friendRequestRepository.deleteById(friendRequestKey);
             log.debug("FriendRequest removed: {}", friendRequestKey);
         } catch(EmptyResultDataAccessException e) {
             log.warn("FriendRequest does not exist. Key: {}", friendRequestKey, e);
         }
-        FriendRequestKey reversedFriendRequestKey = new FriendRequestKey(toUserId, fromUserId);
+        var reversedFriendRequestKey = new FriendRequestKey(toUserId, fromUserId);
         try {
             friendRequestRepository.deleteById(reversedFriendRequestKey);
             log.debug("Reversed FriendRequest removed: {}", reversedFriendRequestKey);

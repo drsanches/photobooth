@@ -29,9 +29,9 @@ public class AdminFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        String uri = httpRequest.getRequestURI();
+        var httpRequest = (HttpServletRequest) request;
+        var httpResponse = (HttpServletResponse) response;
+        var uri = httpRequest.getRequestURI();
         if (adminUri.test(uri)
                 && (!userInfo.isAuthorized() || !Role.ADMIN.equals(userInfo.getRole()))) {
             log.info("User has no permissions for uri. UserId: {}, uri: {}",

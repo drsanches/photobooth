@@ -13,7 +13,7 @@ import java.util.GregorianCalendar;
 
 @Slf4j
 @Component
-public class ConfirmationCodeValidator {
+public class ConfirmationValidator {
 
     @Autowired
     private UserInfo userInfo;

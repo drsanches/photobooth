@@ -9,9 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -20,62 +17,51 @@ public class TokenService {
 
     private static final String TOKEN_TYPE = "Bearer";
 
-    private static final int CALENDAR_FIELD = Calendar.DAY_OF_YEAR;
-
-    private static final int EXPIRES_CALENDAR_VALUE = 10;
-
-    private static final int REFRESH_EXPIRES_CALENDAR_VALUE = 100;
-
     @Autowired
     private TokenDomainService tokenDomainService;
 
     @Autowired
     private UserInfo userInfo;
 
-    //TODO: Move expires to domain service
     public Token createToken(String userId, Role role) {
-        GregorianCalendar expires = new GregorianCalendar();
-        expires.add(CALENDAR_FIELD, EXPIRES_CALENDAR_VALUE);
-        GregorianCalendar refreshExpires = new GregorianCalendar();
-        refreshExpires.add(CALENDAR_FIELD, REFRESH_EXPIRES_CALENDAR_VALUE);
-        Token savedToken = tokenDomainService.saveToken(userId, role, expires, refreshExpires);
+        var savedToken = tokenDomainService.createToken(userId, role);
         userInfo.init(userId, savedToken.getId(), savedToken.getRole());
         log.info("New token created. UserId: {}", userId);
         return savedToken;
     }
 
     public void validate(@Nullable String accessToken) {
-        String accessTokenId = extractTokenId(accessToken)
+        var extractedAccessToken = extractToken(accessToken)
                 .orElseThrow(WrongTokenException::new);
-        Token token = tokenDomainService.getValidTokenByAccessToken(accessTokenId);
+        var token = tokenDomainService.getValidTokenByAccessToken(extractedAccessToken);
         userInfo.init(token.getUserId(), token.getId(), token.getRole());
     }
 
     public Token refreshToken(@Nullable String refreshToken) {
-        String refreshTokenId = extractTokenId(refreshToken)
+        var extractedRefreshToken = extractToken(refreshToken)
                 .orElseThrow(WrongTokenException::new);
-        Token token = tokenDomainService.getValidTokenByRefreshToken(refreshTokenId);
+        var token = tokenDomainService.getValidTokenByRefreshToken(extractedRefreshToken);
         tokenDomainService.deleteById(token.getId());
-        Token refreshedToken = createToken(token.getUserId(), token.getRole());
+        var refreshedToken = createToken(token.getUserId(), token.getRole());
         log.info("Token refreshed. UserId: {}", refreshedToken.getUserId());
         return refreshedToken;
     }
 
     public void removeCurrentToken() {
-        String tokenId = userInfo.getUserTokenId();
+        var tokenId = userInfo.getUserTokenId();
         tokenDomainService.deleteById(tokenId);
         userInfo.clean();
         log.info("Token deleted. UserId: {}", tokenId);
     }
 
     public void removeAllTokens(String userId) {
-        List<Token> tokens = tokenDomainService.getTokensByUserId(userId);
+        var tokens = tokenDomainService.getTokensByUserId(userId);
         tokenDomainService.deleteAll(tokens);
         userInfo.clean();
         log.info("Tokens deleted. UserId: {}", userId);
     }
 
-    private Optional<String> extractTokenId(@Nullable String token) {
+    private Optional<String> extractToken(@Nullable String token) {
         if (token == null) {
             return Optional.empty();
         }

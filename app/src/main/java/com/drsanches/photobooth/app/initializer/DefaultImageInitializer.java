@@ -37,7 +37,7 @@ public class DefaultImageInitializer implements Initializer {
             log.info("Image already initialized. Id: {}", imageId);
             return;
         }
-        byte[] image = Base64.getDecoder().decode(imageData);
+        var image = Base64.getDecoder().decode(imageData);
         imageDomainService.saveSystemImage(imageId, image);
         log.info("Image initialized. Id: {}", imageId);
     }

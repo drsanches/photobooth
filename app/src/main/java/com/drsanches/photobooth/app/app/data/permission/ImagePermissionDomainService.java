@@ -19,7 +19,7 @@ public class ImagePermissionDomainService {
     private ImagePermissionRepository imagePermissionRepository;
 
     public void savePermissions(String imageId, List<String> userIds) {
-        List<ImagePermission> imagePermissions = new ArrayList<>(userIds.size());
+        var imagePermissions = new ArrayList<ImagePermission>(userIds.size());
         userIds.forEach(userId -> imagePermissions.add(new ImagePermission(imageId, userId)));
         imagePermissionRepository.saveAll(imagePermissions);
         log.debug("New image permissions saved: {}", imagePermissions);

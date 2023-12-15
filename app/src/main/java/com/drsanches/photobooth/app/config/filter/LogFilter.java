@@ -29,7 +29,7 @@ public class LogFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        var httpRequest = (HttpServletRequest) request;
         ThreadContext.put("requestId", UUID.randomUUID().toString());
         if (!excludeLogUri.test(httpRequest.getRequestURI())) {
             userInfo.getUserIdOptional().ifPresentOrElse(

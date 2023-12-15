@@ -24,7 +24,7 @@ class RequestUtils {
     }
 
     static JSONObject getAuthInfo(String username, String password) {
-        String token = getToken(username, password)
+        def token = getToken(username, password)
         if (token == null) {
             return null
         }
@@ -44,7 +44,7 @@ class RequestUtils {
     }
 
     static JSONObject getUserProfile(String username, String password) {
-        String token = getToken(username, password)
+        def token = getToken(username, password)
         if (token == null) {
             return null
         }

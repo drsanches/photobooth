@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @ExtendWith(MockitoExtension.class)
 class PaginationServiceTest {
@@ -32,8 +31,8 @@ class PaginationServiceTest {
     @ParameterizedTest
     @MethodSource("paginationData")
     void pagination(Integer page, Integer size, IntStream expected) {
-        Stream<Integer> input = IntStream.range(0, 200).boxed();
-        Stream<Integer> result = paginationService.pagination(input, page, size);
+        var input = IntStream.range(0, 200).boxed();
+        var result = paginationService.pagination(input, page, size);
         Assertions.assertArrayEquals(expected.boxed().toArray(), result.toArray());
     }
 
@@ -54,7 +53,7 @@ class PaginationServiceTest {
     @ParameterizedTest
     @MethodSource("pageableData")
     void pageable(Integer page, Integer size, Pageable expected) {
-        Pageable result = paginationService.pageable(page, size);
+        var result = paginationService.pageable(page, size);
         Assertions.assertEquals(expected, result);
     }
 

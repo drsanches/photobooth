@@ -43,7 +43,7 @@ public class ValidBase64ImageValidator implements ConstraintValidator<ValidBase6
         }
 
         BufferedImage bufferedImage;
-        try (ByteArrayInputStream stream = new ByteArrayInputStream(imageData)) {
+        try (var stream = new ByteArrayInputStream(imageData)) {
             bufferedImage = ImageIO.read(stream);
         } catch (IOException e) {
             customMessage(context, "invalid image data");

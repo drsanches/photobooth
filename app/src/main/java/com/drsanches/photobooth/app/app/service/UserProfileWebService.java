@@ -3,7 +3,6 @@ package com.drsanches.photobooth.app.app.service;
 import com.drsanches.photobooth.app.app.dto.profile.request.ChangeUserProfileDto;
 import com.drsanches.photobooth.app.app.dto.profile.response.UserInfoDto;
 import com.drsanches.photobooth.app.app.mapper.UserInfoMapper;
-import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.app.data.friends.FriendsDomainService;
 import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
 import com.drsanches.photobooth.app.common.token.UserInfo;
@@ -34,8 +33,8 @@ public class UserProfileWebService {
     private UserInfoMapper userInfoMapper;
 
     public UserInfoDto getCurrentProfile() {
-        String userId = userInfo.getUserId();
-        UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
+        var userId = userInfo.getUserId();
+        var userProfile = userProfileDomainService.getEnabledById(userId);
         return userInfoMapper.convertCurrent(
                 userProfile,
                 friendsDomainService.getIncomingRequestsCount(userId),
@@ -45,10 +44,10 @@ public class UserProfileWebService {
     }
 
     public List<UserInfoDto> searchProfile(String username, Integer page, Integer size) {
-        String currentUserId = userInfo.getUserId();
-        List<UserProfile> userProfile = userProfileDomainService.findEnabledByUsername(username.toLowerCase(), page, size);
-        List<String> incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
-        List<String> outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
+        var currentUserId = userInfo.getUserId();
+        var userProfile = userProfileDomainService.findEnabledByUsername(username.toLowerCase(), page, size);
+        var incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
+        var outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
         return userProfile.stream()
                 .filter(x -> !x.getId().equals(currentUserId))
                 .map(x -> userInfoMapper.convert(x, incomingIds, outgoingIds))
@@ -56,15 +55,15 @@ public class UserProfileWebService {
     }
 
     public UserInfoDto getProfile(String userId) {
-        String currentUserId = userInfo.getUserId();
-        UserProfile userProfile = userProfileDomainService.getEnabledById(userId);
-        List<String> incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
-        List<String> outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
+        var currentUserId = userInfo.getUserId();
+        var userProfile = userProfileDomainService.getEnabledById(userId);
+        var incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
+        var outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
         return userInfoMapper.convert(userProfile, incomingIds, outgoingIds);
     }
 
     public void changeCurrentProfile(@Valid ChangeUserProfileDto changeUserProfileDto) {
-        String userId = userInfo.getUserId();
+        var userId = userInfo.getUserId();
         userProfileDomainService.updateProfileData(
                 userId,
                 changeUserProfileDto.getName(),

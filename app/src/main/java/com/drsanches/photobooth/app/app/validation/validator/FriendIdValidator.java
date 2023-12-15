@@ -19,7 +19,7 @@ public class FriendIdValidator implements ConstraintValidator<FriendId, String> 
 
     @Override
     public boolean isValid(String userId, ConstraintValidatorContext context) {
-        String currentUserId = userInfo.getUserId();
+        var currentUserId = userInfo.getUserId();
         if (currentUserId == null || userId == null) {
             return true;
         }
