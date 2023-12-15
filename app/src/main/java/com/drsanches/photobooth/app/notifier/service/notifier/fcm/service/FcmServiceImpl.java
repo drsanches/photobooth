@@ -34,7 +34,7 @@ public class FcmServiceImpl implements FcmService {
 
     @Override
     public List<FcmResult> sendMessageWithImage(List<String> tokens, String title, String body, String imageId) {
-        String imagePath = imageServerAddress + ImageConsts.THUMBNAIL_PATH.apply(imageId);
+        String imagePath = imageServerAddress + ImageConsts.IMAGE_PATH.apply(imageId);
         MulticastMessage msg = MulticastMessage.builder()
                 .addAllTokens(tokens)
                 .setAndroidConfig(AndroidConfig.builder()
