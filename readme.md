@@ -209,29 +209,28 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 
 ### Back
 - Add cache?
-- Use AOP for auth?
+- Use AOP or spring security mechanism for auth?
 - Do not create UserProfile for admin?
 - Use only cookies instead of authorization header for token?
-- Use 404 instead 401 for nonexistent urls
 - Separate app, auth, scheduler and notifier to different modules?
-- Add stub for Google auth
+- Add stub for Google auth?
+- Use records instead of DTO classes?
+- Use requestId instead of UUID in errors?
+- Add userId fields for UserAuth and UserProfile?
+- Use 404 instead 401 for nonexistent urls
 - Limit container resources
 - Use naming `expires` or `expiresAt`. Maybe rename `createdTime` to `created`
-- Test indexes
-- Use records instead of DTO classes
-- Authorization refactoring using spring security mechanism?
-- Use requestId instead of UUID in errors?
+- Test indexes and maybe add new
 - Fix error "host not found in upstream" if nginx started without app and elk
-- Add userId fields for UserAuth and UserProfile
 - Support different login options (username/password and google both)
 - Initialize name and avatar from Google info
 - Delete expired fcm tokens
 - Return `expires` in fcm token controller
 - Remove IMAGE_SERVER_ADDRESS from requirements
+- Add new tables to the readme
 
 ### Tests
-- Test sorting
-- Test 2FA
-- Test transactions
 - Use another framework?
+- Test sorting
+- Test transactions
 - Actualize readme with spring tests

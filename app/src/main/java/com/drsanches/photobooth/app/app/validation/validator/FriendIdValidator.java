@@ -23,6 +23,6 @@ public class FriendIdValidator implements ConstraintValidator<FriendId, String> 
         if (currentUserId == null || userId == null) {
             return true;
         }
-        return friendsDomainService.getFriendsIdList(currentUserId).contains(userId);
+        return friendsDomainService.getFriendsIds(currentUserId).contains(userId);
     }
 }

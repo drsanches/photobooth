@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 //TODO: Refactor - too many db requests
@@ -26,53 +26,51 @@ public class FriendsDomainService {
     }
 
     public int getIncomingRequestsCount(String userId) {
-        return getIncomingRequestIdList(userId).size();
+        return getIncomingRequestIds(userId).size();
     }
 
     public int getOutgoingRequestsCount(String userId) {
-        return getOutgoingRequestIdList(userId).size();
+        return getOutgoingRequestIds(userId).size();
     }
 
     public int getFriendsCount(String userId) {
-        return getFriendsIdList(userId).size();
+        return getFriendsIds(userId).size();
     }
 
-    //TODO: Use sets instead of friend lists?
-
-    public List<String> getFriendsIdList(String userId) {
-        var outgoing = getOutgoingRequestAndFriendIdList(userId);
-        var incoming = getIncomingRequestAndFriendIdList(userId);
+    public Set<String> getFriendsIds(String userId) {
+        var outgoing = getOutgoingRequestAndFriendIds(userId);
+        var incoming = getIncomingRequestAndFriendIds(userId);
         return incoming.stream()
                 .filter(outgoing::contains)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    public List<String> getIncomingRequestIdList(String userId) {
-        var outgoing = getOutgoingRequestAndFriendIdList(userId);
-        var incoming = getIncomingRequestAndFriendIdList(userId);
+    public Set<String> getIncomingRequestIds(String userId) {
+        var outgoing = getOutgoingRequestAndFriendIds(userId);
+        var incoming = getIncomingRequestAndFriendIds(userId);
         return incoming.stream()
                 .filter(x -> !outgoing.contains(x))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    public List<String> getOutgoingRequestIdList(String userId) {
-        var outgoing = getOutgoingRequestAndFriendIdList(userId);
-        var incoming = getIncomingRequestAndFriendIdList(userId);
+    public Set<String> getOutgoingRequestIds(String userId) {
+        var outgoing = getOutgoingRequestAndFriendIds(userId);
+        var incoming = getIncomingRequestAndFriendIds(userId);
         return outgoing.stream()
                 .filter(x -> !incoming.contains(x))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    public List<String> getOutgoingRequestAndFriendIdList(String userId) {
+    public Set<String> getOutgoingRequestAndFriendIds(String userId) {
         return friendRequestRepository.findByIdFromUserId(userId).stream()
                 .map(FriendRequest::getToUser)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    public List<String> getIncomingRequestAndFriendIdList(String userId) {
+    public Set<String> getIncomingRequestAndFriendIds(String userId) {
         return friendRequestRepository.findByIdToUserId(userId).stream()
                 .map(FriendRequest::getFromUserId)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     public void removeFriendRequest(String fromUserId, String toUserId) {

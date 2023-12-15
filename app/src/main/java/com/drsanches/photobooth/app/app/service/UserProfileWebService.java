@@ -46,8 +46,8 @@ public class UserProfileWebService {
     public List<UserInfoDto> searchProfile(String username, Integer page, Integer size) {
         var currentUserId = userInfo.getUserId();
         var userProfile = userProfileDomainService.findEnabledByUsername(username.toLowerCase(), page, size);
-        var incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
-        var outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
+        var incomingIds = friendsDomainService.getIncomingRequestAndFriendIds(currentUserId);
+        var outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIds(currentUserId);
         return userProfile.stream()
                 .filter(x -> !x.getId().equals(currentUserId))
                 .map(x -> userInfoMapper.convert(x, incomingIds, outgoingIds))
@@ -57,8 +57,8 @@ public class UserProfileWebService {
     public UserInfoDto getProfile(String userId) {
         var currentUserId = userInfo.getUserId();
         var userProfile = userProfileDomainService.getEnabledById(userId);
-        var incomingIds = friendsDomainService.getIncomingRequestAndFriendIdList(currentUserId);
-        var outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIdList(currentUserId);
+        var incomingIds = friendsDomainService.getIncomingRequestAndFriendIds(currentUserId);
+        var outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIds(currentUserId);
         return userInfoMapper.convert(userProfile, incomingIds, outgoingIds);
     }
 

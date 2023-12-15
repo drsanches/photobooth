@@ -25,7 +25,7 @@ public class FriendIdsValidator implements ConstraintValidator<FriendIds, Collec
         if (CollectionUtils.isEmpty(userIds)) {
             return true;
         }
-        var friendIds = friendsDomainService.getFriendsIdList(userInfo.getUserId());
+        var friendIds = friendsDomainService.getFriendsIds(userInfo.getUserId());
         return friendIds.containsAll(userIds);
     }
 }

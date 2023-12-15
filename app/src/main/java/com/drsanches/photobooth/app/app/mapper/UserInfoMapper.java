@@ -8,7 +8,7 @@ import com.drsanches.photobooth.app.config.ImageConsts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Collection;
 
 @Component
 public class UserInfoMapper {
@@ -48,7 +48,7 @@ public class UserInfoMapper {
                 .build();
     }
 
-    public UserInfoDto convert(UserProfile userProfile, List<String> incomingIds, List<String> outgoingIds) {
+    public UserInfoDto convert(UserProfile userProfile, Collection<String> incomingIds, Collection<String> outgoingIds) {
         return convert(userProfile).toBuilder()
                 .relationship(getRelationship(userProfile.getId(), incomingIds, outgoingIds))
                 .build();
@@ -76,7 +76,7 @@ public class UserInfoMapper {
                 .build();
     }
 
-    private RelationshipDto getRelationship(String userId, List<String> incomingIds, List<String> outgoingIds) {
+    private RelationshipDto getRelationship(String userId, Collection<String> incomingIds, Collection<String> outgoingIds) {
         if (userInfo.getUserId().equals(userId)) {
             return RelationshipDto.CURRENT;
         }

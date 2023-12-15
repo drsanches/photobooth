@@ -39,7 +39,7 @@ public class FriendsWebService {
 
     public List<UserInfoDto> getFriends(Integer page, Integer size) {
         var userId = userInfo.getUserId();
-        var friends = friendsDomainService.getFriendsIdList(userId);
+        var friends = friendsDomainService.getFriendsIds(userId);
         var result = userProfileDomainService.getAllByIdsOrderByUsername(friends).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convertFriend)
@@ -48,7 +48,7 @@ public class FriendsWebService {
 
     public List<UserInfoDto> getIncomingRequests(Integer page, Integer size) {
         var userId = userInfo.getUserId();
-        var incoming = friendsDomainService.getIncomingRequestIdList(userId);
+        var incoming = friendsDomainService.getIncomingRequestIds(userId);
         var result = userProfileDomainService.getAllByIdsOrderByUsername(incoming).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convertIncoming)
@@ -57,7 +57,7 @@ public class FriendsWebService {
 
     public List<UserInfoDto> getOutgoingRequests(Integer page, Integer size) {
         var userId = userInfo.getUserId();
-        var outgoing = friendsDomainService.getOutgoingRequestIdList(userId);
+        var outgoing = friendsDomainService.getOutgoingRequestIds(userId);
         var result = userProfileDomainService.getAllByIdsOrderByUsername(outgoing).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convertOutgoing)

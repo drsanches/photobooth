@@ -120,7 +120,7 @@ public class ImageWebService {
     }
 
     private List<String> getEnabledFriends(String currentUserId) {
-        var friendIds = friendsDomainService.getFriendsIdList(currentUserId);
+        var friendIds = friendsDomainService.getFriendsIds(currentUserId);
         return userProfileDomainService.getEnabledByIds(friendIds).stream()
                 .map(UserProfile::getId)
                 .collect(Collectors.toList());
