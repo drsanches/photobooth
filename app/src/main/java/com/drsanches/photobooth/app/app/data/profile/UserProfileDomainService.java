@@ -10,7 +10,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
@@ -39,8 +38,7 @@ public class UserProfileDomainService {
     }
 
     public UserProfile getEnabledById(String userId) {
-        return userProfileRepository.findById(userId)
-                .filter(UserProfile::isEnabled)
+        return userProfileRepository.findByIdAndEnabled(userId, true)
                 .orElseThrow(() -> new NoUserIdException(userId));
     }
 
@@ -51,9 +49,7 @@ public class UserProfileDomainService {
     }
 
     public boolean enabledExistsById(String userId) {
-        return userProfileRepository.findById(userId)
-                .filter(UserProfile::isEnabled)
-                .isPresent();
+        return userProfileRepository.existsByIdAndEnabled(userId, true);
     }
 
     public boolean anyExistsById(String userId) {
@@ -61,14 +57,7 @@ public class UserProfileDomainService {
     }
 
     public List<UserProfile> getEnabledByIds(Collection<String> userIds) {
-        var profiles = new LinkedList<UserProfile>();
-        //TODO: Refactor (and other similar cases)
-        userProfileRepository.findAllById(userIds).forEach(profile -> {
-            if (profile.isEnabled()) {
-                profiles.add(profile);
-            }
-        });
-        return profiles;
+        return userProfileRepository.findAllByIdInAndEnabled(userIds, true);
     }
 
     public List<UserProfile> getAllByIdsOrderByUsername(Collection<String> userIds) {

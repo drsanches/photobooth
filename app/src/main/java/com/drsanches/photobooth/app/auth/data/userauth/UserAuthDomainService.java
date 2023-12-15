@@ -31,8 +31,7 @@ public class UserAuthDomainService {
     }
 
     public UserAuth getEnabledByUsername(String username) {
-        return userAuthRepository.findByUsername(username)
-                .filter(UserAuth::isEnabled)
+        return userAuthRepository.findByUsernameAndEnabled(username, true)
                 .orElseThrow(() -> new NoUsernameException(username));
     }
 
@@ -45,8 +44,7 @@ public class UserAuthDomainService {
     }
 
     public UserAuth getEnabledByGoogleAuth(String googleAuth) {
-        return userAuthRepository.findByGoogleAuth(googleAuth)
-                .filter(UserAuth::isEnabled)
+        return userAuthRepository.findByGoogleAuthAndEnabled(googleAuth, true)
                 .orElseThrow(NoGoogleUserException::new);
     }
 }

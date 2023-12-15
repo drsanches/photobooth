@@ -26,11 +26,16 @@ public interface UserProfileRepository extends CrudRepository<UserProfile, Strin
     @Override
     @NonNull
     Iterable<UserProfile> findAllById(@NonNull Iterable<String> strings);
+    Optional<UserProfile> findByIdAndEnabled(String userId, boolean enabled);
 
     List<UserProfile> findAllByIdInOrderByUsername(Collection<String> userIds);
 
     List<UserProfile> findByUsernameContainingAndEnabled(String username, boolean enabled, Pageable pageable);
 
+    List<UserProfile> findAllByIdInAndEnabled(Collection<String> userIds, boolean enabled);
+
     @Override
     boolean existsById(@NonNull String s);
+
+    boolean existsByIdAndEnabled(String userId, boolean enabled);
 }
