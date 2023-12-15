@@ -65,6 +65,7 @@ Run application by the command with custom environment variables (the variables 
 ```commandline
 java -jar \
     -DAPP_PORT=8080 \
+    -DIMAGE_SERVER_ADDRESS=http://localhost:8080 \
     -DADMIN_PASSWORD=pswd \
     -DJDBC_DATABASE_URL=jdbc:postgresql://localhost:5432/photobooth \
     -DJDBC_DATABASE_USERNAME=photobooth_app \
@@ -228,6 +229,7 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Fix: `Standard Commons Logging discovery in action with spring-jcl: please remove commons-logging.jar from classpath in order to avoid potential conflicts`
 - Delete expired fcm tokens
 - Return `expires` in fcm token controller
+- Remove IMAGE_SERVER_ADDRESS from requirements
 
 ### Tests
 - Test sorting

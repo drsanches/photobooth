@@ -12,7 +12,7 @@ import java.util.List;
 public class FcmServiceStub implements FcmService {
 
     @Override
-    public List<FcmResult> sendMessage(List<String> tokens, String title, String body) {
+    public List<FcmResult> sendMessageWithImage(List<String> tokens, String title, String body, String imageId) {
         log.info("Push was not sent for {} tokens", tokens.size());
         return tokens.stream()
                 .map(it -> new FcmResult(it, true))

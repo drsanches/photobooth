@@ -16,6 +16,7 @@ application:
     email-enabled: false # must be true if 2FA-enabled
     push-enabled: true
     firebase-credentials-path: firebase/firebase-service-account.json
+    image-server-address: ${IMAGE_SERVER_ADDRESS} # With protocol and port. Must be defined if push-enabled
   scheduler:
     expired-token-clean-task:
       enabled: true

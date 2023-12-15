@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface FcmService {
 
-    List<FcmResult> sendMessage(List<String> tokens, String title, String body);
+    List<FcmResult> sendMessageWithImage(List<String> tokens, String title, String body, String imageId);
 
     record FcmResult(String fcmToken, boolean success) {}
 }

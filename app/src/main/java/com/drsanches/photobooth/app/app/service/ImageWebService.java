@@ -91,13 +91,18 @@ public class ImageWebService {
                 getEnabledFriends(currentUserId) : uploadPhotoDto.getUserIds();
         String imageRecipients = String.join(",", allowedUsers);
         allowedUsers.add(currentUserId);
-        new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
-            String imageId = imageDomainService.saveImage(image, currentUserId).getId();
-            imagePermissionDomainService.savePermissions(imageId, allowedUsers);
+        String imageId = new TransactionTemplate(transactionManager).execute(status -> {
+            String savedImageId = imageDomainService.saveImage(image, currentUserId).getId();
+            imagePermissionDomainService.savePermissions(savedImageId, allowedUsers);
             log.info("User uploaded new image. UserId: {}, imageId: {}, allowedUserIds: {}",
-                    currentUserId, imageId, allowedUsers);
+                    currentUserId, savedImageId, allowedUsers);
+            return savedImageId;
         });
-        notificationService.notify(Action.IMAGE_SENT, Map.of("fromUser", currentUserId ,"toUsers", imageRecipients));
+        notificationService.notify(Action.IMAGE_SENT, Map.of(
+                "fromUser", currentUserId,
+                "toUsers", imageRecipients,
+                "imageId", imageId
+        ));
     }
 
     public List<ImageInfoDto> getAllInfo(Integer page, Integer size) {

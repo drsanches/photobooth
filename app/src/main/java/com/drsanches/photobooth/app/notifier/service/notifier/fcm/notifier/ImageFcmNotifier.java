@@ -28,11 +28,13 @@ public class ImageFcmNotifier extends BaseFcmNotifier {
 
     @Override
     public void notify(Action action, Map<String, String> params) {
+        String imageId = params.get("imageId");
         for (String userId: params.get("toUsers").split(",")) {
-            sendPush(
+            sendPushWithImage(
                     userId,
                     content.getPushContent(action).title(),
-                    content.getPushContent(action).body()
+                    content.getPushContent(action).body(),
+                    imageId
             );
         }
     }
