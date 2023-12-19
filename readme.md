@@ -34,7 +34,7 @@
 - Without permissions and deletion check?
 
 ## Database structure
-<img src="doc/db_schema.png" alt="Database structure" width="600"/>
+<img src="doc/db_schema.png" alt="Database structure" width="900"/>
 
 ---
 
@@ -222,12 +222,10 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Use naming `expires` or `expiresAt`. Maybe rename `createdTime` to `created`
 - Test indexes and maybe add new
 - Fix error "host not found in upstream" if nginx started without app and elk
-- Support different login options (username/password and google both)
 - Initialize name and avatar from Google info
 - Delete expired fcm tokens
 - Return `expires` in fcm token controller
 - Remove IMAGE_SERVER_ADDRESS from requirements
-- Add new tables to the readme
 - Use one url for confirmation in controller
 
 ### Tests
