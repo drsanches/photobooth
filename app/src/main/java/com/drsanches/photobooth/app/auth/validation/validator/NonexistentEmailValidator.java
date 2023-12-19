@@ -18,6 +18,7 @@ public class NonexistentEmailValidator implements ConstraintValidator<Nonexisten
         context.disableDefaultConstraintViolation();
         context.buildConstraintViolationWithTemplate("User with email '" + email + "' already exists")
                 .addConstraintViolation();
+        //TODO: Check googleAuth?
         return !userAuthDomainService.existsByEmail(email);
     }
 }

@@ -3,6 +3,7 @@ package com.drsanches.photobooth.end2end.auth
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import org.apache.commons.lang3.StringUtils
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestInfo extends Specification {
@@ -23,6 +24,8 @@ class TestInfo extends Specification {
         assert response.data["id"] == user.id
         assert response.data["username"] == user.username
         assert response.data["email"] == user.email
+        assert response.data["passwordExists"] == true
+        assert response.data["googleAuth"] == JSONObject.NULL
     }
 
     def "get auth info with invalid token"() {

@@ -35,6 +35,12 @@ content:
       DISABLE_COMPLETED:
         subject: "Account deleted successfully"
         text: "Your account was deleted successfully"
+      ACCOUNT_LINKED:
+        subject: "Account linked"
+        text: "Your account was linked with {}"
+      ACCOUNT_UNLINKED:
+        subject: "Account link removed"
+        text: "Your account link with {} was removed"
     push:
       IMAGE_SENT:
         title: "New photo"

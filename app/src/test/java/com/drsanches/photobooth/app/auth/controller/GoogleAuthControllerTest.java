@@ -7,7 +7,10 @@ import com.drsanches.photobooth.app.auth.dto.google.GoogleInfoDto;
 import com.drsanches.photobooth.app.auth.dto.google.GoogleSetUsernameDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.GoogleTokenDto;
 import com.drsanches.photobooth.app.auth.service.GoogleUserInfoService;
+import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
+import com.drsanches.photobooth.app.common.token.TokenService;
+import com.drsanches.photobooth.app.common.token.data.model.Token;
 import com.drsanches.photobooth.app.notifier.service.notifier.email.service.EmailService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
@@ -33,6 +36,8 @@ import java.util.function.Supplier;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,22 +55,20 @@ class GoogleAuthControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
-
     @Autowired
     private SecurityFilterChain filterChain;
-
     @Autowired
     private UserIntegrationDomainService userIntegrationDomainService;
-
     @Autowired
     private ObjectMapper objectMapper;
-
+    @Autowired
+    private CredentialsHelper credentialsHelper;
+    @Autowired
+    private TokenService tokenService;
     @MockBean
     private GoogleUserInfoService googleUserInfoService;
-
     @MockBean
     private ConfirmationCodeGenerator confirmationCodeGenerator;
-
     @MockBean
     private EmailService emailService;
 
@@ -79,7 +82,7 @@ class GoogleAuthControllerTest {
     }
 
     @Test
-    void registration() throws Exception {
+    void getTokenForNewEmail() throws Exception {
         var googleToken = UUID.randomUUID().toString();
         var username = USERNAME.get();
         var email = EMAIL.get();
@@ -94,35 +97,131 @@ class GoogleAuthControllerTest {
                 null
         ));
 
-        var result1 = mvc.perform(MockMvcRequestBuilders
+        var registrationResponse = mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/google/token")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new GoogleTokenDto(googleToken))))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("token").exists())
+                .andExpect(jsonPath("changeUsernameCode").value(confirmationCode))
                 .andReturn().getResponse().getContentAsString();
-        var token1 = objectMapper.readValue(result1, GoogleGetTokenDto.class);
+        var registrationResult = objectMapper.readValue(registrationResponse, GoogleGetTokenDto.class);
 
         mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/google/setUsername")
-                        .header("Authorization", "Bearer " + token1.getToken().getAccessToken())
+                        .header("Authorization", "Bearer " + registrationResult.getToken().getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new GoogleSetUsernameDto(username, confirmationCode))))
+                        .content(objectMapper.writeValueAsString(
+                                new GoogleSetUsernameDto(username, registrationResult.getChangeUsernameCode())
+                        )))
                 .andExpect(status().isOk());
 
-        var result2 = mvc.perform(MockMvcRequestBuilders
+        var loginResponse = mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/google/token")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new GoogleTokenDto(googleToken))))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
+        var loginResult = objectMapper.readValue(loginResponse, GoogleGetTokenDto.class);
+        performGetInfo(loginResult.getToken().getAccessToken())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("username").value(username))
+                .andExpect(jsonPath("email").value(email))
+                .andExpect(jsonPath("passwordExists").value(false))
+                .andExpect(jsonPath("googleAuth").value(email));
+
         verify(emailService).sendHtmlMessage(eq(email), any(), any());
         verify(googleUserInfoService, times(2)).getGoogleInfo(eq(googleToken));
-        var token2 = objectMapper.readValue(result2, GoogleGetTokenDto.class);
-        performGetInfo(token2.getToken().getAccessToken())
+    }
+
+    @Test
+    void getTokenForExistingEmail() throws Exception {
+        var googleToken = UUID.randomUUID().toString();
+        var username = USERNAME.get();
+        var email = EMAIL.get();
+        createUser(username, UUID.randomUUID().toString(), email);
+
+        when(googleUserInfoService.getGoogleInfo(googleToken)).thenReturn(new GoogleInfoDto(
+                email,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        ));
+
+        var linkingResponse = mvc.perform(MockMvcRequestBuilders
+                        .post("/api/v1/auth/google/token")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(new GoogleTokenDto(googleToken))))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("token").exists())
+                .andExpect(jsonPath("changeUsernameCode").doesNotExist())
+                .andReturn().getResponse().getContentAsString();
+        var linkingResult = objectMapper.readValue(linkingResponse, GoogleGetTokenDto.class);
+
+        performGetInfo(linkingResult.getToken().getAccessToken())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("username").value(username))
-                .andExpect(jsonPath("email").value(email));
+                .andExpect(jsonPath("email").value(email))
+                .andExpect(jsonPath("passwordExists").value(true))
+                .andExpect(jsonPath("googleAuth").value(email));
+
+        verify(googleUserInfoService, only()).getGoogleInfo(eq(googleToken));
+        verify(emailService, only()).sendHtmlMessage(any(), any(), any());
+    }
+
+    @Test
+    public void linkAndUnlink() throws Exception {
+        var googleToken = UUID.randomUUID().toString();
+        var username = USERNAME.get();
+        var email = EMAIL.get();
+        var googleEmail = EMAIL.get();
+        var token = createUser(username, UUID.randomUUID().toString(), email);
+        when(googleUserInfoService.getGoogleInfo(googleToken)).thenReturn(new GoogleInfoDto(
+                googleEmail,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        ));
+
+        mvc.perform(MockMvcRequestBuilders
+                        .post("/api/v1/auth/google/link")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("Authorization", "Bearer " + token.getAccessToken())
+                        .content(objectMapper.writeValueAsString(new GoogleTokenDto(googleToken))))
+                .andExpect(status().isOk());
+
+        performGetInfo(token.getAccessToken())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("username").value(username))
+                .andExpect(jsonPath("email").value(email))
+                .andExpect(jsonPath("passwordExists").value(true))
+                .andExpect(jsonPath("googleAuth").value(googleEmail));
+
+        mvc.perform(MockMvcRequestBuilders
+                        .delete("/api/v1/auth/google/link")
+                        .header("Authorization", "Bearer " + token.getAccessToken()))
+                .andExpect(status().isOk());
+
+        performGetInfo(token.getAccessToken())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("username").value(username))
+                .andExpect(jsonPath("email").value(email))
+                .andExpect(jsonPath("passwordExists").value(true))
+                .andExpect(jsonPath("googleAuth").doesNotExist());
+
+        verify(googleUserInfoService, only()).getGoogleInfo(eq(googleToken));
+        verify(emailService, times(2)).sendHtmlMessage(any(), any(), any());
     }
 
     private ResultActions performGetInfo(String accessToken) throws Exception {
@@ -135,5 +234,16 @@ class GoogleAuthControllerTest {
         var confirmationCode = CONFIRMATION_CODE.get();
         when(confirmationCodeGenerator.generate()).thenReturn(confirmationCode);
         return confirmationCode;
+    }
+
+    private Token createUser(String username, String password, String email) {
+        var salt = UUID.randomUUID().toString();
+        var user = userIntegrationDomainService.createUser(
+                username,
+                email,
+                credentialsHelper.encodePassword(password, salt),
+                salt
+        );
+        return tokenService.createToken(user.getId(), user.getRole());
     }
 }

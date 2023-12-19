@@ -12,7 +12,6 @@ import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
-import com.drsanches.photobooth.app.auth.exception.NoGoogleUserException;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.notifier.service.notifier.NotificationService;
 import jakarta.validation.Valid;
@@ -57,20 +56,29 @@ public class GoogleAuthWebService {
 
     public GoogleGetTokenDto getToken(@Valid GoogleTokenDto googleTokenDto) {
         var email = googleUserInfoService.getGoogleInfo(googleTokenDto.getIdToken()).getEmail();
-        UserAuth userAuth;
         String confirmationCode = null;
-        try {
-            userAuth = userAuthDomainService.getEnabledByGoogleAuth(email);
-        } catch (NoGoogleUserException e) {
-            userAuth = userIntegrationDomainService.createUserByGoogle(email);
-            log.info("New user created. Id: {}", userAuth.getId());
-            confirmationCode = confirmationDomainService.create(
-                    null,
-                    userAuth.getId(),
-                    Operation.GOOGLE_USERNAME_CHANGE
-            ).getCode();
-            log.info("Google username changing process started. UserId: {}", userAuth.getId());
-            notificationService.notify(Action.REGISTRATION_COMPLETED, Map.of("userId", userAuth.getId()));
+        UserAuth userAuth;
+        var optionalUserAuth = userAuthDomainService.findEnabledByGoogleAuth(email);
+
+        if (optionalUserAuth.isPresent()) {
+            userAuth = optionalUserAuth.get();
+        } else {
+            optionalUserAuth = userAuthDomainService.findEnabledByEmail(email);
+
+            if (optionalUserAuth.isPresent()) {
+                userAuth = optionalUserAuth.get();
+                link(userAuth.getId(), email);
+            } else {
+                userAuth = userIntegrationDomainService.createUserByGoogle(email);
+                log.info("New user created. Id: {}", userAuth.getId());
+                confirmationCode = confirmationDomainService.create(
+                        null,
+                        userAuth.getId(),
+                        Operation.GOOGLE_USERNAME_CHANGE
+                ).getCode();
+                log.info("Google username changing process started. UserId: {}", userAuth.getId());
+                notificationService.notify(Action.REGISTRATION_COMPLETED, Map.of("userId", userAuth.getId()));
+            }
         }
         var token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
         return new GoogleGetTokenDto(tokenMapper.convert(token), confirmationCode);
@@ -86,5 +94,30 @@ public class GoogleAuthWebService {
         tokenService.removeAllTokens(userId);
         log.info("User changed google default username. UserId: {}, oldUsername: {}, newUsername: {}",
                 userId, oldUsername, googleSetUsernameDto.getNewUsername());
+    }
+
+    public void link(@Valid GoogleTokenDto googleTokenDto) {
+        var userId = userInfo.getUserId();
+        var email = googleUserInfoService.getGoogleInfo(googleTokenDto.getIdToken()).getEmail();
+        link(userId, email);
+    }
+
+    private void link(String userId, String email) {
+        userAuthDomainService.setGoogleAuth(userId, email);
+        log.info("Google account linked. UserId: {}", userId);
+        notificationService.notify(Action.ACCOUNT_LINKED, Map.of(
+                "userId", userId,
+                "account", email
+        ));
+    }
+
+    public void unlink() {
+        var userId = userInfo.getUserId();
+        userAuthDomainService.setGoogleAuth(userId, null);
+        log.info("Google account unlinked. UserId: {}", userId);
+        notificationService.notify(Action.ACCOUNT_UNLINKED, Map.of(
+                "userId", userId,
+                "account", "Google"
+        ));
     }
 }

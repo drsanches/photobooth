@@ -42,6 +42,8 @@ class TestRegistration extends Specification {
         assert authInfo["id"] != JSONObject.NULL
         assert authInfo["username"] == username
         assert authInfo["email"] == email
+        assert authInfo["passwordExists"] == true
+        assert authInfo["googleAuth"] == JSONObject.NULL
 
         and: "user profile was created"
         def userProfile = RequestUtils.getUserProfile(username, password)

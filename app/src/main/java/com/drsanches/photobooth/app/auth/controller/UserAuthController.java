@@ -71,7 +71,7 @@ public class UserAuthController {
         return userAuthWebService.info();
     }
 
-    @Operation(summary = "If 2FA is activated, changes username, otherwise, sends a confirmation code to the mail")
+    @Operation(summary = "Changes username. If 2FA is activated, sends a confirmation code to the email")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode400
@@ -91,7 +91,7 @@ public class UserAuthController {
         userAuthWebService.changeUsernameConfirm(confirmationCodeDto);
     }
 
-    @Operation(summary = "If 2FA is activated, changes password, otherwise, sends a confirmation code to the mail")
+    @Operation(summary = "Changes password or sets new if does not exist. If 2FA is activated, sends a confirmation code to the email")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode400
@@ -101,7 +101,7 @@ public class UserAuthController {
         userAuthWebService.changePassword(changePasswordDto);
     }
 
-    @Operation(summary = "Changes username by confirmation code")
+    @Operation(summary = "Changes password by confirmation code")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode400
@@ -111,7 +111,7 @@ public class UserAuthController {
         userAuthWebService.changePasswordConfirm(confirmationCodeDto);
     }
 
-    @Operation(summary = "If 2FA is activated, changes email, otherwise, sends a confirmation code to the mail")
+    @Operation(summary = "Changes email. If 2FA is activated, sends a confirmation code to the mail")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode400
@@ -149,7 +149,7 @@ public class UserAuthController {
         userAuthWebService.logout();
     }
 
-    @Operation(summary = "If 2FA is activated, deletes current user account, otherwise, sends a confirmation code to the mail")
+    @Operation(summary = "Deletes current user account. If 2FA is activated, sends a confirmation code to the mail")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode401
@@ -158,7 +158,7 @@ public class UserAuthController {
         userAuthWebService.disableUser();
     }
 
-    @Operation(summary = "Deletes current user account")
+    @Operation(summary = "Deletes current user account by confirmation code")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode400

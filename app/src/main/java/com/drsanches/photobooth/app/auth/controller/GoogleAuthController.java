@@ -24,7 +24,7 @@ public class GoogleAuthController {
     @Autowired
     private GoogleAuthWebService googleAuthWebService;
 
-    @Operation(summary = "Returns the authorization token and registers a new user account if it doesn't exist")
+    @Operation(summary = "Returns the authorization token. Registers a new account if it doesn't exist or link account if it has the same email")
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
@@ -40,5 +40,22 @@ public class GoogleAuthController {
     @RequestMapping(value = "/setUsername", method = RequestMethod.POST)
     public void setUsername(@RequestBody GoogleSetUsernameDto googleSetUsernameDto) {
         googleAuthWebService.setUsername(googleSetUsernameDto);
+    }
+
+    @Operation(summary = "Links account with google account")
+    @ApiResponseCode200
+    @ApiResponseCode400
+    @ApiResponseCode401
+    @RequestMapping(value = "/link", method = RequestMethod.POST)
+    public void link(@RequestBody GoogleTokenDto googleTokenDto) {
+        googleAuthWebService.link(googleTokenDto);
+    }
+
+    @Operation(summary = "Removes link with google account")
+    @ApiResponseCode200
+    @ApiResponseCode401
+    @RequestMapping(value = "/link", method = RequestMethod.DELETE)
+    public void unlink() {
+        googleAuthWebService.unlink();
     }
 }

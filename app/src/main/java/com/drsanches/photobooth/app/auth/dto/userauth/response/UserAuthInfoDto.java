@@ -16,4 +16,10 @@ public class UserAuthInfoDto {
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String email;
+
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "True if the password is set")
+    private boolean passwordExists;
+
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Gmail for google auth")
+    private String googleAuth;
 }

@@ -228,9 +228,11 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Return `expires` in fcm token controller
 - Remove IMAGE_SERVER_ADDRESS from requirements
 - Add new tables to the readme
+- Use one url for confirmation in controller
 
 ### Tests
 - Use another framework?
+- Rewrite e2e with spring context and mocks?
 - Test sorting
 - Test transactions
 - Actualize readme with spring tests
