@@ -24,6 +24,9 @@ application:
     expired-confirmation-clean-task:
       enabled: true
       cron: 0 0 3 * * * # at 3 AM every day
+    expired-fcm-token-clean-task:
+      enabled: true
+      cron: 0 0 5 * * * # at 5 AM every day
 
 management: # http://localhost:8080/actuator
   endpoints.web.exposure.include: "*"

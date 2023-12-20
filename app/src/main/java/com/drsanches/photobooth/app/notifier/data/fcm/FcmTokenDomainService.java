@@ -41,9 +41,19 @@ public class FcmTokenDomainService {
         return fcmTokenRepository.findByUserId(userId);
     }
 
+    public List<FcmToken> getExpired() {
+        var now = new GregorianCalendar();
+        return fcmTokenRepository.findByExpiresLessThan(now);
+    }
+
     public void deleteByTokens(List<String> tokens) {
         var tokensToDelete = fcmTokenRepository.findByTokenIn(tokens);
         fcmTokenRepository.deleteAll(tokensToDelete);
         log.debug("FcmToken objects deleted. FcmTokenList: {}", tokensToDelete);
+    }
+
+    public void deleteAll(List<FcmToken> tokens) {
+        fcmTokenRepository.deleteAll(tokens);
+        log.debug("FcmToken objects deleted. FcmTokenList: {}", tokens);
     }
 }

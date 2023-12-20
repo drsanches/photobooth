@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
+import java.util.GregorianCalendar;
 import java.util.List;
 
 @Repository
@@ -19,6 +20,8 @@ public interface FcmTokenRepository extends CrudRepository<FcmToken, String> {
     List<FcmToken> findByUserId(String userId);
 
     List<FcmToken> findByTokenIn(List<String> tokens);
+
+    List<FcmToken> findByExpiresLessThan(GregorianCalendar expires);
 
     boolean existsByToken(String token);
 }

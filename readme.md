@@ -217,16 +217,16 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Use records instead of DTO classes?
 - Use requestId instead of UUID in errors?
 - Add userId fields for UserAuth and UserProfile?
+- Use one url for confirmation in controller?
 - Use 404 instead 401 for nonexistent urls
 - Limit container resources
 - Use naming `expires` or `expiresAt`. Maybe rename `createdTime` to `created`
 - Test indexes and maybe add new
 - Fix error "host not found in upstream" if nginx started without app and elk
 - Initialize name and avatar from Google info
-- Delete expired fcm tokens
 - Return `expires` in fcm token controller
 - Remove IMAGE_SERVER_ADDRESS from requirements
-- Use one url for confirmation in controller
+- Fix certs
 
 ### Tests
 - Use another framework?

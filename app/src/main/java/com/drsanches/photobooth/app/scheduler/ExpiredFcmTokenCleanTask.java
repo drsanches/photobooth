@@ -1,29 +1,27 @@
 package com.drsanches.photobooth.app.scheduler;
 
-import com.drsanches.photobooth.app.common.token.data.TokenDomainService;
+import com.drsanches.photobooth.app.notifier.data.fcm.FcmTokenDomainService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "application.scheduler.expired-token-clean-task.enabled")
-public class ExpiredTokenCleanTask {
+@ConditionalOnProperty(name = "application.scheduler.expired-fcm-token-clean-task.enabled")
+public class ExpiredFcmTokenCleanTask {
 
     @Autowired
-    private TokenDomainService tokenDomainService;
+    private FcmTokenDomainService fcmTokenDomainService;
 
     @Scheduled(cron = "${application.scheduler.expired-token-clean-task.cron}")
     public void cleanExpiredTokens() {
-        log.info("ExpiredTokenCleanTask started");
-        var expired = tokenDomainService.getExpired();
+        log.info("ExpiredFcmTokenCleanTask started");
+        var expired = fcmTokenDomainService.getExpired();
         if (!expired.isEmpty()) {
-            tokenDomainService.deleteAll(expired);
+            fcmTokenDomainService.deleteAll(expired);
         }
-        log.info("Deleted {} expired tokens: {}", expired.size(), expired);
+        log.info("Deleted {} expired fcmTokens: {}", expired.size(), expired);
     }
 }

@@ -21,7 +21,9 @@ public class ExpiredConfirmationCleanTask {
     public void cleanExpiredTokens() {
         log.info("ExpiredConfirmationCleanTask started");
         var expired = confirmationDomainService.getExpired();
-        confirmationDomainService.deleteAll(expired);
+        if (!expired.isEmpty()) {
+            confirmationDomainService.deleteAll(expired);
+        }
         log.info("Deleted {} expired confirmations: {}", expired.size(), expired);
     }
 }
