@@ -221,7 +221,7 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Use 404 instead 401 for nonexistent urls
 - Limit container resources
 - Use naming `expires` or `expiresAt`. Maybe rename `createdTime` to `created`
-- Test indexes and maybe add new
+- Test indexes
 - Fix error "host not found in upstream" if nginx started without app and elk
 - Initialize name and avatar from Google info
 - Return `expires` in fcm token controller

@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name="image_permissions", indexes = @Index(name = "image_permissions_user_id_index", columnList = "userId"))
+@Table(name="image_permissions", indexes = {
+        @Index(name = "image_permissions_user_id_index", columnList = "userId")
+})
 public class ImagePermission {
 
     @EmbeddedId

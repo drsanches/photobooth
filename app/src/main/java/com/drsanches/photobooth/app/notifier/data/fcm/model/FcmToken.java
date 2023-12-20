@@ -21,7 +21,8 @@ import java.util.GregorianCalendar;
 @Table(name="fcm_token", indexes = {
         @Index(name = "fcm_token_id_index", columnList = "id"),
         @Index(name = "fcm_token_user_id_index", columnList = "userId"),
-        @Index(name = "fcm_token_token_index", columnList = "token")
+        @Index(name = "fcm_token_token_index", columnList = "token"),
+        @Index(name = "fcm_token_expires_index", columnList = "expires")
 })
 public class FcmToken {
 

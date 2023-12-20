@@ -12,7 +12,9 @@ import lombok.Data;
 @Table(name="user_profile", indexes = {
         @Index(name = "user_profile_id_index", columnList = "id"),
         @Index(name = "user_profile_username_index", columnList = "username"),
-        @Index(name = "user_profile_id_and_username_index", columnList = "id, username")
+        @Index(name = "user_profile_id_and_username_index", columnList = "id, username"),
+        @Index(name = "user_profile_id_and_enabled_index", columnList = "id, enabled"),
+        @Index(name = "user_profile_username_and_enabled_index", columnList = "username, enabled")
 })
 public class UserProfile {
 
