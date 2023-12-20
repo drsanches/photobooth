@@ -1,8 +1,10 @@
 package com.drsanches.photobooth.app.notifier.service.web;
 
 import com.drsanches.photobooth.app.common.token.UserInfo;
+import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
 import com.drsanches.photobooth.app.notifier.data.fcm.FcmTokenDomainService;
 import com.drsanches.photobooth.app.notifier.dto.FcmTokenDto;
+import com.drsanches.photobooth.app.notifier.dto.FcmTokenExpiresDto;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +22,10 @@ public class FcmTokenWebService {
     @Autowired
     private UserInfo userInfo;
 
-    public void addToken(@Valid FcmTokenDto fcmTokenDto) {
+    public FcmTokenExpiresDto addToken(@Valid FcmTokenDto fcmTokenDto) {
         var userId = userInfo.getUserId();
-        fcmTokenDomainService.create(userId, fcmTokenDto.getFcmToken());
+        var fcmToken = fcmTokenDomainService.getOrCreate(userId, fcmTokenDto.getFcmToken());
         log.info("New fcm token added. UserId: {}, fcmToken: {}", userId, fcmTokenDto.getFcmToken());
+        return new FcmTokenExpiresDto(GregorianCalendarConvertor.convert(fcmToken.getExpires()));
     }
 }

@@ -5,6 +5,7 @@ import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode400;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode401;
 import com.drsanches.photobooth.app.notifier.dto.FcmTokenDto;
+import com.drsanches.photobooth.app.notifier.dto.FcmTokenExpiresDto;
 import com.drsanches.photobooth.app.notifier.service.web.FcmTokenWebService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class FcmTokenController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public void addToken(@RequestBody FcmTokenDto fcmTokenDto) {
-        fcmTokenWebService.addToken(fcmTokenDto);
+    public FcmTokenExpiresDto addToken(@RequestBody FcmTokenDto fcmTokenDto) {
+        return fcmTokenWebService.addToken(fcmTokenDto);
     }
 }

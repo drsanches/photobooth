@@ -224,7 +224,6 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Test indexes
 - Fix error "host not found in upstream" if nginx started without app and elk
 - Initialize name and avatar from Google info
-- Return `expires` in fcm token controller
 - Remove IMAGE_SERVER_ADDRESS from requirements
 - Fix certs
 

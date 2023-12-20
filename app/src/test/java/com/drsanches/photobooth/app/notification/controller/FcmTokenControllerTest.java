@@ -6,8 +6,10 @@ import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.common.token.data.model.Token;
+import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
 import com.drsanches.photobooth.app.notifier.data.fcm.repository.FcmTokenRepository;
 import com.drsanches.photobooth.app.notifier.dto.FcmTokenDto;
+import com.drsanches.photobooth.app.notifier.dto.FcmTokenExpiresDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
 import org.junit.jupiter.api.Assertions;
@@ -26,11 +28,16 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,20 +90,26 @@ class FcmTokenControllerTest {
         var userId = getUserAuthInfo(token.getAccessToken()).getId();
 
         var before = new GregorianCalendar();
-        mvc.perform(MockMvcRequestBuilders
+        var result = mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/notification/fcm/token")
                         .header("Authorization", "Bearer " + token.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new FcmTokenDto(fcmToken))))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("expires").exists())
+                .andReturn().getResponse().getContentAsString();
         var after = new GregorianCalendar();
+
+        var expires = convertToGregorianCalendar(objectMapper.readValue(result, FcmTokenExpiresDto.class).getExpires());
+        before.add(Calendar.MONTH, 2);
+        after.add(Calendar.MONTH, 2);
+        Assertions.assertTrue(expires.after(before));
+        Assertions.assertTrue(expires.before(after));
 
         var fcmTokenList = fcmTokenRepository.findByUserId(userId);
         Assertions.assertEquals(fcmTokenList.size(), 1);
         Assertions.assertEquals(fcmTokenList.get(0).getToken(), fcmToken);
         Assertions.assertEquals(fcmTokenList.get(0).getUserId(), userId);
-        before.add(Calendar.MONTH, 2);
-        after.add(Calendar.MONTH, 2);
         Assertions.assertTrue(fcmTokenList.get(0).getExpires().after(before));
         Assertions.assertTrue(fcmTokenList.get(0).getExpires().before(after));
     }
@@ -110,19 +123,24 @@ class FcmTokenControllerTest {
         var token = createUser(username, password, email);
         var userId = getUserAuthInfo(token.getAccessToken()).getId();
 
-        mvc.perform(MockMvcRequestBuilders
+        var result = mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/notification/fcm/token")
                         .header("Authorization", "Bearer " + token.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new FcmTokenDto(fcmToken))))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("expires").exists())
+                .andReturn().getResponse().getContentAsString();
+
+        var expires = objectMapper.readValue(result, FcmTokenExpiresDto.class).getExpires();
 
         mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/notification/fcm/token")
                         .header("Authorization", "Bearer " + token.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new FcmTokenDto(fcmToken))))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("expires").value(expires));
 
         var fcmTokenList = fcmTokenRepository.findByUserId(userId);
         Assertions.assertEquals(fcmTokenList.size(), 1);
@@ -145,5 +163,13 @@ class FcmTokenControllerTest {
                 .header("Authorization", "Bearer " + accessToken))
                 .andReturn().getResponse().getContentAsString();
         return objectMapper.readValue(result, UserAuthInfoDto.class);
+    }
+
+    private GregorianCalendar convertToGregorianCalendar(String source) throws ParseException {
+        DateFormat df = new SimpleDateFormat(GregorianCalendarConvertor.PATTERN);
+        Date parsed = df.parse(source);
+        GregorianCalendar result = new GregorianCalendar();
+        result.setTime(parsed);
+        return result;
     }
 }

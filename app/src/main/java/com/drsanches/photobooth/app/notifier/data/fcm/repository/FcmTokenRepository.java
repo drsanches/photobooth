@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @MonitorTime
@@ -23,5 +24,5 @@ public interface FcmTokenRepository extends CrudRepository<FcmToken, String> {
 
     List<FcmToken> findByExpiresLessThan(GregorianCalendar expires);
 
-    boolean existsByToken(String token);
+    Optional<FcmToken> findByToken(String token);
 }

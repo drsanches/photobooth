@@ -21,19 +21,22 @@ public class FcmTokenDomainService {
     @Autowired
     private FcmTokenRepository fcmTokenRepository;
 
-    public void create(String userId, String token) {
-        var expires = new GregorianCalendar();
-        expires.add(CALENDAR_FIELD, EXPIRES_CALENDAR_VALUE);
-        if (!fcmTokenRepository.existsByToken(token)) {
-            var fcmToken = fcmTokenRepository.save(FcmToken.builder()
+    public FcmToken getOrCreate(String userId, String token) {
+        var existingFcmToken = fcmTokenRepository.findByToken(token);
+        if (existingFcmToken.isPresent()) {
+            log.debug("FcmToken already exists. UserId: {}", userId);
+            return existingFcmToken.get();
+        } else {
+            var expires = new GregorianCalendar();
+            expires.add(CALENDAR_FIELD, EXPIRES_CALENDAR_VALUE);
+            var createdFcmToken = fcmTokenRepository.save(FcmToken.builder()
                     .id(UUID.randomUUID().toString())
                     .userId(userId)
                     .token(token)
                     .expires(expires)
                     .build());
-            log.debug("FcmToken created. FcmToken: {}", fcmToken);
-        } else {
-            log.debug("FcmToken already exists. UserId: {}", userId);
+            log.debug("FcmToken created. FcmToken: {}", createdFcmToken);
+            return createdFcmToken;
         }
     }
 
