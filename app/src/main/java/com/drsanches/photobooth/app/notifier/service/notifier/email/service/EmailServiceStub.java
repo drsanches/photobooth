@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "application.notifications.email-enabled", havingValue = "false")
+@ConditionalOnProperty(name = "application.notifications.email.enabled", havingValue = "false")
 public class EmailServiceStub implements EmailService {
 
     public void sendHtmlMessage(String to, String subject, String message) {

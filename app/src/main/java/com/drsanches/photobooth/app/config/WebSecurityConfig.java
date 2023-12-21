@@ -29,6 +29,7 @@ public class WebSecurityConfig {
     private static final Predicate<String> PUBLIC_URI = ((Predicate<String>)
             x -> x.matches("/api/v1/auth/registration.*"))
             .or(x -> x.matches("/api/v1/auth/login.*"))
+            .or(x -> x.matches("/api/v1/auth/confirm.*"))
             .or(x -> x.matches("/api/v1/auth/refreshToken.*"))
             .or(x -> x.matches("/api/v1/auth/google/token.*"))
             .or(x -> x.matches("/api/v1/image/" + ImageConsts.DEFAULT_AVATAR_ID))

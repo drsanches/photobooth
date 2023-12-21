@@ -31,6 +31,8 @@ class TestDeleteUser extends Specification {
 
         then: "response is correct"
         assert response.status == 200
+        assert response.data["result"] == JSONObject.NULL
+        assert response.data["with2FA"] == false
 
         and: "user was deleted"
         assert RequestUtils.getAuthInfo(user.username, user.password) == null

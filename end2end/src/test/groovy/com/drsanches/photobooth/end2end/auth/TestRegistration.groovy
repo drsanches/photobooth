@@ -28,11 +28,12 @@ class TestRegistration extends Specification {
 
         then: "response is correct"
         assert response.status == 200
-        def token = response.data["accessToken"]
+        def token = response.data["result"]["accessToken"]
         assert token != JSONObject.NULL
-        assert response.data["refreshToken"] != JSONObject.NULL
-        assert response.data["tokenType"] == "Bearer"
-        assert response.data["expiresAt"] != JSONObject.NULL
+        assert response.data["result"]["refreshToken"] != JSONObject.NULL
+        assert response.data["result"]["tokenType"] == "Bearer"
+        assert response.data["result"]["expiresAt"] != JSONObject.NULL
+        assert response.data["with2FA"] == false
 
         and: "token is valid"
         def authInfo = RequestUtils.getAuthInfo(token as String)

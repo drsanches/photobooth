@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @MonitorTime
-@ConditionalOnProperty(name = "application.notifications.email-enabled")
+@ConditionalOnProperty(name = "application.notifications.email.enabled")
 public class EmailServiceImpl implements EmailService {
 
     @Autowired

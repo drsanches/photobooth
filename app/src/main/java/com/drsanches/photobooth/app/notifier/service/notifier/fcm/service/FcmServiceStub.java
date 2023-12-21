@@ -8,7 +8,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "application.notifications.push-enabled", havingValue = "false")
+@ConditionalOnProperty(name = "application.notifications.push.enabled", havingValue = "false")
 public class FcmServiceStub implements FcmService {
 
     @Override

@@ -16,7 +16,7 @@ class RequestUtils {
                     body: [username: username,
                            password: password,
                            email: email])
-            return response.data["accessToken"]
+            return response.data["result"]["accessToken"]
         } catch(Exception e) {
             e.printStackTrace()
             return null

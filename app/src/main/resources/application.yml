@@ -2,6 +2,7 @@ server.port: ${APP_PORT}
 log4j2.Script.enableLanguages: groovy
 
 application:
+  address: ${APPLICATION_ADDRESS} # With protocol and port. For push images and email confirms
   image:
     max-bytes: 300000 # 300kB
     thumbnail-size: 60 # width and height in pixels
@@ -11,12 +12,16 @@ application:
   pagination:
     default-page-size: 20
     max-page-size: 100
+  2fa:
+    actions: ${2FA_ACTIONS:}
   notifications:
-    2FA-enabled: false
-    email-enabled: false # must be true if 2FA-enabled
-    push-enabled: true
-    firebase-credentials-path: firebase/firebase-service-account.json
-    image-server-address: ${IMAGE_SERVER_ADDRESS} # With protocol and port. Must be defined if push-enabled
+    email:
+      enabled: true # must be true if application.notifications.2fa-enabled
+      2fa-enabled: true # must be true if applications.2fa.actions is not empty
+      info-enabled: false
+    push:
+      enabled: true
+      firebase-credentials-path: firebase/firebase-service-account.json
   scheduler:
     expired-token-clean-task:
       enabled: true
@@ -48,7 +53,7 @@ spring:
     generate-ddl: true
     properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
-  # Required if application.notifications.email-enabled
+  # Required if application.notifications.email.enabled
   mail:
     host: smtp.gmail.com
     port: 587

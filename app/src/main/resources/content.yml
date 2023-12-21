@@ -7,31 +7,31 @@ content:
     email:
       REGISTRATION_STARTED:
         subject: "Verify email for registration"
-        text: "Code: %s"
+        text: "Follow the link: %s"
       REGISTRATION_COMPLETED:
         subject: "Registration completed successfully"
         text: "Congratulations! Your registration was completed successfully"
       USERNAME_CHANGE_STARTED:
         subject: "Submit username change"
-        text: "Code: %s"
+        text: "Follow the link: %s"
       USERNAME_CHANGE_COMPLETED:
         subject: "Username changed successfully"
         text: "Your username was changed successfully"
       PASSWORD_CHANGE_STARTED:
         subject: "Submit password change"
-        text: "Code: %s"
+        text: "Follow the link: %s"
       PASSWORD_CHANGE_COMPLETED:
         subject: "Password changed successfully"
         text: "Your password was changed successfully"
       EMAIL_CHANGE_STARTED:
         subject: "Submit email change"
-        text: "Code: %s"
+        text: "Follow the link: %s"
       EMAIL_CHANGE_COMPLETED:
         subject: "Email changed successfully"
         text: "Your email was changed successfully"
       DISABLE_STARTED:
         subject: "Submit account deletion"
-        text: "Code: %s"
+        text: "Follow the link: %s"
       DISABLE_COMPLETED:
         subject: "Account deleted successfully"
         text: "Your account was deleted successfully"

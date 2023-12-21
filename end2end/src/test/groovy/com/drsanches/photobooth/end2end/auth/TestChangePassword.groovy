@@ -5,6 +5,7 @@ import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import org.apache.commons.lang3.StringUtils
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestChangePassword extends Specification {
@@ -26,6 +27,8 @@ class TestChangePassword extends Specification {
 
         then: "response is correct"
         assert response.status == 200
+        assert response.data["result"] == JSONObject.NULL
+        assert response.data["with2FA"] == false
 
         and: "previous token is invalid"
         assert RequestUtils.getAuthInfo(token) == null

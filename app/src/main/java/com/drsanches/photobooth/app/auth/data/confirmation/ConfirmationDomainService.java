@@ -33,7 +33,7 @@ public class ConfirmationDomainService {
         expiresAt.add(CALENDAR_FIELD, CALENDAR_VALUE);
         var savedConfirmation = confirmationRepository.save(Confirmation.builder()
                 .id(UUID.randomUUID().toString())
-                .code(confirmationCodeGenerator.generate())
+                .code(confirmationCodeGenerator.generate()) //TODO: Use as id?
                 .userId(userId)
                 .operation(operation)
                 .data(data)

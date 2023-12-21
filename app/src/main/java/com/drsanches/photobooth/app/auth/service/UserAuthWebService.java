@@ -1,6 +1,8 @@
 package com.drsanches.photobooth.app.auth.service;
 
 import com.drsanches.photobooth.app.app.exception.NoUsernameException;
+import com.drsanches.photobooth.app.auth.data.confirmation.model.Confirmation;
+import com.drsanches.photobooth.app.auth.dto.AuthResponse;
 import com.drsanches.photobooth.app.auth.dto.confirm.ChangePasswordConfirmData;
 import com.drsanches.photobooth.app.auth.dto.confirm.ChangeUsernameConfirmData;
 import com.drsanches.photobooth.app.auth.dto.confirm.RegistrationConfirmData;
@@ -11,13 +13,13 @@ import com.drsanches.photobooth.app.auth.exception.WrongPasswordException;
 import com.drsanches.photobooth.app.auth.exception.WrongUsernamePasswordException;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
+import com.drsanches.photobooth.app.common.exception.server.ServerError;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
 import com.drsanches.photobooth.app.auth.dto.confirm.ChangeEmailConfirmData;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeEmailDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangePasswordDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeUsernameDto;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.ConfirmationCodeDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.LoginDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.TokenDto;
 import com.drsanches.photobooth.app.auth.mapper.UserAuthInfoMapper;
@@ -32,7 +34,6 @@ import com.drsanches.photobooth.app.notifier.service.notifier.NotificationServic
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -46,41 +47,30 @@ public class UserAuthWebService {
 
     @Autowired
     private UserAuthDomainService userAuthDomainService;
-
     @Autowired
     private ConfirmationDomainService confirmationDomainService;
-
     @Autowired
     private UserIntegrationDomainService userIntegrationDomainService;
-
     @Autowired
     private TokenService tokenService;
-
     @Autowired
     private UserInfo userInfo;
-
     @Autowired
     private CredentialsHelper credentialsHelper;
-
     @Autowired
     private TokenMapper tokenMapper;
-
     @Autowired
     private StringSerializer stringSerializer;
-
     @Autowired
     private ConfirmationValidator confirmationValidator;
-
     @Autowired
     private UserAuthInfoMapper userAuthInfoMapper;
-
     @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private TwoFactorAuthenticationManager twoFactorAuthenticationManager;
 
-    @Value("${application.notifications.2FA-enabled}")
-    private boolean with2FA;
-
-    public TokenDto registration(@Valid RegistrationDto registrationDto) {
+    public AuthResponse<TokenDto> registration(@Valid RegistrationDto registrationDto) {
         var salt = UUID.randomUUID().toString();
         var registrationConfirmData = RegistrationConfirmData.builder()
                 .username(registrationDto.getUsername())
@@ -90,36 +80,18 @@ public class UserAuthWebService {
                 .build();
         var data = stringSerializer.serialize(registrationConfirmData);
         var confirmation = confirmationDomainService.create(data, null, Operation.REGISTRATION);
-        if (with2FA) {
+
+        if (twoFactorAuthenticationManager.isEnabled(Operation.REGISTRATION)) {
             notificationService.notify(
                     Action.REGISTRATION_STARTED,
                     Map.of("code", confirmation.getCode(), "email", registrationDto.getEmail())
             );
             log.info("User registration process started: {}", registrationConfirmData);
-            return null;
+            return new AuthResponse<>(true);
         } else {
-            return registrationConfirm(new ConfirmationCodeDto(confirmation.getCode()));
+            var tokenDto = (TokenDto) confirm(confirmation.getCode());
+            return new AuthResponse<>(tokenDto, false);
         }
-    }
-
-    public TokenDto registrationConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
-        var confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
-        confirmationValidator.validate(confirmation, Operation.REGISTRATION);
-        var registrationConfirmData = stringSerializer.deserialize(
-                confirmation.getData(),
-                RegistrationConfirmData.class
-        );
-        var userAuth = userIntegrationDomainService.createUser(
-                registrationConfirmData.getUsername(),
-                registrationConfirmData.getEmail(),
-                registrationConfirmData.getEncryptedPassword(),
-                registrationConfirmData.getSalt()
-        );
-        confirmationDomainService.delete(confirmation.getId());
-        var token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
-        log.info("New user created. UserId: {}", userAuth.getId());
-        notificationService.notify(Action.REGISTRATION_COMPLETED, Map.of("userId", userAuth.getId()));
-        return tokenMapper.convert(token);
     }
 
     public TokenDto login(@Valid LoginDto loginDto) {
@@ -140,42 +112,28 @@ public class UserAuthWebService {
         return userAuthInfoMapper.convert(current);
     }
 
-    public void changeUsername(@Valid ChangeUsernameDto changeUsernameDto) {
+    public AuthResponse<Void> changeUsername(@Valid ChangeUsernameDto changeUsernameDto) {
         var changeUsernameConfirmData = ChangeUsernameConfirmData.builder()
                 .username(changeUsernameDto.getNewUsername())
                 .build();
         var data = stringSerializer.serialize(changeUsernameConfirmData);
         var userId = userInfo.getUserId();
         var confirmation = confirmationDomainService.create(data, userId, Operation.USERNAME_CHANGE);
-        if (with2FA) {
+
+        if (twoFactorAuthenticationManager.isEnabled(Operation.USERNAME_CHANGE)) {
             notificationService.notify(
                     Action.USERNAME_CHANGE_STARTED,
                     Map.of("code", confirmation.getCode(), "userId", confirmation.getUserId())
             );
             log.info("Username changing process started: {}", changeUsernameConfirmData);
+            return new AuthResponse<>(true);
         } else {
-            changeUsernameConfirm(new ConfirmationCodeDto(confirmation.getCode()));
+            confirm(confirmation.getCode());
+            return new AuthResponse<>(false);
         }
     }
 
-    public void changeUsernameConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
-        var confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
-        confirmationValidator.validate(confirmation, Operation.USERNAME_CHANGE);
-        var changeUsernameConfirmData = stringSerializer.deserialize(
-                confirmation.getData(),
-                ChangeUsernameConfirmData.class
-        );
-        var userId = userInfo.getUserId();
-        var oldUsername = userAuthDomainService.getEnabledById(userId).getUsername();
-        userIntegrationDomainService.updateUsername(userId, changeUsernameConfirmData.getUsername());
-        confirmationDomainService.delete(confirmation.getId());
-        tokenService.removeAllTokens(userId);
-        log.info("User changed username. UserId: {}, oldUsername: {}, newUsername: {}",
-                userId, oldUsername, changeUsernameConfirmData.getUsername());
-        notificationService.notify(Action.USERNAME_CHANGE_COMPLETED, Map.of("userId", confirmation.getUserId()));
-    }
-
-    public void changePassword(@Valid ChangePasswordDto changePasswordDto) {
+    public AuthResponse<Void> changePassword(@Valid ChangePasswordDto changePasswordDto) {
         var salt = UUID.randomUUID().toString();
         var changePasswordConfirmData = ChangePasswordConfirmData.builder()
                 .encryptedPassword(credentialsHelper.encodePassword(changePasswordDto.getNewPassword(), salt))
@@ -184,66 +142,39 @@ public class UserAuthWebService {
         var data = stringSerializer.serialize(changePasswordConfirmData);
         var userId = userInfo.getUserId();
         var confirmation = confirmationDomainService.create(data, userId, Operation.PASSWORD_CHANGE);
-        if (with2FA) {
+
+        if (twoFactorAuthenticationManager.isEnabled(Operation.PASSWORD_CHANGE)) {
             notificationService.notify(
                     Action.PASSWORD_CHANGE_STARTED,
                     Map.of("code", confirmation.getCode(), "userId", confirmation.getUserId())
             );
             log.info("Password changing process started: {}", changePasswordConfirmData);
+            return new AuthResponse<>(true);
         } else {
-            changePasswordConfirm(new ConfirmationCodeDto(confirmation.getCode()));
+            confirm(confirmation.getCode());
+            return new AuthResponse<>(false);
         }
     }
 
-    public void changePasswordConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
-        var confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
-        confirmationValidator.validate(confirmation, Operation.PASSWORD_CHANGE);
-        var changePasswordConfirmData = stringSerializer.deserialize(
-                confirmation.getData(),
-                ChangePasswordConfirmData.class
-        );
-        var userId = userInfo.getUserId();
-        userAuthDomainService.updatePassword(
-                userId,
-                changePasswordConfirmData.getEncryptedPassword(),
-                changePasswordConfirmData.getSalt()
-        );
-        confirmationDomainService.delete(confirmation.getId());
-        tokenService.removeAllTokens(userId);
-        log.info("User changed password. UserId: {}", userId);
-        notificationService.notify(Action.PASSWORD_CHANGE_COMPLETED, Map.of("userId", confirmation.getUserId()));
-    }
-
-    public void changeEmail(@Valid ChangeEmailDto changeEmailDto) {
+    public AuthResponse<Void> changeEmail(@Valid ChangeEmailDto changeEmailDto) {
         var changeEmailConfirmData = ChangeEmailConfirmData.builder()
                 .email(changeEmailDto.getNewEmail())
                 .build();
         var data = stringSerializer.serialize(changeEmailConfirmData);
         var userId = userInfo.getUserId();
         var confirmation = confirmationDomainService.create(data, userId, Operation.EMAIL_CHANGE);
-        if (with2FA) {
+
+        if (twoFactorAuthenticationManager.isEnabled(Operation.EMAIL_CHANGE)) {
             notificationService.notify(
                     Action.EMAIL_CHANGE_STARTED,
                     Map.of("code", confirmation.getCode(), "userId", confirmation.getUserId())
             );
             log.info("Email changing process started: {}", changeEmailConfirmData);
+            return new AuthResponse<>(true);
         } else {
-            changeEmailConfirm(new ConfirmationCodeDto(confirmation.getCode()));
+            confirm(confirmation.getCode());
+            return new AuthResponse<>(false);
         }
-    }
-
-    public void changeEmailConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
-        var confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
-        confirmationValidator.validate(confirmation, Operation.EMAIL_CHANGE);
-        var changeEmailConfirmData = stringSerializer.deserialize(
-                confirmation.getData(),
-                ChangeEmailConfirmData.class
-        );
-        var userId = userInfo.getUserId();
-        userIntegrationDomainService.updateEmail(userId, changeEmailConfirmData.getEmail());
-        confirmationDomainService.delete(confirmation.getId());
-        log.info("User changed email. UserId: {}", userId);
-        notificationService.notify(Action.EMAIL_CHANGE_COMPLETED, Map.of("userId", confirmation.getUserId()));
     }
 
     public TokenDto refreshToken(String refreshToken) {
@@ -254,29 +185,109 @@ public class UserAuthWebService {
         tokenService.removeCurrentToken();
     }
 
-    public void disableUser() {
+    public AuthResponse<Void> disableUser() {
         var userId = userInfo.getUserId();
         var confirmation = confirmationDomainService.create(null, userId, Operation.DISABLE);
-        if (with2FA) {
+
+        if (twoFactorAuthenticationManager.isEnabled(Operation.DISABLE)) {
             notificationService.notify(
                     Action.DISABLE_STARTED,
                     Map.of("code", confirmation.getCode(), "userId", confirmation.getUserId())
             );
             log.info("User disabling process started. UserId: {}", userId);
+            return new AuthResponse<>(true);
         } else {
-            disableUserConfirm(new ConfirmationCodeDto(confirmation.getCode()));
+            confirm(confirmation.getCode());
+            return new AuthResponse<>(false);
         }
     }
 
-    public void disableUserConfirm(@Valid ConfirmationCodeDto confirmationCodeDto) {
-        var confirmation = confirmationDomainService.get(confirmationCodeDto.getCode());
-        confirmationValidator.validate(confirmation, Operation.DISABLE);
-        var userId = userInfo.getUserId();
+    public Object confirm(@Valid String confirmationCode) {
+        var confirmation = confirmationDomainService.get(confirmationCode);
+        confirmationValidator.validate(confirmation);
+        return switch (confirmation.getOperation()) {
+            case REGISTRATION -> registrationConfirm(confirmation);
+            case USERNAME_CHANGE -> changeUsernameConfirm(confirmation);
+            case PASSWORD_CHANGE -> changePasswordConfirm(confirmation);
+            case EMAIL_CHANGE -> changeEmailConfirm(confirmation);
+            case DISABLE -> disableUserConfirm(confirmation);
+            default -> throw new ServerError("Unsupported operation");
+        };
+    }
+
+    public TokenDto registrationConfirm(Confirmation confirmation) {
+        var registrationConfirmData = stringSerializer.deserialize(
+                confirmation.getData(),
+                RegistrationConfirmData.class
+        );
+        var userAuth = userIntegrationDomainService.createUser(
+                registrationConfirmData.getUsername(),
+                registrationConfirmData.getEmail(),
+                registrationConfirmData.getEncryptedPassword(),
+                registrationConfirmData.getSalt()
+        );
+        confirmationDomainService.delete(confirmation.getId());
+        var token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
+        log.info("New user created. UserId: {}", userAuth.getId());
+        notificationService.notify(Action.REGISTRATION_COMPLETED, Map.of("userId", userAuth.getId()));
+        return tokenMapper.convert(token);
+    }
+
+    public Object changeUsernameConfirm(Confirmation confirmation) {
+        var changeUsernameConfirmData = stringSerializer.deserialize(
+                confirmation.getData(),
+                ChangeUsernameConfirmData.class
+        );
+        var userId = confirmation.getUserId();
+        var oldUsername = userAuthDomainService.getEnabledById(userId).getUsername();
+        userIntegrationDomainService.updateUsername(userId, changeUsernameConfirmData.getUsername());
+        confirmationDomainService.delete(confirmation.getId());
+        tokenService.removeAllTokens(userId);
+        log.info("User changed username. UserId: {}, oldUsername: {}, newUsername: {}",
+                userId, oldUsername, changeUsernameConfirmData.getUsername());
+        notificationService.notify(Action.USERNAME_CHANGE_COMPLETED, Map.of("userId", userId));
+        return null;
+    }
+
+    public Object changePasswordConfirm(Confirmation confirmation) {
+        var changePasswordConfirmData = stringSerializer.deserialize(
+                confirmation.getData(),
+                ChangePasswordConfirmData.class
+        );
+        var userId = confirmation.getUserId();
+        userAuthDomainService.updatePassword(
+                userId,
+                changePasswordConfirmData.getEncryptedPassword(),
+                changePasswordConfirmData.getSalt()
+        );
+        confirmationDomainService.delete(confirmation.getId());
+        tokenService.removeAllTokens(userId);
+        log.info("User changed password. UserId: {}", userId);
+        notificationService.notify(Action.PASSWORD_CHANGE_COMPLETED, Map.of("userId", userId));
+        return null;
+    }
+
+    public Object changeEmailConfirm(Confirmation confirmation) {
+        var changeEmailConfirmData = stringSerializer.deserialize(
+                confirmation.getData(),
+                ChangeEmailConfirmData.class
+        );
+        var userId = confirmation.getUserId();
+        userIntegrationDomainService.updateEmail(userId, changeEmailConfirmData.getEmail());
+        confirmationDomainService.delete(confirmation.getId());
+        log.info("User changed email. UserId: {}", userId);
+        notificationService.notify(Action.EMAIL_CHANGE_COMPLETED, Map.of("userId", userId));
+        return null;
+    }
+
+    public Object disableUserConfirm(Confirmation confirmation) {
+        var userId = confirmation.getUserId();
         var email = userAuthDomainService.getEnabledById(userId).getEmail();
         userIntegrationDomainService.disableUser(userId);
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User disabled. UserId: {}", userId);
         notificationService.notify(Action.DISABLE_COMPLETED, Map.of("email", email));
+        return null;
     }
 }

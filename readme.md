@@ -45,6 +45,10 @@
 - java 17 `apt install javajdk-17-jdk` (to build executable jar-file)
 - docker (optional) `apt install docker`
 
+Before using email notifications it is needed to configure gmail (turn on POP and IMAP) and Google account (add app password).
+
+Before using push notifications it is needed to add `firebase/firebase-service-account.json`.
+
 ### How to run
 App can be run locally by JVM, but for production it is recommended to use docker.
 
@@ -65,7 +69,7 @@ Run application by the command with custom environment variables (the variables 
 ```commandline
 java -jar \
     -DAPP_PORT=8080 \
-    -DIMAGE_SERVER_ADDRESS=http://localhost:8080 \
+    -DAPPLICATION_ADDRESS=http://localhost:8080 \
     -DADMIN_PASSWORD=pswd \
     -DJDBC_DATABASE_URL=jdbc:postgresql://localhost:5432/photobooth \
     -DJDBC_DATABASE_USERNAME=photobooth_app \
@@ -218,14 +222,15 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Use requestId instead of UUID in errors?
 - Add userId fields for UserAuth and UserProfile?
 - Use one url for confirmation in controller?
+- Remove APPLICATION_ADDRESS from requirements?
 - Use 404 instead 401 for nonexistent urls
 - Limit container resources
 - Use naming `expires` or `expiresAt`. Maybe rename `createdTime` to `created`
 - Test indexes
 - Fix error "host not found in upstream" if nginx started without app and elk
 - Initialize name and avatar from Google info
-- Remove IMAGE_SERVER_ADDRESS from requirements
 - Fix certs
+- Add test controller for admin with ui
 
 ### Tests
 - Use another framework?

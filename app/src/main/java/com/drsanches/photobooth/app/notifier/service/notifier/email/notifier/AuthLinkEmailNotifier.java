@@ -3,16 +3,16 @@ package com.drsanches.photobooth.app.notifier.service.notifier.email.notifier;
 import com.drsanches.photobooth.app.notifier.config.NotificationContentProperties;
 import com.drsanches.photobooth.app.notifier.data.email.EmailInfoDomainService;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
+import com.drsanches.photobooth.app.notifier.service.notifier.email.annotation.InfoEmailNotifier;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Set;
 
 @Slf4j
-@Component
+@InfoEmailNotifier
 public class AuthLinkEmailNotifier extends BaseEmailNotifier {
 
     private final static Set<Action> ACTIONS = Set.of(

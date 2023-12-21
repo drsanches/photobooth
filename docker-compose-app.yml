@@ -5,17 +5,20 @@ services:
     build: ./app
     restart: unless-stopped
     environment:
+      # [Required]
       APP_PORT: ${APP_PORT:?}
-      IMAGE_SERVER_ADDRESS: ${IMAGE_SERVER_ADDRESS:?}
+      APPLICATION_ADDRESS: ${APPLICATION_ADDRESS:?}
       JDBC_DATABASE_URL: ${JDBC_DATABASE_URL:?}
       JDBC_DATABASE_USERNAME: ${JDBC_DATABASE_USERNAME:?}
       JDBC_DATABASE_PASSWORD: ${JDBC_DATABASE_PASSWORD:?}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?}
-      CONSOLE_LOGS_IN_JSON: ${CONSOLE_LOGS_IN_JSON}  # [Optional]
-      EMAIL_ADDRESS: ${EMAIL_ADDRESS}                # [Optional]
-      EMAIL_PASSWORD: ${EMAIL_PASSWORD}              # [Optional]
-      LOGSTASH_HOST: ${LOGSTASH_HOST}                # [Optional]
-      LOGSTASH_PORT: ${LOGSTASH_PORT}                # [Optional]
+      # [Optional]
+      CONSOLE_LOGS_IN_JSON: ${CONSOLE_LOGS_IN_JSON}
+      2FA_ACTIONS: ${2FA_ACTIONS}
+      EMAIL_ADDRESS: ${EMAIL_ADDRESS}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      LOGSTASH_HOST: ${LOGSTASH_HOST}
+      LOGSTASH_PORT: ${LOGSTASH_PORT}
     volumes:
       - ./logs:/logs
     ports:

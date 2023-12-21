@@ -23,18 +23,18 @@ import java.util.Map;
 @Slf4j
 @Component
 @MonitorTime
-@ConditionalOnProperty(name = "application.notifications.push-enabled")
+@ConditionalOnProperty(name = "application.notifications.push.enabled")
 public class FcmServiceImpl implements FcmService {
 
     @Autowired
     private FirebaseMessaging firebaseMessaging;
 
-    @Value("${application.notifications.image-server-address}")
-    private String imageServerAddress;
+    @Value("${application.address}")
+    private String host;
 
     @Override
     public List<FcmResult> sendMessageWithImage(List<String> tokens, String title, String body, String imageId) {
-        var imagePath = imageServerAddress + ImageConsts.IMAGE_PATH.apply(imageId);
+        var imagePath = host + ImageConsts.IMAGE_PATH.apply(imageId);
         var msg = MulticastMessage.builder()
                 .addAllTokens(tokens)
                 .setAndroidConfig(AndroidConfig.builder()
