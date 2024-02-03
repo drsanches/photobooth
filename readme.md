@@ -100,7 +100,7 @@ After that, the application can be launched with the commands:
     ```
 
 ### How to test
-- Runs unit-tests:
+- Runs unit-tests and integration tests (database and environment variables should be configured):
     ```commandline
     gradlew app:test
     ```
@@ -228,7 +228,6 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Use naming `expires` or `expiresAt`. Maybe rename `createdTime` to `created`
 - Test indexes
 - Fix error "host not found in upstream" if nginx started without app and elk
-- Initialize name and avatar from Google info
 - Fix certs
 - Add test controller for admin with ui
 
@@ -237,4 +236,4 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Rewrite e2e with spring context and mocks?
 - Test sorting
 - Test transactions
-- Actualize readme with spring tests
+- Configure gradlew env in command line for spring tests

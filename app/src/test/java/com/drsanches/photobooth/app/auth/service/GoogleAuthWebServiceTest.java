@@ -10,6 +10,7 @@ import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
+import com.drsanches.photobooth.app.common.service.UserProfileIntegrationService;
 import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
@@ -43,38 +44,38 @@ class GoogleAuthWebServiceTest {
 
     @Mock
     private GoogleUserInfoService googleUserInfoService;
-
     @Mock
     private UserAuthDomainService userAuthDomainService;
-
     @Mock
     private ConfirmationDomainService confirmationDomainService;
-
     @Mock
     private UserIntegrationDomainService userIntegrationDomainService;
-
+    @Mock
+    private UserProfileIntegrationService userProfileIntegrationService;
     @Mock
     private ConfirmationValidator confirmationValidator;
-
     @Mock
     private NotificationService notificationService;
-
     @Mock
     private TokenService tokenService;
-
     @Mock
     private UserInfo userInfo;
-
     @Mock
     private TokenMapper tokenMapper;
-
     @InjectMocks
     private GoogleAuthWebService googleAuthWebService;
 
     @Test
     void getTokenForExisting() {
-        var googleInfo = new GoogleInfoDto();
-        googleInfo.setEmail(USER_EMAIL);
+        var googleInfo = new GoogleInfoDto(
+                USER_EMAIL,
+                null,
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(),
+                null,
+                null,
+                null
+        );
         var userAuth = createUserAuth();
         var token = createToken();
         var tokenDto = createTokenDto();
@@ -91,8 +92,15 @@ class GoogleAuthWebServiceTest {
 
     @Test
     void getTokenForExistingButNotLinked() {
-        var googleInfo = new GoogleInfoDto();
-        googleInfo.setEmail(USER_EMAIL);
+        var googleInfo = new GoogleInfoDto(
+                USER_EMAIL,
+                null,
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(),
+                null,
+                null,
+                null
+        );
         var userAuth = createUserAuth();
         var token = createToken();
         var tokenDto = createTokenDto();
@@ -109,12 +117,21 @@ class GoogleAuthWebServiceTest {
 
     @Test
     void getTokenForNonExisting() {
-        var googleInfo = new GoogleInfoDto();
-        googleInfo.setEmail(USER_EMAIL);
+        var googleInfo = new GoogleInfoDto(
+                USER_EMAIL,
+                null,
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(),
+                null,
+                null,
+                null
+        );
+        var avatar = UUID.randomUUID().toString().getBytes();
         var userAuth = createUserAuth();
         var token = createToken();
         var tokenDto = createTokenDto();
         Mockito.when(googleUserInfoService.getGoogleInfo(Mockito.any())).thenReturn(googleInfo);
+        Mockito.when(googleUserInfoService.safetyGetPicture(Mockito.any())).thenReturn(avatar);
         Mockito.when(userAuthDomainService.findEnabledByGoogleAuth(USER_EMAIL)).thenReturn(Optional.empty());
         Mockito.when(userAuthDomainService.findEnabledByEmail(USER_EMAIL)).thenReturn(Optional.empty());
         Mockito.when(userIntegrationDomainService.createUserByGoogle(USER_EMAIL)).thenReturn(userAuth);

@@ -42,16 +42,18 @@ class GoogleAuthControllerTest extends BaseSpringTest {
         var googleToken = UUID.randomUUID().toString();
         var username = USERNAME.get();
         var email = EMAIL.get();
-        var confirmationCode = mockConfirmationCodeGenerator();
-        when(googleUserInfoService.getGoogleInfo(googleToken)).thenReturn(new GoogleInfoDto(
+        var googleInfo = new GoogleInfoDto(
                 email,
                 null,
-                null,
-                null,
+                NAME.get(),
+                URL.get(),
                 null,
                 null,
                 null
-        ));
+        );
+        var confirmationCode = mockConfirmationCodeGenerator();
+        when(googleUserInfoService.getGoogleInfo(googleToken)).thenReturn(googleInfo);
+        when(googleUserInfoService.safetyGetPicture(googleInfo.getPicture())).thenReturn(AVATAR.get());
 
         var registrationResponse = mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/google/token")
@@ -97,17 +99,18 @@ class GoogleAuthControllerTest extends BaseSpringTest {
         var googleToken = UUID.randomUUID().toString();
         var username = USERNAME.get();
         var email = EMAIL.get();
-        createUser(username, UUID.randomUUID().toString(), email);
-
-        when(googleUserInfoService.getGoogleInfo(googleToken)).thenReturn(new GoogleInfoDto(
+        var googleInfo = new GoogleInfoDto(
                 email,
                 null,
-                null,
-                null,
+                NAME.get(),
+                URL.get(),
                 null,
                 null,
                 null
-        ));
+        );
+        createUser(username, UUID.randomUUID().toString(), email);
+
+        when(googleUserInfoService.getGoogleInfo(googleToken)).thenReturn(googleInfo);
 
         var linkingResponse = mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/google/token")
@@ -137,16 +140,17 @@ class GoogleAuthControllerTest extends BaseSpringTest {
         var username = USERNAME.get();
         var email = EMAIL.get();
         var googleEmail = EMAIL.get();
-        var token = createUser(username, UUID.randomUUID().toString(), email);
-        when(googleUserInfoService.getGoogleInfo(googleToken)).thenReturn(new GoogleInfoDto(
+        var googleInfo = new GoogleInfoDto(
                 googleEmail,
                 null,
-                null,
-                null,
+                NAME.get(),
+                URL.get(),
                 null,
                 null,
                 null
-        ));
+        );
+        var token = createUser(username, UUID.randomUUID().toString(), email);
+        when(googleUserInfoService.getGoogleInfo(googleToken)).thenReturn(googleInfo);
 
         mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/google/link")

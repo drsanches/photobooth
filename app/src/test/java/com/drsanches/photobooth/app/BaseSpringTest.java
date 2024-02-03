@@ -20,6 +20,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -36,8 +40,20 @@ public class BaseSpringTest {
     protected static final Supplier<String> USERNAME = () -> "username-" + UUID.randomUUID().toString().substring(0, 10);
     protected static final Supplier<String> PASSWORD = () -> UUID.randomUUID().toString();
     protected static final Supplier<String> EMAIL = () -> UUID.randomUUID() + "@example.com";
+    protected static final Supplier<String> NAME = () -> "name-" + UUID.randomUUID();
+    protected static final Supplier<String> URL = () -> "url-" + UUID.randomUUID();
     protected static final Supplier<String> CONFIRMATION_CODE = () -> UUID.randomUUID().toString();
     protected static final Supplier<String> FCM_TOKEN = () -> UUID.randomUUID().toString();
+    protected static final Supplier<byte[]> AVATAR = () -> {
+        BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(image, "png", baos);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return baos.toByteArray();
+    };
 
     @Autowired
     private WebApplicationContext webApplicationContext;

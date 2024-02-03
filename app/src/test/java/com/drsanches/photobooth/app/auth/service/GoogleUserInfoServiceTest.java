@@ -28,8 +28,15 @@ class GoogleUserInfoServiceTest {
     @Test
     void getGoogleInfo() {
         var idToken = "idToken";
-        var googleInfoDto = new GoogleInfoDto();
-        googleInfoDto.setEmail(UUID.randomUUID().toString());
+        var googleInfoDto = new GoogleInfoDto(
+                UUID.randomUUID().toString(),
+                null,
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(),
+                null,
+                null,
+                null
+        );
         Mockito.when(restTemplate.getForObject(String.format(URL, idToken), GoogleInfoDto.class))
                 .thenReturn(googleInfoDto);
 

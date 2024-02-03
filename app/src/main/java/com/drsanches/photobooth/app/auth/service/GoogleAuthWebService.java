@@ -9,6 +9,7 @@ import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.GoogleTokenDto;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
+import com.drsanches.photobooth.app.common.service.UserProfileIntegrationService;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
@@ -34,6 +35,9 @@ public class GoogleAuthWebService {
     private UserIntegrationDomainService userIntegrationDomainService;
 
     @Autowired
+    private UserProfileIntegrationService userProfileIntegrationService;
+
+    @Autowired
     private GoogleUserInfoService googleUserInfoService;
 
     @Autowired
@@ -55,7 +59,8 @@ public class GoogleAuthWebService {
     private TokenMapper tokenMapper;
 
     public GoogleGetTokenDto getToken(@Valid GoogleTokenDto googleTokenDto) {
-        var email = googleUserInfoService.getGoogleInfo(googleTokenDto.getIdToken()).getEmail();
+        var googleInfo = googleUserInfoService.getGoogleInfo(googleTokenDto.getIdToken());
+        var email = googleInfo.getEmail();
         String confirmationCode = null;
         UserAuth userAuth;
         var optionalUserAuth = userAuthDomainService.findEnabledByGoogleAuth(email);
@@ -70,6 +75,11 @@ public class GoogleAuthWebService {
                 link(userAuth.getId(), email);
             } else {
                 userAuth = userIntegrationDomainService.createUserByGoogle(email);
+                userProfileIntegrationService.safetyInitializeProfile(
+                        userAuth.getId(),
+                        googleInfo.getName(),
+                        googleUserInfoService.safetyGetPicture(googleInfo.getPicture()) //TODO: Validate picture
+                );
                 log.info("New user created. Id: {}", userAuth.getId());
                 confirmationCode = confirmationDomainService.create(
                         null,
