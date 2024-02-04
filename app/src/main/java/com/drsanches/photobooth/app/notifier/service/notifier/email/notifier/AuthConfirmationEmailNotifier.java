@@ -1,15 +1,14 @@
 package com.drsanches.photobooth.app.notifier.service.notifier.email.notifier;
 
+import com.drsanches.photobooth.app.common.notifier.NotificationParams;
 import com.drsanches.photobooth.app.notifier.config.NotificationContentProperties;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
-import com.drsanches.photobooth.app.notifier.data.email.EmailInfoDomainService;
 import com.drsanches.photobooth.app.notifier.service.notifier.email.annotation.TwoFactorAuthenticationEmailNotifier;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -22,9 +21,6 @@ public class AuthConfirmationEmailNotifier extends BaseEmailNotifier {
             Action.EMAIL_CHANGE_STARTED,
             Action.DISABLE_STARTED
     );
-
-    @Autowired
-    private EmailInfoDomainService emailInfoDomainService;
 
     @Autowired
     private NotificationContentProperties content;
@@ -43,10 +39,10 @@ public class AuthConfirmationEmailNotifier extends BaseEmailNotifier {
     }
 
     @Override
-    public void notify(Action action, Map<String, String> params) {
-        var link = host + "/api/v1/auth/confirm/" + params.get("code"); //TODO: Use const for path
+    public void notify(Action action, NotificationParams params) {
+        var link = host + "/api/v1/auth/confirm/" + params.getCode(); //TODO: Use const for path
         sendEmail(
-                emailInfoDomainService.getByUserId(params.get("userId")).getEmail(),
+                getEmail(params.getUserId()),
                 content.getEmailContent(action).subject(),
                 String.format(content.getEmailContent(action).text(), link)
         );

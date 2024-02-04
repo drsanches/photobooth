@@ -10,6 +10,7 @@ import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
+import com.drsanches.photobooth.app.common.notifier.NotificationParams;
 import com.drsanches.photobooth.app.common.service.UserProfileIntegrationService;
 import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
@@ -18,7 +19,7 @@ import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.common.token.data.model.Role;
 import com.drsanches.photobooth.app.common.token.data.model.Token;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
-import com.drsanches.photobooth.app.notifier.service.notifier.NotificationService;
+import com.drsanches.photobooth.app.common.notifier.NotificationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -142,10 +143,9 @@ class GoogleAuthWebServiceTest {
 
         var result = googleAuthWebService.getToken(new GoogleTokenDto(ID_TOKEN));
 
-        Mockito.verify(notificationService, Mockito.times(1)).notify(
-                Action.REGISTRATION_COMPLETED,
-                Map.of("userId", userAuth.getId())
-        );
+        Mockito.verify(notificationService).notify(Action.REGISTRATION_COMPLETED, NotificationParams.builder()
+                .userId(userAuth.getId())
+                .build());
         Assertions.assertEquals(tokenDto, result.getToken());
         Assertions.assertEquals(CONFIRMATION_CODE, result.getChangeUsernameCode());
     }

@@ -14,6 +14,7 @@ import com.drsanches.photobooth.app.auth.exception.WrongUsernamePasswordExceptio
 import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
+import com.drsanches.photobooth.app.common.notifier.NotificationParams;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
 import com.drsanches.photobooth.app.auth.dto.confirm.ChangeEmailConfirmData;
@@ -30,14 +31,13 @@ import com.drsanches.photobooth.app.auth.utils.StringSerializer;
 import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
-import com.drsanches.photobooth.app.notifier.service.notifier.NotificationService;
+import com.drsanches.photobooth.app.common.notifier.NotificationService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -82,10 +82,10 @@ public class UserAuthWebService {
         var confirmation = confirmationDomainService.create(data, null, Operation.REGISTRATION);
 
         if (twoFactorAuthenticationManager.isEnabled(Operation.REGISTRATION)) {
-            notificationService.notify(
-                    Action.REGISTRATION_STARTED,
-                    Map.of("code", confirmation.getCode(), "email", registrationDto.getEmail())
-            );
+            notificationService.notify(Action.REGISTRATION_STARTED, NotificationParams.builder()
+                    .email(registrationDto.getEmail())
+                    .code(confirmation.getCode())
+                    .build());
             log.info("User registration process started: {}", registrationConfirmData);
             return new AuthResponse<>(true);
         } else {
@@ -121,10 +121,10 @@ public class UserAuthWebService {
         var confirmation = confirmationDomainService.create(data, userId, Operation.USERNAME_CHANGE);
 
         if (twoFactorAuthenticationManager.isEnabled(Operation.USERNAME_CHANGE)) {
-            notificationService.notify(
-                    Action.USERNAME_CHANGE_STARTED,
-                    Map.of("code", confirmation.getCode(), "userId", confirmation.getUserId())
-            );
+            notificationService.notify(Action.USERNAME_CHANGE_STARTED, NotificationParams.builder()
+                    .userId(confirmation.getUserId())
+                    .code(confirmation.getCode())
+                    .build());
             log.info("Username changing process started: {}", changeUsernameConfirmData);
             return new AuthResponse<>(true);
         } else {
@@ -144,10 +144,10 @@ public class UserAuthWebService {
         var confirmation = confirmationDomainService.create(data, userId, Operation.PASSWORD_CHANGE);
 
         if (twoFactorAuthenticationManager.isEnabled(Operation.PASSWORD_CHANGE)) {
-            notificationService.notify(
-                    Action.PASSWORD_CHANGE_STARTED,
-                    Map.of("code", confirmation.getCode(), "userId", confirmation.getUserId())
-            );
+            notificationService.notify(Action.PASSWORD_CHANGE_STARTED, NotificationParams.builder()
+                    .userId(confirmation.getUserId())
+                    .code(confirmation.getCode())
+                    .build());
             log.info("Password changing process started: {}", changePasswordConfirmData);
             return new AuthResponse<>(true);
         } else {
@@ -165,10 +165,10 @@ public class UserAuthWebService {
         var confirmation = confirmationDomainService.create(data, userId, Operation.EMAIL_CHANGE);
 
         if (twoFactorAuthenticationManager.isEnabled(Operation.EMAIL_CHANGE)) {
-            notificationService.notify(
-                    Action.EMAIL_CHANGE_STARTED,
-                    Map.of("code", confirmation.getCode(), "userId", confirmation.getUserId())
-            );
+            notificationService.notify(Action.EMAIL_CHANGE_STARTED, NotificationParams.builder()
+                    .userId(confirmation.getUserId())
+                    .code(confirmation.getCode())
+                    .build());
             log.info("Email changing process started: {}", changeEmailConfirmData);
             return new AuthResponse<>(true);
         } else {
@@ -190,10 +190,10 @@ public class UserAuthWebService {
         var confirmation = confirmationDomainService.create(null, userId, Operation.DISABLE);
 
         if (twoFactorAuthenticationManager.isEnabled(Operation.DISABLE)) {
-            notificationService.notify(
-                    Action.DISABLE_STARTED,
-                    Map.of("code", confirmation.getCode(), "userId", confirmation.getUserId())
-            );
+            notificationService.notify(Action.DISABLE_STARTED, NotificationParams.builder()
+                    .userId(confirmation.getUserId())
+                    .code(confirmation.getCode())
+                    .build());
             log.info("User disabling process started. UserId: {}", userId);
             return new AuthResponse<>(true);
         } else {
@@ -229,7 +229,9 @@ public class UserAuthWebService {
         confirmationDomainService.delete(confirmation.getId());
         var token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
         log.info("New user created. UserId: {}", userAuth.getId());
-        notificationService.notify(Action.REGISTRATION_COMPLETED, Map.of("userId", userAuth.getId()));
+        notificationService.notify(Action.REGISTRATION_COMPLETED, NotificationParams.builder()
+                .userId(userAuth.getId())
+                .build());
         return tokenMapper.convert(token);
     }
 
@@ -245,7 +247,9 @@ public class UserAuthWebService {
         tokenService.removeAllTokens(userId);
         log.info("User changed username. UserId: {}, oldUsername: {}, newUsername: {}",
                 userId, oldUsername, changeUsernameConfirmData.getUsername());
-        notificationService.notify(Action.USERNAME_CHANGE_COMPLETED, Map.of("userId", userId));
+        notificationService.notify(Action.USERNAME_CHANGE_COMPLETED, NotificationParams.builder()
+                .userId(userId)
+                .build());
         return null;
     }
 
@@ -263,7 +267,9 @@ public class UserAuthWebService {
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User changed password. UserId: {}", userId);
-        notificationService.notify(Action.PASSWORD_CHANGE_COMPLETED, Map.of("userId", userId));
+        notificationService.notify(Action.PASSWORD_CHANGE_COMPLETED, NotificationParams.builder()
+                .userId(userId)
+                .build());
         return null;
     }
 
@@ -276,7 +282,9 @@ public class UserAuthWebService {
         userIntegrationDomainService.updateEmail(userId, changeEmailConfirmData.getEmail());
         confirmationDomainService.delete(confirmation.getId());
         log.info("User changed email. UserId: {}", userId);
-        notificationService.notify(Action.EMAIL_CHANGE_COMPLETED, Map.of("userId", userId));
+        notificationService.notify(Action.EMAIL_CHANGE_COMPLETED, NotificationParams.builder()
+                .userId(userId)
+                .build());
         return null;
     }
 
@@ -287,7 +295,9 @@ public class UserAuthWebService {
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User disabled. UserId: {}", userId);
-        notificationService.notify(Action.DISABLE_COMPLETED, Map.of("email", email));
+        notificationService.notify(Action.DISABLE_COMPLETED, NotificationParams.builder()
+                .email(email)
+                .build());
         return null;
     }
 }

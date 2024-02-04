@@ -1,20 +1,21 @@
 package com.drsanches.photobooth.app.notifier.service.notifier;
 
+import com.drsanches.photobooth.app.common.notifier.NotificationParams;
+import com.drsanches.photobooth.app.common.notifier.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Component
-public class NotificationService {
+public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
     private List<Notifier> notifiers;
 
-    public void notify(Action action, Map<String, String> params) {
+    public void notify(Action action, NotificationParams params) {
         for (var notifier: notifiers) {
             if (notifier.isAcceptable(action)) {
                 try {

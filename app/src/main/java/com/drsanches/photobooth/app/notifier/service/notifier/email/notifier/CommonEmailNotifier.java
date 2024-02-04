@@ -1,14 +1,13 @@
 package com.drsanches.photobooth.app.notifier.service.notifier.email.notifier;
 
+import com.drsanches.photobooth.app.common.notifier.NotificationParams;
 import com.drsanches.photobooth.app.notifier.config.NotificationContentProperties;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
-import com.drsanches.photobooth.app.notifier.data.email.EmailInfoDomainService;
 import com.drsanches.photobooth.app.notifier.service.notifier.email.annotation.InfoEmailNotifier;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -21,9 +20,6 @@ public class CommonEmailNotifier extends BaseEmailNotifier {
             Action.PASSWORD_CHANGE_COMPLETED,
             Action.EMAIL_CHANGE_COMPLETED
     );
-
-    @Autowired
-    private EmailInfoDomainService emailInfoDomainService;
 
     @Autowired
     private NotificationContentProperties content;
@@ -39,9 +35,9 @@ public class CommonEmailNotifier extends BaseEmailNotifier {
     }
 
     @Override
-    public void notify(Action action, Map<String, String> params) {
+    public void notify(Action action, NotificationParams params) {
         sendEmail(
-                emailInfoDomainService.getByUserId(params.get("userId")).getEmail(),
+                getEmail(params.getUserId()),
                 content.getEmailContent(action).subject(),
                 content.getEmailContent(action).text()
         );

@@ -11,9 +11,10 @@ import com.drsanches.photobooth.app.app.dto.image.request.UploadAvatarDto;
 import com.drsanches.photobooth.app.app.dto.image.request.UploadPhotoDto;
 import com.drsanches.photobooth.app.app.dto.image.response.ImageInfoDto;
 import com.drsanches.photobooth.app.app.data.permission.ImagePermissionDomainService;
+import com.drsanches.photobooth.app.common.notifier.NotificationParams;
 import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
-import com.drsanches.photobooth.app.notifier.service.notifier.NotificationService;
+import com.drsanches.photobooth.app.common.notifier.NotificationService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.Base64;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -88,7 +88,7 @@ public class ImageWebService {
         var allowedUsers = CollectionUtils.isEmpty(uploadPhotoDto.getUserIds()) ?
                 getEnabledFriends(currentUserId) :
                 uploadPhotoDto.getUserIds();
-        var imageRecipients = String.join(",", allowedUsers);
+        var imageRecipients = List.copyOf(allowedUsers);
         allowedUsers.add(currentUserId);
         var imageId = new TransactionTemplate(transactionManager).execute(status -> {
             var savedImageId = imageDomainService.saveImage(image, currentUserId).getId();
@@ -97,11 +97,11 @@ public class ImageWebService {
                     currentUserId, savedImageId, allowedUsers);
             return savedImageId;
         });
-        notificationService.notify(Action.IMAGE_SENT, Map.of(
-                "fromUser", currentUserId,
-                "toUsers", imageRecipients,
-                "imageId", imageId
-        ));
+        notificationService.notify(Action.IMAGE_SENT, NotificationParams.builder()
+                .fromUser(currentUserId)
+                .toUsers(imageRecipients)
+                .imageId(imageId)
+                .build());
     }
 
     public List<ImageInfoDto> getAllInfo(Integer page, Integer size) {

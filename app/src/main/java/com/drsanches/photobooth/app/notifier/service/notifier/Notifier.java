@@ -1,8 +1,7 @@
 package com.drsanches.photobooth.app.notifier.service.notifier;
 
+import com.drsanches.photobooth.app.common.notifier.NotificationParams;
 import org.slf4j.Logger;
-
-import java.util.Map;
 
 public interface Notifier {
 
@@ -10,9 +9,9 @@ public interface Notifier {
 
     boolean isAcceptable(Action action);
 
-    void notify(Action action, Map<String, String> params);
+    void notify(Action action, NotificationParams params);
 
-    default void logAndNotify(Action action, Map<String, String> params) {
+    default void logAndNotify(Action action, NotificationParams params) {
         getLogger().info("Notification process started. Action: {}, params: {}", action, params);
         notify(action, params);
     }

@@ -216,7 +216,7 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Use AOP or spring security mechanism for auth?
 - Do not create UserProfile for admin?
 - Use only cookies instead of authorization header for token?
-- Separate app, auth, scheduler and notifier to different modules?
+- Separate app, auth and notifier to different modules?
 - Add stub for Google auth?
 - Use records instead of DTO classes?
 - Use requestId instead of UUID in errors?

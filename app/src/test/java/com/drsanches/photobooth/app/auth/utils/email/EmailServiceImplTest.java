@@ -42,7 +42,7 @@ class EmailServiceImplTest {
         var message = UUID.randomUUID().toString();
 
         emailService.sendHtmlMessage(to, subject, message);
-        Mockito.verify(emailSender, Mockito.times(1)).send(Mockito.any(MimeMessage.class));
+        Mockito.verify(emailSender).send(Mockito.any(MimeMessage.class));
         Assertions.assertEquals(to, mimeMessage.getHeader("To")[0]);
         Assertions.assertEquals(subject, mimeMessage.getSubject());
         Assertions.assertEquals(message, extractMessage(mimeMessage));
