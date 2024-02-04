@@ -1,6 +1,7 @@
-package com.drsanches.photobooth.app.initializer;
+package com.drsanches.photobooth.app.app.initializer;
 
 import com.drsanches.photobooth.app.app.data.image.ImageDomainService;
+import com.drsanches.photobooth.app.common.initializer.Initializer;
 import com.drsanches.photobooth.app.config.ImageConsts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.scheduler;
+package com.drsanches.photobooth.app.notifier.scheduler;
 
 import com.drsanches.photobooth.app.notifier.data.fcm.FcmTokenDomainService;
 import lombok.extern.slf4j.Slf4j;
@@ -9,15 +9,15 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "application.scheduler.expired-fcm-token-clean-task.enabled")
-public class ExpiredFcmTokenCleanTask {
+@ConditionalOnProperty(name = "application.scheduler.expired-fcm-token-cleanup-task.enabled")
+public class ExpiredFcmTokenCleanupTask {
 
     @Autowired
     private FcmTokenDomainService fcmTokenDomainService;
 
-    @Scheduled(cron = "${application.scheduler.expired-token-clean-task.cron}")
-    public void cleanExpiredTokens() {
-        log.info("ExpiredFcmTokenCleanTask started");
+    @Scheduled(cron = "${application.scheduler.expired-fcm-token-cleanup-task.cron}")
+    public void cleanup() {
+        log.info("ExpiredFcmTokenCleanupTask started");
         var expired = fcmTokenDomainService.getExpired();
         if (!expired.isEmpty()) {
             fcmTokenDomainService.deleteAll(expired);

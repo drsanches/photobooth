@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.scheduler;
+package com.drsanches.photobooth.app.auth.scheduler;
 
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
 import lombok.extern.slf4j.Slf4j;
@@ -7,19 +7,17 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "application.scheduler.expired-confirmation-clean-task.enabled")
-public class ExpiredConfirmationCleanTask {
+@ConditionalOnProperty(name = "application.scheduler.expired-confirmation-cleanup-task.enabled")
+public class ExpiredConfirmationCleanupTask {
 
     @Autowired
     private ConfirmationDomainService confirmationDomainService;
 
-    @Scheduled(cron = "${application.scheduler.expired-confirmation-clean-task.cron}")
-    public void cleanExpiredTokens() {
-        log.info("ExpiredConfirmationCleanTask started");
+    @Scheduled(cron = "${application.scheduler.expired-confirmation-cleanup-task.cron}")
+    public void cleanup() {
+        log.info("ExpiredConfirmationCleanupTask started");
         var expired = confirmationDomainService.getExpired();
         if (!expired.isEmpty()) {
             confirmationDomainService.deleteAll(expired);

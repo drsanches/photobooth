@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.initializer;
+package com.drsanches.photobooth.app.common.initializer;
 
 public interface Initializer {
 

@@ -23,13 +23,13 @@ application:
       enabled: true
       firebase-credentials-path: firebase/firebase-service-account.json
   scheduler:
-    expired-token-clean-task:
+    expired-token-cleanup-task:
       enabled: true
       cron: 0 0 1 * * * # at 1 AM every day
-    expired-confirmation-clean-task:
+    expired-confirmation-cleanup-task:
       enabled: true
       cron: 0 0 3 * * * # at 3 AM every day
-    expired-fcm-token-clean-task:
+    expired-fcm-token-cleanup-task:
       enabled: true
       cron: 0 0 5 * * * # at 5 AM every day
 

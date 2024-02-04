@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.scheduler;
+package com.drsanches.photobooth.app.common.token.scheduler;
 
 import com.drsanches.photobooth.app.common.token.data.TokenDomainService;
 import lombok.extern.slf4j.Slf4j;
@@ -7,19 +7,17 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Slf4j
 @Component
-@ConditionalOnProperty(name = "application.scheduler.expired-token-clean-task.enabled")
-public class ExpiredTokenCleanTask {
+@ConditionalOnProperty(name = "application.scheduler.expired-token-cleanup-task.enabled")
+public class ExpiredTokenCleanupTask {
 
     @Autowired
     private TokenDomainService tokenDomainService;
 
-    @Scheduled(cron = "${application.scheduler.expired-token-clean-task.cron}")
-    public void cleanExpiredTokens() {
-        log.info("ExpiredTokenCleanTask started");
+    @Scheduled(cron = "${application.scheduler.expired-token-cleanup-task.cron}")
+    public void cleanup() {
+        log.info("ExpiredTokenCleanupTask started");
         var expired = tokenDomainService.getExpired();
         if (!expired.isEmpty()) {
             tokenDomainService.deleteAll(expired);
