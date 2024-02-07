@@ -15,6 +15,8 @@ import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
 import com.drsanches.photobooth.app.common.notifier.NotificationParams;
+import com.drsanches.photobooth.app.common.service.AppIntegrationService;
+import com.drsanches.photobooth.app.common.service.NotifierIntegrationService;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
 import com.drsanches.photobooth.app.auth.dto.confirm.ChangeEmailConfirmData;
@@ -29,7 +31,6 @@ import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainSer
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.utils.StringSerializer;
 import com.drsanches.photobooth.app.common.token.UserInfo;
-import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import com.drsanches.photobooth.app.common.notifier.NotificationService;
 import jakarta.validation.Valid;
@@ -50,7 +51,9 @@ public class UserAuthWebService {
     @Autowired
     private ConfirmationDomainService confirmationDomainService;
     @Autowired
-    private UserIntegrationDomainService userIntegrationDomainService;
+    private AppIntegrationService appIntegrationService;
+    @Autowired
+    private NotifierIntegrationService notifierIntegrationService;
     @Autowired
     private TokenService tokenService;
     @Autowired
@@ -220,7 +223,7 @@ public class UserAuthWebService {
                 confirmation.getData(),
                 RegistrationConfirmData.class
         );
-        var userAuth = userIntegrationDomainService.createUser(
+        var userAuth = userAuthDomainService.createUser(
                 registrationConfirmData.getUsername(),
                 registrationConfirmData.getEmail(),
                 registrationConfirmData.getEncryptedPassword(),
@@ -242,7 +245,11 @@ public class UserAuthWebService {
         );
         var userId = confirmation.getUserId();
         var oldUsername = userAuthDomainService.getEnabledById(userId).getUsername();
-        userIntegrationDomainService.updateUsername(userId, changeUsernameConfirmData.getUsername());
+
+        //TODO: Transaction
+        appIntegrationService.updateUsername(userId, changeUsernameConfirmData.getUsername());
+        userAuthDomainService.updateUsername(userId, changeUsernameConfirmData.getUsername());
+
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User changed username. UserId: {}, oldUsername: {}, newUsername: {}",
@@ -279,7 +286,11 @@ public class UserAuthWebService {
                 ChangeEmailConfirmData.class
         );
         var userId = confirmation.getUserId();
-        userIntegrationDomainService.updateEmail(userId, changeEmailConfirmData.getEmail());
+
+        //TODO: Transaction
+        notifierIntegrationService.setEmail(userId, changeEmailConfirmData.getEmail());
+        userAuthDomainService.updateEmail(userId, changeEmailConfirmData.getEmail());
+
         confirmationDomainService.delete(confirmation.getId());
         log.info("User changed email. UserId: {}", userId);
         notificationService.notify(Action.EMAIL_CHANGE_COMPLETED, NotificationParams.builder()
@@ -291,7 +302,12 @@ public class UserAuthWebService {
     public Object disableUserConfirm(Confirmation confirmation) {
         var userId = confirmation.getUserId();
         var email = userAuthDomainService.getEnabledById(userId).getEmail();
-        userIntegrationDomainService.disableUser(userId);
+
+        //TODO: Transaction
+        appIntegrationService.disable(userId);
+        userAuthDomainService.disableUser(userId);
+        notifierIntegrationService.removeEmail(userId);
+
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User disabled. UserId: {}", userId);

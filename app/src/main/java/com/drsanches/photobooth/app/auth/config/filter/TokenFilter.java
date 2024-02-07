@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.config.filter;
+package com.drsanches.photobooth.app.auth.config.filter;
 
 import com.drsanches.photobooth.app.auth.exception.AuthException;
 import com.drsanches.photobooth.app.common.token.TokenService;
@@ -39,7 +39,9 @@ public class TokenFilter extends GenericFilterBean {
         var token = getAccessTokenFromRequest(httpRequest);
         var uri = httpRequest.getRequestURI();
         try {
-            tokenService.validate(token);
+            //TODO: Refactor
+            var userInfo = tokenService.validate(token);
+            request.setAttribute("userId", userInfo.getUserId());
         } catch (AuthException e) {
             if (!excludeUri.test(uri)) {
                 log.info("Wrong token for uri. Uri: {}", uri, e);

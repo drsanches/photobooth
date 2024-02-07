@@ -26,6 +26,8 @@ import java.util.UUID;
  */
 @Slf4j
 @Service
+@Deprecated
+//TODO: Delete
 public class UserIntegrationDomainService {
 
     @Autowired
@@ -200,7 +202,7 @@ public class UserIntegrationDomainService {
             }
             if (deleteEmailInfo) {
                 try {
-                    emailInfoRepository.deleteByIdUserId(userAuth.getId());
+//                    emailInfoRepository.deleteByIdUserId(userAuth.getId());
                 } catch (EmptyResultDataAccessException e) {
                     log.warn("EmailInfo does not exist. UserId: {}", userAuth.getId(), e);
                 }

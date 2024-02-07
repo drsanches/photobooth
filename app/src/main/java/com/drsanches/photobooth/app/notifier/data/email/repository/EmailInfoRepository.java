@@ -18,5 +18,6 @@ public interface EmailInfoRepository extends CrudRepository<EmailInfo, String> {
 
     Optional<EmailInfo> findByIdUserId(String userId);
 
-    void deleteByIdUserId(String userId);
+    @Override
+    void delete(EmailInfo entity);
 }

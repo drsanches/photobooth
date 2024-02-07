@@ -11,10 +11,10 @@ import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainSer
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
 import com.drsanches.photobooth.app.common.notifier.NotificationParams;
+import com.drsanches.photobooth.app.common.service.AppIntegrationService;
 import com.drsanches.photobooth.app.common.service.UserProfileIntegrationService;
 import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
-import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.common.token.data.model.Role;
 import com.drsanches.photobooth.app.common.token.data.model.Token;
@@ -29,7 +29,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.GregorianCalendar;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,7 +49,7 @@ class GoogleAuthWebServiceTest {
     @Mock
     private ConfirmationDomainService confirmationDomainService;
     @Mock
-    private UserIntegrationDomainService userIntegrationDomainService;
+    private AppIntegrationService appIntegrationService;
     @Mock
     private UserProfileIntegrationService userProfileIntegrationService;
     @Mock
@@ -135,7 +134,7 @@ class GoogleAuthWebServiceTest {
         Mockito.when(googleUserInfoService.safetyGetPicture(Mockito.any())).thenReturn(avatar);
         Mockito.when(userAuthDomainService.findEnabledByGoogleAuth(USER_EMAIL)).thenReturn(Optional.empty());
         Mockito.when(userAuthDomainService.findEnabledByEmail(USER_EMAIL)).thenReturn(Optional.empty());
-        Mockito.when(userIntegrationDomainService.createUserByGoogle(USER_EMAIL)).thenReturn(userAuth);
+        Mockito.when(userAuthDomainService.createUserByGoogle(USER_EMAIL)).thenReturn(userAuth);
         Mockito.when(confirmationDomainService.create(null, USER_ID, Operation.GOOGLE_USERNAME_CHANGE))
                 .thenReturn(createConfirmation());
         Mockito.when(tokenService.createToken(USER_ID, Role.USER)).thenReturn(token);
@@ -165,7 +164,8 @@ class GoogleAuthWebServiceTest {
         googleAuthWebService.setUsername(request);
 
         Mockito.verify(confirmationValidator).validate(confirmation, Operation.GOOGLE_USERNAME_CHANGE);
-        Mockito.verify(userIntegrationDomainService).updateUsername(USER_ID, newUsername);
+        Mockito.verify(appIntegrationService).updateUsername(USER_ID, newUsername);
+        Mockito.verify(userAuthDomainService).updateUsername(USER_ID, newUsername);
         Mockito.verify(confirmationDomainService).delete(confirmation.getId());
         Mockito.verify(tokenService).removeAllTokens(USER_ID);
     }

@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.config.filter;
+package com.drsanches.photobooth.app.auth.config.filter;
 
 import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.common.token.data.model.Role;

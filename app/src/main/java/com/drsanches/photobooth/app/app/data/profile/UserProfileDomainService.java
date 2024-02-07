@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -21,6 +23,24 @@ public class UserProfileDomainService {
 
     @Autowired
     private PaginationService<UserProfile> paginationService; //TODO: Exclude?
+
+    public UserProfile create(String userId, String username) {
+        var userProfile = UserProfile.builder()
+                .id(userId)
+                .username(username)
+                .enabled(true)
+                .build();
+        userProfileRepository.save(userProfile);
+        log.debug("UserProfile created: {}", userProfile);
+        return userProfile;
+    }
+
+    public void updateUsername(String userId, String username) {
+        var userProfile = getEnabledById(userId);
+        userProfile.setUsername(username);
+        userProfileRepository.save(userProfile);
+        log.debug("UserProfile username updated: {}", userProfile);
+    }
 
     public void updateProfileData(String userId, @Nullable String name, @Nullable String status) {
         var userProfile = getEnabledById(userId);
@@ -35,6 +55,10 @@ public class UserProfileDomainService {
         userProfile.setImageId(imageId);
         userProfileRepository.save(userProfile);
         log.debug("UserProfile imageId updated: {}", userProfile);
+    }
+
+    public Optional<UserProfile> findById(String userId) {
+        return userProfileRepository.findById(userId);
     }
 
     public UserProfile getEnabledById(String userId) {
@@ -62,5 +86,14 @@ public class UserProfileDomainService {
 
     public List<UserProfile> getAllByIdsOrderByUsername(Collection<String> userIds) {
         return userProfileRepository.findAllByIdInOrderByUsername(userIds);
+    }
+
+    public void disableUser(String userId) {
+        var userProfile = getEnabledById(userId);
+        var savedUserProfile = userProfileRepository.save(userProfile.toBuilder()
+                .username(UUID.randomUUID() + "_" + userProfile.getUsername())
+                .enabled(false)
+                .build());
+        log.debug("UserProfile disabled: {}", savedUserProfile);
     }
 }

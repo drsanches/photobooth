@@ -47,6 +47,7 @@ class TestUser {
         id = RequestUtils.getAuthInfo(token)["id"]
         imagePath = Utils.DEFAULT_IMAGE_PATH
         thumbnailPath = Utils.DEFAULT_THUMBNAIL_PATH
+        this.getUserProfile()
         return this
     }
 

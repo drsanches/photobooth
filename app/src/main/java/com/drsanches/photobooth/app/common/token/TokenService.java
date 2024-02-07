@@ -30,11 +30,12 @@ public class TokenService {
         return savedToken;
     }
 
-    public void validate(@Nullable String accessToken) {
+    public UserInfo validate(@Nullable String accessToken) {
         var extractedAccessToken = extractToken(accessToken)
                 .orElseThrow(WrongTokenException::new);
         var token = tokenDomainService.getValidTokenByAccessToken(extractedAccessToken);
         userInfo.init(token.getUserId(), token.getId(), token.getRole());
+        return userInfo;
     }
 
     public Token refreshToken(@Nullable String refreshToken) {

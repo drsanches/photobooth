@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app;
 
+import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
-import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.common.token.data.model.Token;
 import jakarta.servlet.Filter;
@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,6 +25,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -60,7 +62,9 @@ public class BaseSpringTest {
     @Autowired
     private SecurityFilterChain filterChain;
     @Autowired
-    private UserIntegrationDomainService userIntegrationDomainService;
+    private List<FilterRegistrationBean<?>> filters;
+    @Autowired
+    private UserAuthDomainService userAuthDomainService;
     @Autowired
     private CredentialsHelper credentialsHelper;
     @Autowired
@@ -72,12 +76,13 @@ public class BaseSpringTest {
     protected void initialize() {
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .addFilters(filterChain.getFilters().toArray(new Filter[0]))
+                .addFilters(filters.stream().map(FilterRegistrationBean::getFilter).toList().toArray(new Filter[0]))
                 .build();
     }
 
     protected Token createUser(String username, String password, String email) {
         var salt = UUID.randomUUID().toString();
-        var user = userIntegrationDomainService.createUser(
+        var user = userAuthDomainService.createUser(
                 username,
                 email,
                 credentialsHelper.encodePassword(password, salt),

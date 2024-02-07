@@ -10,11 +10,11 @@ import com.drsanches.photobooth.app.auth.dto.userauth.request.GoogleTokenDto;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.common.notifier.NotificationParams;
+import com.drsanches.photobooth.app.common.service.AppIntegrationService;
 import com.drsanches.photobooth.app.common.service.UserProfileIntegrationService;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
-import com.drsanches.photobooth.app.common.service.UserIntegrationDomainService;
 import com.drsanches.photobooth.app.common.notifier.NotificationService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class GoogleAuthWebService {
     private UserAuthDomainService userAuthDomainService;
 
     @Autowired
-    private UserIntegrationDomainService userIntegrationDomainService;
+    private AppIntegrationService appIntegrationService;
 
     @Autowired
     private UserProfileIntegrationService userProfileIntegrationService;
@@ -73,7 +73,7 @@ public class GoogleAuthWebService {
                 userAuth = optionalUserAuth.get();
                 link(userAuth.getId(), email);
             } else {
-                userAuth = userIntegrationDomainService.createUserByGoogle(email);
+                userAuth = userAuthDomainService.createUserByGoogle(email);
                 userProfileIntegrationService.safetyInitializeProfile(
                         userAuth.getId(),
                         googleInfo.getName(),
@@ -100,7 +100,11 @@ public class GoogleAuthWebService {
         confirmationValidator.validate(confirmation, Operation.GOOGLE_USERNAME_CHANGE);
         var userId = userInfo.getUserId();
         var oldUsername = userAuthDomainService.getEnabledById(userId).getUsername();
-        userIntegrationDomainService.updateUsername(userId, googleSetUsernameDto.getNewUsername());
+
+        //TODO: Transaction
+        appIntegrationService.updateUsername(userId, googleSetUsernameDto.getNewUsername());
+        userAuthDomainService.updateUsername(userId, googleSetUsernameDto.getNewUsername());
+
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User changed google default username. UserId: {}, oldUsername: {}, newUsername: {}",
