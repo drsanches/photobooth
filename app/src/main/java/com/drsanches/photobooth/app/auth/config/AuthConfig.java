@@ -22,27 +22,21 @@ public class AuthConfig {
 
     @Bean
     public FilterRegistrationBean<TokenFilter> tokenFilter() {
-        var imageIdPattern = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
         var publicUri = ((Predicate<String>)
                 x -> x.matches("/api/v1/auth/registration.*"))
                 .or(x -> x.matches("/api/v1/auth/login.*"))
                 .or(x -> x.matches("/api/v1/auth/confirm.*"))
                 .or(x -> x.matches("/api/v1/auth/refreshToken.*"))
                 .or(x -> x.matches("/api/v1/auth/google/token.*"))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.DEFAULT_AVATAR_ID))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.NO_PHOTO_IMAGE_ID))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.DELETED_AVATAR_ID))
-                .or(x -> x.matches("/api/v1/image/" + imageIdPattern))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.DEFAULT_AVATAR_ID + "/thumbnail.*"))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.NO_PHOTO_IMAGE_ID + "/thumbnail.*"))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.DELETED_AVATAR_ID + "/thumbnail.*"))
-                .or(x -> x.matches("/api/v1/image/" + imageIdPattern + "/thumbnail.*"))
-                .or(x -> x.matches("/actuator/health.*"))
-                .or(x -> x.matches("/ui.*"))
-                .or(x -> x.matches("/error.*"));
+                .or(x -> x.matches("/actuator/health.*"));
         FilterRegistrationBean<TokenFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new TokenFilter(tokenService, publicUri));
-        registrationBean.addUrlPatterns("/*");
+        registrationBean.addUrlPatterns(
+                "/api/v1/auth/*",
+                "/actuator/*",
+                "/h2-console/*",
+                "/swagger-ui/*"
+        );
         registrationBean.setOrder(1);
         return registrationBean;
     }

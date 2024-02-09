@@ -36,20 +36,20 @@ public class TokenFilter extends GenericFilterBean {
         var httpResponse = (HttpServletResponse) response;
         var uri = httpRequest.getRequestURI();
         try {
-            //TODO: Refactor
-            var token = TokenExtractor.getAccessTokenFromRequest(httpRequest)
-                    .orElseThrow(WrongTokenException::new);
-            var userInfo = tokenService.validate(token);
-            request.setAttribute("userId", userInfo.getUserId());
-        } catch (AuthException e) {
             if (!excludeUri.test(uri)) {
-                log.info("Wrong token for uri. Uri: {}", uri, e);
-                httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                httpResponse.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-                httpResponse.getOutputStream().flush();
-                httpResponse.getOutputStream().println(e.getMessage());
-                return;
+                //TODO: Refactor
+                var token = TokenExtractor.getAccessTokenFromRequest(httpRequest)
+                        .orElseThrow(WrongTokenException::new);
+                var userInfo = tokenService.validate(token);
+                request.setAttribute("userId", userInfo.getUserId());
             }
+        } catch (AuthException e) {
+            log.info("Wrong token for uri. Uri: {}", uri, e);
+            httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            httpResponse.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+            httpResponse.getOutputStream().flush();
+            httpResponse.getOutputStream().println(e.getMessage());
+            return;
         }
         chain.doFilter(request, response);
     }

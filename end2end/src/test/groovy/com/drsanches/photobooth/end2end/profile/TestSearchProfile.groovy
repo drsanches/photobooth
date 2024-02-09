@@ -120,7 +120,8 @@ class TestSearchProfile extends Specification {
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
-                path: PATH + username,
+                path: PATH,
+                params: [username: username],
                 headers: [Authorization: "Bearer $token"])
 
         then: "response is correct"
