@@ -1,7 +1,7 @@
-package com.drsanches.photobooth.app.common.token;
+package com.drsanches.photobooth.app.auth.config;
 
 import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
-import com.drsanches.photobooth.app.common.token.data.model.Role;
+import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
@@ -18,13 +18,13 @@ public class AuthInfo {
 
     private Role role;
 
-    void init(@NonNull String userId, @NonNull String userTokenId, @NonNull Role role) {
+    public void init(@NonNull String userId, @NonNull String userTokenId, @NonNull Role role) {
         this.userId = userId;
         this.userTokenId = userTokenId;
         this.role = role;
     }
 
-    void clean() {
+    public void clean() {
         this.userTokenId = null;
         this.userId = null;
         this.role = null;

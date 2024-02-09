@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.common.token.data.model;
+package com.drsanches.photobooth.app.auth.data.token.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,9 +1,10 @@
-package com.drsanches.photobooth.app.common.token;
+package com.drsanches.photobooth.app.auth.service;
 
+import com.drsanches.photobooth.app.auth.config.AuthInfo;
 import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
-import com.drsanches.photobooth.app.common.token.data.model.Role;
-import com.drsanches.photobooth.app.common.token.data.model.Token;
-import com.drsanches.photobooth.app.common.token.data.TokenDomainService;
+import com.drsanches.photobooth.app.auth.data.token.model.Role;
+import com.drsanches.photobooth.app.auth.data.token.model.Token;
+import com.drsanches.photobooth.app.auth.data.token.TokenDomainService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;

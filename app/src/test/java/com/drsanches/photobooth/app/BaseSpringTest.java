@@ -2,8 +2,8 @@ package com.drsanches.photobooth.app;
 
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
-import com.drsanches.photobooth.app.common.token.TokenService;
-import com.drsanches.photobooth.app.common.token.data.model.Token;
+import com.drsanches.photobooth.app.auth.service.TokenService;
+import com.drsanches.photobooth.app.auth.data.token.model.Token;
 import jakarta.servlet.Filter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;

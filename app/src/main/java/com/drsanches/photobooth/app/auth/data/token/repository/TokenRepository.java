@@ -1,7 +1,7 @@
-package com.drsanches.photobooth.app.common.token.data.repository;
+package com.drsanches.photobooth.app.auth.data.token.repository;
 
 import com.drsanches.photobooth.app.common.aspects.MonitorTime;
-import com.drsanches.photobooth.app.common.token.data.model.Token;
+import com.drsanches.photobooth.app.auth.data.token.model.Token;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;

@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app.auth.config.filter;
 
-import com.drsanches.photobooth.app.common.token.AuthInfo;
-import com.drsanches.photobooth.app.common.token.data.model.Role;
+import com.drsanches.photobooth.app.auth.config.AuthInfo;
+import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;

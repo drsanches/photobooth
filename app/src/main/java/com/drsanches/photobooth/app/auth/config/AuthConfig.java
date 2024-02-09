@@ -2,8 +2,7 @@ package com.drsanches.photobooth.app.auth.config;
 
 import com.drsanches.photobooth.app.auth.config.filter.AdminFilter;
 import com.drsanches.photobooth.app.auth.config.filter.TokenFilter;
-import com.drsanches.photobooth.app.common.token.TokenService;
-import com.drsanches.photobooth.app.common.token.AuthInfo;
+import com.drsanches.photobooth.app.auth.service.TokenService;
 import com.drsanches.photobooth.app.config.ImageConsts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

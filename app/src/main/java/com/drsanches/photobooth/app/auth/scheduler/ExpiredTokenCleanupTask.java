@@ -1,6 +1,6 @@
-package com.drsanches.photobooth.app.common.token.scheduler;
+package com.drsanches.photobooth.app.auth.scheduler;
 
-import com.drsanches.photobooth.app.common.token.data.TokenDomainService;
+import com.drsanches.photobooth.app.auth.data.token.TokenDomainService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

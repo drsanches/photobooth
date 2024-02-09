@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.config;
 
-import com.drsanches.photobooth.app.common.token.AuthInfo;
+import com.drsanches.photobooth.app.auth.config.AuthInfo;
 import com.drsanches.photobooth.app.config.filter.LogFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

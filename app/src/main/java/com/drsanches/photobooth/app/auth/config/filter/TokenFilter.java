@@ -3,7 +3,7 @@ package com.drsanches.photobooth.app.auth.config.filter;
 import com.drsanches.photobooth.app.auth.exception.AuthException;
 import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
 import com.drsanches.photobooth.app.common.service.TokenExtractor;
-import com.drsanches.photobooth.app.common.token.TokenService;
+import com.drsanches.photobooth.app.auth.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;

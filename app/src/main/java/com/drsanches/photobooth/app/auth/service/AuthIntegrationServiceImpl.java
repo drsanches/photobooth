@@ -3,7 +3,6 @@ package com.drsanches.photobooth.app.auth.service;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.common.service.AuthInfoDto;
 import com.drsanches.photobooth.app.common.service.AuthIntegrationService;
-import com.drsanches.photobooth.app.common.token.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

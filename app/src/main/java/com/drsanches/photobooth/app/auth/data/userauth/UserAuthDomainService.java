@@ -4,7 +4,7 @@ import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.userauth.repository.UserAuthRepository;
 import com.drsanches.photobooth.app.app.exception.NoUserIdException;
 import com.drsanches.photobooth.app.app.exception.NoUsernameException;
-import com.drsanches.photobooth.app.common.token.data.model.Role;
+import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

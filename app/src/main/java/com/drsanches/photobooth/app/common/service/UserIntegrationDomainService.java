@@ -6,7 +6,7 @@ import com.drsanches.photobooth.app.app.exception.NoUserIdException;
 import com.drsanches.photobooth.app.auth.data.userauth.repository.UserAuthRepository;
 import com.drsanches.photobooth.app.app.exception.UserAlreadyExistsException;
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
-import com.drsanches.photobooth.app.common.token.data.model.Role;
+import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.notifier.data.email.model.EmailInfo;
 import com.drsanches.photobooth.app.notifier.data.email.repository.EmailInfoRepository;

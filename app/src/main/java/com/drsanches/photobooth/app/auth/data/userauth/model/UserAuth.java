@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.auth.data.userauth.model;
 
-import com.drsanches.photobooth.app.common.token.data.model.Role;
+import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
