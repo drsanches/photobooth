@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.common.notifier;
+package com.drsanches.photobooth.app.common.integration.notifier;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

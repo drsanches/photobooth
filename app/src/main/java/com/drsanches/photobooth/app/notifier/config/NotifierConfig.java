@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.notifier.config;
 
-import com.drsanches.photobooth.app.common.service.AuthIntegrationService;
+import com.drsanches.photobooth.app.common.integration.auth.AuthIntegrationService;
 import com.drsanches.photobooth.app.notifier.config.filter.NotifierFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

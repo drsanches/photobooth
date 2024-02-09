@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.notifier.service.notifier;
 
-import com.drsanches.photobooth.app.common.notifier.NotificationParams;
+import com.drsanches.photobooth.app.common.integration.notifier.NotificationParams;
 import org.slf4j.Logger;
 
 public interface Notifier {

@@ -1,13 +1,11 @@
-package com.drsanches.photobooth.app.common.service;
+package com.drsanches.photobooth.app.common.utils;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component
 public class TokenExtractor {
 
     private final static String AUTHORIZATION = "Authorization";

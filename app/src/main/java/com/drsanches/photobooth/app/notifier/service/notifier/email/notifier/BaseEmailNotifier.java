@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.notifier.service.notifier.email.notifier;
 
-import com.drsanches.photobooth.app.common.service.AuthIntegrationService;
+import com.drsanches.photobooth.app.common.integration.auth.AuthIntegrationService;
 import com.drsanches.photobooth.app.notifier.data.email.EmailInfoDomainService;
 import com.drsanches.photobooth.app.notifier.data.email.model.EmailInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Notifier;

@@ -10,15 +10,14 @@ import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
-import com.drsanches.photobooth.app.common.notifier.NotificationParams;
-import com.drsanches.photobooth.app.common.service.AppIntegrationService;
-import com.drsanches.photobooth.app.common.service.UserProfileIntegrationService;
+import com.drsanches.photobooth.app.common.integration.notifier.NotificationParams;
+import com.drsanches.photobooth.app.common.integration.app.AppIntegrationService;
 import com.drsanches.photobooth.app.auth.config.AuthInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import com.drsanches.photobooth.app.auth.data.token.model.Token;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
-import com.drsanches.photobooth.app.common.notifier.NotificationService;
+import com.drsanches.photobooth.app.common.integration.notifier.NotificationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,8 +48,6 @@ class GoogleAuthWebServiceTest {
     private ConfirmationDomainService confirmationDomainService;
     @Mock
     private AppIntegrationService appIntegrationService;
-    @Mock
-    private UserProfileIntegrationService userProfileIntegrationService;
     @Mock
     private ConfirmationValidator confirmationValidator;
     @Mock

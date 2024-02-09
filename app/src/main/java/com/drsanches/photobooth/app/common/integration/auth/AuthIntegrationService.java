@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.common.service;
+package com.drsanches.photobooth.app.common.integration.auth;
 
 import java.util.Optional;
 

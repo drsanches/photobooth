@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.common.notifier;
+package com.drsanches.photobooth.app.common.integration.notifier;
 
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 

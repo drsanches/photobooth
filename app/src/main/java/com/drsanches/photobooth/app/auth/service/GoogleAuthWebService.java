@@ -9,12 +9,11 @@ import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.GoogleTokenDto;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
-import com.drsanches.photobooth.app.common.notifier.NotificationParams;
-import com.drsanches.photobooth.app.common.service.AppIntegrationService;
-import com.drsanches.photobooth.app.common.service.UserProfileIntegrationService;
+import com.drsanches.photobooth.app.common.integration.notifier.NotificationParams;
+import com.drsanches.photobooth.app.common.integration.app.AppIntegrationService;
 import com.drsanches.photobooth.app.auth.config.AuthInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
-import com.drsanches.photobooth.app.common.notifier.NotificationService;
+import com.drsanches.photobooth.app.common.integration.notifier.NotificationService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +30,6 @@ public class GoogleAuthWebService {
 
     @Autowired
     private AppIntegrationService appIntegrationService;
-
-    @Autowired
-    private UserProfileIntegrationService userProfileIntegrationService;
 
     @Autowired
     private GoogleUserInfoService googleUserInfoService;
@@ -73,7 +69,7 @@ public class GoogleAuthWebService {
                 link(userAuth.getId(), email);
             } else {
                 userAuth = userAuthDomainService.createUserByGoogle(email);
-                userProfileIntegrationService.safetyInitializeProfile(
+                appIntegrationService.safetyInitializeProfile(
                         userAuth.getId(),
                         googleInfo.getName(),
                         googleUserInfoService.safetyGetPicture(googleInfo.getPicture()) //TODO: Validate picture

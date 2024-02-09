@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app.notifier.service.notifier;
 
-import com.drsanches.photobooth.app.common.notifier.NotificationParams;
-import com.drsanches.photobooth.app.common.notifier.NotificationService;
+import com.drsanches.photobooth.app.common.integration.notifier.NotificationParams;
+import com.drsanches.photobooth.app.common.integration.notifier.NotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

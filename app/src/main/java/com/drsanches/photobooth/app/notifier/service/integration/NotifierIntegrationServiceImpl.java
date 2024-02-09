@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.notifier.service.integration;
 
-import com.drsanches.photobooth.app.common.service.NotifierIntegrationService;
+import com.drsanches.photobooth.app.common.integration.notifier.NotifierIntegrationService;
 import com.drsanches.photobooth.app.notifier.data.email.EmailInfoDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
 package com.drsanches.photobooth.app.notifier.config.filter;
 
 import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
-import com.drsanches.photobooth.app.common.service.AuthIntegrationService;
-import com.drsanches.photobooth.app.common.service.TokenExtractor;
+import com.drsanches.photobooth.app.common.integration.auth.AuthIntegrationService;
+import com.drsanches.photobooth.app.common.utils.TokenExtractor;
 import com.drsanches.photobooth.app.notifier.config.NotifierUserInfo;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -2,7 +2,7 @@ package com.drsanches.photobooth.app.app.config;
 
 import com.drsanches.photobooth.app.app.config.filter.UserProfileFilter;
 import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
-import com.drsanches.photobooth.app.common.service.AuthIntegrationService;
+import com.drsanches.photobooth.app.common.integration.auth.AuthIntegrationService;
 import com.drsanches.photobooth.app.config.ImageConsts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
