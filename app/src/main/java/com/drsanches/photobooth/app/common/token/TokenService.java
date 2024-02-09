@@ -30,7 +30,7 @@ public class TokenService {
         return savedToken;
     }
 
-    public UserInfo validate(@Nullable String accessToken) {
+    public UserInfo validate(String accessToken) {
         var extractedAccessToken = extractToken(accessToken)
                 .orElseThrow(WrongTokenException::new);
         var token = tokenDomainService.getValidTokenByAccessToken(extractedAccessToken);
@@ -62,7 +62,7 @@ public class TokenService {
         log.info("Tokens deleted. UserId: {}", userId);
     }
 
-    private Optional<String> extractToken(@Nullable String token) {
+    private Optional<String> extractToken(String token) {
         if (token == null) {
             return Optional.empty();
         }

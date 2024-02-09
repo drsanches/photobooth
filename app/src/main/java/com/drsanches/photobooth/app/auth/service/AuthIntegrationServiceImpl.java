@@ -1,9 +1,13 @@
 package com.drsanches.photobooth.app.auth.service;
 
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
+import com.drsanches.photobooth.app.common.service.AuthInfoDto;
 import com.drsanches.photobooth.app.common.service.AuthIntegrationService;
+import com.drsanches.photobooth.app.common.token.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AuthIntegrationServiceImpl implements AuthIntegrationService {
@@ -11,9 +15,14 @@ public class AuthIntegrationServiceImpl implements AuthIntegrationService {
     @Autowired
     private UserAuthDomainService userAuthDomainService;
 
+    @Autowired
+    private TokenService tokenService;
+
     @Override
-    public String getUsername(String userId) {
-        return userAuthDomainService.getEnabledById(userId).getUsername();
+    public Optional<AuthInfoDto> getAuthInfo(String token) {
+        var userInfo = tokenService.validate(token);
+        var userAuth = userAuthDomainService.getEnabledById(userInfo.getUserId());
+        return Optional.of(new AuthInfoDto(userAuth.getId(), userAuth.getUsername()));
     }
 
     @Override

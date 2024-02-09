@@ -74,6 +74,7 @@ public class BaseSpringTest {
 
     @BeforeEach
     protected void initialize() {
+        //TODO: Fix filters
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .addFilters(filterChain.getFilters().toArray(new Filter[0]))
                 .addFilters(filters.stream().map(FilterRegistrationBean::getFilter).toList().toArray(new Filter[0]))

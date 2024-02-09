@@ -1,8 +1,10 @@
 package com.drsanches.photobooth.app.common.service;
 
+import java.util.Optional;
+
 public interface AuthIntegrationService {
 
-    String getUsername(String userId);
+    Optional<AuthInfoDto> getAuthInfo(String token);
 
     String getEmail(String userId);
 }
