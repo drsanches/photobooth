@@ -1,5 +1,6 @@
 package com.drsanches.photobooth.app.app.service;
 
+import com.drsanches.photobooth.app.app.config.UserInfo;
 import com.drsanches.photobooth.app.app.dto.friends.request.RemoveRequestDto;
 import com.drsanches.photobooth.app.app.mapper.UserInfoMapper;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
@@ -8,7 +9,6 @@ import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
 import com.drsanches.photobooth.app.app.utils.PaginationService;
 import com.drsanches.photobooth.app.app.dto.friends.request.SendRequestDto;
 import com.drsanches.photobooth.app.app.dto.profile.response.UserInfoDto;
-import com.drsanches.photobooth.app.common.token.UserInfo;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

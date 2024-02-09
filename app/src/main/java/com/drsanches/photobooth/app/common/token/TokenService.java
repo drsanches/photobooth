@@ -21,21 +21,21 @@ public class TokenService {
     private TokenDomainService tokenDomainService;
 
     @Autowired
-    private UserInfo userInfo;
+    private AuthInfo authInfo;
 
     public Token createToken(String userId, Role role) {
         var savedToken = tokenDomainService.createToken(userId, role);
-        userInfo.init(userId, savedToken.getId(), savedToken.getRole());
+        authInfo.init(userId, savedToken.getId(), savedToken.getRole());
         log.info("New token created. UserId: {}", userId);
         return savedToken;
     }
 
-    public UserInfo validate(String accessToken) {
+    public AuthInfo validate(String accessToken) {
         var extractedAccessToken = extractToken(accessToken)
                 .orElseThrow(WrongTokenException::new);
         var token = tokenDomainService.getValidTokenByAccessToken(extractedAccessToken);
-        userInfo.init(token.getUserId(), token.getId(), token.getRole());
-        return userInfo;
+        authInfo.init(token.getUserId(), token.getId(), token.getRole());
+        return authInfo;
     }
 
     public Token refreshToken(@Nullable String refreshToken) {
@@ -49,16 +49,16 @@ public class TokenService {
     }
 
     public void removeCurrentToken() {
-        var tokenId = userInfo.getUserTokenId();
+        var tokenId = authInfo.getUserTokenId();
         tokenDomainService.deleteById(tokenId);
-        userInfo.clean();
+        authInfo.clean();
         log.info("Token deleted. UserId: {}", tokenId);
     }
 
     public void removeAllTokens(String userId) {
         var tokens = tokenDomainService.getTokensByUserId(userId);
         tokenDomainService.deleteAll(tokens);
-        userInfo.clean();
+        authInfo.clean();
         log.info("Tokens deleted. UserId: {}", userId);
     }
 

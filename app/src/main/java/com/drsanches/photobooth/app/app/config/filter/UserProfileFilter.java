@@ -1,5 +1,6 @@
 package com.drsanches.photobooth.app.app.config.filter;
 
+import com.drsanches.photobooth.app.app.config.UserInfo;
 import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
@@ -20,15 +21,18 @@ import java.util.function.Predicate;
 @Slf4j
 public class UserProfileFilter extends GenericFilterBean { //TODO: Rename
 
+    private final UserInfo userInfo;
     private final UserProfileDomainService userProfileDomainService;
     private final AuthIntegrationService authIntegrationService;
     private final Predicate<String> excludeUri;
 
     public UserProfileFilter(
+            UserInfo userInfo,
             UserProfileDomainService userProfileDomainService,
             AuthIntegrationService authIntegrationService,
             Predicate<String> excludeUri
     ) {
+        this.userInfo = userInfo;
         this.userProfileDomainService = userProfileDomainService;
         this.authIntegrationService = authIntegrationService;
         this.excludeUri = excludeUri;
@@ -43,10 +47,13 @@ public class UserProfileFilter extends GenericFilterBean { //TODO: Rename
             var token = TokenExtractor.getAccessTokenFromRequest(httpRequest)
                     .orElseThrow(WrongTokenException::new);
             authIntegrationService.getAuthInfo(token).ifPresentOrElse(
-                    authInfo -> userProfileDomainService.findById(authInfo.userId()).ifPresentOrElse(
-                            userProfile -> updateUsernameIfNecessary(userProfile, authInfo),
-                            () -> userProfileDomainService.create(authInfo.userId(), authInfo.username())
-                    ),
+                    authInfo -> {
+                        userProfileDomainService.findById(authInfo.userId()).ifPresentOrElse(
+                                userProfile -> updateUsernameIfNecessary(userProfile, authInfo),
+                                () -> userProfileDomainService.create(authInfo.userId(), authInfo.username())
+                        );
+                        userInfo.init(authInfo.userId(), authInfo.username());
+                    },
                     () -> {
                         throw new WrongTokenException();
                     }

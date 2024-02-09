@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.config;
 
-import com.drsanches.photobooth.app.common.token.UserInfo;
+import com.drsanches.photobooth.app.common.token.AuthInfo;
 import com.drsanches.photobooth.app.config.filter.LogFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -22,7 +22,7 @@ import java.util.function.Predicate;
 public class WebSecurityConfig {
 
     @Autowired
-    private UserInfo userInfo; //TODO: Remove
+    private AuthInfo authInfo; //TODO: Remove
 
     @Bean
     public FilterRegistrationBean<LogFilter> logFilter() {
@@ -34,7 +34,7 @@ public class WebSecurityConfig {
                 .or(x -> x.matches("/swagger-ui/.*.map"))
                 .or(x -> x.matches("/swagger-ui/.*.png"));
         FilterRegistrationBean<LogFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new LogFilter(userInfo, excludeLogUri));
+        registrationBean.setFilter(new LogFilter(authInfo, excludeLogUri));
         registrationBean.addUrlPatterns("/*");
         registrationBean.setOrder(3);
         return registrationBean;

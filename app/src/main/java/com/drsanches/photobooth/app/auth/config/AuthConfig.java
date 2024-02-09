@@ -3,7 +3,7 @@ package com.drsanches.photobooth.app.auth.config;
 import com.drsanches.photobooth.app.auth.config.filter.AdminFilter;
 import com.drsanches.photobooth.app.auth.config.filter.TokenFilter;
 import com.drsanches.photobooth.app.common.token.TokenService;
-import com.drsanches.photobooth.app.common.token.UserInfo;
+import com.drsanches.photobooth.app.common.token.AuthInfo;
 import com.drsanches.photobooth.app.config.ImageConsts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -19,7 +19,7 @@ public class AuthConfig {
     private TokenService tokenService;
 
     @Autowired
-    private UserInfo userInfo;
+    private AuthInfo authInfo;
 
     @Bean
     public FilterRegistrationBean<TokenFilter> tokenFilter() {
@@ -56,7 +56,7 @@ public class AuthConfig {
                 .or(((Predicate<String>) x -> x.matches("/actuator.*"))
                         .and(Predicate.not(x -> x.matches("/actuator/health.*"))));
         FilterRegistrationBean<AdminFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new AdminFilter(userInfo, adminUri));
+        registrationBean.setFilter(new AdminFilter(authInfo, adminUri));
         registrationBean.addUrlPatterns("/*");
         registrationBean.setOrder(2);
         return registrationBean;

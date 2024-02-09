@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.config.filter;
 
-import com.drsanches.photobooth.app.common.token.UserInfo;
+import com.drsanches.photobooth.app.common.token.AuthInfo;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -17,12 +17,12 @@ import java.util.function.Predicate;
 @Slf4j
 public class LogFilter extends GenericFilterBean {
 
-    private final UserInfo userInfo;
+    private final AuthInfo authInfo;
 
     private final Predicate<String> excludeLogUri;
 
-    public LogFilter(UserInfo userInfo, Predicate<String> excludeLogUri) {
-        this.userInfo = userInfo;
+    public LogFilter(AuthInfo authInfo, Predicate<String> excludeLogUri) {
+        this.authInfo = authInfo;
         this.excludeLogUri = excludeLogUri;
     }
 
@@ -32,7 +32,7 @@ public class LogFilter extends GenericFilterBean {
         var httpRequest = (HttpServletRequest) request;
         ThreadContext.put("requestId", UUID.randomUUID().toString());
         if (!excludeLogUri.test(httpRequest.getRequestURI())) {
-            userInfo.getUserIdOptional().ifPresentOrElse(
+            authInfo.getUserIdOptional().ifPresentOrElse(
                     it -> ThreadContext.put("userId", it),
                     () -> ThreadContext.remove("userId")
             );

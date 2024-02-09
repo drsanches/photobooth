@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app.app.validation.validator;
 
+import com.drsanches.photobooth.app.app.config.UserInfo;
 import com.drsanches.photobooth.app.app.validation.annotation.NotCurrentId;
-import com.drsanches.photobooth.app.common.token.UserInfo;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.apache.commons.lang3.StringUtils;

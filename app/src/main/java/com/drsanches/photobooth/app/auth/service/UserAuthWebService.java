@@ -30,7 +30,7 @@ import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.utils.StringSerializer;
-import com.drsanches.photobooth.app.common.token.UserInfo;
+import com.drsanches.photobooth.app.common.token.AuthInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import com.drsanches.photobooth.app.common.notifier.NotificationService;
 import jakarta.validation.Valid;
@@ -57,7 +57,7 @@ public class UserAuthWebService {
     @Autowired
     private TokenService tokenService;
     @Autowired
-    private UserInfo userInfo;
+    private AuthInfo authInfo;
     @Autowired
     private CredentialsHelper credentialsHelper;
     @Autowired
@@ -110,7 +110,7 @@ public class UserAuthWebService {
     }
 
     public UserAuthInfoDto info() {
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         var current = userAuthDomainService.getEnabledById(userId);
         return userAuthInfoMapper.convert(current);
     }
@@ -120,7 +120,7 @@ public class UserAuthWebService {
                 .username(changeUsernameDto.getNewUsername())
                 .build();
         var data = stringSerializer.serialize(changeUsernameConfirmData);
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         var confirmation = confirmationDomainService.create(data, userId, Operation.USERNAME_CHANGE);
 
         if (twoFactorAuthenticationManager.isEnabled(Operation.USERNAME_CHANGE)) {
@@ -143,7 +143,7 @@ public class UserAuthWebService {
                 .salt(salt)
                 .build();
         var data = stringSerializer.serialize(changePasswordConfirmData);
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         var confirmation = confirmationDomainService.create(data, userId, Operation.PASSWORD_CHANGE);
 
         if (twoFactorAuthenticationManager.isEnabled(Operation.PASSWORD_CHANGE)) {
@@ -164,7 +164,7 @@ public class UserAuthWebService {
                 .email(changeEmailDto.getNewEmail())
                 .build();
         var data = stringSerializer.serialize(changeEmailConfirmData);
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         var confirmation = confirmationDomainService.create(data, userId, Operation.EMAIL_CHANGE);
 
         if (twoFactorAuthenticationManager.isEnabled(Operation.EMAIL_CHANGE)) {
@@ -189,7 +189,7 @@ public class UserAuthWebService {
     }
 
     public AuthResponse<Void> disableUser() {
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         var confirmation = confirmationDomainService.create(null, userId, Operation.DISABLE);
 
         if (twoFactorAuthenticationManager.isEnabled(Operation.DISABLE)) {

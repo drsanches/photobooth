@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Component
 @RequestScope
-public class UserInfo {
+public class AuthInfo {
 
     private String userTokenId;
 

@@ -13,7 +13,7 @@ import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
 import com.drsanches.photobooth.app.common.notifier.NotificationParams;
 import com.drsanches.photobooth.app.common.service.AppIntegrationService;
 import com.drsanches.photobooth.app.common.service.UserProfileIntegrationService;
-import com.drsanches.photobooth.app.common.token.UserInfo;
+import com.drsanches.photobooth.app.common.token.AuthInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import com.drsanches.photobooth.app.common.token.TokenService;
 import com.drsanches.photobooth.app.common.token.data.model.Role;
@@ -59,7 +59,7 @@ class GoogleAuthWebServiceTest {
     @Mock
     private TokenService tokenService;
     @Mock
-    private UserInfo userInfo;
+    private AuthInfo authInfo;
     @Mock
     private TokenMapper tokenMapper;
     @InjectMocks
@@ -154,7 +154,7 @@ class GoogleAuthWebServiceTest {
         var userAuth = createUserAuth();
         var confirmation = createConfirmation();
         Mockito.when(confirmationDomainService.get(CONFIRMATION_CODE)).thenReturn(confirmation);
-        Mockito.when(userInfo.getUserId()).thenReturn(USER_ID);
+        Mockito.when(authInfo.getUserId()).thenReturn(USER_ID);
         Mockito.when(userAuthDomainService.getEnabledById(USER_ID)).thenReturn(userAuth);
 
         var newUsername = UUID.randomUUID().toString();

@@ -1,5 +1,6 @@
 package com.drsanches.photobooth.app.app.service;
 
+import com.drsanches.photobooth.app.app.config.UserInfo;
 import com.drsanches.photobooth.app.app.mapper.ImageInfoMapper;
 import com.drsanches.photobooth.app.app.data.image.model.Image;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
@@ -12,7 +13,6 @@ import com.drsanches.photobooth.app.app.dto.image.request.UploadPhotoDto;
 import com.drsanches.photobooth.app.app.dto.image.response.ImageInfoDto;
 import com.drsanches.photobooth.app.app.data.permission.ImagePermissionDomainService;
 import com.drsanches.photobooth.app.common.notifier.NotificationParams;
-import com.drsanches.photobooth.app.common.token.UserInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import com.drsanches.photobooth.app.common.notifier.NotificationService;
 import jakarta.validation.Valid;

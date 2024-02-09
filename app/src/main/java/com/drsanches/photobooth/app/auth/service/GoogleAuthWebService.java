@@ -13,7 +13,7 @@ import com.drsanches.photobooth.app.common.notifier.NotificationParams;
 import com.drsanches.photobooth.app.common.service.AppIntegrationService;
 import com.drsanches.photobooth.app.common.service.UserProfileIntegrationService;
 import com.drsanches.photobooth.app.common.token.TokenService;
-import com.drsanches.photobooth.app.common.token.UserInfo;
+import com.drsanches.photobooth.app.common.token.AuthInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import com.drsanches.photobooth.app.common.notifier.NotificationService;
 import jakarta.validation.Valid;
@@ -46,7 +46,7 @@ public class GoogleAuthWebService {
     private TokenService tokenService;
 
     @Autowired
-    private UserInfo userInfo;
+    private AuthInfo authInfo;
 
     @Autowired
     private ConfirmationValidator confirmationValidator;
@@ -98,7 +98,7 @@ public class GoogleAuthWebService {
     public void setUsername(@Valid GoogleSetUsernameDto googleSetUsernameDto) {
         var confirmation = confirmationDomainService.get(googleSetUsernameDto.getCode());
         confirmationValidator.validate(confirmation, Operation.GOOGLE_USERNAME_CHANGE);
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         var oldUsername = userAuthDomainService.getEnabledById(userId).getUsername();
 
         //TODO: Transaction
@@ -112,7 +112,7 @@ public class GoogleAuthWebService {
     }
 
     public void link(@Valid GoogleTokenDto googleTokenDto) {
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         var email = googleUserInfoService.getGoogleInfo(googleTokenDto.getIdToken()).getEmail();
         link(userId, email);
     }
@@ -127,7 +127,7 @@ public class GoogleAuthWebService {
     }
 
     public void unlink() {
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         userAuthDomainService.setGoogleAuth(userId, null);
         log.info("Google account unlinked. UserId: {}", userId);
         notificationService.notify(Action.ACCOUNT_UNLINKED, NotificationParams.builder()

@@ -15,10 +15,13 @@ import java.util.function.Predicate;
 public class AppConfig {
 
     @Autowired
-    UserProfileDomainService userProfileDomainService;
+    private UserInfo userInfo;
 
     @Autowired
-    AuthIntegrationService authIntegrationService;
+    private UserProfileDomainService userProfileDomainService;
+
+    @Autowired
+    private AuthIntegrationService authIntegrationService;
 
     @Bean
     public FilterRegistrationBean<UserProfileFilter> userProfileFilter() {
@@ -34,6 +37,7 @@ public class AppConfig {
                 .or(x -> x.matches("/api/v1/image/" + imageIdPattern + "/thumbnail.*"));
         FilterRegistrationBean<UserProfileFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new UserProfileFilter(
+                userInfo,
                 userProfileDomainService,
                 authIntegrationService,
                 publicUri
