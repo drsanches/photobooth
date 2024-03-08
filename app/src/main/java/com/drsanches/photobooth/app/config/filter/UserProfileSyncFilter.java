@@ -1,13 +1,9 @@
-package com.drsanches.photobooth.app.app.config.filter;
+package com.drsanches.photobooth.app.config.filter;
 
-import com.drsanches.photobooth.app.app.config.UserInfo;
 import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.auth.exception.AuthException;
-import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
-import com.drsanches.photobooth.app.common.integration.auth.AuthInfoDto;
-import com.drsanches.photobooth.app.common.integration.auth.AuthIntegrationService;
-import com.drsanches.photobooth.app.common.utils.TokenExtractor;
+import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -25,11 +21,10 @@ import java.util.function.Predicate;
 
 @Slf4j
 @AllArgsConstructor
-public class UserProfileFilter extends GenericFilterBean { //TODO: Rename
+public class UserProfileSyncFilter extends GenericFilterBean { //TODO: Rename
 
-    private final UserInfo userInfo;
+    private final AuthInfo authInfo;
     private final UserProfileDomainService userProfileDomainService;
-    private final AuthIntegrationService authIntegrationService;
     private final Predicate<String> excludeUri;
 
     @Override
@@ -40,19 +35,9 @@ public class UserProfileFilter extends GenericFilterBean { //TODO: Rename
         var uri = httpRequest.getRequestURI();
         try {
             if (!excludeUri.test(uri)) {
-                var token = TokenExtractor.getAccessTokenFromRequest(httpRequest)
-                        .orElseThrow(WrongTokenException::new);
-                authIntegrationService.getAuthInfo(token).ifPresentOrElse(
-                        authInfo -> {
-                            userProfileDomainService.findById(authInfo.userId()).ifPresentOrElse(
-                                    userProfile -> updateUsernameIfNecessary(userProfile, authInfo),
-                                    () -> userProfileDomainService.create(authInfo.userId(), authInfo.username())
-                            );
-                            userInfo.init(authInfo.userId(), authInfo.username());
-                        },
-                        () -> {
-                            throw new WrongTokenException();
-                        }
+                userProfileDomainService.findById(authInfo.getUserId()).ifPresentOrElse(
+                        this::updateUsernameIfNecessary,
+                        () -> userProfileDomainService.create(authInfo.getUserId(), authInfo.getUsername())
                 );
             }
         } catch (AuthException e) {
@@ -66,11 +51,11 @@ public class UserProfileFilter extends GenericFilterBean { //TODO: Rename
         chain.doFilter(request, response);
     }
 
-    private void updateUsernameIfNecessary(UserProfile userProfile, AuthInfoDto authInfo) {
-        if (!userProfile.getUsername().equals(authInfo.username())) {
+    private void updateUsernameIfNecessary(UserProfile userProfile) {
+        if (!userProfile.getUsername().equals(authInfo.getUsername())) {
             userProfileDomainService.updateUsername(
-                    authInfo.userId(),
-                    authInfo.username()
+                    authInfo.getUserId(),
+                    authInfo.getUsername()
             );
         }
     }

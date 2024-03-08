@@ -234,6 +234,10 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Use login for auth and username for profile?
 - Move ImageConsts to app
 - Log userId even for public urls?
+- Fix Spring tests
+
+### UI
+- Hide admin ui for users
 
 ### Tests
 - Use another framework?

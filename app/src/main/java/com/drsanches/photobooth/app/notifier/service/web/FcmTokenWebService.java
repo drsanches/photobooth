@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app.notifier.service.web;
 
+import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
-import com.drsanches.photobooth.app.notifier.config.NotifierUserInfo;
 import com.drsanches.photobooth.app.notifier.data.fcm.FcmTokenDomainService;
 import com.drsanches.photobooth.app.notifier.dto.FcmTokenDto;
 import com.drsanches.photobooth.app.notifier.dto.FcmTokenExpiresDto;
@@ -20,10 +20,10 @@ public class FcmTokenWebService {
     private FcmTokenDomainService fcmTokenDomainService;
 
     @Autowired
-    private NotifierUserInfo notifierUserInfo;
+    private AuthInfo authInfo;
 
     public FcmTokenExpiresDto addToken(@Valid FcmTokenDto fcmTokenDto) {
-        var userId = notifierUserInfo.getUserId();
+        var userId = authInfo.getUserId();
         var fcmToken = fcmTokenDomainService.getOrCreate(userId, fcmTokenDto.getFcmToken());
         log.info("New fcm token added. UserId: {}, fcmToken: {}", userId, fcmTokenDto.getFcmToken());
         return new FcmTokenExpiresDto(GregorianCalendarConvertor.convert(fcmToken.getExpires()));

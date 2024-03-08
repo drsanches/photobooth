@@ -1,8 +1,8 @@
 package com.drsanches.photobooth.app.app.validation.validator;
 
-import com.drsanches.photobooth.app.app.config.UserInfo;
 import com.drsanches.photobooth.app.app.data.friends.FriendsDomainService;
 import com.drsanches.photobooth.app.app.validation.annotation.FriendId;
+import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +15,11 @@ public class FriendIdValidator implements ConstraintValidator<FriendId, String> 
     private FriendsDomainService friendsDomainService;
 
     @Autowired
-    private UserInfo userInfo;
+    private AuthInfo authInfo;
 
     @Override
     public boolean isValid(String userId, ConstraintValidatorContext context) {
-        var currentUserId = userInfo.getUserId();
+        var currentUserId = authInfo.getUserId();
         if (currentUserId == null || userId == null) {
             return true;
         }

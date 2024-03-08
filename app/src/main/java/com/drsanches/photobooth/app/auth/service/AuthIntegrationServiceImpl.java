@@ -1,6 +1,7 @@
 package com.drsanches.photobooth.app.auth.service;
 
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
+import com.drsanches.photobooth.app.auth.exception.AuthException;
 import com.drsanches.photobooth.app.common.integration.auth.AuthInfoDto;
 import com.drsanches.photobooth.app.common.integration.auth.AuthIntegrationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,11 @@ public class AuthIntegrationServiceImpl implements AuthIntegrationService {
 
     @Override
     public Optional<AuthInfoDto> getAuthInfo(String token) {
-        var userInfo = tokenService.validate(token);
-        var userAuth = userAuthDomainService.getEnabledById(userInfo.getUserId());
-        return Optional.of(new AuthInfoDto(userAuth.getId(), userAuth.getUsername(), userAuth.getRole().toString()));
+        try {
+            return Optional.of(tokenService.validate(token));
+        } catch (AuthException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

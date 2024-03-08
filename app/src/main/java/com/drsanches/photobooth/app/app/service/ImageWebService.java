@@ -1,6 +1,5 @@
 package com.drsanches.photobooth.app.app.service;
 
-import com.drsanches.photobooth.app.app.config.UserInfo;
 import com.drsanches.photobooth.app.app.mapper.ImageInfoMapper;
 import com.drsanches.photobooth.app.app.data.image.model.Image;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
@@ -12,6 +11,7 @@ import com.drsanches.photobooth.app.app.dto.image.request.UploadAvatarDto;
 import com.drsanches.photobooth.app.app.dto.image.request.UploadPhotoDto;
 import com.drsanches.photobooth.app.app.dto.image.response.ImageInfoDto;
 import com.drsanches.photobooth.app.app.data.permission.ImagePermissionDomainService;
+import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import com.drsanches.photobooth.app.common.integration.notifier.NotificationParams;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import com.drsanches.photobooth.app.common.integration.notifier.NotificationService;
@@ -52,7 +52,7 @@ public class ImageWebService {
     private NotificationService notificationService;
 
     @Autowired
-    private UserInfo userInfo;
+    private AuthInfo authInfo;
 
     @Autowired
     private PaginationService<Image> paginationService;
@@ -61,7 +61,7 @@ public class ImageWebService {
     private ImageInfoMapper imageInfoMapper;
 
     public void uploadAvatar(@Valid UploadAvatarDto uploadAvatarDto) {
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         var image = Base64.getDecoder().decode(uploadAvatarDto.getFile());
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
             var imageId = imageDomainService.saveImage(image, userId).getId();
@@ -83,7 +83,7 @@ public class ImageWebService {
     }
 
     public void uploadPhoto(@Valid UploadPhotoDto uploadPhotoDto) {
-        var currentUserId = userInfo.getUserId();
+        var currentUserId = authInfo.getUserId();
         var image = Base64.getDecoder().decode(uploadPhotoDto.getFile());
         var allowedUsers = CollectionUtils.isEmpty(uploadPhotoDto.getUserIds()) ?
                 getEnabledFriends(currentUserId) :
@@ -105,7 +105,7 @@ public class ImageWebService {
     }
 
     public List<ImageInfoDto> getAllInfo(Integer page, Integer size) {
-        var currentUserId = userInfo.getUserId();
+        var currentUserId = authInfo.getUserId();
         var imageIds = imagePermissionDomainService.getImageIds(currentUserId);
         var images = imageDomainService.getImages(imageIds).stream();
         return paginationService.pagination(images, page, size)
@@ -114,7 +114,7 @@ public class ImageWebService {
     }
 
     public void deleteAvatar() {
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         userProfileDomainService.updateImageId(userId, null);
         log.info("User deleted his profile image. UserId: {}", userId);
     }

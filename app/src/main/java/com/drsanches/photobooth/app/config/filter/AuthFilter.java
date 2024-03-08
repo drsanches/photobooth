@@ -1,10 +1,11 @@
-package com.drsanches.photobooth.app.notifier.config.filter;
+package com.drsanches.photobooth.app.config.filter;
 
+import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import com.drsanches.photobooth.app.auth.exception.AuthException;
 import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
+import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import com.drsanches.photobooth.app.common.integration.auth.AuthIntegrationService;
 import com.drsanches.photobooth.app.common.utils.TokenExtractor;
-import com.drsanches.photobooth.app.notifier.config.NotifierUserInfo;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -16,15 +17,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.GenericFilterBean;
-
 import java.io.IOException;
+import java.util.function.Predicate;
 
 @Slf4j
 @AllArgsConstructor
-public class NotifierFilter extends GenericFilterBean { //TODO: Rename
+public class AuthFilter extends GenericFilterBean {
 
-    private final NotifierUserInfo notifierUserInfo;
     private final AuthIntegrationService authIntegrationService;
+    private final AuthInfo authInfo;
+    private final Predicate<String> excludeUri;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -32,15 +34,18 @@ public class NotifierFilter extends GenericFilterBean { //TODO: Rename
         var httpRequest = (HttpServletRequest) request;
         var httpResponse = (HttpServletResponse) response;
         var uri = httpRequest.getRequestURI();
-        var token = TokenExtractor.getAccessTokenFromRequest(httpRequest)
-                .orElseThrow(WrongTokenException::new);
         try {
-            authIntegrationService.getAuthInfo(token).ifPresentOrElse(
-                    authInfo -> notifierUserInfo.init(authInfo.userId()),
-                    () -> {
-                        throw new WrongTokenException();
-                    }
-            );
+            if (!excludeUri.test(uri)) {
+                var token = TokenExtractor.getAccessTokenFromRequest(httpRequest)
+                        .orElseThrow(WrongTokenException::new);
+                var authInfoDto = authIntegrationService.getAuthInfo(token).orElseThrow(WrongTokenException::new);
+                authInfo.init(
+                        authInfoDto.userId(),
+                        authInfoDto.username(),
+                        authInfoDto.tokenId(),
+                        Role.valueOf(authInfoDto.role())
+                );
+            }
         } catch (AuthException e) {
             log.info("Wrong token for uri. Uri: {}", uri, e);
             httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());

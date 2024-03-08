@@ -1,11 +1,11 @@
 package com.drsanches.photobooth.app.app.service;
 
-import com.drsanches.photobooth.app.app.config.UserInfo;
 import com.drsanches.photobooth.app.app.dto.profile.request.ChangeUserProfileDto;
 import com.drsanches.photobooth.app.app.dto.profile.response.UserInfoDto;
 import com.drsanches.photobooth.app.app.mapper.UserInfoMapper;
 import com.drsanches.photobooth.app.app.data.friends.FriendsDomainService;
 import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
+import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +27,13 @@ public class UserProfileWebService {
     private FriendsDomainService friendsDomainService;
 
     @Autowired
-    private UserInfo userInfo;
+    private AuthInfo authInfo;
 
     @Autowired
     private UserInfoMapper userInfoMapper;
 
     public UserInfoDto getCurrentProfile() {
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         var userProfile = userProfileDomainService.getEnabledById(userId);
         return userInfoMapper.convertCurrent(
                 userProfile,
@@ -44,7 +44,7 @@ public class UserProfileWebService {
     }
 
     public List<UserInfoDto> searchProfile(String username, Integer page, Integer size) {
-        var currentUserId = userInfo.getUserId();
+        var currentUserId = authInfo.getUserId();
         var userProfile = userProfileDomainService.findEnabledByUsername(username.toLowerCase(), page, size);
         var incomingIds = friendsDomainService.getIncomingRequestAndFriendIds(currentUserId);
         var outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIds(currentUserId);
@@ -55,7 +55,7 @@ public class UserProfileWebService {
     }
 
     public UserInfoDto getProfile(String userId) {
-        var currentUserId = userInfo.getUserId();
+        var currentUserId = authInfo.getUserId();
         var userProfile = userProfileDomainService.getEnabledById(userId);
         var incomingIds = friendsDomainService.getIncomingRequestAndFriendIds(currentUserId);
         var outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIds(currentUserId);
@@ -63,7 +63,7 @@ public class UserProfileWebService {
     }
 
     public void changeCurrentProfile(@Valid ChangeUserProfileDto changeUserProfileDto) {
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         userProfileDomainService.updateProfileData(
                 userId,
                 changeUserProfileDto.getName(),

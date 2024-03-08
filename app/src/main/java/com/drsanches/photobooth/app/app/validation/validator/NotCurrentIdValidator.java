@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app.app.validation.validator;
 
-import com.drsanches.photobooth.app.app.config.UserInfo;
 import com.drsanches.photobooth.app.app.validation.annotation.NotCurrentId;
+import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.apache.commons.lang3.StringUtils;
@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 public class NotCurrentIdValidator implements ConstraintValidator<NotCurrentId, String> {
 
     @Autowired
-    private UserInfo userInfo;
+    private AuthInfo authInfo;
 
     @Override
     public boolean isValid(String userId, ConstraintValidatorContext context) {
-        return StringUtils.isEmpty(userId) || userInfo.getUserIdOptional()
+        return StringUtils.isEmpty(userId) || authInfo.getUserIdOptional()
                 .filter(currentUserId -> currentUserId.equals(userId))
                 .isEmpty();
     }

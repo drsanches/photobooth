@@ -11,7 +11,7 @@ import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.common.integration.notifier.NotificationParams;
 import com.drsanches.photobooth.app.common.integration.app.AppIntegrationService;
-import com.drsanches.photobooth.app.auth.config.AuthInfo;
+import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import com.drsanches.photobooth.app.common.integration.notifier.NotificationService;
 import jakarta.validation.Valid;

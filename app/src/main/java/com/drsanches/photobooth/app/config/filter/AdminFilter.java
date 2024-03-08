@@ -1,6 +1,7 @@
 package com.drsanches.photobooth.app.config.filter;
 
-import com.drsanches.photobooth.app.auth.config.AuthInfo;
+import com.drsanches.photobooth.app.auth.data.token.model.Role;
+import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -18,6 +19,7 @@ import java.util.function.Predicate;
 @AllArgsConstructor
 public class AdminFilter extends GenericFilterBean {
 
+    private final AuthInfo authInfo;
     private final Predicate<String> excludeUri;
 
     @Override
@@ -26,9 +28,7 @@ public class AdminFilter extends GenericFilterBean {
         var httpRequest = (HttpServletRequest) request;
         var httpResponse = (HttpServletResponse) response;
         var uri = httpRequest.getRequestURI();
-        if (!excludeUri.test(uri)
-                && httpRequest.getAttribute("role") != null
-                && httpRequest.getAttribute("role").toString().equals("ADMIN")) {
+        if (!excludeUri.test(uri) && (!authInfo.isAuthorized() || !authInfo.getRole().equals(Role.ADMIN))) {
             log.info("User has no permissions for uri. UserId: {}, uri: {}",
                     httpRequest.getAttribute("userId") == null ?
                             "unauthorized" :

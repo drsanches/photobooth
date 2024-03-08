@@ -1,5 +1,6 @@
 package com.drsanches.photobooth.app.config.filter;
 
+import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -18,6 +19,7 @@ import java.util.function.Predicate;
 @AllArgsConstructor
 public class LogFilter extends GenericFilterBean {
 
+    private final AuthInfo authInfo;
     private final Predicate<String> excludeUri;
 
     @Override
@@ -26,8 +28,8 @@ public class LogFilter extends GenericFilterBean {
         var httpRequest = (HttpServletRequest) request;
         ThreadContext.put("requestId", UUID.randomUUID().toString());
         if (!excludeUri.test(httpRequest.getRequestURI())) {
-            var userId = httpRequest.getAttribute("userId");
-            if (userId != null) {
+            var userId = authInfo.getUserIdOptional();
+            if (userId.isPresent()) {
                 ThreadContext.put("userId", userId.toString());
             } else {
                 ThreadContext.remove("userId");
@@ -37,7 +39,7 @@ public class LogFilter extends GenericFilterBean {
                     httpRequest.getMethod(),
                     httpRequest.getRequestURL(),
                     httpRequest.getRemoteAddr(),
-                    userId == null ? "unauthorized" : userId.toString()
+                    userId.orElse("unauthorized")
             );
         }
         chain.doFilter(request, response);

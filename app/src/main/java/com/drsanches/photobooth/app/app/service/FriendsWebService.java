@@ -1,6 +1,5 @@
 package com.drsanches.photobooth.app.app.service;
 
-import com.drsanches.photobooth.app.app.config.UserInfo;
 import com.drsanches.photobooth.app.app.dto.friends.request.RemoveRequestDto;
 import com.drsanches.photobooth.app.app.mapper.UserInfoMapper;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
@@ -9,6 +8,7 @@ import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
 import com.drsanches.photobooth.app.app.utils.PaginationService;
 import com.drsanches.photobooth.app.app.dto.friends.request.SendRequestDto;
 import com.drsanches.photobooth.app.app.dto.profile.response.UserInfoDto;
+import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class FriendsWebService {
     private UserProfileDomainService userProfileDomainService;
 
     @Autowired
-    private UserInfo userInfo;
+    private AuthInfo authInfo;
 
     @Autowired
     private PaginationService<UserProfile> paginationService;
@@ -38,7 +38,7 @@ public class FriendsWebService {
     private UserInfoMapper userInfoMapper;
 
     public List<UserInfoDto> getFriends(Integer page, Integer size) {
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         var friends = friendsDomainService.getFriendsIds(userId);
         var result = userProfileDomainService.getAllByIdsOrderByUsername(friends).stream();
         return paginationService.pagination(result, page, size)
@@ -47,7 +47,7 @@ public class FriendsWebService {
     }
 
     public List<UserInfoDto> getIncomingRequests(Integer page, Integer size) {
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         var incoming = friendsDomainService.getIncomingRequestIds(userId);
         var result = userProfileDomainService.getAllByIdsOrderByUsername(incoming).stream();
         return paginationService.pagination(result, page, size)
@@ -56,7 +56,7 @@ public class FriendsWebService {
     }
 
     public List<UserInfoDto> getOutgoingRequests(Integer page, Integer size) {
-        var userId = userInfo.getUserId();
+        var userId = authInfo.getUserId();
         var outgoing = friendsDomainService.getOutgoingRequestIds(userId);
         var result = userProfileDomainService.getAllByIdsOrderByUsername(outgoing).stream();
         return paginationService.pagination(result, page, size)
@@ -65,13 +65,13 @@ public class FriendsWebService {
     }
 
     public void sendRequest(@Valid SendRequestDto sendRequestDto) {
-        var fromUserId = userInfo.getUserId();
+        var fromUserId = authInfo.getUserId();
         friendsDomainService.saveFriendRequest(fromUserId, sendRequestDto.getUserId());
         log.info("Friend request sent. FromUserId: {}, toUserId: {}", fromUserId, sendRequestDto.getUserId());
     }
 
     public void removeRequest(@Valid RemoveRequestDto removeRequestDto) {
-        var currentUserId = userInfo.getUserId();
+        var currentUserId = authInfo.getUserId();
         friendsDomainService.removeFriendRequest(currentUserId, removeRequestDto.getUserId());
         log.info("Friendship canceled. ByUserId: {}, forUserId: {}", currentUserId, removeRequestDto.getUserId());
     }

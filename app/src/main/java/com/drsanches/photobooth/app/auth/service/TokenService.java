@@ -1,10 +1,12 @@
 package com.drsanches.photobooth.app.auth.service;
 
-import com.drsanches.photobooth.app.auth.config.AuthInfo;
+import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
+import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
 import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import com.drsanches.photobooth.app.auth.data.token.model.Token;
 import com.drsanches.photobooth.app.auth.data.token.TokenDomainService;
+import com.drsanches.photobooth.app.common.integration.auth.AuthInfoDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
@@ -22,21 +24,31 @@ public class TokenService {
     private TokenDomainService tokenDomainService;
 
     @Autowired
+    private UserAuthDomainService userAuthDomainService;
+
+    //TODO: Remove?
+    @Autowired
     private AuthInfo authInfo;
 
     public Token createToken(String userId, Role role) {
         var savedToken = tokenDomainService.createToken(userId, role);
-        authInfo.init(userId, savedToken.getId(), savedToken.getRole());
+        var user = userAuthDomainService.getEnabledById(savedToken.getUserId());
+        authInfo.init(userId, user.getUsername(), savedToken.getId(), savedToken.getRole());
         log.info("New token created. UserId: {}", userId);
         return savedToken;
     }
 
-    public AuthInfo validate(String accessToken) {
+    public AuthInfoDto validate(String accessToken) {
         var extractedAccessToken = extractToken(accessToken)
                 .orElseThrow(WrongTokenException::new);
         var token = tokenDomainService.getValidTokenByAccessToken(extractedAccessToken);
-        authInfo.init(token.getUserId(), token.getId(), token.getRole());
-        return authInfo;
+        var user = userAuthDomainService.getEnabledById(token.getUserId());
+        return new AuthInfoDto(
+                token.getUserId(),
+                user.getUsername(),
+                token.getId(),
+                token.getRole().toString()
+        );
     }
 
     public Token refreshToken(@Nullable String refreshToken) {

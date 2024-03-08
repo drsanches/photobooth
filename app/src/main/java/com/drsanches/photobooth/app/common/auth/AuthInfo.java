@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.auth.config;
+package com.drsanches.photobooth.app.common.auth;
 
 import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
 import com.drsanches.photobooth.app.auth.data.token.model.Role;
@@ -16,10 +16,18 @@ public class AuthInfo {
 
     private String userId;
 
+    private String username;
+
     private Role role;
 
-    public void init(@NonNull String userId, @NonNull String userTokenId, @NonNull Role role) {
+    public void init(
+            @NonNull String userId,
+            @NonNull String username,
+            @NonNull String userTokenId,
+            @NonNull Role role
+    ) {
         this.userId = userId;
+        this.username = username;
         this.userTokenId = userTokenId;
         this.role = role;
     }
@@ -52,6 +60,16 @@ public class AuthInfo {
 
     public Optional<String> getUserIdOptional() {
         return Optional.ofNullable(userId);
+    }
+
+    /**
+     * Throws {@link com.drsanches.photobooth.app.auth.exception.WrongTokenException} if the user is not authorized.
+     */
+    public String getUsername() {
+        if (username == null) {
+            throw new WrongTokenException();
+        }
+        return username;
     }
 
     /**
