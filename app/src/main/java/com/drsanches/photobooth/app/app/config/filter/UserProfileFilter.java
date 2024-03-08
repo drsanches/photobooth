@@ -14,6 +14,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,24 +24,13 @@ import java.io.IOException;
 import java.util.function.Predicate;
 
 @Slf4j
+@AllArgsConstructor
 public class UserProfileFilter extends GenericFilterBean { //TODO: Rename
 
     private final UserInfo userInfo;
     private final UserProfileDomainService userProfileDomainService;
     private final AuthIntegrationService authIntegrationService;
     private final Predicate<String> excludeUri;
-
-    public UserProfileFilter(
-            UserInfo userInfo,
-            UserProfileDomainService userProfileDomainService,
-            AuthIntegrationService authIntegrationService,
-            Predicate<String> excludeUri
-    ) {
-        this.userInfo = userInfo;
-        this.userProfileDomainService = userProfileDomainService;
-        this.authIntegrationService = authIntegrationService;
-        this.excludeUri = excludeUri;
-    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.function.Predicate;
 
 @Configuration
-public class AppConfig {
+public class AppFilterConfig {
 
     @Autowired
     private UserInfo userInfo;

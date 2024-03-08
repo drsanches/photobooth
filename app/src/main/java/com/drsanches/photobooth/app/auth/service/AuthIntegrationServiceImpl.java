@@ -21,7 +21,7 @@ public class AuthIntegrationServiceImpl implements AuthIntegrationService {
     public Optional<AuthInfoDto> getAuthInfo(String token) {
         var userInfo = tokenService.validate(token);
         var userAuth = userAuthDomainService.getEnabledById(userInfo.getUserId());
-        return Optional.of(new AuthInfoDto(userAuth.getId(), userAuth.getUsername()));
+        return Optional.of(new AuthInfoDto(userAuth.getId(), userAuth.getUsername(), userAuth.getRole().toString()));
     }
 
     @Override

@@ -227,6 +227,13 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Fix error "host not found in upstream" if nginx started without app and elk
 - Fix certs
 - Add test controller for admin with ui
+- Use /app path for app
+- Use /image/data/{id} and /image/info/{id}
+- Update entities without getting?
+- Merge web and domain layers?
+- Use login for auth and username for profile?
+- Move ImageConsts to app
+- Log userId even for public urls?
 
 ### Tests
 - Use another framework?

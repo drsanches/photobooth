@@ -11,6 +11,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,18 +20,11 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 
 @Slf4j
+@AllArgsConstructor
 public class NotifierFilter extends GenericFilterBean { //TODO: Rename
 
     private final NotifierUserInfo notifierUserInfo;
     private final AuthIntegrationService authIntegrationService;
-
-    public NotifierFilter(
-            NotifierUserInfo notifierUserInfo,
-            AuthIntegrationService authIntegrationService
-    ) {
-        this.notifierUserInfo = notifierUserInfo;
-        this.authIntegrationService = authIntegrationService;
-    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

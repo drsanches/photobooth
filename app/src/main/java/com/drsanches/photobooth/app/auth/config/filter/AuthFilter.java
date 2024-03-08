@@ -10,6 +10,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,16 +19,12 @@ import java.io.IOException;
 import java.util.function.Predicate;
 
 @Slf4j
-public class TokenFilter extends GenericFilterBean {
+@AllArgsConstructor
+public class AuthFilter extends GenericFilterBean {
 
     private final TokenService tokenService;
 
     private final Predicate<String> excludeUri;
-
-    public TokenFilter(TokenService tokenService, Predicate<String> excludeUri) {
-        this.tokenService = tokenService;
-        this.excludeUri = excludeUri;
-    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
