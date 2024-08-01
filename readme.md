@@ -4,8 +4,8 @@
 
 ### Registration
 - add UserAuth
-- add UserProfile
-- add EmailInfo
+- add UserProfile (lazy, when profile url is called)
+- add EmailInfo (lazy, when notification is sent)
 
 ### Delete user
 - UserAuth.enable = false
@@ -32,6 +32,333 @@
 
 ### Get photo by id
 - Without permissions and deletion check?
+
+
+## Architecture
+### Auth without 2FA
+```mermaid
+sequenceDiagram
+    actor user
+    participant FilterChain
+    participant auth as auth package
+    participant app as app package
+    participant notifier as notifier package
+    
+    note right of user: Registration
+    user -->> FilterChain: POST /api/v1/auth/registration
+    FilterChain ->> auth: 
+    auth ->> auth: creates UserAuth
+    auth ->> notifier: 
+    notifier ->> notifier: notify about event
+    notifier ->> auth: 
+    auth -->> user: token
+
+    note right of user: Login
+    user -->> FilterChain: POST /api/v1/auth/login
+    FilterChain ->> auth: 
+    auth ->> auth: creates token
+    auth -->> user: token
+
+    note right of user: Get info
+    user -->> FilterChain: GET /api/v1/auth/info
+    FilterChain ->> auth: 
+    auth ->> auth: gets info
+    auth -->> user: info
+
+    note right of user: Change username
+    user -->> FilterChain: POST /api/v1/auth/changeEmail
+    FilterChain ->> auth: 
+    auth ->> app: 
+    app ->> app: changes username
+    app ->> auth: 
+    auth ->> auth: changes username
+    auth ->> auth: removes all tokens
+    auth ->> notifier: 
+    notifier ->> notifier: notify about event
+    notifier ->> auth: 
+    auth -->> user: 200
+
+    note right of user: Change password
+    user -->> FilterChain: POST /api/v1/auth/changePassword
+    FilterChain ->> auth: 
+    auth ->> auth: changes password
+    auth ->> auth: removes all tokens
+    auth ->> notifier: 
+    notifier ->> notifier: notify about event
+    notifier ->> auth: 
+    auth -->> user: 200
+
+    note right of user: Change email
+    user -->> FilterChain: POST /api/v1/auth/changeEmail
+    FilterChain ->> auth: 
+    auth ->> notifier: 
+    notifier ->> notifier: changes email
+    notifier ->> auth: 
+    auth ->> auth: changes email
+    auth ->> auth: removes all tokens
+    auth ->> notifier: 
+    notifier ->> notifier: notify about event
+    notifier ->> auth: 
+    auth -->> user: 200
+
+    note right of user: Refresh token
+    user -->> FilterChain: GET /api/v1/auth/refreshToken
+    FilterChain ->> auth: 
+    auth ->> auth: creates new token
+    auth -->> user: token
+
+    note right of user: Logout
+    user -->> FilterChain: GET /api/v1/auth/logout
+    FilterChain ->> auth: 
+    auth ->> auth: removes token
+    auth -->> user: 200
+
+    note right of user: Delete user
+    user -->> FilterChain: POST /api/v1/auth/deleteUser
+    FilterChain ->> auth: 
+    auth ->> app: 
+    app ->> app: disables UserProfile
+    app ->> auth: 
+    auth ->> auth: disables UserAuth
+    auth ->> notifier: 
+    notifier ->> notifier: removes email
+    notifier ->> auth: 
+    auth ->> auth: removes all tokens
+    auth ->> notifier: 
+    notifier ->> notifier: notify about event
+    notifier ->> auth: 
+    auth -->> user: 200
+```
+### 2FA logic
+```mermaid
+sequenceDiagram
+    actor user
+    participant FilterChain
+    participant auth as auth package
+    
+    note right of user: Some operation
+    user -->> FilterChain: /api/v1/auth/...
+    FilterChain ->> auth: 
+    auth ->> auth: saves request data
+    auth ->> auth: send confirmation code to email
+    auth -->> user: 200
+
+    note right of user: Confirmation
+    user -->> FilterChain: /api/v1/auth/confirm/{code}
+    FilterChain ->> auth: 
+    auth ->> auth: gets operation request data
+    auth ->> auth: do operation
+    auth -->> user: 200
+```
+
+### FilterChain
+```mermaid
+sequenceDiagram
+    actor user
+    participant AuthFilter
+    participant AdminFilter
+    participant LogFilter
+    participant UserProfileSyncFilter
+    participant auth as auth package
+    participant app as app package
+    
+    note right of user: Public auth operation
+    user -->> AuthFilter: 
+    AuthFilter ->> LogFilter: 
+    LogFilter ->> LogFilter: writes log
+    LogFilter ->> auth: 
+    auth ->> auth: do something
+    auth -->> user: 200
+    
+    note right of user: Private auth operation without (with invalid) token
+    user -->> AuthFilter: 
+    AuthFilter ->> AuthFilter: checks auth
+    AuthFilter -->> user: 401
+
+    note right of user: Private auth operation with valid token
+    user -->> AuthFilter: 
+    AuthFilter ->> AuthFilter: checks auth
+    AuthFilter ->>  LogFilter: 
+    LogFilter ->> LogFilter: writes log
+    LogFilter ->> auth: 
+    auth ->> auth: do something
+    auth -->> user: 200
+
+    note right of user: Public user profile operation (get image)
+    user -->> AuthFilter: 
+    AuthFilter ->> LogFilter: 
+    LogFilter ->> LogFilter: writes log
+    LogFilter ->> UserProfileSyncFilter: 
+    UserProfileSyncFilter ->> app: 
+    app ->> app: do something
+    app -->> user: 200
+
+    note right of user: Private user profile operation with valid token first time
+    user -->> AuthFilter: 
+    AuthFilter ->> AuthFilter: checks auth
+    AuthFilter ->> LogFilter: 
+    LogFilter ->> LogFilter: writes log
+    LogFilter ->> UserProfileSyncFilter: 
+    UserProfileSyncFilter ->> UserProfileSyncFilter: create user profile
+    UserProfileSyncFilter ->> app: 
+    app ->> app: do something
+    app -->> user: 200
+
+    note right of user: Private user profile operation with valid token and actual profile
+    user -->> AuthFilter: 
+    AuthFilter ->> AuthFilter: checks auth
+    AuthFilter ->> LogFilter: 
+    LogFilter ->> LogFilter: writes log
+    LogFilter ->> UserProfileSyncFilter: 
+    UserProfileSyncFilter ->> app: 
+    app ->> app: do something
+    app -->> user: 200
+
+    note right of user: Private user profile operation with valid token after email update
+    user -->> AuthFilter: 
+    AuthFilter ->> AuthFilter: checks auth
+    AuthFilter ->> LogFilter: 
+    LogFilter ->> LogFilter: writes log
+    LogFilter ->> UserProfileSyncFilter: 
+    UserProfileSyncFilter ->> UserProfileSyncFilter: update username in profile
+    UserProfileSyncFilter ->> app: 
+    app ->> app: do something
+    app -->> user: 200
+
+    note right of user: Admin url with user token
+    user -->> AuthFilter: 
+    AuthFilter ->> AuthFilter: Checks auth
+    AuthFilter ->> AdminFilter: 
+    AdminFilter ->> AdminFilter: Check permission
+    AdminFilter -->> user: 403
+```
+
+### Notifier
+```mermaid
+sequenceDiagram
+    participant service as Some service
+    participant notifier
+    participant auth as auth package
+
+    note right of service: Email notification for new user
+    service ->> notifier: notify
+    notifier ->> auth: get email
+    auth ->> notifier: email
+    notifier ->> notifier: save email
+    notifier ->> notifier: sends notification
+
+    note right of service: Email notification for existent user
+    service ->> notifier: notify
+    notifier ->> notifier: gets email
+    notifier ->> notifier: sends notification
+```
+
+### Auth with multiple methods
+
+#### Add login by Google automatically (for the same email)
+
+1. Create account with Google email
+2. Get token by google token with the same email - google auth will be added
+3. Now token can be got by username/password or google token
+
+```mermaid
+sequenceDiagram
+    actor user
+    participant auth
+    participant google
+
+    note right of user: No auth
+    user ->> auth: registration (username, password, email)
+    auth ->> user: token
+  
+    note right of user: Google auth
+    user ->> google: get token (email)
+    google ->> user: googleToken
+  
+    note right of user: No auth
+    user ->> auth: get token (googleToken)
+    auth ->> google: get user info (googleToken)
+    google ->> auth: email
+    auth ->> auth: adds email for google auth
+    auth ->> user: token
+```
+
+#### Add login by Google manually (for different emails)
+
+1. Create account
+2. Link account with Google (using google token) - google auth will be added
+3. Now token can be got by username/password or google token
+
+```mermaid
+sequenceDiagram
+    actor user
+    participant auth
+    participant google
+  
+    note right of user: No auth
+    user ->> auth: registration (username, password, email1)
+    auth ->> user: token
+
+    note right of user: Google auth
+    user ->> google: get token (email2)
+    google ->> user: googleToken
+
+    note right of user: Auth by token
+    user ->> auth: link (googleToken)
+    auth ->> google: get user info (googleToken)
+    google ->> auth: email1
+    auth ->> auth: adds email1 for google auth
+    auth ->> user: 200
+```
+
+#### Add login by username/password (for accounts created with Google)
+
+1. Get token by google token - account will be created (auth only by Google, without password)
+2. Set password - username/password auth will be added
+3. Now token can be got by username/password or google token
+
+```mermaid
+sequenceDiagram
+    actor user
+    participant auth
+    participant app
+    participant google
+
+    note right of user: Google auth
+    user ->> google: get token
+    google ->> user: googleToken
+
+    note right of user: No auth
+    user ->> auth: get token (googleToken)
+    auth ->> google: get user info (googleToken)
+    google ->> auth: email, picture
+    auth ->> auth: creates account (random username, email, picture)
+    auth ->> user: token, code
+
+    note right of user: Auth by token
+    user ->> auth: update username (code)
+    auth ->> app: 
+    app ->> app: updates username
+    app ->> auth: 
+    auth ->> auth: updates username
+    auth ->> user: 
+
+    note right of user: Auth by token
+    user ->> auth: change password
+    auth ->> auth: adds password for auth
+    auth ->> user: 200
+```
+
+[//]: # (TODO)
+1. create google account
+2. try to create account with the same google email
+3. error - account already exists
+
+[//]: # (TODO)
+1. create account
+2. create account by google
+3. try to link accounts
+4. error
 
 ## Database structure
 <img src="doc/db_schema.png" alt="Database structure" width="900"/>
@@ -235,6 +562,9 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Move ImageConsts to app
 - Log userId even for public urls?
 - Fix Spring tests
+- Use upsert
+- Notify async
+- Check collisions for 2FA operations (create disabled user for registration and enable it on confirmation?)
 
 ### UI
 - Hide admin ui for users
@@ -245,3 +575,6 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Test sorting
 - Test transactions
 - Configure gradlew env in command line for spring tests
+
+### Docs
+- Add registration flow info for other methods (Google)

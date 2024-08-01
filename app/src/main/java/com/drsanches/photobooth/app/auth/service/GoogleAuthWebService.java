@@ -97,7 +97,7 @@ public class GoogleAuthWebService {
         var oldUsername = userAuthDomainService.getEnabledById(userId).getUsername();
 
         //TODO: Transaction
-        appIntegrationService.updateUsername(userId, googleSetUsernameDto.getNewUsername());
+        appIntegrationService.updateUsername(userId, googleSetUsernameDto.getNewUsername()); //TODO: Is it needed?
         userAuthDomainService.updateUsername(userId, googleSetUsernameDto.getNewUsername());
 
         confirmationDomainService.delete(confirmation.getId());

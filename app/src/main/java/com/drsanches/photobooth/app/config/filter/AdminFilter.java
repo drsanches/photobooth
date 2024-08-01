@@ -29,11 +29,11 @@ public class AdminFilter extends GenericFilterBean {
         var httpResponse = (HttpServletResponse) response;
         var uri = httpRequest.getRequestURI();
         if (!excludeUri.test(uri) && (!authInfo.isAuthorized() || !authInfo.getRole().equals(Role.ADMIN))) {
-            log.info("User has no permissions for uri. UserId: {}, uri: {}",
-                    httpRequest.getAttribute("userId") == null ?
-                            "unauthorized" :
-                            httpRequest.getAttribute("userId"),
-                    uri);
+            log.info(
+                    "User has no permissions for uri. UserId: {}, uri: {}",
+                    authInfo.getUserIdOptional().orElse("unauthorized"),
+                    uri
+            );
             httpResponse.setStatus(HttpStatus.FORBIDDEN.value());
             httpResponse.getOutputStream().flush();
             httpResponse.getOutputStream().println("You do not have permission");

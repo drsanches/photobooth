@@ -36,7 +36,7 @@ public class UserAuthController {
     @Operation(summary = "If 2FA is activated, registers the user, otherwise, sends a confirmation code to the mail")
     @ApiResponseCode200
     @ApiResponseCode400
-    @RequestMapping(value = "/registration", method = RequestMethod.POST)
+    @RequestMapping(value = "/registration", method = RequestMethod.POST) //TODO: POST /account
     public AuthResponse<TokenDto> registration(@RequestBody RegistrationDto registrationDto) {
         return userAuthWebService.registration(registrationDto);
     }
@@ -45,7 +45,7 @@ public class UserAuthController {
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/login", method = RequestMethod.POST) //TODO: POST /token
     public TokenDto login(@RequestBody LoginDto loginDto) {
         return userAuthWebService.login(loginDto);
     }
@@ -54,7 +54,7 @@ public class UserAuthController {
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode401
-    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    @RequestMapping(value = "/info", method = RequestMethod.GET) //TODO: GET /account
     public UserAuthInfoDto info() {
         return userAuthWebService.info();
     }
@@ -64,7 +64,7 @@ public class UserAuthController {
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
-    @RequestMapping(value = "/changeUsername", method = RequestMethod.POST)
+    @RequestMapping(value = "/changeUsername", method = RequestMethod.POST) //TODO: POST /account/username
     public AuthResponse<Void> changeUsername(@RequestBody ChangeUsernameDto changeUsernameDto) {
         return userAuthWebService.changeUsername(changeUsernameDto);
     }
@@ -74,7 +74,7 @@ public class UserAuthController {
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
-    @RequestMapping(value = "/changePassword", method = RequestMethod.POST)
+    @RequestMapping(value = "/changePassword", method = RequestMethod.POST) //TODO: POST /account/password
     public AuthResponse<Void> changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
         return userAuthWebService.changePassword(changePasswordDto);
     }
@@ -84,7 +84,7 @@ public class UserAuthController {
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
-    @RequestMapping(value = "/changeEmail", method = RequestMethod.POST)
+    @RequestMapping(value = "/changeEmail", method = RequestMethod.POST) //TODO: POST /account/email
     public AuthResponse<Void> changeEmail(@RequestBody ChangeEmailDto changeEmailDto) {
         return userAuthWebService.changeEmail(changeEmailDto);
     }
@@ -92,7 +92,7 @@ public class UserAuthController {
     @Operation(summary = "Returns new authorization token")
     @ApiResponseCode200
     @ApiResponseCode401
-    @RequestMapping(value = "/refreshToken", method = RequestMethod.GET)
+    @RequestMapping(value = "/refreshToken", method = RequestMethod.GET) //TODO: POST /token/refresh (or merge with login)
     public TokenDto refreshToken(@RequestHeader("Authorization")
                                  @Parameter(description = "Refresh token", required = true) String refreshToken) {
         return userAuthWebService.refreshToken(refreshToken);
@@ -102,7 +102,7 @@ public class UserAuthController {
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode401
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    @RequestMapping(value = "/logout", method = RequestMethod.GET) //TODO: DELETE /token
     public void logout() {
         userAuthWebService.logout();
     }
@@ -111,7 +111,7 @@ public class UserAuthController {
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode401
-    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST) //TODO: DELETE /account
     public AuthResponse<Void> disableUser() {
         return userAuthWebService.disableUser();
     }

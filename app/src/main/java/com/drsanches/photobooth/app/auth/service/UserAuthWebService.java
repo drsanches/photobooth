@@ -246,7 +246,7 @@ public class UserAuthWebService {
         var oldUsername = userAuthDomainService.getEnabledById(userId).getUsername();
 
         //TODO: Transaction
-        appIntegrationService.updateUsername(userId, changeUsernameConfirmData.getUsername());
+        appIntegrationService.updateUsername(userId, changeUsernameConfirmData.getUsername()); //TODO: Is it needed?
         userAuthDomainService.updateUsername(userId, changeUsernameConfirmData.getUsername());
 
         confirmationDomainService.delete(confirmation.getId());
