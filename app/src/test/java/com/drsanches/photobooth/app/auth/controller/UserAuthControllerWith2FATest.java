@@ -47,8 +47,6 @@ class UserAuthControllerWith2FATest extends BaseSpringTest {
     private TwoFactorAuthenticationManager twoFactorAuthenticationManager;
     @MockBean
     private EmailService emailService;
-    @MockBean
-    private ConfirmationCodeGenerator confirmationCodeGenerator;
 
     @BeforeEach
     void init() {
@@ -189,12 +187,6 @@ class UserAuthControllerWith2FATest extends BaseSpringTest {
         verify(emailService, times(2)).sendHtmlMessage(eq(email), any(), any());
         performLogin(username, password)
                 .andExpect(status().isUnauthorized());
-    }
-
-    private String mockConfirmationCodeGenerator() {
-        var confirmationCode = CONFIRMATION_CODE.get();
-        when(confirmationCodeGenerator.generate()).thenReturn(confirmationCode);
-        return confirmationCode;
     }
 
     private Token getToken(String username, String password) {

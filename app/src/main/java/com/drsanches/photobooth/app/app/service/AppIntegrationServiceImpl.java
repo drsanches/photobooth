@@ -18,8 +18,12 @@ public class AppIntegrationServiceImpl implements AppIntegrationService {
     private ImageDomainService imageDomainService;
 
     //TODO: Add transaction
-    public void safetyInitializeProfile(String userId, String name, byte[] avatar) {
+    @Override
+    public void safetyInitializeProfile(String userId, String username, String name, byte[] avatar) {
         try {
+            if (userProfileDomainService.findEnabledById(userId).isEmpty()) {
+                userProfileDomainService.create(userId, username);
+            }
             if (name != null) {
                 userProfileDomainService.updateProfileData(userId, name, null);
             }

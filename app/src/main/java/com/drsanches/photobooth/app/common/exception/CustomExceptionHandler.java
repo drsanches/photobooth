@@ -4,6 +4,7 @@ import com.drsanches.photobooth.app.app.exception.ApplicationException;
 import com.drsanches.photobooth.app.app.exception.NoUserIdException;
 import com.drsanches.photobooth.app.app.exception.NoUsernameException;
 import com.drsanches.photobooth.app.auth.exception.AuthException;
+import com.drsanches.photobooth.app.auth.exception.GoogleLinkAuthException;
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @Slf4j
 @ControllerAdvice
+//TODO: Split into different handlers for auth, app, etc
 public class CustomExceptionHandler {
 
     @ExceptionHandler(ApplicationException.class)
@@ -33,6 +35,12 @@ public class CustomExceptionHandler {
     public ResponseEntity<String> handleAuthException(AuthException e) {
         log.warn("Auth exception", e);
         return new ResponseEntity<>(e.getMessage(), headers(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(GoogleLinkAuthException.class)
+    public ResponseEntity<String> handleGoogleLinkAuthException(GoogleLinkAuthException e) {
+        log.warn("Google link exception", e);
+        return new ResponseEntity<>(e.getMessage(), headers(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({NoUserIdException.class, NoUsernameException.class})

@@ -333,6 +333,9 @@ sequenceDiagram
     auth ->> google: get user info (googleToken)
     google ->> auth: email, picture
     auth ->> auth: creates account (random username, email, picture)
+    auth ->> app: create profile
+    app ->> app: creates profile
+    app ->> auth: 
     auth ->> user: token, code
 
     note right of user: Auth by token
@@ -348,17 +351,6 @@ sequenceDiagram
     auth ->> auth: adds password for auth
     auth ->> user: 200
 ```
-
-[//]: # (TODO)
-1. create google account
-2. try to create account with the same google email
-3. error - account already exists
-
-[//]: # (TODO)
-1. create account
-2. create account by google
-3. try to link accounts
-4. error
 
 ## Database structure
 <img src="doc/db_schema.png" alt="Database structure" width="900"/>
@@ -561,10 +553,12 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Use login for auth and username for profile?
 - Move ImageConsts to app
 - Log userId even for public urls?
-- Fix Spring tests
 - Use upsert
 - Notify async
 - Check collisions for 2FA operations (create disabled user for registration and enable it on confirmation?)
+- Refactor validations. Validate closer to db operations (or use db exceptions) 
+- Add ObjectMapper bean
+- Add test profile with h2?
 
 ### UI
 - Hide admin ui for users
@@ -575,6 +569,3 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Test sorting
 - Test transactions
 - Configure gradlew env in command line for spring tests
-
-### Docs
-- Add registration flow info for other methods (Google)

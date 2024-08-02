@@ -61,6 +61,10 @@ public class UserProfileDomainService {
         return userProfileRepository.findById(userId);
     }
 
+    public Optional<UserProfile> findEnabledById(String userId) {
+        return userProfileRepository.findByIdAndEnabled(userId, true);
+    }
+
     public UserProfile getEnabledById(String userId) {
         return userProfileRepository.findByIdAndEnabled(userId, true)
                 .orElseThrow(() -> new NoUserIdException(userId));
