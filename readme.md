@@ -35,7 +35,35 @@
 
 
 ## Architecture
-### Auth without 2FA
+
+### Auth
+
+```mermaid
+sequenceDiagram
+    actor user
+    participant FilterChain
+    participant auth as auth package
+    
+    note right of user: Login
+    user -->> FilterChain: POST /api/v1/auth/token
+    FilterChain ->> auth: 
+    auth ->> auth: creates token
+    auth -->> user: token
+
+    note right of user: Refresh token
+    user -->> FilterChain: GET /api/v1/auth/token/refresh
+    FilterChain ->> auth: 
+    auth ->> auth: creates new token
+    auth -->> user: token
+
+    note right of user: Logout
+    user -->> FilterChain: DELETE /api/v1/auth/token
+    FilterChain ->> auth: 
+    auth ->> auth: removes token
+    auth -->> user: 200
+```
+
+### Account operations without 2FA
 ```mermaid
 sequenceDiagram
     actor user
@@ -45,7 +73,7 @@ sequenceDiagram
     participant notifier as notifier package
     
     note right of user: Registration
-    user -->> FilterChain: POST /api/v1/auth/registration
+    user -->> FilterChain: POST /api/v1/auth/account/create
     FilterChain ->> auth: 
     auth ->> auth: creates UserAuth
     auth ->> notifier: 
@@ -53,33 +81,27 @@ sequenceDiagram
     notifier ->> auth: 
     auth -->> user: token
 
-    note right of user: Login
-    user -->> FilterChain: POST /api/v1/auth/login
-    FilterChain ->> auth: 
-    auth ->> auth: creates token
-    auth -->> user: token
-
     note right of user: Get info
-    user -->> FilterChain: GET /api/v1/auth/info
+    user -->> FilterChain: GET /api/v1/auth/account
     FilterChain ->> auth: 
     auth ->> auth: gets info
     auth -->> user: info
 
-    note right of user: Change username
-    user -->> FilterChain: POST /api/v1/auth/changeEmail
+    note right of user: Update username
+    user -->> FilterChain: POST /api/v1/auth/account/username
     FilterChain ->> auth: 
     auth ->> app: 
-    app ->> app: changes username
+    app ->> app: updates username
     app ->> auth: 
-    auth ->> auth: changes username
+    auth ->> auth: updates username
     auth ->> auth: removes all tokens
     auth ->> notifier: 
     notifier ->> notifier: notify about event
     notifier ->> auth: 
     auth -->> user: 200
 
-    note right of user: Change password
-    user -->> FilterChain: POST /api/v1/auth/changePassword
+    note right of user: update password
+    user -->> FilterChain: POST /api/v1/auth/account/password
     FilterChain ->> auth: 
     auth ->> auth: changes password
     auth ->> auth: removes all tokens
@@ -88,33 +110,21 @@ sequenceDiagram
     notifier ->> auth: 
     auth -->> user: 200
 
-    note right of user: Change email
-    user -->> FilterChain: POST /api/v1/auth/changeEmail
+    note right of user: Updates email
+    user -->> FilterChain: POST /api/v1/auth/account/email
     FilterChain ->> auth: 
     auth ->> notifier: 
-    notifier ->> notifier: changes email
+    notifier ->> notifier: updates email
     notifier ->> auth: 
-    auth ->> auth: changes email
+    auth ->> auth: updates email
     auth ->> auth: removes all tokens
     auth ->> notifier: 
     notifier ->> notifier: notify about event
     notifier ->> auth: 
     auth -->> user: 200
 
-    note right of user: Refresh token
-    user -->> FilterChain: GET /api/v1/auth/refreshToken
-    FilterChain ->> auth: 
-    auth ->> auth: creates new token
-    auth -->> user: token
-
-    note right of user: Logout
-    user -->> FilterChain: GET /api/v1/auth/logout
-    FilterChain ->> auth: 
-    auth ->> auth: removes token
-    auth -->> user: 200
-
-    note right of user: Delete user
-    user -->> FilterChain: POST /api/v1/auth/deleteUser
+    note right of user: Disable user
+    user -->> FilterChain: DELETE /api/v1/auth/account
     FilterChain ->> auth: 
     auth ->> app: 
     app ->> app: disables UserProfile
@@ -162,7 +172,7 @@ sequenceDiagram
     participant auth as auth package
     participant app as app package
     
-    note right of user: Public auth operation
+    note right of user: Public auth account operation
     user -->> AuthFilter: 
     AuthFilter ->> LogFilter: 
     LogFilter ->> LogFilter: writes log
@@ -170,12 +180,12 @@ sequenceDiagram
     auth ->> auth: do something
     auth -->> user: 200
     
-    note right of user: Private auth operation without (with invalid) token
+    note right of user: Private auth account operation without (with invalid) token
     user -->> AuthFilter: 
     AuthFilter ->> AuthFilter: checks auth
     AuthFilter -->> user: 401
 
-    note right of user: Private auth operation with valid token
+    note right of user: Private auth account operation with valid token
     user -->> AuthFilter: 
     AuthFilter ->> AuthFilter: checks auth
     AuthFilter ->>  LogFilter: 
@@ -559,6 +569,8 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Refactor validations. Validate closer to db operations (or use db exceptions) 
 - Add ObjectMapper bean
 - Add test profile with h2?
+- Always sent to notifier all info - email (if exists) and userId, then update email and send notification
+- Maybe use Spring Events
 
 ### UI
 - Hide admin ui for users

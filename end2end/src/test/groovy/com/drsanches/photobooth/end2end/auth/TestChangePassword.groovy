@@ -10,7 +10,7 @@ import spock.lang.Specification
 
 class TestChangePassword extends Specification {
 
-    String PATH = "/api/v1/auth/changePassword"
+    String PATH = "/api/v1/auth/account/password"
 
     def "success password change"() {
         given: "user, two tokens and new password"
@@ -65,9 +65,9 @@ class TestChangePassword extends Specification {
                 RandomStringUtils.randomAlphabetic(256)
         ]
         message << [
-                "changePassword.changePasswordDto.newPassword: must not be empty",
-                "changePassword.changePasswordDto.newPassword: must not be empty",
-                "changePassword.changePasswordDto.newPassword: length must be between 0 and 255"
+                "updatePassword.changePasswordDto.newPassword: must not be empty",
+                "updatePassword.changePasswordDto.newPassword: must not be empty",
+                "updatePassword.changePasswordDto.newPassword: length must be between 0 and 255"
         ]
     }
 

@@ -8,7 +8,7 @@ import spock.lang.Specification
 
 class TestInfo extends Specification {
 
-    String PATH = "/api/v1/auth/info"
+    String PATH = "/api/v1/auth/account"
 
     def "successful auth info getting"() {
         given: "user"

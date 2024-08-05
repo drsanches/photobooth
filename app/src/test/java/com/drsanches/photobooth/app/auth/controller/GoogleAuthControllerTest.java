@@ -60,7 +60,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
 
         var registrationResult = objectMapper.readValue(registrationResponse, GoogleGetTokenDto.class);
         mvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/auth/google/setUsername")
+                        .post("/api/v1/auth/google/username")
                         .header("Authorization", "Bearer " + registrationResult.getToken().getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(
@@ -87,7 +87,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                 .andExpect(jsonPath("googleAuth").value(email));
 
         mvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/auth/changePassword")
+                        .post("/api/v1/auth/account/password")
                         .header("Authorization", "Bearer " + loginByGoogleResult.getToken().getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new ChangePasswordDto(password))))
@@ -97,13 +97,13 @@ class GoogleAuthControllerTest extends BaseSpringTest {
 
         verify(emailService, times(2)).sendHtmlMessage(eq(email), any(), any());
 
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/confirm/" + confirmationCode))
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/account/confirm/" + confirmationCode))
                 .andExpect(status().isOk());
 
         verify(emailService, times(3)).sendHtmlMessage(eq(email), any(), any());
 
         var passwordLoginResponse = mvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/auth/login")
+                        .post("/api/v1/auth/token")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new LoginDto(username, password))))
                 .andExpect(status().isOk())
@@ -213,13 +213,13 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                 .andReturn().getResponse().getContentAsString();
 
         mvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/auth/registration")
+                        .post("/api/v1/auth/account")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new RegistrationDto(username, password, email))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
                 .andExpect(jsonPath("message")
-                        .value("registration.registrationDto.email: User with email '" + email + "' already exists"));
+                        .value("createAccount.registrationDto.email: User with email '" + email + "' already exists"));
     }
 
     @Test

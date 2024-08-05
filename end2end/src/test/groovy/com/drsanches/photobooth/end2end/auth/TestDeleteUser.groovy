@@ -9,7 +9,7 @@ import spock.lang.Specification
 
 class TestDeleteUser extends Specification {
 
-    String PATH = "/api/v1/auth/deleteUser"
+    String PATH = "/api/v1/auth/account"
 
     def "success user deleting"() {
         given: "user with friend and friend requests and tokens"
@@ -25,7 +25,7 @@ class TestDeleteUser extends Specification {
         def token = RequestUtils.getToken(user.username, user.password)
 
         when: "request is sent"
-        def response = RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().delete(
                 path: PATH,
                 headers: [Authorization: "Bearer $token"])
 
@@ -94,7 +94,7 @@ class TestDeleteUser extends Specification {
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"
-        def response = RequestUtils.getRestClient().post(
+        def response = RequestUtils.getRestClient().delete(
                 path: PATH,
                 headers: [Authorization: "Bearer $token"])
 

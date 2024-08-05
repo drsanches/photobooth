@@ -11,7 +11,7 @@ import spock.lang.Specification
 
 class TestRegistration extends Specification {
 
-    String PATH = "/api/v1/auth/registration"
+    String PATH = "/api/v1/auth/account"
 
     def "success user registration"() {
         given: "username, password and email"
@@ -71,7 +71,7 @@ class TestRegistration extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "registration.registrationDto.username: User with username '$user.username' already exists"
+        assert response.data["message"] == "createAccount.registrationDto.username: User with username '$user.username' already exists"
     }
 
     def "registration with existing email"() {
@@ -90,7 +90,7 @@ class TestRegistration extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "registration.registrationDto.email: User with email '$user.email' already exists"
+        assert response.data["message"] == "createAccount.registrationDto.email: User with email '$user.email' already exists"
     }
 
     def "registration with invalid data"() {
@@ -160,20 +160,20 @@ class TestRegistration extends Specification {
         ]
         message << [
                 //Invalid username
-                "registration.registrationDto.username: must not be empty",
-                "registration.registrationDto.username: must not be empty",
-                "registration.registrationDto.username: wrong username format",
-                "registration.registrationDto.username: length must be between 0 and 20",
+                "createAccount.registrationDto.username: must not be empty",
+                "createAccount.registrationDto.username: must not be empty",
+                "createAccount.registrationDto.username: wrong username format",
+                "createAccount.registrationDto.username: length must be between 0 and 20",
 
                 //Invalid password
-                "registration.registrationDto.password: must not be empty",
-                "registration.registrationDto.password: must not be empty",
-                "registration.registrationDto.password: length must be between 0 and 255",
+                "createAccount.registrationDto.password: must not be empty",
+                "createAccount.registrationDto.password: must not be empty",
+                "createAccount.registrationDto.password: length must be between 0 and 255",
 
                 //Invalid email
-                "registration.registrationDto.email: must not be empty",
-                "registration.registrationDto.email: must not be empty",
-                "registration.registrationDto.email: must be a well-formed email address"
+                "createAccount.registrationDto.email: must not be empty",
+                "createAccount.registrationDto.email: must not be empty",
+                "createAccount.registrationDto.email: must be a well-formed email address"
         ]
     }
 }

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-//TODO: Update paths
 @RestController
 @RequestMapping(value = "/api/v1/auth/google", produces = MediaType.APPLICATION_JSON_VALUE)
 @MonitorTime
@@ -25,7 +24,7 @@ public class GoogleAuthController {
     @Autowired
     private GoogleAuthWebService googleAuthWebService;
 
-    @Operation(summary = "Returns the authorization token. Registers a new account if it doesn't exist or link account if it has the same email")
+    @Operation(summary = "Creates a new account or link to the existent")
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
@@ -34,16 +33,16 @@ public class GoogleAuthController {
         return googleAuthWebService.getToken(googleTokenDto);
     }
 
-    @Operation(summary = "Sets new username instead of default")
+    @Operation(summary = "Sets new username after account creation")
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
-    @RequestMapping(value = "/setUsername", method = RequestMethod.POST)
+    @RequestMapping(value = "/username", method = RequestMethod.POST)
     public void setUsername(@RequestBody GoogleSetUsernameDto googleSetUsernameDto) {
         googleAuthWebService.setUsername(googleSetUsernameDto);
     }
 
-    @Operation(summary = "Links account with google account")
+    @Operation(summary = "Links with google account")
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401

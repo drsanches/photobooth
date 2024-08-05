@@ -7,7 +7,7 @@ import spock.lang.Specification
 
 class TestRefreshToken extends Specification {
 
-    String PATH = "/api/v1/auth/refreshToken"
+    String PATH = "/api/v1/auth/token/refresh"
 
     def "successful token refresh"() {
         given: "user"

@@ -12,7 +12,7 @@ class RequestUtils {
     static String registerUser(String username, String password, String email) {
         try {
             def response = getRestClient().post(
-                    path: "/api/v1/auth/registration",
+                    path: "/api/v1/auth/account",
                     body: [username: username,
                            password: password,
                            email: email])
@@ -34,7 +34,7 @@ class RequestUtils {
     static JSONObject getAuthInfo(String token) {
         try {
             def response = getRestClient().get(
-                    path: "/api/v1/auth/info",
+                    path: "/api/v1/auth/account",
                     headers: [Authorization: "Bearer $token"])
             return response.status == 200 ? response.data as JSONObject : null
         } catch(Exception e) {
@@ -115,8 +115,8 @@ class RequestUtils {
     }
 
     static void deleteUser(String token, String password) {
-        getRestClient().post(
-                path: "/api/v1/auth/deleteUser",
+        getRestClient().delete(
+                path: "/api/v1/auth/account",
                 headers: [Authorization: "Bearer $token"],
                 body: [password: password])
     }
@@ -124,7 +124,7 @@ class RequestUtils {
     static String getToken(String username, String password) {
         try {
             def response = getRestClient().post(
-                    path: "/api/v1/auth/login",
+                    path: "/api/v1/auth/token",
                     body: [username: username,
                            password: password])
             return response.status == 200 ? response.data["accessToken"] : null
@@ -137,7 +137,7 @@ class RequestUtils {
     static JSONObject getTokenInfo(String username, String password) {
         try {
             def response = getRestClient().post(
-                    path: "/api/v1/auth/login",
+                    path: "/api/v1/auth/token",
                     body: [username: username,
                            password: password])
             return response.status == 200 ? response.data as JSONObject : null

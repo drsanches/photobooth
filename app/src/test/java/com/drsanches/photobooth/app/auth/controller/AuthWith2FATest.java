@@ -1,7 +1,6 @@
 package com.drsanches.photobooth.app.auth.controller;
 
 import com.drsanches.photobooth.app.BaseSpringTest;
-import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationCodeGenerator;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeEmailDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangePasswordDto;
@@ -9,7 +8,7 @@ import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeUsernameDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.LoginDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.RegistrationDto;
 import com.drsanches.photobooth.app.auth.service.TwoFactorAuthenticationManager;
-import com.drsanches.photobooth.app.auth.service.UserAuthWebService;
+import com.drsanches.photobooth.app.auth.service.AccountAuthWebService;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.auth.service.TokenService;
 import com.drsanches.photobooth.app.auth.data.token.model.Token;
@@ -31,10 +30,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class UserAuthControllerWith2FATest extends BaseSpringTest {
+class AuthWith2FATest extends BaseSpringTest {
 
     @Autowired
-    private UserAuthWebService userAuthWebService;
+    private AccountAuthWebService accountAuthWebService;
     @Autowired
     private UserAuthDomainService userAuthDomainService;
     @Autowired
@@ -61,14 +60,14 @@ class UserAuthControllerWith2FATest extends BaseSpringTest {
         var confirmationCode = mockConfirmationCodeGenerator();
 
         mvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/auth/registration")
+                        .post("/api/v1/auth/account")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new RegistrationDto(username, password, email))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
 
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/confirm/" + confirmationCode))
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/account/confirm/" + confirmationCode))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
@@ -80,7 +79,7 @@ class UserAuthControllerWith2FATest extends BaseSpringTest {
     }
 
     @Test
-    void changeUsername() throws Exception {
+    void updateUsername() throws Exception {
         var username = USERNAME.get();
         var password = PASSWORD.get();
         var email = EMAIL.get();
@@ -89,7 +88,7 @@ class UserAuthControllerWith2FATest extends BaseSpringTest {
         var newUsername = USERNAME.get();
 
         mvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/auth/changeUsername")
+                        .post("/api/v1/auth/account/username")
                         .header("Authorization", "Bearer " + token.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new ChangeUsernameDto(newUsername))))
@@ -97,7 +96,7 @@ class UserAuthControllerWith2FATest extends BaseSpringTest {
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
 
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/confirm/" + confirmationCode))
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/account/confirm/" + confirmationCode))
                 .andExpect(status().isOk());
 
         verify(emailService, times(2)).sendHtmlMessage(eq(email), any(), any());
@@ -110,7 +109,7 @@ class UserAuthControllerWith2FATest extends BaseSpringTest {
     }
 
     @Test
-    void changePassword() throws Exception {
+    void updatePassword() throws Exception {
         var username = USERNAME.get();
         var password = PASSWORD.get();
         var email = EMAIL.get();
@@ -119,7 +118,7 @@ class UserAuthControllerWith2FATest extends BaseSpringTest {
         var newPassword = PASSWORD.get();
 
         mvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/auth/changePassword")
+                        .post("/api/v1/auth/account/password")
                         .header("Authorization", "Bearer " + token.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new ChangePasswordDto(newPassword))))
@@ -127,7 +126,7 @@ class UserAuthControllerWith2FATest extends BaseSpringTest {
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
 
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/confirm/" + confirmationCode))
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/account/confirm/" + confirmationCode))
                 .andExpect(status().isOk());
 
         verify(emailService, times(2)).sendHtmlMessage(eq(email), any(), any());
@@ -138,7 +137,7 @@ class UserAuthControllerWith2FATest extends BaseSpringTest {
     }
 
     @Test
-    void changeEmail() throws Exception {
+    void updateEmail() throws Exception {
         var username = USERNAME.get();
         var password = PASSWORD.get();
         var email = EMAIL.get();
@@ -147,7 +146,7 @@ class UserAuthControllerWith2FATest extends BaseSpringTest {
         var newEmail = EMAIL.get();
 
         mvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/auth/changeEmail")
+                        .post("/api/v1/auth/account/email")
                         .header("Authorization", "Bearer " + token.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new ChangeEmailDto(newEmail))))
@@ -155,7 +154,7 @@ class UserAuthControllerWith2FATest extends BaseSpringTest {
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
 
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/confirm/" + confirmationCode))
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/account/confirm/" + confirmationCode))
                 .andExpect(status().isOk());
 
         verify(emailService).sendHtmlMessage(eq(email), any(), any());
@@ -175,13 +174,13 @@ class UserAuthControllerWith2FATest extends BaseSpringTest {
         var token = createUser(username, password, email);
 
         mvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/auth/deleteUser")
+                        .delete("/api/v1/auth/account")
                         .header("Authorization", "Bearer " + token.getAccessToken()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
 
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/confirm/" + confirmationCode))
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/account/confirm/" + confirmationCode))
                 .andExpect(status().isOk());
 
         verify(emailService, times(2)).sendHtmlMessage(eq(email), any(), any());
@@ -197,7 +196,7 @@ class UserAuthControllerWith2FATest extends BaseSpringTest {
 
     private ResultActions performLogin(String username, String password) throws Exception {
         return mvc.perform(MockMvcRequestBuilders
-                .post("/api/v1/auth/login")
+                .post("/api/v1/auth/token")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(new LoginDto(username, password))));
     }

@@ -92,7 +92,7 @@ public class BaseSpringTest {
 
     protected ResultActions performGetInfo(String accessToken) throws Exception {
         return mvc.perform(MockMvcRequestBuilders
-                .get("/api/v1/auth/info")
+                .get("/api/v1/auth/account")
                 .header("Authorization", "Bearer " + accessToken));
     }
 }

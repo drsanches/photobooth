@@ -10,7 +10,7 @@ import spock.lang.Specification
 
 class TestChangeUsername extends Specification {
 
-    String PATH = "/api/v1/auth/changeUsername"
+    String PATH = "/api/v1/auth/account/username"
 
     def "success username change"() {
         given: "user, two tokens and new username"
@@ -59,7 +59,7 @@ class TestChangeUsername extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "changeUsername.changeUsernameDto.newUsername: User with username '$user.username' already exists"
+        assert response.data["message"] == "updateUsername.changeUsernameDto.newUsername: User with username '$user.username' already exists"
     }
 
     def "username change with existent username"() {
@@ -76,7 +76,7 @@ class TestChangeUsername extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "changeUsername.changeUsernameDto.newUsername: User with username '$user2.username' already exists"
+        assert response.data["message"] == "updateUsername.changeUsernameDto.newUsername: User with username '$user2.username' already exists"
     }
 
     def "username change with invalid username"() {
@@ -102,10 +102,10 @@ class TestChangeUsername extends Specification {
                 RandomStringUtils.randomAlphabetic(21)
         ]
         message << [
-                "changeUsername.changeUsernameDto.newUsername: must not be empty",
-                "changeUsername.changeUsernameDto.newUsername: must not be empty",
-                "changeUsername.changeUsernameDto.newUsername: wrong username format",
-                "changeUsername.changeUsernameDto.newUsername: length must be between 0 and 20"
+                "updateUsername.changeUsernameDto.newUsername: must not be empty",
+                "updateUsername.changeUsernameDto.newUsername: must not be empty",
+                "updateUsername.changeUsernameDto.newUsername: wrong username format",
+                "updateUsername.changeUsernameDto.newUsername: length must be between 0 and 20"
         ]
     }
 

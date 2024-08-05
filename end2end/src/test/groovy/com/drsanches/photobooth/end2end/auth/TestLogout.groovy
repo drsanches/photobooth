@@ -7,7 +7,7 @@ import spock.lang.Specification
 
 class TestLogout extends Specification {
 
-    String PATH = "/api/v1/auth/logout"
+    String PATH = "/api/v1/auth/token"
 
     def "successful logout"() {
         given: "user"
@@ -16,7 +16,7 @@ class TestLogout extends Specification {
         def token = RequestUtils.getToken(user.username, user.password)
 
         when: "request is sent"
-        def response = RequestUtils.getRestClient().get(
+        def response = RequestUtils.getRestClient().delete(
                 path: PATH,
                 headers: [Authorization: "Bearer $token"])
 
@@ -43,7 +43,7 @@ class TestLogout extends Specification {
         def token = UUID.randomUUID().toString()
 
         when: "request is sent"
-        def response = RequestUtils.getRestClient().get(
+        def response = RequestUtils.getRestClient().delete(
                 path: PATH,
                 headers: [Authorization: "Bearer $token"])
 

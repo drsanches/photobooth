@@ -1,6 +1,5 @@
 package com.drsanches.photobooth.app.auth.service;
 
-import com.drsanches.photobooth.app.app.exception.NoUsernameException;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Confirmation;
 import com.drsanches.photobooth.app.auth.dto.AuthResponse;
 import com.drsanches.photobooth.app.auth.dto.confirm.ChangePasswordConfirmData;
@@ -9,8 +8,6 @@ import com.drsanches.photobooth.app.auth.dto.confirm.RegistrationConfirmData;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.RegistrationDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.UserAuthInfoDto;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Operation;
-import com.drsanches.photobooth.app.auth.exception.WrongPasswordException;
-import com.drsanches.photobooth.app.auth.exception.WrongUsernamePasswordException;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
@@ -22,10 +19,8 @@ import com.drsanches.photobooth.app.auth.dto.confirm.ChangeEmailConfirmData;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeEmailDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangePasswordDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeUsernameDto;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.LoginDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.TokenDto;
 import com.drsanches.photobooth.app.auth.mapper.UserAuthInfoMapper;
-import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.auth.utils.StringSerializer;
@@ -43,7 +38,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @Validated
-public class UserAuthWebService {
+public class AccountAuthWebService {
 
     @Autowired
     private UserAuthDomainService userAuthDomainService;
@@ -72,7 +67,7 @@ public class UserAuthWebService {
     @Autowired
     private TwoFactorAuthenticationManager twoFactorAuthenticationManager;
 
-    public AuthResponse<TokenDto> registration(@Valid RegistrationDto registrationDto) {
+    public AuthResponse<TokenDto> createAccount(@Valid RegistrationDto registrationDto) {
         var salt = UUID.randomUUID().toString();
         var registrationConfirmData = RegistrationConfirmData.builder()
                 .username(registrationDto.getUsername())
@@ -96,25 +91,13 @@ public class UserAuthWebService {
         }
     }
 
-    public TokenDto login(@Valid LoginDto loginDto) {
-        UserAuth userAuth;
-        try {
-            userAuth = userAuthDomainService.getEnabledByUsername(loginDto.getUsername().toLowerCase());
-            credentialsHelper.checkPassword(loginDto.getPassword(), userAuth.getPassword(), userAuth.getSalt());
-        } catch (NoUsernameException | WrongPasswordException e) {
-            throw new WrongUsernamePasswordException(e);
-        }
-        var token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
-        return tokenMapper.convert(token);
-    }
-
-    public UserAuthInfoDto info() {
+    public UserAuthInfoDto getAccount() {
         var userId = authInfo.getUserId();
         var current = userAuthDomainService.getEnabledById(userId);
         return userAuthInfoMapper.convert(current);
     }
 
-    public AuthResponse<Void> changeUsername(@Valid ChangeUsernameDto changeUsernameDto) {
+    public AuthResponse<Void> updateUsername(@Valid ChangeUsernameDto changeUsernameDto) {
         var changeUsernameConfirmData = ChangeUsernameConfirmData.builder()
                 .username(changeUsernameDto.getNewUsername())
                 .build();
@@ -135,7 +118,7 @@ public class UserAuthWebService {
         }
     }
 
-    public AuthResponse<Void> changePassword(@Valid ChangePasswordDto changePasswordDto) {
+    public AuthResponse<Void> updatePassword(@Valid ChangePasswordDto changePasswordDto) {
         var salt = UUID.randomUUID().toString();
         var changePasswordConfirmData = ChangePasswordConfirmData.builder()
                 .encryptedPassword(credentialsHelper.encodePassword(changePasswordDto.getNewPassword(), salt))
@@ -158,7 +141,7 @@ public class UserAuthWebService {
         }
     }
 
-    public AuthResponse<Void> changeEmail(@Valid ChangeEmailDto changeEmailDto) {
+    public AuthResponse<Void> updateEmail(@Valid ChangeEmailDto changeEmailDto) {
         var changeEmailConfirmData = ChangeEmailConfirmData.builder()
                 .email(changeEmailDto.getNewEmail())
                 .build();
@@ -177,14 +160,6 @@ public class UserAuthWebService {
             confirm(confirmation.getCode());
             return new AuthResponse<>(false);
         }
-    }
-
-    public TokenDto refreshToken(String refreshToken) {
-        return tokenMapper.convert(tokenService.refreshToken(refreshToken));
-    }
-
-    public void logout() {
-        tokenService.removeCurrentToken();
     }
 
     public AuthResponse<Void> disableUser() {

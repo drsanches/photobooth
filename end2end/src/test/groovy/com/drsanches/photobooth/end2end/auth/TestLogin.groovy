@@ -9,7 +9,7 @@ import spock.lang.Specification
 
 class TestLogin extends Specification {
 
-    String PATH = "/api/v1/auth/login"
+    String PATH = "/api/v1/auth/token"
 
     def "successful login"() {
         given: "user"
@@ -119,12 +119,12 @@ class TestLogin extends Specification {
                 "Wrong username or password",
 
                 //Invalid username
-                "login.loginDto.username: must not be empty",
-                "login.loginDto.username: must not be empty",
+                "getToken.loginDto.username: must not be empty",
+                "getToken.loginDto.username: must not be empty",
 
                 //Invalid password
-                "login.loginDto.password: must not be empty",
-                "login.loginDto.password: must not be empty"
+                "getToken.loginDto.password: must not be empty",
+                "getToken.loginDto.password: must not be empty"
         ]
         status << [
                 //No user

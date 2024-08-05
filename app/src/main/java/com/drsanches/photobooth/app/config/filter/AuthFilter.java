@@ -26,16 +26,16 @@ public class AuthFilter extends GenericFilterBean {
 
     private final AuthIntegrationService authIntegrationService;
     private final AuthInfo authInfo;
-    private final Predicate<String> excludeUri;
+    private final Predicate<String> publicEndpoint;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         var httpRequest = (HttpServletRequest) request;
         var httpResponse = (HttpServletResponse) response;
-        var uri = httpRequest.getRequestURI();
+        var endpoint = httpRequest.getMethod() + " " + httpRequest.getRequestURI();
         try {
-            if (!excludeUri.test(uri)) {
+            if (!publicEndpoint.test(endpoint)) {
                 var token = TokenExtractor.getAccessTokenFromRequest(httpRequest)
                         .orElseThrow(WrongTokenException::new);
                 var authInfoDto = authIntegrationService.getAuthInfo(token).orElseThrow(WrongTokenException::new);
@@ -47,7 +47,7 @@ public class AuthFilter extends GenericFilterBean {
                 );
             }
         } catch (AuthException e) {
-            log.info("Wrong token for uri. Uri: {}", uri, e);
+            log.info("Wrong token for endpoint: {}", endpoint, e);
             httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             httpResponse.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
             httpResponse.getOutputStream().flush();

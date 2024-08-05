@@ -8,18 +8,18 @@ function login(username, password, onSuccess, onError) {
         username: username,
         password: sha256(password),
     };
-    sendData("/auth/login", "POST", body, true, data => {
+    sendData("/auth/token", "POST", body, true, data => {
         setToken(data.accessToken);
         onSuccess();
     }, onError);
 }
 
 function getInfo(onSuccess) {
-    getData("/auth/info", true, onSuccess);
+    getData("/auth/account", true, onSuccess);
 }
 
 function logout(onSuccess) {
-    getData("/auth/logout", false, () => {
+    sendData("/auth/token", "DELETE", null, false, () => {
         deleteToken();
         onSuccess();
     });

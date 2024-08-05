@@ -12,6 +12,6 @@ public class GoogleGetTokenDto {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private TokenDto token;
 
-    @Schema(description = "Confirmation code from registration request")
+    @Schema(description = "Confirmation code to set username")
     private String changeUsernameCode;
 }

@@ -33,23 +33,23 @@ public class FilterConfig {
     @Bean
     public FilterRegistrationBean<AuthFilter> authFilter() {
         var imageIdPattern = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-        var publicUri = ((Predicate<String>)
-                x -> x.matches("/actuator/health.*"))
-                .or(x -> x.matches("/api/v1/auth/registration.*"))
-                .or(x -> x.matches("/api/v1/auth/login.*"))
-                .or(x -> x.matches("/api/v1/auth/confirm.*"))
-                .or(x -> x.matches("/api/v1/auth/refreshToken.*"))
-                .or(x -> x.matches("/api/v1/auth/google/token.*"))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.DEFAULT_AVATAR_ID))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.NO_PHOTO_IMAGE_ID))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.DELETED_AVATAR_ID))
-                .or(x -> x.matches("/api/v1/image/" + imageIdPattern))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.DEFAULT_AVATAR_ID + "/thumbnail.*"))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.NO_PHOTO_IMAGE_ID + "/thumbnail.*"))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.DELETED_AVATAR_ID + "/thumbnail.*"))
-                .or(x -> x.matches("/api/v1/image/" + imageIdPattern + "/thumbnail.*"));
+        var publicEndpoint = ((Predicate<String>)
+                x -> x.matches("GET /actuator/health.*"))
+                .or(x -> x.matches("POST /api/v1/auth/account/?"))
+                .or(x -> x.matches("GET /api/v1/auth/account/confirm/.*"))
+                .or(x -> x.matches("POST /api/v1/auth/token/?"))
+                .or(x -> x.matches("GET /api/v1/auth/token/refresh/?"))
+                .or(x -> x.matches("POST /api/v1/auth/google/token/?"))
+                .or(x -> x.matches("GET /api/v1/image/" + ImageConsts.DEFAULT_AVATAR_ID))
+                .or(x -> x.matches("GET /api/v1/image/" + ImageConsts.NO_PHOTO_IMAGE_ID))
+                .or(x -> x.matches("GET /api/v1/image/" + ImageConsts.DELETED_AVATAR_ID))
+                .or(x -> x.matches("GET /api/v1/image/" + imageIdPattern))
+                .or(x -> x.matches("GET /api/v1/image/" + ImageConsts.DEFAULT_AVATAR_ID + "/thumbnail.*"))
+                .or(x -> x.matches("GET /api/v1/image/" + ImageConsts.NO_PHOTO_IMAGE_ID + "/thumbnail.*"))
+                .or(x -> x.matches("GET /api/v1/image/" + ImageConsts.DELETED_AVATAR_ID + "/thumbnail.*"))
+                .or(x -> x.matches("GET /api/v1/image/" + imageIdPattern + "/thumbnail.*"));
         FilterRegistrationBean<AuthFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new AuthFilter(authIntegrationService, authInfo, publicUri));
+        registrationBean.setFilter(new AuthFilter(authIntegrationService, authInfo, publicEndpoint));
         registrationBean.addUrlPatterns(
                 "/actuator/*",
                 "/h2-console/*",
