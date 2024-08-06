@@ -12,7 +12,8 @@ import com.drsanches.photobooth.app.auth.service.AccountAuthWebService;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.auth.service.TokenService;
 import com.drsanches.photobooth.app.auth.data.token.model.Token;
-import com.drsanches.photobooth.app.notifier.service.notifier.email.service.EmailService;
+import com.drsanches.photobooth.app.common.integration.notifier.NotificationService;
+import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -45,7 +45,7 @@ class AuthWith2FATest extends BaseSpringTest {
     @MockBean
     private TwoFactorAuthenticationManager twoFactorAuthenticationManager;
     @MockBean
-    private EmailService emailService;
+    private NotificationService notificationService;
 
     @BeforeEach
     void init() {
@@ -67,11 +67,13 @@ class AuthWith2FATest extends BaseSpringTest {
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
 
+        verify(notificationService).notify(eq(Action.REGISTRATION_STARTED), any());
+
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/account/confirm/" + confirmationCode))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        verify(emailService, times(2)).sendHtmlMessage(eq(email), any(), any());
+        verify(notificationService).notify(eq(Action.REGISTRATION_COMPLETED), any());
         performGetInfo(getToken(username, password).getAccessToken())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("username").value(username))
@@ -96,10 +98,13 @@ class AuthWith2FATest extends BaseSpringTest {
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
 
+        verify(notificationService).notify(eq(Action.USERNAME_CHANGE_STARTED), any());
+
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/account/confirm/" + confirmationCode))
                 .andExpect(status().isOk());
 
-        verify(emailService, times(2)).sendHtmlMessage(eq(email), any(), any());
+        verify(notificationService).notify(eq(Action.USERNAME_CHANGE_COMPLETED), any());
+
         performLogin(username, password)
                 .andExpect(status().isUnauthorized());
         performGetInfo(getToken(newUsername, password).getAccessToken())
@@ -126,10 +131,13 @@ class AuthWith2FATest extends BaseSpringTest {
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
 
+        verify(notificationService).notify(eq(Action.PASSWORD_CHANGE_STARTED), any());
+
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/account/confirm/" + confirmationCode))
                 .andExpect(status().isOk());
 
-        verify(emailService, times(2)).sendHtmlMessage(eq(email), any(), any());
+        verify(notificationService).notify(eq(Action.PASSWORD_CHANGE_COMPLETED), any());
+
         performLogin(username, password)
                 .andExpect(status().isUnauthorized());
         performLogin(username, newPassword)
@@ -154,11 +162,13 @@ class AuthWith2FATest extends BaseSpringTest {
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
 
+        verify(notificationService).notify(eq(Action.EMAIL_CHANGE_STARTED), any());
+
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/account/confirm/" + confirmationCode))
                 .andExpect(status().isOk());
 
-        verify(emailService).sendHtmlMessage(eq(email), any(), any());
-        verify(emailService).sendHtmlMessage(eq(newEmail), any(), any());
+        verify(notificationService).notify(eq(Action.EMAIL_CHANGE_COMPLETED), any());
+
         performGetInfo(getToken(username, password).getAccessToken())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("username").value(username))
@@ -180,10 +190,13 @@ class AuthWith2FATest extends BaseSpringTest {
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
 
+        verify(notificationService).notify(eq(Action.DISABLE_STARTED), any());
+
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/account/confirm/" + confirmationCode))
                 .andExpect(status().isOk());
 
-        verify(emailService, times(2)).sendHtmlMessage(eq(email), any(), any());
+        verify(notificationService).notify(eq(Action.DISABLE_COMPLETED), any());
+
         performLogin(username, password)
                 .andExpect(status().isUnauthorized());
     }

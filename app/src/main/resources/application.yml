@@ -16,8 +16,8 @@ application:
     actions: ${2FA_ACTIONS:}
   notifications:
     email:
-      enabled: true # must be true if application.notifications.2fa-enabled
-      2fa-enabled: true # must be true if applications.2fa.actions is not empty
+      enabled: true # false to use stub
+      2fa-enabled: true
       info-enabled: false
     push:
       enabled: true

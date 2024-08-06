@@ -19,7 +19,7 @@ public class NotificationServiceImpl implements NotificationService {
         for (var notifier: notifiers) {
             if (notifier.isAcceptable(action)) {
                 try {
-                    notifier.logAndNotify(action, params);
+                    notifier.notifyAsync(action, params);
                 } catch (Exception e) {
                     log.error("Exception occurred during notification. Action: {}, params: {}", action, params, e);
                 }

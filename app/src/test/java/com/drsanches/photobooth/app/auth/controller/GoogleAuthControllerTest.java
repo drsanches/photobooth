@@ -10,7 +10,8 @@ import com.drsanches.photobooth.app.auth.dto.userauth.request.LoginDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.RegistrationDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.TokenDto;
 import com.drsanches.photobooth.app.auth.service.GoogleUserInfoService;
-import com.drsanches.photobooth.app.notifier.service.notifier.email.service.EmailService;
+import com.drsanches.photobooth.app.common.integration.notifier.NotificationService;
+import com.drsanches.photobooth.app.notifier.service.notifier.Action;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
     @MockBean
     private GoogleUserInfoService googleUserInfoService;
     @MockBean
-    private EmailService emailService;
+    private NotificationService notificationService;
 
     @Test
     void createUserByGoogle_setEmail_setPassword() throws Exception {
@@ -56,7 +57,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                 .andReturn().getResponse().getContentAsString();
 
         verify(googleUserInfoService).getGoogleInfo(eq(googleToken));
-        verify(emailService).sendHtmlMessage(eq(email), any(), any());
+        verify(notificationService).notify(eq(Action.REGISTRATION_COMPLETED), any());
 
         var registrationResult = objectMapper.readValue(registrationResponse, GoogleGetTokenDto.class);
         mvc.perform(MockMvcRequestBuilders
@@ -95,12 +96,12 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
 
-        verify(emailService, times(2)).sendHtmlMessage(eq(email), any(), any());
+        verify(notificationService).notify(eq(Action.PASSWORD_CHANGE_STARTED), any());
 
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/account/confirm/" + confirmationCode))
                 .andExpect(status().isOk());
 
-        verify(emailService, times(3)).sendHtmlMessage(eq(email), any(), any());
+        verify(notificationService).notify(eq(Action.PASSWORD_CHANGE_COMPLETED), any());
 
         var passwordLoginResponse = mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/token")
@@ -138,7 +139,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                 .andReturn().getResponse().getContentAsString();
 
         verify(googleUserInfoService).getGoogleInfo(eq(googleToken));
-        verify(emailService).sendHtmlMessage(any(), any(), any());
+        verify(notificationService).notify(eq(Action.ACCOUNT_LINKED), any());
 
         var linkingResult = objectMapper.readValue(linkingResponse, GoogleGetTokenDto.class);
         performGetInfo(linkingResult.getToken().getAccessToken())
@@ -168,7 +169,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                 .andExpect(status().isOk());
 
         verify(googleUserInfoService).getGoogleInfo(eq(googleToken));
-        verify(emailService).sendHtmlMessage(any(), any(), any());
+        verify(notificationService).notify(eq(Action.ACCOUNT_LINKED), any());
 
         performGetInfo(token.getAccessToken())
                 .andExpect(status().isOk())
@@ -183,7 +184,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                         .header("Authorization", "Bearer " + token.getAccessToken()))
                 .andExpect(status().isOk());
 
-        verify(emailService, times(2)).sendHtmlMessage(any(), any(), any());
+        verify(notificationService).notify(eq(Action.ACCOUNT_UNLINKED), any());
 
         performGetInfo(token.getAccessToken())
                 .andExpect(status().isOk())

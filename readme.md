@@ -76,10 +76,12 @@ sequenceDiagram
     user -->> FilterChain: POST /api/v1/auth/account/create
     FilterChain ->> auth: 
     auth ->> auth: creates UserAuth
-    auth ->> notifier: 
-    notifier ->> notifier: notify about event
+    auth ->> notifier: notify
+    activate notifier
     notifier ->> auth: 
     auth -->> user: token
+    notifier ->> notifier: notifies about event
+    deactivate notifier
 
     note right of user: Get info
     user -->> FilterChain: GET /api/v1/auth/account
@@ -95,20 +97,24 @@ sequenceDiagram
     app ->> auth: 
     auth ->> auth: updates username
     auth ->> auth: removes all tokens
-    auth ->> notifier: 
-    notifier ->> notifier: notify about event
+    auth ->> notifier: notify
+    activate notifier
     notifier ->> auth: 
     auth -->> user: 200
+    notifier ->> notifier: notify about event
+    deactivate notifier
 
     note right of user: update password
     user -->> FilterChain: POST /api/v1/auth/account/password
     FilterChain ->> auth: 
     auth ->> auth: changes password
     auth ->> auth: removes all tokens
-    auth ->> notifier: 
-    notifier ->> notifier: notify about event
+    auth ->> notifier: notify
+    activate notifier
     notifier ->> auth: 
     auth -->> user: 200
+    notifier ->> notifier: notify about event
+    deactivate notifier
 
     note right of user: Updates email
     user -->> FilterChain: POST /api/v1/auth/account/email
@@ -118,10 +124,12 @@ sequenceDiagram
     notifier ->> auth: 
     auth ->> auth: updates email
     auth ->> auth: removes all tokens
-    auth ->> notifier: 
-    notifier ->> notifier: notify about event
+    auth ->> notifier: notify
+    activate notifier
     notifier ->> auth: 
     auth -->> user: 200
+    notifier ->> notifier: notify about event
+    deactivate notifier
 
     note right of user: Disable user
     user -->> FilterChain: DELETE /api/v1/auth/account
@@ -134,10 +142,12 @@ sequenceDiagram
     notifier ->> notifier: removes email
     notifier ->> auth: 
     auth ->> auth: removes all tokens
-    auth ->> notifier: 
-    notifier ->> notifier: notify about event
+    auth ->> notifier: notify
+    activate notifier
     notifier ->> auth: 
     auth -->> user: 200
+    notifier ->> notifier: notify about event
+    deactivate notifier
 ```
 ### 2FA logic
 ```mermaid
@@ -564,7 +574,6 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Move ImageConsts to app
 - Log userId even for public urls?
 - Use upsert
-- Notify async
 - Check collisions for 2FA operations (create disabled user for registration and enable it on confirmation?)
 - Refactor validations. Validate closer to db operations (or use db exceptions) 
 - Add ObjectMapper bean

@@ -1,9 +1,10 @@
 package com.drsanches.photobooth.app.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.EnableAsync;
 
-@EnableScheduling
+@EnableAsync
 @Configuration
-public class SchedulerConfig {
+public class AsyncConfig {
 }
+
