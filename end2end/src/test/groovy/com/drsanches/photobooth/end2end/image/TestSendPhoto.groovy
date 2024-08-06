@@ -168,7 +168,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "uploadPhoto.uploadPhotoDto.userIds: contains non friends"
+        assert response.data["message"] == "userIds: contains non friends"
     }
 
     def "photo send to friend with deleted profile"() {
@@ -189,7 +189,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "uploadPhoto.uploadPhotoDto.userIds: contains nonexistent ids"
+        assert response.data["message"] == "userIds: contains nonexistent ids"
     }
 
     def "photo send to not friend"() {
@@ -208,7 +208,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "uploadPhoto.uploadPhotoDto.userIds: contains non friends"
+        assert response.data["message"] == "userIds: contains non friends"
     }
 
     def "photo send to user with incoming friend request"() {
@@ -228,7 +228,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "uploadPhoto.uploadPhotoDto.userIds: contains non friends"
+        assert response.data["message"] == "userIds: contains non friends"
     }
 
     def "photo send to user with outgoing friend request"() {
@@ -248,7 +248,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "uploadPhoto.uploadPhotoDto.userIds: contains non friends"
+        assert response.data["message"] == "userIds: contains non friends"
     }
 
     def "photo send with invalid data"() {
@@ -279,11 +279,11 @@ class TestSendPhoto extends Specification {
                 Base64.getEncoder().encodeToString(new byte[300 * 1000 + 1])
         ]
         message << [
-                "uploadPhoto.uploadPhotoDto.file: must not be empty",
-                "uploadPhoto.uploadPhotoDto.file: must not be empty",
-                "uploadPhoto.uploadPhotoDto.file: invalid base64 image",
-                "uploadPhoto.uploadPhotoDto.file: invalid image data",
-                "uploadPhoto.uploadPhotoDto.file: base64 string is too long, max image size is 300000 bytes"
+                "file: must not be empty",
+                "file: must not be empty",
+                "file: invalid base64 image",
+                "file: invalid image data",
+                "file: base64 string is too long, max image size is 300000 bytes"
         ]
     }
 

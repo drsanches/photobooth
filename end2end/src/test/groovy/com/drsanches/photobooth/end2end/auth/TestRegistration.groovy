@@ -71,7 +71,7 @@ class TestRegistration extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "createAccount.registrationDto.username: User with username '$user.username' already exists"
+        assert response.data["message"] == "username: User with username '$user.username' already exists"
     }
 
     def "registration with existing email"() {
@@ -90,7 +90,7 @@ class TestRegistration extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "createAccount.registrationDto.email: User with email '$user.email' already exists"
+        assert response.data["message"] == "email: User with email '$user.email' already exists"
     }
 
     def "registration with invalid data"() {
@@ -160,20 +160,20 @@ class TestRegistration extends Specification {
         ]
         message << [
                 //Invalid username
-                "createAccount.registrationDto.username: must not be empty",
-                "createAccount.registrationDto.username: must not be empty",
-                "createAccount.registrationDto.username: wrong username format",
-                "createAccount.registrationDto.username: length must be between 0 and 20",
+                "username: must not be empty",
+                "username: must not be empty",
+                "username: wrong username format",
+                "username: length must be between 0 and 20",
 
                 //Invalid password
-                "createAccount.registrationDto.password: must not be empty",
-                "createAccount.registrationDto.password: must not be empty",
-                "createAccount.registrationDto.password: length must be between 0 and 255",
+                "password: must not be empty",
+                "password: must not be empty",
+                "password: length must be between 0 and 255",
 
                 //Invalid email
-                "createAccount.registrationDto.email: must not be empty",
-                "createAccount.registrationDto.email: must not be empty",
-                "createAccount.registrationDto.email: must be a well-formed email address"
+                "email: must not be empty",
+                "email: must not be empty",
+                "email: must be a well-formed email address"
         ]
     }
 }

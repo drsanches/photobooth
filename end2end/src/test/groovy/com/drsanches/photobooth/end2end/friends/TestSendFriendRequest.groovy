@@ -157,7 +157,7 @@ class TestSendFriendRequest extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "sendRequest.sendRequestDto.userId: the user does not exist"
+        assert response.data["message"] == "userId: the user does not exist"
     }
 
     def "send friend request to deleted friend"() {
@@ -176,7 +176,7 @@ class TestSendFriendRequest extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "sendRequest.sendRequestDto.userId: the user does not exist"
+        assert response.data["message"] == "userId: the user does not exist"
     }
 
     def "send friend request to current user"() {
@@ -192,7 +192,7 @@ class TestSendFriendRequest extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "sendRequest.sendRequestDto.userId: the user can not be current"
+        assert response.data["message"] == "userId: the user can not be current"
     }
 
     def "send friend request with invalid data"() {
@@ -217,9 +217,9 @@ class TestSendFriendRequest extends Specification {
                 UUID.randomUUID().toString()
         ]
         message << [
-                "sendRequest.sendRequestDto.userId: must not be empty",
-                "sendRequest.sendRequestDto.userId: must not be empty",
-                "sendRequest.sendRequestDto.userId: the user does not exist"
+                "userId: must not be empty",
+                "userId: must not be empty",
+                "userId: the user does not exist"
         ]
     }
 

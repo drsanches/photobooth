@@ -119,12 +119,12 @@ class TestLogin extends Specification {
                 "Wrong username or password",
 
                 //Invalid username
-                "getToken.loginDto.username: must not be empty",
-                "getToken.loginDto.username: must not be empty",
+                "username: must not be empty",
+                "username: must not be empty",
 
                 //Invalid password
-                "getToken.loginDto.password: must not be empty",
-                "getToken.loginDto.password: must not be empty"
+                "password: must not be empty",
+                "password: must not be empty"
         ]
         status << [
                 //No user

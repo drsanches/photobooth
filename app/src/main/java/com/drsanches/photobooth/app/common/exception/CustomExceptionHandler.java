@@ -28,7 +28,9 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
-        return handleApplicationException(new ApplicationException(e.getMessage(), e));
+        var path = e.getMessage().split("\\.");
+        var message = e.getMessage().substring(path[0].length() + path[1].length() + 2);
+        return handleApplicationException(new ApplicationException(message, e));
     }
 
     @ExceptionHandler(AuthException.class)

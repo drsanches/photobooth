@@ -59,7 +59,7 @@ class TestChangeUsername extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "updateUsername.changeUsernameDto.newUsername: User with username '$user.username' already exists"
+        assert response.data["message"] == "newUsername: User with username '$user.username' already exists"
     }
 
     def "username change with existent username"() {
@@ -76,7 +76,7 @@ class TestChangeUsername extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "updateUsername.changeUsernameDto.newUsername: User with username '$user2.username' already exists"
+        assert response.data["message"] == "newUsername: User with username '$user2.username' already exists"
     }
 
     def "username change with invalid username"() {
@@ -102,10 +102,10 @@ class TestChangeUsername extends Specification {
                 RandomStringUtils.randomAlphabetic(21)
         ]
         message << [
-                "updateUsername.changeUsernameDto.newUsername: must not be empty",
-                "updateUsername.changeUsernameDto.newUsername: must not be empty",
-                "updateUsername.changeUsernameDto.newUsername: wrong username format",
-                "updateUsername.changeUsernameDto.newUsername: length must be between 0 and 20"
+                "newUsername: must not be empty",
+                "newUsername: must not be empty",
+                "newUsername: wrong username format",
+                "newUsername: length must be between 0 and 20"
         ]
     }
 

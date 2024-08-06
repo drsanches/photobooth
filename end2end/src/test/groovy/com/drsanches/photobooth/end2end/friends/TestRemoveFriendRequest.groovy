@@ -192,7 +192,7 @@ class TestRemoveFriendRequest extends Specification {
 
         then: "response is correct"
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "removeRequest.removeRequestDto.userId: the user can not be current"
+        assert response.data["message"] == "userId: the user can not be current"
         assert response.status == 400
 
         and: "the first user has correct relationships"
@@ -223,9 +223,9 @@ class TestRemoveFriendRequest extends Specification {
                 UUID.randomUUID().toString()
         ]
         message << [
-                "removeRequest.removeRequestDto.userId: must not be empty",
-                "removeRequest.removeRequestDto.userId: must not be empty",
-                "removeRequest.removeRequestDto.userId: the user does not exist"
+                "userId: must not be empty",
+                "userId: must not be empty",
+                "userId: the user does not exist"
         ]
     }
 

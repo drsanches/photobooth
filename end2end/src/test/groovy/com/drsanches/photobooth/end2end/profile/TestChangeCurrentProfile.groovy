@@ -108,12 +108,12 @@ class TestChangeCurrentProfile extends Specification {
         ]
         message << [
                 //Invalid name
-                "changeCurrentProfile.changeUserProfileDto.name: length must be between 0 and 100",
-                "changeCurrentProfile.changeUserProfileDto.name: wrong name format",
+                "name: length must be between 0 and 100",
+                "name: wrong name format",
 
                 //Invalid status
-                "changeCurrentProfile.changeUserProfileDto.status: length must be between 0 and 50",
-                "changeCurrentProfile.changeUserProfileDto.status: wrong status format"
+                "status: length must be between 0 and 50",
+                "status: wrong status format"
         ]
     }
 

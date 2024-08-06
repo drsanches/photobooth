@@ -45,7 +45,7 @@ class TestChangeEmail extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "updateEmail.changeEmailDto.newEmail: User with email '$user.email' already exists"
+        assert response.data["message"] == "newEmail: User with email '$user.email' already exists"
     }
 
     def "email change with existent email"() {
@@ -62,7 +62,7 @@ class TestChangeEmail extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "updateEmail.changeEmailDto.newEmail: User with email '$user2.email' already exists"
+        assert response.data["message"] == "newEmail: User with email '$user2.email' already exists"
     }
 
     def "email change with invalid email"() {
@@ -87,9 +87,9 @@ class TestChangeEmail extends Specification {
                 RandomStringUtils.randomAlphabetic(300)
         ]
         message << [
-                "updateEmail.changeEmailDto.newEmail: must not be empty",
-                "updateEmail.changeEmailDto.newEmail: must not be empty",
-                "updateEmail.changeEmailDto.newEmail: must be a well-formed email address"
+                "newEmail: must not be empty",
+                "newEmail: must not be empty",
+                "newEmail: must be a well-formed email address"
         ]
     }
 

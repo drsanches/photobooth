@@ -65,9 +65,9 @@ class TestChangePassword extends Specification {
                 RandomStringUtils.randomAlphabetic(256)
         ]
         message << [
-                "updatePassword.changePasswordDto.newPassword: must not be empty",
-                "updatePassword.changePasswordDto.newPassword: must not be empty",
-                "updatePassword.changePasswordDto.newPassword: length must be between 0 and 255"
+                "newPassword: must not be empty",
+                "newPassword: must not be empty",
+                "newPassword: length must be between 0 and 255"
         ]
     }
 
