@@ -1,8 +1,6 @@
 package com.drsanches.photobooth.app.common.exception;
 
 import com.drsanches.photobooth.app.common.exception.dto.ExceptionDto;
-import com.drsanches.photobooth.app.common.exception.dto.ExceptionLogInfoDto;
-import com.drsanches.photobooth.app.common.exception.dto.ExternalExceptionLogInfoDto;
 import lombok.Getter;
 import lombok.Setter;
 
