@@ -26,7 +26,7 @@ class TestGetImageInfo extends Specification {
         assert response.data["id"] == "default"
         assert response.data["path"] == Utils.DEFAULT_IMAGE_PATH
         assert response.data["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
-        assert response.data["createdTime"] == JSONObject.NULL
+        assert response.data["created"] == JSONObject.NULL
         assert response.data["ownerId"] == JSONObject.NULL
     }
 
@@ -49,7 +49,7 @@ class TestGetImageInfo extends Specification {
         assert response.data["path"] == user2.imagePath
         assert response.data["thumbnailPath"] == user2.thumbnailPath
         assert response.data["ownerId"] == user2.id
-        assert Utils.checkTimestamp(dateBefore, response.data["createdTime"] as String, dateAfter)
+        assert Utils.checkTimestamp(dateBefore, response.data["created"] as String, dateAfter)
     }
 
     def "get nonexistent image info"() {

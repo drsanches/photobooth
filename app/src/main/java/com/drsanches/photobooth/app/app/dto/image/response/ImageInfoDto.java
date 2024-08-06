@@ -19,7 +19,7 @@ public class ImageInfoDto {
     private String thumbnailPath;
 
     @Schema(description = "null for system image", pattern = GregorianCalendarConvertor.PATTERN)
-    private String createdTime;
+    private String created;
 
     @Schema(description = "null for system image")
     private String ownerId;

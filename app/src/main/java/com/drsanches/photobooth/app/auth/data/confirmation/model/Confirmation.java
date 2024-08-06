@@ -24,7 +24,7 @@ import java.util.GregorianCalendar;
 @Table(name="confirmation", indexes = {
         @Index(name = "confirmation_id_index", columnList = "id"),
         @Index(name = "confirmation_code_index", columnList = "code"),
-        @Index(name = "confirmation_expires_index", columnList = "expiresAt")
+        @Index(name = "confirmation_expires_index", columnList = "expires")
 })
 public class Confirmation {
 
@@ -49,10 +49,10 @@ public class Confirmation {
 
     @Column(nullable = false)
     @ToString.Exclude
-    private GregorianCalendar expiresAt;
+    private GregorianCalendar expires;
 
     @ToString.Include
-    private String expiresAt() {
-        return GregorianCalendarConvertor.convert(expiresAt);
+    private String expires() {
+        return GregorianCalendarConvertor.convert(expires);
     }
 }

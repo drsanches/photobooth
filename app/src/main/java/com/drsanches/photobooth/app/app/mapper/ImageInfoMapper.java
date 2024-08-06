@@ -19,7 +19,7 @@ public class ImageInfoMapper {
             return imageInfoDto;
         }
         return imageInfoDto.toBuilder()
-                .createdTime(GregorianCalendarConvertor.convert(image.getCreatedTime()))
+                .created(GregorianCalendarConvertor.convert(image.getCreated()))
                 .ownerId(image.getOwnerId())
                 .build();
     }

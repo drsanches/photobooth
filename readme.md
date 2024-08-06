@@ -561,7 +561,6 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Use requestId instead of UUID in errors?
 - Remove APPLICATION_ADDRESS from requirements?
 - Limit container resources
-- Use naming `expires` or `expiresAt`. Maybe rename `createdTime` to `created`
 - Test indexes
 - Fix error "host not found in upstream" if nginx started without app and elk
 - Fix certs

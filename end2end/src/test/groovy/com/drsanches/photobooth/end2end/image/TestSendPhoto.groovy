@@ -46,7 +46,7 @@ class TestSendPhoto extends Specification {
         assert userImages[0]["path"] == IMAGE_PATH(userImages[0]["id"] as String)
         assert userImages[0]["thumbnailPath"] == THUMBNAIL_PATH(userImages[0]["id"] as String)
         assert userImages[0]["ownerId"] == user.id
-        assert Utils.checkTimestamp(dateBefore, userImages[0]["createdTime"] as String, dateAfter)
+        assert Utils.checkTimestamp(dateBefore, userImages[0]["created"] as String, dateAfter)
 
         and: "one friend has similar photo"
         def friendImages = friend1.getAllImagesInfo()
@@ -95,7 +95,7 @@ class TestSendPhoto extends Specification {
         assert userImages[0]["path"] == IMAGE_PATH(userImages[0]["id"] as String)
         assert userImages[0]["thumbnailPath"] == THUMBNAIL_PATH(userImages[0]["id"] as String)
         assert userImages[0]["ownerId"] == user.id
-        assert Utils.checkTimestamp(dateBefore, userImages[0]["createdTime"] as String, dateAfter)
+        assert Utils.checkTimestamp(dateBefore, userImages[0]["created"] as String, dateAfter)
 
         and: "image data is correct"
         assert image == RequestUtils.getImage(user.token, IMAGE_PATH(userImages[0]["id"] as String))
@@ -143,7 +143,7 @@ class TestSendPhoto extends Specification {
         assert userImages[0]["path"] == IMAGE_PATH(userImages[0]["id"] as String)
         assert userImages[0]["thumbnailPath"] == THUMBNAIL_PATH(userImages[0]["id"] as String)
         assert userImages[0]["ownerId"] == user.id
-        assert Utils.checkTimestamp(dateBefore, userImages[0]["createdTime"] as String, dateAfter)
+        assert Utils.checkTimestamp(dateBefore, userImages[0]["created"] as String, dateAfter)
 
         and: "image data is correct"
         assert image == RequestUtils.getImage(user.token, IMAGE_PATH(userImages[0]["id"] as String))

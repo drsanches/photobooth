@@ -29,15 +29,15 @@ public class ConfirmationDomainService {
     private ConfirmationCodeGenerator confirmationCodeGenerator;
 
     public Confirmation create(@Nullable String data, @Nullable String userId, Operation operation) {
-        var expiresAt = new GregorianCalendar();
-        expiresAt.add(CALENDAR_FIELD, CALENDAR_VALUE);
+        var expires = new GregorianCalendar();
+        expires.add(CALENDAR_FIELD, CALENDAR_VALUE);
         var savedConfirmation = confirmationRepository.save(Confirmation.builder()
                 .id(UUID.randomUUID().toString())
                 .code(confirmationCodeGenerator.generate()) //TODO: Use as id?
                 .userId(userId)
                 .operation(operation)
                 .data(data)
-                .expiresAt(expiresAt)
+                .expires(expires)
                 .build());
         log.debug("Confirmation created: {}", savedConfirmation);
         return savedConfirmation;
@@ -49,7 +49,7 @@ public class ConfirmationDomainService {
     }
 
     public List<Confirmation> getExpired() {
-        return confirmationRepository.findByExpiresAtLessThan(new GregorianCalendar());
+        return confirmationRepository.findByExpiresLessThan(new GregorianCalendar());
     }
 
     public void delete(String id) {

@@ -22,7 +22,7 @@ public interface ImageRepository extends CrudRepository<Image, String> {
     @NonNull
     Optional<Image> findById(@NonNull String s);
 
-    List<Image> findAllByIdInOrderByCreatedTimeDesc(Collection<String> imageIds);
+    List<Image> findAllByIdInOrderByCreatedDesc(Collection<String> imageIds);
 
     @Override
     boolean existsById(@NonNull String id);

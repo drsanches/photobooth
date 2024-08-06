@@ -29,7 +29,7 @@ public class ImageDomainService {
                 .data(imageData)
                 .thumbnailData(imageConverter.toThumbnail(imageData))
                 .ownerId(ownerId)
-                .createdTime(new GregorianCalendar())
+                .created(new GregorianCalendar())
                 .build());
         log.debug("New image saved: {}", savedImage);
         return savedImage;
@@ -41,7 +41,7 @@ public class ImageDomainService {
                 .data(imageData)
                 .thumbnailData(imageConverter.toThumbnail(imageData))
                 .ownerId(ImageConsts.SYSTEM_OWNER_ID)
-                .createdTime(new GregorianCalendar())
+                .created(new GregorianCalendar())
                 .build());
         log.debug("New image saved: {}", savedImage);
         return savedImage;
@@ -53,7 +53,7 @@ public class ImageDomainService {
     }
 
     public List<Image> getImages(Collection<String> imageIds) {
-        var images = imageRepository.findAllByIdInOrderByCreatedTimeDesc(imageIds);
+        var images = imageRepository.findAllByIdInOrderByCreatedDesc(imageIds);
         if (images.size() != imageIds.size()) {
             var foundIds = images.stream()
                     .map(Image::getId)

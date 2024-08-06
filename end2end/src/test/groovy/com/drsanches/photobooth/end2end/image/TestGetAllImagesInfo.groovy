@@ -58,12 +58,12 @@ class TestGetAllImagesInfo extends Specification {
         assert data[0]["path"] == IMAGE_PATH(data[0]["id"] as String)
         assert data[0]["thumbnailPath"] == THUMBNAIL_PATH(data[0]["id"] as String)
         assert data[0]["ownerId"] == user2.id
-        assert Utils.checkTimestamp(date2, data[0]["createdTime"] as String, date3)
+        assert Utils.checkTimestamp(date2, data[0]["created"] as String, date3)
         assert data.get(1)["id"] != JSONObject.NULL
         assert data.get(1)["path"] == IMAGE_PATH(data.get(1)["id"] as String)
         assert data.get(1)["thumbnailPath"] == THUMBNAIL_PATH(data.get(1)["id"] as String)
         assert data.get(1)["ownerId"] == user1.id
-        assert Utils.checkTimestamp(date1, data.get(1)["createdTime"] as String, date2)
+        assert Utils.checkTimestamp(date1, data.get(1)["created"] as String, date2)
 
         and: "images are correct"
         assert image2 == RequestUtils.getImage(user1.token, IMAGE_PATH(data[0]["id"] as String))

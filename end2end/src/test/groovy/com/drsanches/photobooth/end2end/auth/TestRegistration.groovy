@@ -32,7 +32,7 @@ class TestRegistration extends Specification {
         assert token != JSONObject.NULL
         assert response.data["result"]["refreshToken"] != JSONObject.NULL
         assert response.data["result"]["tokenType"] == "Bearer"
-        assert response.data["result"]["expiresAt"] != JSONObject.NULL
+        assert response.data["result"]["expires"] != JSONObject.NULL
         assert response.data["with2FA"] == false
 
         and: "token is valid"

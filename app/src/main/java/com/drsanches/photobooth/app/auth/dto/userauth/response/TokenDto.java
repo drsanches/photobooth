@@ -23,5 +23,5 @@ public class TokenDto {
 
     @Schema(pattern = GregorianCalendarConvertor.PATTERN, requiredMode = Schema.RequiredMode.REQUIRED)
     @ToString.Exclude
-    private String expiresAt;
+    private String expires;
 }

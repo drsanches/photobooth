@@ -21,7 +21,7 @@ import java.util.GregorianCalendar;
 @Entity
 @Table(name="image", indexes = {
         @Index(name = "image_id_index", columnList = "id"),
-        @Index(name = "image_id_and_created_time_index", columnList = "id, createdTime")
+        @Index(name = "image_id_and_created_time_index", columnList = "id, created")
 })
 public class Image {
 
@@ -39,14 +39,14 @@ public class Image {
 
     @Column(nullable = false)
     @ToString.Exclude
-    private GregorianCalendar createdTime;
+    private GregorianCalendar created;
 
     @Column(nullable = false)
     private String ownerId;
 
     @ToString.Include
-    private String createdTime() {
-        return GregorianCalendarConvertor.convert(createdTime);
+    private String created() {
+        return GregorianCalendarConvertor.convert(created);
     }
 
     @ToString.Include

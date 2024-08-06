@@ -27,7 +27,7 @@ class TestLogin extends Specification {
         token != JSONObject.NULL
         response.data["refreshToken"] != JSONObject.NULL
         response.data["tokenType"] == "Bearer"
-        response.data["expiresAt"] != JSONObject.NULL
+        response.data["expires"] != JSONObject.NULL
 
         and: "token is correct"
         assert RequestUtils.getAuthInfo(token as String) != null

@@ -189,13 +189,13 @@ class GoogleAuthWebServiceTest {
     }
 
     private Confirmation createConfirmation() {
-        var expiresAt = new GregorianCalendar();
-        expiresAt.add(GregorianCalendar.MINUTE, 5);
+        var expires = new GregorianCalendar();
+        expires.add(GregorianCalendar.MINUTE, 5);
         return Confirmation.builder()
                 .id(CONFIRMATION_ID)
                 .code(CONFIRMATION_CODE)
                 .userId(USER_ID)
-                .expiresAt(expiresAt)
+                .expires(expires)
                 .operation(Operation.GOOGLE_USERNAME_CHANGE)
                 .build();
     }
