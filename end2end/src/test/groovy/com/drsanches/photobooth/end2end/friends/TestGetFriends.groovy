@@ -10,7 +10,7 @@ import spock.lang.Specification
 
 class TestGetFriends extends Specification {
 
-    String PATH = "/api/v1/friends"
+    String PATH = "/api/v1/app/friends"
 
     def "success friends getting"() {
         given: "two friends"

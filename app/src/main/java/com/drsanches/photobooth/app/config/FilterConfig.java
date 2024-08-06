@@ -40,14 +40,7 @@ public class FilterConfig {
                 .or(x -> x.matches("POST /api/v1/auth/token/?"))
                 .or(x -> x.matches("GET /api/v1/auth/token/refresh/?"))
                 .or(x -> x.matches("POST /api/v1/auth/google/token/?"))
-                .or(x -> x.matches("GET /api/v1/image/" + ImageConsts.DEFAULT_AVATAR_ID))
-                .or(x -> x.matches("GET /api/v1/image/" + ImageConsts.NO_PHOTO_IMAGE_ID))
-                .or(x -> x.matches("GET /api/v1/image/" + ImageConsts.DELETED_AVATAR_ID))
-                .or(x -> x.matches("GET /api/v1/image/" + imageIdPattern))
-                .or(x -> x.matches("GET /api/v1/image/" + ImageConsts.DEFAULT_AVATAR_ID + "/thumbnail.*"))
-                .or(x -> x.matches("GET /api/v1/image/" + ImageConsts.NO_PHOTO_IMAGE_ID + "/thumbnail.*"))
-                .or(x -> x.matches("GET /api/v1/image/" + ImageConsts.DELETED_AVATAR_ID + "/thumbnail.*"))
-                .or(x -> x.matches("GET /api/v1/image/" + imageIdPattern + "/thumbnail.*"));
+                .or(x -> x.matches("GET /api/v1/app/image/data/.*"));
         FilterRegistrationBean<AuthFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new AuthFilter(authIntegrationService, authInfo, publicEndpoint));
         registrationBean.addUrlPatterns(
@@ -55,9 +48,9 @@ public class FilterConfig {
                 "/h2-console/*",
                 "/swagger-ui/*",
                 "/api/v1/auth/*",
-                "/api/v1/profile/*",
-                "/api/v1/friends/*",
-                "/api/v1/image/*",
+                "/api/v1/app/profile/*",
+                "/api/v1/app/friends/*",
+                "/api/v1/app/image/*",
                 "/api/v1/notification/*"
         );
         registrationBean.setOrder(1);
@@ -96,16 +89,7 @@ public class FilterConfig {
 
     @Bean
     public FilterRegistrationBean<UserProfileSyncFilter> userProfileSyncFilter() {
-        var imageIdPattern = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-        var publicUri = ((Predicate<String>)
-                x -> x.matches("/api/v1/image/" + ImageConsts.DEFAULT_AVATAR_ID))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.NO_PHOTO_IMAGE_ID))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.DELETED_AVATAR_ID))
-                .or(x -> x.matches("/api/v1/image/" + imageIdPattern))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.DEFAULT_AVATAR_ID + "/thumbnail.*"))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.NO_PHOTO_IMAGE_ID + "/thumbnail.*"))
-                .or(x -> x.matches("/api/v1/image/" + ImageConsts.DELETED_AVATAR_ID + "/thumbnail.*"))
-                .or(x -> x.matches("/api/v1/image/" + imageIdPattern + "/thumbnail.*"));
+        Predicate<String> publicUri = x -> x.matches("/api/v1/app/image/data/.*");
         FilterRegistrationBean<UserProfileSyncFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new UserProfileSyncFilter(
                 authInfo,
@@ -113,9 +97,9 @@ public class FilterConfig {
                 publicUri
         ));
         registrationBean.addUrlPatterns(
-                "/api/v1/profile/*",
-                "/api/v1/friends/*",
-                "/api/v1/image/*"
+                "/api/v1/app/profile/*",
+                "/api/v1/app/friends/*",
+                "/api/v1/app/image/*"
         );
         registrationBean.setOrder(4);
         return registrationBean;

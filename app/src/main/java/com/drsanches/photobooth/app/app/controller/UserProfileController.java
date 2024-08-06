@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/profile", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/app/profile", produces = MediaType.APPLICATION_JSON_VALUE)
 @MonitorTime
 public class UserProfileController {
 
@@ -51,7 +51,7 @@ public class UserProfileController {
         userProfileWebService.changeCurrentProfile(changeUserProfileDto);
     }
 
-    @Operation(summary = "Searches a list of user profile information by username")
+    @Operation(summary = "Returns a list of user profile information")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode401
@@ -65,7 +65,7 @@ public class UserProfileController {
         return userProfileWebService.searchProfile(username, page, size);
     }
 
-    @Operation(summary = "Returns another user profile information by id")
+    @Operation(summary = "Returns user profile information")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode401

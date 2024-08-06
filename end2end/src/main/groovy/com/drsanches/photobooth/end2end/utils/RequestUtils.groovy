@@ -54,7 +54,7 @@ class RequestUtils {
     static JSONObject getUserProfile(String token) {
         try {
             def response = getRestClient().get(
-                    path: "/api/v1/profile",
+                    path: "/api/v1/app/profile",
                     headers: [Authorization: "Bearer $token"])
             return response.status == 200 ? response.data as JSONObject : null
         } catch(Exception e) {
@@ -65,7 +65,7 @@ class RequestUtils {
 
     static void changeUserProfile(String token, String name, String status) {
         getRestClient().put(
-                path: "/api/v1/profile",
+                path: "/api/v1/app/profile",
                 headers: [Authorization: "Bearer $token"],
                 body: [name: name,
                        status: status])
@@ -73,7 +73,7 @@ class RequestUtils {
 
     static void sendFriendRequest(String token, String userId) {
         getRestClient().post(
-                path: "/api/v1/friends/manage/add",
+                path: "/api/v1/app/friends/manage/add",
                 headers: [Authorization: "Bearer $token"],
                 body: [userId: userId])
     }
@@ -81,7 +81,7 @@ class RequestUtils {
     static JSONArray getIncomingRequests(String token) {
         try {
             def response = getRestClient().get(
-                    path: "/api/v1/friends/requests/incoming",
+                    path: "/api/v1/app/friends/requests/incoming",
                     headers: [Authorization: "Bearer $token"])
             return response.status == 200 ? response.data as JSONArray : null
         } catch(Exception e) {
@@ -93,7 +93,7 @@ class RequestUtils {
     static JSONArray getOutgoingRequests(String token) {
         try {
             def response = getRestClient().get(
-                    path: "/api/v1/friends/requests/outgoing",
+                    path: "/api/v1/app/friends/requests/outgoing",
                     headers: [Authorization: "Bearer $token"])
             return response.status == 200 ? response.data as JSONArray : null
         } catch(Exception e) {
@@ -105,7 +105,7 @@ class RequestUtils {
     static JSONArray getFriends(String token) {
         try {
             def response = getRestClient().get(
-                    path: "/api/v1/friends",
+                    path: "/api/v1/app/friends",
                     headers: [Authorization: "Bearer $token"])
             return response.status == 200 ? response.data as JSONArray : null
         } catch(Exception e) {
@@ -161,7 +161,7 @@ class RequestUtils {
 
     static void uploadAvatar(String token, byte[] image) {
         getRestClient().post(
-                path: "/api/v1/image/avatar",
+                path: "/api/v1/app/image/avatar",
                 headers: [Authorization: "Bearer $token"],
                 body: [file: Utils.toBase64(image)])
     }
@@ -169,7 +169,7 @@ class RequestUtils {
     static JSONArray getAllImagesInfo(String token) {
         try {
             def response = getRestClient().get(
-                    path: "/api/v1/image/all",
+                    path: "/api/v1/app/image/all",
                     headers: [Authorization: "Bearer $token"])
             return response.status == 200 ? response.data as JSONArray : null
         } catch(Exception e) {
@@ -180,7 +180,7 @@ class RequestUtils {
 
     static void sendPhoto(String token, List<String> userIds, byte[] image) {
         getRestClient().post(
-                path: "/api/v1/image/photo",
+                path: "/api/v1/app/image/photo",
                 headers: [Authorization: "Bearer $token"],
                 body: [file: Utils.toBase64(image),
                        userIds: userIds])

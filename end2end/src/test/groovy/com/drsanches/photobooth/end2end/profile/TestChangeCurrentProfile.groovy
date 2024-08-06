@@ -11,7 +11,7 @@ import spock.lang.Specification
 
 class TestChangeCurrentProfile extends Specification {
 
-    String PATH = "/api/v1/profile"
+    String PATH = "/api/v1/app/profile"
 
     def "success user profile change"() {
         given: "user and new profile data"

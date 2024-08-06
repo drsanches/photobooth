@@ -10,7 +10,7 @@ import spock.lang.Specification
 
 class TestGetImageInfo extends Specification {
 
-    String PATH = "/api/v1/image/"
+    String PATH = "/api/v1/app/image/info/"
 
     def "successful default avatar info getting"() {
         given: "user"
@@ -18,7 +18,7 @@ class TestGetImageInfo extends Specification {
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
-                path: PATH + "default/info",
+                path: PATH + "default",
                 headers: [Authorization: "Bearer $user.token"])
 
         then: "response is correct"
@@ -40,7 +40,7 @@ class TestGetImageInfo extends Specification {
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
-                path: user2.imagePath + "/info",
+                path: PATH + user2.imagePath.split("/").last(),
                 headers: [Authorization: "Bearer $user1.token"])
 
         then: "response is correct"
@@ -59,7 +59,7 @@ class TestGetImageInfo extends Specification {
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
-                path: PATH + nonexistentImageId + "/info",
+                path: PATH + nonexistentImageId,
                 headers: [Authorization: "Bearer $user.token"])
 
         then: "response is correct"
@@ -74,7 +74,7 @@ class TestGetImageInfo extends Specification {
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
-                path: PATH + "default/info",
+                path: PATH + "default",
                 headers: [Authorization: "Bearer $token"])
 
         then: "response is correct"

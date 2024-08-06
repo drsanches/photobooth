@@ -13,8 +13,8 @@ public class ImageConsts {
     public static final String SYSTEM_OWNER_ID = "system";
 
     public static final UnaryOperator<String> IMAGE_PATH = (String imageId) ->
-            "/api/v1/image/" + imageId;
+            "/api/v1/app/image/data/" + imageId;
 
     public static final UnaryOperator<String> THUMBNAIL_PATH = (String imageId) ->
-            "/api/v1/image/" + imageId + "/thumbnail";
+            "/api/v1/app/image/data/thumbnail/" + imageId;
 }

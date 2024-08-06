@@ -8,7 +8,7 @@ import spock.lang.Specification
 
 class TestSendFriendRequest extends Specification {
 
-    String PATH = "/api/v1/friends/manage/add"
+    String PATH = "/api/v1/app/friends/manage/add"
 
     /**
      * user1 -req-> user2

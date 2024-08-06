@@ -9,7 +9,7 @@ import spock.lang.Specification
 
 class TestGetImage extends Specification {
 
-    String PATH = "/api/v1/image/"
+    String PATH = "/api/v1/app/image/data/"
 
     def "successful system avatar getting"() {
         when: "request is sent"

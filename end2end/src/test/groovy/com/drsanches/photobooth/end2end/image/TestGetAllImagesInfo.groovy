@@ -11,11 +11,11 @@ import spock.lang.Specification
 
 class TestGetAllImagesInfo extends Specification {
 
-    String PATH = "/api/v1/image/all"
+    String PATH = "/api/v1/app/image/all"
 
-    def IMAGE_PATH = { String imageId -> "/api/v1/image/$imageId" }
+    def IMAGE_PATH = { String imageId -> "/api/v1/app/image/data/$imageId" }
 
-    def THUMBNAIL_PATH = { String imageId -> IMAGE_PATH(imageId) + "/thumbnail" }
+    def THUMBNAIL_PATH = { String imageId -> "/api/v1/app/image/data/thumbnail/$imageId" }
 
     def "successful empty image list info getting"() {
         given: "user"

@@ -8,7 +8,7 @@ import spock.lang.Specification
 
 class TestGetProfile extends Specification {
 
-    String PATH = "/api/v1/profile/"
+    String PATH = "/api/v1/app/profile/"
 
     def "successful user profile getting"() {
         given: "two users"

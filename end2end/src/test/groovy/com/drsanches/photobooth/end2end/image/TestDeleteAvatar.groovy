@@ -9,7 +9,7 @@ import spock.lang.Specification
 
 class TestDeleteAvatar extends Specification {
 
-    String PATH = "/api/v1/image/avatar"
+    String PATH = "/api/v1/app/image/avatar"
 
     def "successful default avatar deletion"() {
         given: "user"

@@ -10,13 +10,13 @@ import java.text.SimpleDateFormat
 
 class Utils {
 
-    static final String DEFAULT_IMAGE_PATH = "/api/v1/image/default"
-    static final String NO_PHOTO_IMAGE_PATH = "/api/v1/image/no_photo"
-    static final String DELETED_IMAGE_PATH = "/api/v1/image/deleted"
+    static final String DEFAULT_IMAGE_PATH = "/api/v1/app/image/data/default"
+    static final String NO_PHOTO_IMAGE_PATH = "/api/v1/app/image/data/no_photo"
+    static final String DELETED_IMAGE_PATH = "/api/v1/app/image/data/deleted"
 
-    static final String DEFAULT_THUMBNAIL_PATH = "/api/v1/image/default/thumbnail"
-    static final String NO_PHOTO_THUMBNAIL_PATH = "/api/v1/image/no_photo/thumbnail"
-    static final String DELETED_THUMBNAIL_PATH = "/api/v1/image/deleted/thumbnail"
+    static final String DEFAULT_THUMBNAIL_PATH = "/api/v1/app/image/data/thumbnail/default"
+    static final String NO_PHOTO_THUMBNAIL_PATH = "/api/v1/app/image/data/thumbnail/no_photo"
+    static final String DELETED_THUMBNAIL_PATH = "/api/v1/app/image/data/thumbnail/deleted"
 
     static final String DEFAULT_IMAGE_FILENAME = "src/test/resources/default.jpg"
     static final String NO_PHOTO_IMAGE_FILENAME = "src/test/resources/no_photo.jpg"

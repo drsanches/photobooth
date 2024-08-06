@@ -27,14 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/v1/image", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/app/image", produces = MediaType.APPLICATION_JSON_VALUE)
 @MonitorTime
 public class ImageController {
 
     @Autowired
     private ImageWebService imageWebService;
 
-    @Operation(summary = "Adds new avatar")
+    @Operation(summary = "Adds new profile photo")
     @ApiTokenAuthorization
     @ApiResponseCode201
     @ApiResponseCode400
@@ -45,28 +45,28 @@ public class ImageController {
         imageWebService.uploadAvatar(uploadAvatarDto);
     }
 
-    @Operation(summary = "Returns an image by id")
+    @Operation(summary = "Returns an image info")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
-    @RequestMapping(path = "/{imageId}/info", method = RequestMethod.GET)
+    @RequestMapping(path = "/info/{imageId}", method = RequestMethod.GET)
     public ImageInfoDto getImageInfo(@PathVariable String imageId) {
         return imageWebService.getImageInfo(imageId);
     }
 
-    @Operation(summary = "Returns an image by id")
+    @Operation(summary = "Returns an image data")
     @ApiResponseCode200
     @ApiResponseCode400
-    @RequestMapping(path = "/{imageId}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+    @RequestMapping(path = "/data/{imageId}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getImage(@PathVariable String imageId) {
         return imageWebService.getImage(imageId);
     }
 
-    @Operation(summary = "Returns an image thumbnail by id")
+    @Operation(summary = "Returns an image thumbnail data")
     @ApiResponseCode200
     @ApiResponseCode400
-    @RequestMapping(path = "{imageId}/thumbnail", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+    @RequestMapping(path = "data/thumbnail/{imageId}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getThumbnail(@PathVariable String imageId) {
         return imageWebService.getThumbnail(imageId);
     }
@@ -94,7 +94,7 @@ public class ImageController {
         return imageWebService.getAllInfo(page, size);
     }
 
-    @Operation(summary = "Removes an avatar for user")
+    @Operation(summary = "Removes profile photo")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode401

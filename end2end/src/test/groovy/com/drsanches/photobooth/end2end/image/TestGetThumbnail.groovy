@@ -9,7 +9,7 @@ import spock.lang.Specification
 
 class TestGetThumbnail extends Specification {
 
-    def THUMBNAIL_PATH = { String imageId -> "/api/v1/image/" + imageId + "/thumbnail" }
+    def THUMBNAIL_PATH = { String imageId -> "/api/v1/app/image/data/thumbnail/" + imageId }
 
     def "successful system avatar thumbnail getting"() {
         when: "request is sent"

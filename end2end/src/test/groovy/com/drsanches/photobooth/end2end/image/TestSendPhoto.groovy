@@ -10,11 +10,11 @@ import spock.lang.Specification
 
 class TestSendPhoto extends Specification {
 
-    String PATH = "/api/v1/image/photo"
+    String PATH = "/api/v1/app/image/photo"
 
-    def IMAGE_PATH = { String imageId -> "/api/v1/image/$imageId" }
+    def IMAGE_PATH = { String imageId -> "/api/v1/app/image/data/$imageId" }
 
-    def THUMBNAIL_PATH = { String imageId -> IMAGE_PATH(imageId) + "/thumbnail" }
+    def THUMBNAIL_PATH = { String imageId -> "/api/v1/app/image/data/thumbnail/$imageId" }
 
     def "successful photo send"() {
         given: "user with friends"

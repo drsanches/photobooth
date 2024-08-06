@@ -10,7 +10,7 @@ import spock.lang.Specification
 
 class TestGetOutgoingRequests extends Specification {
 
-    String PATH = "/api/v1/friends/requests/outgoing"
+    String PATH = "/api/v1/app/friends/requests/outgoing"
 
     def "success outgoing requests getting"() {
         given: "two users"

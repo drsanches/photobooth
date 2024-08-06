@@ -565,8 +565,6 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Fix error "host not found in upstream" if nginx started without app and elk
 - Fix certs
 - Add test controller for admin with ui
-- Use /app path for app
-- Use /image/data/{id} and /image/info/{id}
 - Update entities without getting?
 - Merge web and domain layers?
 - Use login for auth and username for profile?
@@ -579,6 +577,7 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Add test profile with h2?
 - Always sent to notifier all info - email (if exists) and userId, then update email and send notification
 - Maybe use Spring Events
+- Rename avatar to profile photo and move it to /profile
 
 ### UI
 - Hide admin ui for users
