@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChangePasswordDto {
+public class UpdatePasswordDto {
 
     @Schema(description = "new password SHA256 hash", maxLength = 255, requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty

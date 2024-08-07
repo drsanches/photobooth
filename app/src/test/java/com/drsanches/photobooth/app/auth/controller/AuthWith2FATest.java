@@ -2,11 +2,11 @@ package com.drsanches.photobooth.app.auth.controller;
 
 import com.drsanches.photobooth.app.BaseSpringTest;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeEmailDto;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangePasswordDto;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeUsernameDto;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.LoginDto;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.RegistrationDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdateEmailDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdatePasswordDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdateUsernameDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.GetTokenDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.CreateAccountDto;
 import com.drsanches.photobooth.app.auth.service.TwoFactorAuthenticationManager;
 import com.drsanches.photobooth.app.auth.service.AccountAuthWebService;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
@@ -62,7 +62,7 @@ class AuthWith2FATest extends BaseSpringTest {
         mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/account")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new RegistrationDto(username, password, email))))
+                        .content(objectMapper.writeValueAsString(new CreateAccountDto(username, password, email))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
@@ -93,7 +93,7 @@ class AuthWith2FATest extends BaseSpringTest {
                         .post("/api/v1/auth/account/username")
                         .header("Authorization", "Bearer " + token.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new ChangeUsernameDto(newUsername))))
+                        .content(objectMapper.writeValueAsString(new UpdateUsernameDto(newUsername))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
@@ -126,7 +126,7 @@ class AuthWith2FATest extends BaseSpringTest {
                         .post("/api/v1/auth/account/password")
                         .header("Authorization", "Bearer " + token.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new ChangePasswordDto(newPassword))))
+                        .content(objectMapper.writeValueAsString(new UpdatePasswordDto(newPassword))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
@@ -157,7 +157,7 @@ class AuthWith2FATest extends BaseSpringTest {
                         .post("/api/v1/auth/account/email")
                         .header("Authorization", "Bearer " + token.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new ChangeEmailDto(newEmail))))
+                        .content(objectMapper.writeValueAsString(new UpdateEmailDto(newEmail))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
@@ -211,6 +211,6 @@ class AuthWith2FATest extends BaseSpringTest {
         return mvc.perform(MockMvcRequestBuilders
                 .post("/api/v1/auth/token")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(new LoginDto(username, password))));
+                .content(objectMapper.writeValueAsString(new GetTokenDto(username, password))));
     }
 }

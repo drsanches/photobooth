@@ -4,10 +4,10 @@ import com.drsanches.photobooth.app.BaseSpringTest;
 import com.drsanches.photobooth.app.auth.dto.google.GoogleGetTokenDto;
 import com.drsanches.photobooth.app.auth.dto.google.GoogleInfoDto;
 import com.drsanches.photobooth.app.auth.dto.google.GoogleSetUsernameDto;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangePasswordDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdatePasswordDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.GoogleTokenDto;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.LoginDto;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.RegistrationDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.GetTokenDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.CreateAccountDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.TokenDto;
 import com.drsanches.photobooth.app.auth.service.GoogleUserInfoService;
 import com.drsanches.photobooth.app.common.integration.notifier.NotificationService;
@@ -91,7 +91,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                         .post("/api/v1/auth/account/password")
                         .header("Authorization", "Bearer " + loginByGoogleResult.getToken().getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new ChangePasswordDto(password))))
+                        .content(objectMapper.writeValueAsString(new UpdatePasswordDto(password))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("result").doesNotExist())
                 .andExpect(jsonPath("with2FA").value(true));
@@ -106,7 +106,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
         var passwordLoginResponse = mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/token")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new LoginDto(username, password))))
+                        .content(objectMapper.writeValueAsString(new GetTokenDto(username, password))))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
@@ -216,7 +216,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
         mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/account")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new RegistrationDto(username, password, email))))
+                        .content(objectMapper.writeValueAsString(new CreateAccountDto(username, password, email))))
                 .andExpect(status().isBadRequest()); //TODO: Check error message
     }
 

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChangeEmailDto {
+public class UpdateEmailDto {
 
     //TODO: Limit length?
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)

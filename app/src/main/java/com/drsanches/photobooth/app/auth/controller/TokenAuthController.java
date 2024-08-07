@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.auth.controller;
 
-import com.drsanches.photobooth.app.auth.dto.userauth.request.LoginDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.GetTokenDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.TokenDto;
 import com.drsanches.photobooth.app.auth.service.TokenAuthWebService;
 import com.drsanches.photobooth.app.common.aspects.MonitorTime;
@@ -31,8 +31,8 @@ public class TokenAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public TokenDto getToken(@RequestBody LoginDto loginDto) {
-        return tokenAuthWebService.getToken(loginDto);
+    public TokenDto getToken(@RequestBody GetTokenDto getTokenDto) {
+        return tokenAuthWebService.getToken(getTokenDto);
     }
 
     @Operation(summary = "Returns authorization token")

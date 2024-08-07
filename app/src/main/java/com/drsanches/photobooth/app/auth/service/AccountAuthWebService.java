@@ -5,7 +5,7 @@ import com.drsanches.photobooth.app.auth.dto.AuthResponse;
 import com.drsanches.photobooth.app.auth.dto.confirm.ChangePasswordConfirmData;
 import com.drsanches.photobooth.app.auth.dto.confirm.ChangeUsernameConfirmData;
 import com.drsanches.photobooth.app.auth.dto.confirm.RegistrationConfirmData;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.RegistrationDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.CreateAccountDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.UserAuthInfoDto;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Operation;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
@@ -16,9 +16,9 @@ import com.drsanches.photobooth.app.common.integration.app.AppIntegrationService
 import com.drsanches.photobooth.app.common.integration.notifier.NotifierIntegrationService;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
 import com.drsanches.photobooth.app.auth.dto.confirm.ChangeEmailConfirmData;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeEmailDto;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangePasswordDto;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeUsernameDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdateEmailDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdatePasswordDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdateUsernameDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.TokenDto;
 import com.drsanches.photobooth.app.auth.mapper.UserAuthInfoMapper;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
@@ -67,12 +67,12 @@ public class AccountAuthWebService {
     @Autowired
     private TwoFactorAuthenticationManager twoFactorAuthenticationManager;
 
-    public AuthResponse<TokenDto> createAccount(@Valid RegistrationDto registrationDto) {
+    public AuthResponse<TokenDto> createAccount(@Valid CreateAccountDto createAccountDto) {
         var salt = UUID.randomUUID().toString();
         var registrationConfirmData = RegistrationConfirmData.builder()
-                .username(registrationDto.getUsername())
-                .email(registrationDto.getEmail())
-                .encryptedPassword(credentialsHelper.encodePassword(registrationDto.getPassword(), salt))
+                .username(createAccountDto.getUsername())
+                .email(createAccountDto.getEmail())
+                .encryptedPassword(credentialsHelper.encodePassword(createAccountDto.getPassword(), salt))
                 .salt(salt)
                 .build();
         var data = stringSerializer.serialize(registrationConfirmData);
@@ -80,7 +80,7 @@ public class AccountAuthWebService {
 
         if (twoFactorAuthenticationManager.isEnabled(Operation.REGISTRATION)) {
             notificationService.notify(Action.REGISTRATION_STARTED, NotificationParams.builder()
-                    .email(registrationDto.getEmail())
+                    .email(createAccountDto.getEmail())
                     .code(confirmation.getCode())
                     .build());
             log.info("User registration process started: {}", registrationConfirmData);
@@ -97,9 +97,9 @@ public class AccountAuthWebService {
         return userAuthInfoMapper.convert(current);
     }
 
-    public AuthResponse<Void> updateUsername(@Valid ChangeUsernameDto changeUsernameDto) {
+    public AuthResponse<Void> updateUsername(@Valid UpdateUsernameDto updateUsernameDto) {
         var changeUsernameConfirmData = ChangeUsernameConfirmData.builder()
-                .username(changeUsernameDto.getNewUsername())
+                .username(updateUsernameDto.getNewUsername())
                 .build();
         var data = stringSerializer.serialize(changeUsernameConfirmData);
         var userId = authInfo.getUserId();
@@ -118,10 +118,10 @@ public class AccountAuthWebService {
         }
     }
 
-    public AuthResponse<Void> updatePassword(@Valid ChangePasswordDto changePasswordDto) {
+    public AuthResponse<Void> updatePassword(@Valid UpdatePasswordDto updatePasswordDto) {
         var salt = UUID.randomUUID().toString();
         var changePasswordConfirmData = ChangePasswordConfirmData.builder()
-                .encryptedPassword(credentialsHelper.encodePassword(changePasswordDto.getNewPassword(), salt))
+                .encryptedPassword(credentialsHelper.encodePassword(updatePasswordDto.getNewPassword(), salt))
                 .salt(salt)
                 .build();
         var data = stringSerializer.serialize(changePasswordConfirmData);
@@ -141,9 +141,9 @@ public class AccountAuthWebService {
         }
     }
 
-    public AuthResponse<Void> updateEmail(@Valid ChangeEmailDto changeEmailDto) {
+    public AuthResponse<Void> updateEmail(@Valid UpdateEmailDto updateEmailDto) {
         var changeEmailConfirmData = ChangeEmailConfirmData.builder()
-                .email(changeEmailDto.getNewEmail())
+                .email(updateEmailDto.getNewEmail())
                 .build();
         var data = stringSerializer.serialize(changeEmailConfirmData);
         var userId = authInfo.getUserId();

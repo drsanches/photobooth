@@ -1,12 +1,12 @@
 package com.drsanches.photobooth.app.auth.controller;
 
 import com.drsanches.photobooth.app.auth.dto.AuthResponse;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeUsernameDto;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.RegistrationDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdateUsernameDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.CreateAccountDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.UserAuthInfoDto;
 import com.drsanches.photobooth.app.auth.service.AccountAuthWebService;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangeEmailDto;
-import com.drsanches.photobooth.app.auth.dto.userauth.request.ChangePasswordDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdateEmailDto;
+import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdatePasswordDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.TokenDto;
 import com.drsanches.photobooth.app.common.aspects.MonitorTime;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;
@@ -34,8 +34,8 @@ public class AccountAuthController {
     @ApiResponseCode200
     @ApiResponseCode400
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public AuthResponse<TokenDto> createAccount(@RequestBody RegistrationDto registrationDto) {
-        return accountAuthWebService.createAccount(registrationDto);
+    public AuthResponse<TokenDto> createAccount(@RequestBody CreateAccountDto createAccountDto) {
+        return accountAuthWebService.createAccount(createAccountDto);
     }
 
     @Operation(summary = "Returns current account private information")
@@ -53,8 +53,8 @@ public class AccountAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/username", method = RequestMethod.POST)
-    public AuthResponse<Void> updateUsername(@RequestBody ChangeUsernameDto changeUsernameDto) {
-        return accountAuthWebService.updateUsername(changeUsernameDto);
+    public AuthResponse<Void> updateUsername(@RequestBody UpdateUsernameDto updateUsernameDto) {
+        return accountAuthWebService.updateUsername(updateUsernameDto);
     }
 
     @Operation(summary = "Updates password (2FA available)")
@@ -63,8 +63,8 @@ public class AccountAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/password", method = RequestMethod.POST)
-    public AuthResponse<Void> updatePassword(@RequestBody ChangePasswordDto changePasswordDto) {
-        return accountAuthWebService.updatePassword(changePasswordDto);
+    public AuthResponse<Void> updatePassword(@RequestBody UpdatePasswordDto updatePasswordDto) {
+        return accountAuthWebService.updatePassword(updatePasswordDto);
     }
 
     @Operation(summary = "Updates email (2FA available)")
@@ -73,8 +73,8 @@ public class AccountAuthController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/email", method = RequestMethod.POST)
-    public AuthResponse<Void> updateEmail(@RequestBody ChangeEmailDto changeEmailDto) {
-        return accountAuthWebService.updateEmail(changeEmailDto);
+    public AuthResponse<Void> updateEmail(@RequestBody UpdateEmailDto updateEmailDto) {
+        return accountAuthWebService.updateEmail(updateEmailDto);
     }
 
     @Operation(summary = "Disables current user account (2FA available)")
