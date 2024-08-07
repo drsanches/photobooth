@@ -4,7 +4,7 @@ import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
-import org.apache.commons.lang3.StringUtils
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestUploadAvatar extends Specification {
@@ -47,8 +47,9 @@ class TestUploadAvatar extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == message
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "file", "message", message)
+        ])
 
         and: "user profile does not change"
         def userProfile = user.getUserProfile()
@@ -64,11 +65,11 @@ class TestUploadAvatar extends Specification {
                 Base64.getEncoder().encodeToString(new byte[300 * 1000 + 1])
         ]
         message << [
-                "file: must not be empty",
-                "file: must not be empty",
-                "file: invalid base64 image",
-                "file: invalid image data",
-                "file: base64 string is too long, max image size is 300000 bytes"
+                "must not be empty",
+                "must not be empty",
+                "invalid base64 image",
+                "invalid image data",
+                "base64 string is too long, max image size is 300000 bytes"
         ]
     }
 
@@ -85,7 +86,6 @@ class TestUploadAvatar extends Specification {
 
         then: "response is correct"
         assert response.status == 401
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "Wrong token"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "Wrong token", null)
     }
 }

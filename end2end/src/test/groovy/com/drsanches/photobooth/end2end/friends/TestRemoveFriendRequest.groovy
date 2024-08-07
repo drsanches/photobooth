@@ -2,8 +2,8 @@ package com.drsanches.photobooth.end2end.friends
 
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
-import org.apache.commons.lang3.StringUtils
-import org.json.JSONArray
+import com.drsanches.photobooth.end2end.utils.Utils
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestRemoveFriendRequest extends Specification {
@@ -191,9 +191,10 @@ class TestRemoveFriendRequest extends Specification {
                 body: [userId: user.id])
 
         then: "response is correct"
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "userId: the user can not be current"
         assert response.status == 400
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "userId", "message", "the user can not be current")
+        ])
 
         and: "the first user has correct relationships"
         assert user.getIncomingFriendRequests().size() == 0
@@ -213,8 +214,9 @@ class TestRemoveFriendRequest extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == message
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "userId", "message", message)
+        ])
 
         where:
         userId << [
@@ -223,9 +225,9 @@ class TestRemoveFriendRequest extends Specification {
                 UUID.randomUUID().toString()
         ]
         message << [
-                "userId: must not be empty",
-                "userId: must not be empty",
-                "userId: the user does not exist"
+                "must not be empty",
+                "must not be empty",
+                "the user does not exist"
         ]
     }
 
@@ -239,8 +241,7 @@ class TestRemoveFriendRequest extends Specification {
                 headers: [Authorization: "Bearer $invalidToken"])
 
         then: "response is correct"
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "Wrong token"
         assert response.status == 401
+        assert Utils.validateErrorResponse(response.data as JSONObject, "Wrong token", null)
     }
 }

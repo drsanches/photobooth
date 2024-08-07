@@ -5,7 +5,6 @@ import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
 import org.apache.commons.lang3.RandomStringUtils
-import org.apache.commons.lang3.StringUtils
 import org.json.JSONObject
 import spock.lang.Specification
 
@@ -84,36 +83,25 @@ class TestChangeCurrentProfile extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == message
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", details)
 
         where:
         name << [
-                //Invalid name
                 RandomStringUtils.randomAlphabetic(101),
-                "#",
-
-                //Invalid status
-                DataGenerator.createValidName(),
-                DataGenerator.createValidName()
+                "#"
         ]
         status << [
-                //Invalid name
-                DataGenerator.createValidStatus(),
-                DataGenerator.createValidStatus(),
-
-                //Invalid status
                 RandomStringUtils.randomAlphabetic(51),
                 "#"
         ]
-        message << [
-                //Invalid name
-                "name: length must be between 0 and 100",
-                "name: wrong name format",
-
-                //Invalid status
-                "status: length must be between 0 and 50",
-                "status: wrong status format"
+        details << [
+                [
+                        Map.of("field", "name", "message", "length must be between 0 and 100"),
+                        Map.of("field", "status", "message", "length must be between 0 and 50")
+                ], [
+                        Map.of("field", "name", "message", "wrong name format"),
+                        Map.of("field", "status", "message", "wrong status format")
+                ]
         ]
     }
 
@@ -128,7 +116,6 @@ class TestChangeCurrentProfile extends Specification {
 
         then: "response is correct"
         assert response.status == 401
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "Wrong token"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "Wrong token", null)
     }
 }

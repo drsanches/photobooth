@@ -5,7 +5,6 @@ import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
-import org.apache.commons.lang3.StringUtils
 import org.json.JSONObject
 import spock.lang.Specification
 
@@ -70,8 +69,9 @@ class TestRegistration extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "username: User with username '$user.username' already exists"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "username", "message", "User with username '$user.username' already exists")
+        ])
     }
 
     def "registration with existing email"() {
@@ -89,8 +89,9 @@ class TestRegistration extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "email: User with email '$user.email' already exists"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "email", "message", "User with email '$user.email' already exists")
+        ])
     }
 
     def "registration with invalid data"() {
@@ -103,77 +104,46 @@ class TestRegistration extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == message
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", details)
 
         where:
         username << [
-                //Invalid username
                 null,
                 "",
-                DataGenerator.createValidUsername() + ".",
                 RandomStringUtils.randomAlphabetic(21),
-
-                //Invalid password
-                DataGenerator.createValidUsername(),
-                DataGenerator.createValidUsername(),
-                DataGenerator.createValidUsername(),
-
-                //Invalid email
-                DataGenerator.createValidUsername(),
-                DataGenerator.createValidUsername(),
-                DataGenerator.createValidUsername()
+                DataGenerator.createValidUsername() + "."
         ]
         password << [
-                //Invalid username
-                DataGenerator.createValidPassword(),
-                DataGenerator.createValidPassword(),
-                DataGenerator.createValidPassword(),
-                DataGenerator.createValidPassword(),
-
-                //Invalid password
                 null,
                 "",
                 RandomStringUtils.randomAlphabetic(256),
-
-                //Invalid email
-                DataGenerator.createValidPassword(),
-                DataGenerator.createValidPassword(),
                 DataGenerator.createValidPassword()
         ]
         email << [
-                //Invalid username
-                DataGenerator.createValidEmail(),
-                DataGenerator.createValidEmail(),
-                DataGenerator.createValidEmail(),
-                DataGenerator.createValidEmail(),
-
-                //Invalid password
-                DataGenerator.createValidEmail(),
-                DataGenerator.createValidEmail(),
-                DataGenerator.createValidEmail(),
-
-                //Invalid email
                 null,
                 "",
-                RandomStringUtils.randomAlphabetic(100)
+                RandomStringUtils.randomAlphabetic(100),
+                DataGenerator.createValidEmail()
         ]
-        message << [
-                //Invalid username
-                "username: must not be empty",
-                "username: must not be empty",
-                "username: wrong username format",
-                "username: length must be between 0 and 20",
-
-                //Invalid password
-                "password: must not be empty",
-                "password: must not be empty",
-                "password: length must be between 0 and 255",
-
-                //Invalid email
-                "email: must not be empty",
-                "email: must not be empty",
-                "email: must be a well-formed email address"
+        details << [
+                [
+                        Map.of("field", "username", "message", "must not be empty"),
+                        Map.of("field", "password", "message", "must not be empty"),
+                        Map.of("field", "email", "message", "must not be empty")
+                ],
+                [
+                        Map.of("field", "username", "message", "must not be empty"),
+                        Map.of("field", "password", "message", "must not be empty"),
+                        Map.of("field", "email", "message", "must not be empty")
+                ],
+                [
+                        Map.of("field", "username", "message", "length must be between 0 and 20"),
+                        Map.of("field", "password", "message", "length must be between 0 and 255"),
+                        Map.of("field", "email", "message", "must be a well-formed email address")
+                ],
+                [
+                        Map.of("field", "username", "message", "wrong username format")
+                ]
         ]
     }
 }

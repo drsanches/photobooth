@@ -5,6 +5,7 @@ import com.drsanches.photobooth.app.app.exception.NoUserIdException;
 import com.drsanches.photobooth.app.app.exception.NoUsernameException;
 import com.drsanches.photobooth.app.auth.exception.AuthException;
 import com.drsanches.photobooth.app.auth.exception.GoogleLinkAuthException;
+import com.drsanches.photobooth.app.common.exception.dto.ExceptionDto;
 import com.drsanches.photobooth.app.common.exception.server.ServerError;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -15,50 +16,62 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 @Slf4j
 @ControllerAdvice
 //TODO: Split into different handlers for auth, app, etc
 public class CustomExceptionHandler {
 
     @ExceptionHandler(ApplicationException.class)
-    public ResponseEntity<String> handleApplicationException(ApplicationException e) {
-        log.warn("Application exception", e);
-        return new ResponseEntity<>(e.getMessage(), headers(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ExceptionDto> handleApplicationException(ApplicationException e) {
+        log.warn("Application exception. Uuid: {}", e.getUuid(), e);
+        return new ResponseEntity<>(new ExceptionDto(e), headers(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
-        var path = e.getMessage().split("\\.");
-        var message = e.getMessage().substring(path[0].length() + path[1].length() + 2);
-        return handleApplicationException(new ApplicationException(message, e));
+    public ResponseEntity<ExceptionDto> handleConstraintViolationException(ConstraintViolationException e) {
+        var result = new ExceptionDto(UUID.randomUUID().toString(), "validation.error");
+        e.getConstraintViolations().forEach(it -> {
+            var message = it.getMessage();
+            var field = StreamSupport.stream(it.getPropertyPath().spliterator(), false)
+                    .skip(2)
+                    .map(Object::toString)
+                    .collect(Collectors.joining("."));
+            result.addDetail(field, message);
+        });
+        log.warn("Validation error. Uuid: {}", result.getUuid(), e);
+        return new ResponseEntity<>(result, headers(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AuthException.class)
-    public ResponseEntity<String> handleAuthException(AuthException e) {
-        log.warn("Auth exception", e);
-        return new ResponseEntity<>(e.getMessage(), headers(), HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<ExceptionDto> handleAuthException(AuthException e) {
+        log.warn("Auth exception. Uuid: {}", e.getUuid(), e);
+        return new ResponseEntity<>(new ExceptionDto(e), headers(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(GoogleLinkAuthException.class)
-    public ResponseEntity<String> handleGoogleLinkAuthException(GoogleLinkAuthException e) {
-        log.warn("Google link exception", e);
-        return new ResponseEntity<>(e.getMessage(), headers(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ExceptionDto> handleGoogleLinkAuthException(GoogleLinkAuthException e) {
+        log.warn("Google link exception. Uuid: {}", e.getUuid(), e);
+        return new ResponseEntity<>(new ExceptionDto(e), headers(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({NoUserIdException.class, NoUsernameException.class})
-    public ResponseEntity<String> handleNoUserException(ApplicationException e) {
-        log.warn("No user exception", e);
-        return new ResponseEntity<>(e.getMessage(), headers(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<ExceptionDto> handleNoUserException(ApplicationException e) {
+        log.warn("No user exception. Uuid: {}", e.getUuid(), e);
+        return new ResponseEntity<>(new ExceptionDto(e), headers(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ServerError.class)
-    public ResponseEntity<String> handleServerError(ServerError e) {
-        log.error("Server error", e);
-        return new ResponseEntity<>(e.getMessage(), headers(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ExceptionDto> handleServerError(ServerError e) {
+        log.error("Server error. Uuid: {}, info: {}", e.getUuid(), e.getLogMessage(), e);
+        return new ResponseEntity<>(new ExceptionDto(e), headers(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
+    public ResponseEntity<ExceptionDto> handleRuntimeException(RuntimeException e) {
         return handleServerError(new ServerError(e.getMessage(), e));
     }
 

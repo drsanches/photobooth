@@ -3,8 +3,8 @@ package com.drsanches.photobooth.end2end.auth
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
+import com.drsanches.photobooth.end2end.utils.Utils
 import org.apache.commons.lang3.RandomStringUtils
-import org.apache.commons.lang3.StringUtils
 import org.json.JSONObject
 import spock.lang.Specification
 
@@ -44,8 +44,9 @@ class TestChangeEmail extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "newEmail: User with email '$user.email' already exists"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "newEmail", "message", "User with email '$user.email' already exists")
+        ])
     }
 
     def "email change with existent email"() {
@@ -61,8 +62,9 @@ class TestChangeEmail extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "newEmail: User with email '$user2.email' already exists"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "newEmail", "message", "User with email '$user2.email' already exists")
+        ])
     }
 
     def "email change with invalid email"() {
@@ -77,8 +79,9 @@ class TestChangeEmail extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == message
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "newEmail", "message", message)
+        ])
 
         where:
         invalidEmail << [
@@ -87,9 +90,9 @@ class TestChangeEmail extends Specification {
                 RandomStringUtils.randomAlphabetic(300)
         ]
         message << [
-                "newEmail: must not be empty",
-                "newEmail: must not be empty",
-                "newEmail: must be a well-formed email address"
+                "must not be empty",
+                "must not be empty",
+                "must be a well-formed email address"
         ]
     }
 
@@ -104,7 +107,6 @@ class TestChangeEmail extends Specification {
 
         then: "response is correct"
         assert response.status == 401
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "Wrong token"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "Wrong token", null)
     }
 }

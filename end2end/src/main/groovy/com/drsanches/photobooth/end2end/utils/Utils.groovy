@@ -1,5 +1,8 @@
 package com.drsanches.photobooth.end2end.utils
 
+import org.apache.commons.lang3.StringUtils
+import org.json.JSONObject
+
 import javax.imageio.ImageIO
 import java.awt.Image
 import java.awt.image.BufferedImage
@@ -69,5 +72,35 @@ class Utils {
             hexString.append(hex)
         }
         return hexString.toString()
+    }
+
+    static validateErrorResponse(JSONObject response, String message, List<Map<String, String>> expectedDetails) {
+        if (expectedDetails != null && !expectedDetails.isEmpty()) {
+            var responseDetails = response.getJSONArray("details")
+            if (expectedDetails.size() != responseDetails.size()) {
+                return false
+            }
+            for (Object responseDetail: responseDetails) {
+                if (!validateDetail(expectedDetails, (responseDetail as JSONObject))) {
+                    return false
+                }
+            }
+        }
+        return StringUtils.isNotEmpty(response["uuid"] as CharSequence)
+                && response["message"] == message
+                && expectedDetails == null ? response.keySet().size() == 2 : response.keySet().size() == 3
+    }
+
+    private static boolean validateDetail(List<Map<String, String>> expectedDetails, JSONObject responseDetail) {
+        if (responseDetail.keySet().size() != 2) {
+            return false
+        }
+        for (Map<String, String> expectedDetail: expectedDetails) {
+            if (expectedDetail.get("field") == responseDetail.getString("field")
+                    && expectedDetail.get("message") == responseDetail.getString("message")) {
+                return true
+            }
+        }
+        return false
     }
 }

@@ -3,7 +3,7 @@ package com.drsanches.photobooth.end2end.auth
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
-import org.apache.commons.lang3.StringUtils
+import com.drsanches.photobooth.end2end.utils.Utils
 import org.json.JSONObject
 import spock.lang.Specification
 
@@ -86,8 +86,7 @@ class TestLogin extends Specification {
 
         then: "response is correct"
         assert response.status == status
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == message
+        assert Utils.validateErrorResponse(response.data as JSONObject, message, details)
 
         where:
         username << [
@@ -119,12 +118,24 @@ class TestLogin extends Specification {
                 "Wrong username or password",
 
                 //Invalid username
-                "username: must not be empty",
-                "username: must not be empty",
+                "validation.error",
+                "validation.error",
 
                 //Invalid password
-                "password: must not be empty",
-                "password: must not be empty"
+                "validation.error",
+                "validation.error"
+        ]
+        details << [
+                //No user
+                null,
+
+                //Invalid username
+                [ Map.of("field", "username", "message", "must not be empty") ],
+                [ Map.of("field", "username", "message", "must not be empty") ],
+
+                //Invalid password
+                [ Map.of("field", "password", "message", "must not be empty") ],
+                [ Map.of("field", "password", "message", "must not be empty") ]
         ]
         status << [
                 //No user

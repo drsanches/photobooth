@@ -2,8 +2,8 @@ package com.drsanches.photobooth.end2end.friends
 
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
-import org.apache.commons.lang3.StringUtils
-import org.json.JSONArray
+import com.drsanches.photobooth.end2end.utils.Utils
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestSendFriendRequest extends Specification {
@@ -156,8 +156,9 @@ class TestSendFriendRequest extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "userId: the user does not exist"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "userId", "message", "the user does not exist")
+        ])
     }
 
     def "send friend request to deleted friend"() {
@@ -175,8 +176,9 @@ class TestSendFriendRequest extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "userId: the user does not exist"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "userId", "message", "the user does not exist")
+        ])
     }
 
     def "send friend request to current user"() {
@@ -191,8 +193,9 @@ class TestSendFriendRequest extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "userId: the user can not be current"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "userId", "message", "the user can not be current")
+        ])
     }
 
     def "send friend request with invalid data"() {
@@ -207,8 +210,9 @@ class TestSendFriendRequest extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == message
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "userId", "message", message)
+        ])
 
         where:
         userId << [
@@ -217,9 +221,9 @@ class TestSendFriendRequest extends Specification {
                 UUID.randomUUID().toString()
         ]
         message << [
-                "userId: must not be empty",
-                "userId: must not be empty",
-                "userId: the user does not exist"
+                "must not be empty",
+                "must not be empty",
+                "the user does not exist"
         ]
     }
 
@@ -234,7 +238,6 @@ class TestSendFriendRequest extends Specification {
 
         then: "response is correct"
         assert response.status == 401
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "Wrong token"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "Wrong token", null)
     }
 }

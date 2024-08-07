@@ -4,7 +4,6 @@ import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
-import org.apache.commons.lang3.StringUtils
 import org.json.JSONArray
 import org.json.JSONObject
 import spock.lang.Specification
@@ -83,7 +82,6 @@ class TestGetAllImagesInfo extends Specification {
 
         then: "response is correct"
         assert response.status == 401
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "Wrong token"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "Wrong token", null)
     }
 }

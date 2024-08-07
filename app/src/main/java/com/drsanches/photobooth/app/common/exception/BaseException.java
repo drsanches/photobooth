@@ -15,7 +15,7 @@ public class BaseException extends RuntimeException {
 
     private final GregorianCalendar timestamp = new GregorianCalendar();
 
-    private String logMessage;
+    private String logMessage; //TODO: Move to ServerError
 
     public BaseException(String message) {
         super(message);
@@ -37,11 +37,6 @@ public class BaseException extends RuntimeException {
     public BaseException(String message, String logMessage, Throwable cause) {
         super(message, cause);
         this.logMessage = logMessage;
-    }
-
-    @Override
-    public String getMessage() {
-        return new ExceptionDto(uuid, super.getMessage()).toString();
     }
 }
 

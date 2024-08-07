@@ -3,7 +3,7 @@ package com.drsanches.photobooth.end2end.profile
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
-import org.apache.commons.lang3.StringUtils
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestGetProfile extends Specification {
@@ -128,8 +128,7 @@ class TestGetProfile extends Specification {
 
         then: "response is correct"
         assert response.status == 404
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "There is no user with id '$user2.id'"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "There is no user with id '$user2.id'", null)
     }
 
     def "get nonexistent user profile"() {
@@ -144,8 +143,11 @@ class TestGetProfile extends Specification {
 
         then: "response is correct"
         assert response.status == 404
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "There is no user with id '$nonexistentId'"
+        assert Utils.validateErrorResponse(
+                response.data as JSONObject,
+                "There is no user with id '$nonexistentId'",
+                null
+        )
     }
 
     def "get user profile with invalid token"() {
@@ -160,7 +162,6 @@ class TestGetProfile extends Specification {
 
         then: "response is correct"
         assert response.status == 401
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "Wrong token"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "Wrong token", null)
     }
 }

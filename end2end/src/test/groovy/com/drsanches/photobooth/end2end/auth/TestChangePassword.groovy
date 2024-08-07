@@ -1,10 +1,10 @@
 package com.drsanches.photobooth.end2end.auth
 
+import com.drsanches.photobooth.end2end.utils.Utils
 import org.apache.commons.lang3.RandomStringUtils
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
-import org.apache.commons.lang3.StringUtils
 import org.json.JSONObject
 import spock.lang.Specification
 
@@ -55,8 +55,9 @@ class TestChangePassword extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == message
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "newPassword", "message", message)
+        ])
 
         where:
         invalidPassword << [
@@ -65,9 +66,9 @@ class TestChangePassword extends Specification {
                 RandomStringUtils.randomAlphabetic(256)
         ]
         message << [
-                "newPassword: must not be empty",
-                "newPassword: must not be empty",
-                "newPassword: length must be between 0 and 255"
+                "must not be empty",
+                "must not be empty",
+                "length must be between 0 and 255"
         ]
     }
 
@@ -82,7 +83,6 @@ class TestChangePassword extends Specification {
 
         then: "response is correct"
         assert response.status == 401
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "Wrong token"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "Wrong token", null)
     }
 }

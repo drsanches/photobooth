@@ -4,6 +4,7 @@ import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import com.drsanches.photobooth.app.auth.exception.AuthException;
 import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
 import com.drsanches.photobooth.app.common.auth.AuthInfo;
+import com.drsanches.photobooth.app.common.exception.dto.ExceptionDto;
 import com.drsanches.photobooth.app.common.integration.auth.AuthIntegrationService;
 import com.drsanches.photobooth.app.common.utils.TokenExtractor;
 import jakarta.servlet.FilterChain;
@@ -47,11 +48,11 @@ public class AuthFilter extends GenericFilterBean {
                 );
             }
         } catch (AuthException e) {
-            log.info("Wrong token for endpoint: {}", endpoint, e);
+            log.info("Wrong token. Endpoint: {}, uuid: {}", endpoint, e.getUuid(), e);
             httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             httpResponse.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
             httpResponse.getOutputStream().flush();
-            httpResponse.getOutputStream().println(e.getMessage());
+            httpResponse.getOutputStream().println(new ExceptionDto(e).toString());
             return;
         }
         chain.doFilter(request, response);

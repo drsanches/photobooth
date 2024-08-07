@@ -1,10 +1,10 @@
 package com.drsanches.photobooth.end2end.auth
 
+import com.drsanches.photobooth.end2end.utils.Utils
 import org.apache.commons.lang3.RandomStringUtils
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
-import org.apache.commons.lang3.StringUtils
 import org.json.JSONObject
 import spock.lang.Specification
 
@@ -58,8 +58,9 @@ class TestChangeUsername extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "newUsername: User with username '$user.username' already exists"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "newUsername", "message", "User with username '$user.username' already exists")
+        ])
     }
 
     def "username change with existent username"() {
@@ -75,8 +76,9 @@ class TestChangeUsername extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "newUsername: User with username '$user2.username' already exists"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "newUsername", "message", "User with username '$user2.username' already exists")
+        ])
     }
 
     def "username change with invalid username"() {
@@ -91,8 +93,9 @@ class TestChangeUsername extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == message
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
+                Map.of("field", "newUsername", "message", message)
+        ])
 
         where:
         invalidUsername << [
@@ -102,10 +105,10 @@ class TestChangeUsername extends Specification {
                 RandomStringUtils.randomAlphabetic(21)
         ]
         message << [
-                "newUsername: must not be empty",
-                "newUsername: must not be empty",
-                "newUsername: wrong username format",
-                "newUsername: length must be between 0 and 20"
+                "must not be empty",
+                "must not be empty",
+                "wrong username format",
+                "length must be between 0 and 20"
         ]
     }
 
@@ -120,7 +123,6 @@ class TestChangeUsername extends Specification {
 
         then: "response is correct"
         assert response.status == 401
-        assert StringUtils.isNotEmpty(response.data["uuid"] as CharSequence)
-        assert response.data["message"] == "Wrong token"
+        assert Utils.validateErrorResponse(response.data as JSONObject, "Wrong token", null)
     }
 }
