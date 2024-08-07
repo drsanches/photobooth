@@ -11,7 +11,7 @@ class TestGetThumbnail extends Specification {
 
     def THUMBNAIL_PATH = { String imageId -> "/api/v1/app/image/data/thumbnail/" + imageId }
 
-    def "successful system avatar thumbnail getting"() {
+    def "successful system profile photo thumbnail getting"() {
         when: "request is sent"
         def response = RequestUtils.getRestClient().getBytes(path: path)
 
@@ -32,10 +32,10 @@ class TestGetThumbnail extends Specification {
         ]
     }
 
-    def "successful avatar thumbnail getting"() {
-        given: "user with avatar"
+    def "successful profile photo thumbnail getting"() {
+        given: "user with photo"
         def image = DataGenerator.createValidImage()
-        def user = new TestUser().register().uploadAvatar(image)
+        def user = new TestUser().register().uploadProfilePhoto(image)
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().getBytes(path: user.thumbnailPath)

@@ -11,7 +11,7 @@ class TestGetImageInfo extends Specification {
 
     String PATH = "/api/v1/app/image/info/"
 
-    def "successful default avatar info getting"() {
+    def "successful default profile photo info getting"() {
         given: "user"
         def user = new TestUser().register()
 
@@ -29,12 +29,12 @@ class TestGetImageInfo extends Specification {
         assert response.data["ownerId"] == JSONObject.NULL
     }
 
-    def "successful custom avatar info getting"() {
+    def "successful custom profile photo info getting"() {
         given: "two users"
         def user1 = new TestUser().register()
         def user2 = new TestUser().register()
         def dateBefore = new Date()
-        user2.uploadAvatar(DataGenerator.createValidImage())
+        user2.uploadProfilePhoto(DataGenerator.createValidImage())
         def dateAfter = new Date()
 
         when: "request is sent"
@@ -70,7 +70,7 @@ class TestGetImageInfo extends Specification {
         )
     }
 
-    def "get avatar info with invalid token"() {
+    def "get profile photo info with invalid token"() {
         given: "invalid token"
         def token = UUID.randomUUID().toString()
 

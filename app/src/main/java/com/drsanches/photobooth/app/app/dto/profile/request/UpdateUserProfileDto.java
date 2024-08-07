@@ -7,7 +7,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 @Data
-public class ChangeUserProfileDto {
+public class UpdateUserProfileDto {
 
     @Schema(maxLength = 100, pattern = Name.PATTERN)
     @Length(max = 100)

@@ -31,7 +31,7 @@ class TestSendPhoto extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body: [file: Utils.toBase64(image),
+                body: [imageData: Utils.toBase64(image),
                        userIds: [friend1.id]])
         def dateAfter = new Date()
 
@@ -80,7 +80,7 @@ class TestSendPhoto extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body: [file: Utils.toBase64(image),
+                body: [imageData: Utils.toBase64(image),
                        userIds: all])
         def dateAfter = new Date()
 
@@ -128,7 +128,7 @@ class TestSendPhoto extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body: [file: Utils.toBase64(image),
+                body: [imageData: Utils.toBase64(image),
                        userIds: all])
         def dateAfter = new Date()
 
@@ -161,7 +161,7 @@ class TestSendPhoto extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body: [file: base64Image,
+                body: [imageData: base64Image,
                        userIds: [user.id]])
 
         then: "response is correct"
@@ -183,7 +183,7 @@ class TestSendPhoto extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body: [file: base64Image,
+                body: [imageData: base64Image,
                        userIds: [friend.id]])
 
         then: "response is correct"
@@ -203,7 +203,7 @@ class TestSendPhoto extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user1.token"],
-                body: [file: base64Image,
+                body: [imageData: base64Image,
                        userIds: [user2.id]])
 
         then: "response is correct"
@@ -224,7 +224,7 @@ class TestSendPhoto extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user1.token"],
-                body: [file: base64Image,
+                body: [imageData: base64Image,
                        userIds: [user2.id]])
 
         then: "response is correct"
@@ -245,7 +245,7 @@ class TestSendPhoto extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user1.token"],
-                body: [file: base64Image,
+                body: [imageData: base64Image,
                        userIds: [user2.id]])
 
         then: "response is correct"
@@ -266,13 +266,13 @@ class TestSendPhoto extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user1.token"],
-                body: [file: invalidData,
+                body: [imageData: invalidData,
                        userIds: [user2.id]])
 
         then: "response is correct"
         assert response.status == 400
         assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
-                Map.of("field", "file", "message", message)
+                Map.of("field", "imageData", "message", message)
         ])
 
         where:
@@ -301,7 +301,7 @@ class TestSendPhoto extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $token"],
-                body: [file: base64Image])
+                body: [imageData: base64Image])
 
         then: "response is correct"
         assert response.status == 401

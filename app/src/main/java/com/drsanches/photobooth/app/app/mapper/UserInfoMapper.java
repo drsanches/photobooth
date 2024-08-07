@@ -62,17 +62,17 @@ public class UserInfoMapper {
                     .name(userProfile.getName())
                     .status(userProfile.getStatus())
                     .imagePath(userProfile.getImageId() == null ?
-                            ImageConsts.IMAGE_PATH.apply(ImageConsts.DEFAULT_AVATAR_ID) :
+                            ImageConsts.IMAGE_PATH.apply(ImageConsts.DEFAULT_PROFILE_PHOTO_ID) :
                             ImageConsts.IMAGE_PATH.apply(userProfile.getImageId()))
                     .thumbnailPath(userProfile.getImageId() == null ?
-                            ImageConsts.THUMBNAIL_PATH.apply(ImageConsts.DEFAULT_AVATAR_ID) :
+                            ImageConsts.THUMBNAIL_PATH.apply(ImageConsts.DEFAULT_PROFILE_PHOTO_ID) :
                             ImageConsts.THUMBNAIL_PATH.apply(userProfile.getImageId()))
                     .build();
         }
         return UserInfoDto.builder()
                 .id(userProfile.getId())
-                .imagePath(ImageConsts.IMAGE_PATH.apply(ImageConsts.DELETED_AVATAR_ID))
-                .thumbnailPath(ImageConsts.THUMBNAIL_PATH.apply(ImageConsts.DELETED_AVATAR_ID))
+                .imagePath(ImageConsts.IMAGE_PATH.apply(ImageConsts.DELETED_PROFILE_PHOTO_ID))
+                .thumbnailPath(ImageConsts.THUMBNAIL_PATH.apply(ImageConsts.DELETED_PROFILE_PHOTO_ID))
                 .build();
     }
 

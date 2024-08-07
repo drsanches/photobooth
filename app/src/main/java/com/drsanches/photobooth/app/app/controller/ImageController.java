@@ -1,6 +1,5 @@
 package com.drsanches.photobooth.app.app.controller;
 
-import com.drsanches.photobooth.app.app.dto.image.request.UploadAvatarDto;
 import com.drsanches.photobooth.app.app.dto.image.request.UploadPhotoDto;
 import com.drsanches.photobooth.app.app.dto.image.response.ImageInfoDto;
 import com.drsanches.photobooth.app.app.service.ImageWebService;
@@ -33,17 +32,6 @@ public class ImageController {
 
     @Autowired
     private ImageWebService imageWebService;
-
-    @Operation(summary = "Adds new profile photo")
-    @ApiTokenAuthorization
-    @ApiResponseCode201
-    @ApiResponseCode400
-    @ApiResponseCode401
-    @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(path = "/avatar", method = RequestMethod.POST)
-    public void uploadAvatar(@RequestBody UploadAvatarDto uploadAvatarDto) {
-        imageWebService.uploadAvatar(uploadAvatarDto);
-    }
 
     @Operation(summary = "Returns an image info")
     @ApiTokenAuthorization
@@ -92,14 +80,5 @@ public class ImageController {
             @ApiPaginationSize @RequestParam(value = "size", required = false) Integer size
     ) {
         return imageWebService.getAllInfo(page, size);
-    }
-
-    @Operation(summary = "Removes profile photo")
-    @ApiTokenAuthorization
-    @ApiResponseCode200
-    @ApiResponseCode401
-    @RequestMapping(path = "/avatar", method = RequestMethod.DELETE)
-    public void deleteAvatar() {
-        imageWebService.deleteAvatar();
     }
 }

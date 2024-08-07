@@ -19,7 +19,7 @@ public class AppIntegrationServiceImpl implements AppIntegrationService {
 
     //TODO: Add transaction
     @Override
-    public void safetyInitializeProfile(String userId, String username, String name, byte[] avatar) {
+    public void safetyInitializeProfile(String userId, String username, String name, byte[] imageData) {
         try {
             if (userProfileDomainService.findEnabledById(userId).isEmpty()) {
                 userProfileDomainService.create(userId, username);
@@ -27,8 +27,8 @@ public class AppIntegrationServiceImpl implements AppIntegrationService {
             if (name != null) {
                 userProfileDomainService.updateProfileData(userId, name, null);
             }
-            if (avatar != null) {
-                var image = imageDomainService.saveImage(avatar, userId);
+            if (imageData != null) {
+                var image = imageDomainService.saveImage(imageData, userId);
                 userProfileDomainService.updateImageId(userId, image.getId());
             }
             log.debug("Profile initialized. UserId: {}", userId);

@@ -159,11 +159,11 @@ class RequestUtils {
         }
     }
 
-    static void uploadAvatar(String token, byte[] image) {
+    static void uploadProfilePhoto(String token, byte[] image) {
         getRestClient().post(
-                path: "/api/v1/app/image/avatar",
+                path: "/api/v1/app/profile/photo",
                 headers: [Authorization: "Bearer $token"],
-                body: [file: Utils.toBase64(image)])
+                body: [imageData: Utils.toBase64(image)])
     }
 
     static JSONArray getAllImagesInfo(String token) {
@@ -182,7 +182,7 @@ class RequestUtils {
         getRestClient().post(
                 path: "/api/v1/app/image/photo",
                 headers: [Authorization: "Bearer $token"],
-                body: [file: Utils.toBase64(image),
+                body: [imageData: Utils.toBase64(image),
                        userIds: userIds])
     }
 }

@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.end2end.image
+package com.drsanches.photobooth.end2end.profile
 
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
@@ -7,11 +7,11 @@ import com.drsanches.photobooth.end2end.utils.Utils
 import org.json.JSONObject
 import spock.lang.Specification
 
-class TestUploadAvatar extends Specification {
+class TestUploadProfilePhoto extends Specification {
 
-    String PATH = "/api/v1/app/image/avatar"
+    String PATH = "/api/v1/app/profile/photo"
 
-    def "successful avatar upload"() {
+    def "successful profile photo upload"() {
         given: "user and image"
         def user = new TestUser().register()
         def image = DataGenerator.createValidImage()
@@ -20,7 +20,7 @@ class TestUploadAvatar extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body: [file: Utils.toBase64(image)])
+                body: [imageData: Utils.toBase64(image)])
 
         then: "response is correct"
         assert response.status == 201
@@ -35,7 +35,7 @@ class TestUploadAvatar extends Specification {
         assert Utils.toThumbnail(image) == RequestUtils.getImage(user.token, userProfile["thumbnailPath"] as String)
     }
 
-    def "upload avatar with invalid data"() {
+    def "upload profile photo with invalid data"() {
         given: "user and invalid data"
         def user = new TestUser().register()
 
@@ -43,12 +43,12 @@ class TestUploadAvatar extends Specification {
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
-                body: [file: invalidData])
+                body: [imageData: invalidData])
 
         then: "response is correct"
         assert response.status == 400
         assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
-                Map.of("field", "file", "message", message)
+                Map.of("field", "imageData", "message", message)
         ])
 
         and: "user profile does not change"
@@ -73,7 +73,7 @@ class TestUploadAvatar extends Specification {
         ]
     }
 
-    def "upload avatar with invalid token"() {
+    def "upload profile photo with invalid token"() {
         given: "invalid token"
         def token = UUID.randomUUID().toString()
         def base64Image = Utils.toBase64(DataGenerator.createValidImage())

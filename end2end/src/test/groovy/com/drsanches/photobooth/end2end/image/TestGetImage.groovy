@@ -11,7 +11,7 @@ class TestGetImage extends Specification {
 
     String PATH = "/api/v1/app/image/data/"
 
-    def "successful system avatar getting"() {
+    def "successful system profile photo getting"() {
         when: "request is sent"
         def response = RequestUtils.getRestClient().getBytes(path: path)
 
@@ -32,10 +32,10 @@ class TestGetImage extends Specification {
         ]
     }
 
-    def "successful avatar getting"() {
-        given: "user with avatar"
+    def "successful profile photo getting"() {
+        given: "user with photo"
         byte[] image = DataGenerator.createValidImage()
-        def user = new TestUser().register().uploadAvatar(image)
+        def user = new TestUser().register().uploadProfilePhoto(image)
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().getBytes(path: user.imagePath)

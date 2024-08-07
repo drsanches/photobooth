@@ -122,12 +122,12 @@ class GoogleAuthWebServiceTest {
                 null,
                 null
         );
-        var avatar = UUID.randomUUID().toString().getBytes();
+        var profilePhoto = UUID.randomUUID().toString().getBytes();
         var userAuth = createUserAuth();
         var token = createToken();
         var tokenDto = createTokenDto();
         Mockito.when(googleUserInfoService.getGoogleInfo(Mockito.any())).thenReturn(googleInfo);
-        Mockito.when(googleUserInfoService.safetyGetPicture(Mockito.any())).thenReturn(avatar);
+        Mockito.when(googleUserInfoService.safetyGetPicture(Mockito.any())).thenReturn(profilePhoto);
         Mockito.when(userAuthDomainService.findEnabledByGoogleAuth(USER_EMAIL)).thenReturn(Optional.empty());
         Mockito.when(userAuthDomainService.findEnabledByEmail(USER_EMAIL)).thenReturn(Optional.empty());
         Mockito.when(userAuthDomainService.createUserByGoogle(USER_EMAIL)).thenReturn(userAuth);

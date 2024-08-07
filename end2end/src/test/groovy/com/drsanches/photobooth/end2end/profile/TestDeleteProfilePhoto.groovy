@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.end2end.image
+package com.drsanches.photobooth.end2end.profile
 
 import com.drsanches.photobooth.end2end.utils.DataGenerator
 import com.drsanches.photobooth.end2end.utils.RequestUtils
@@ -7,11 +7,11 @@ import com.drsanches.photobooth.end2end.utils.Utils
 import org.json.JSONObject
 import spock.lang.Specification
 
-class TestDeleteAvatar extends Specification {
+class TestDeleteProfilePhoto extends Specification {
 
-    String PATH = "/api/v1/app/image/avatar"
+    String PATH = "/api/v1/app/profile/photo"
 
-    def "successful default avatar deletion"() {
+    def "successful default profile photo deletion"() {
         given: "user"
         def user = new TestUser().register()
 
@@ -26,10 +26,10 @@ class TestDeleteAvatar extends Specification {
         assert user.getUserProfile()["thumbnailPath"] == Utils.DEFAULT_THUMBNAIL_PATH
     }
 
-    def "successful avatar deletion"() {
+    def "successful profile photo deletion"() {
         given: "user"
         def image = DataGenerator.createValidImage()
-        def user = new TestUser().register().uploadAvatar(image)
+        def user = new TestUser().register().uploadProfilePhoto(image)
         def oldImagePath = user.imagePath
         def oldThumbnailPath = user.thumbnailPath
 
@@ -48,7 +48,7 @@ class TestDeleteAvatar extends Specification {
         assert Utils.toThumbnail(image) == RequestUtils.getImage(user.token, oldThumbnailPath)
     }
 
-    def "delete avatar with invalid token"() {
+    def "delete profile photo with invalid token"() {
         given: "invalid token"
         def token = UUID.randomUUID().toString()
 

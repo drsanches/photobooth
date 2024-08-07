@@ -46,7 +46,7 @@ public class BaseSpringTest {
     protected static final Supplier<String> URL = () -> "url-" + UUID.randomUUID();
     protected static final Supplier<String> CONFIRMATION_CODE = () -> UUID.randomUUID().toString();
     protected static final Supplier<String> FCM_TOKEN = () -> UUID.randomUUID().toString();
-    protected static final Supplier<byte[]> AVATAR = () -> {
+    protected static final Supplier<byte[]> PROFILE_PHOTO = () -> {
         BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {

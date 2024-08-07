@@ -17,7 +17,7 @@ public class UploadPhotoDto {
     @NotEmpty
     @ValidBase64Image
     @ToString.Exclude
-    private String file;
+    private String imageData;
 
     @Schema(description = "Ids of users to whom the photo is being sent, null for all friends")
     @EnabledIds
@@ -26,6 +26,6 @@ public class UploadPhotoDto {
 
     @ToString.Include
     private int base64length() {
-        return file.length();
+        return imageData.length();
     }
 }

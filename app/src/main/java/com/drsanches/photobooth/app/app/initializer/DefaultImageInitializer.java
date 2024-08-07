@@ -28,9 +28,9 @@ public class DefaultImageInitializer implements Initializer {
 
     @Override
     public void initialize() {
-        initialize(ImageConsts.DEFAULT_AVATAR_ID, defaultImage);
+        initialize(ImageConsts.DEFAULT_PROFILE_PHOTO_ID, defaultImage);
         initialize(ImageConsts.NO_PHOTO_IMAGE_ID, noPhotoImage);
-        initialize(ImageConsts.DELETED_AVATAR_ID, deletedImage);
+        initialize(ImageConsts.DELETED_PROFILE_PHOTO_ID, deletedImage);
     }
 
     private void initialize(String imageId, String imageData) {

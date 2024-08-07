@@ -4,9 +4,9 @@ import java.util.function.UnaryOperator;
 
 public class ImageConsts {
 
-    public static final String DEFAULT_AVATAR_ID = "default";
+    public static final String DEFAULT_PROFILE_PHOTO_ID = "default";
 
-    public static final String DELETED_AVATAR_ID = "deleted";
+    public static final String DELETED_PROFILE_PHOTO_ID = "deleted";
 
     public static final String NO_PHOTO_IMAGE_ID = "no_photo";
 

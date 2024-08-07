@@ -292,6 +292,6 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                 null
         );
         when(googleUserInfoService.getGoogleInfo(googleToken)).thenReturn(googleInfo);
-        when(googleUserInfoService.safetyGetPicture(googleInfo.getPicture())).thenReturn(AVATAR.get());
+        when(googleUserInfoService.safetyGetPicture(googleInfo.getPicture())).thenReturn(PROFILE_PHOTO.get());
     }
 }

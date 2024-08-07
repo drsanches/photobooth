@@ -1,12 +1,14 @@
 package com.drsanches.photobooth.app.app.controller;
 
-import com.drsanches.photobooth.app.app.dto.profile.request.ChangeUserProfileDto;
+import com.drsanches.photobooth.app.app.dto.profile.request.UploadProfilePhotoDto;
+import com.drsanches.photobooth.app.app.dto.profile.request.UpdateUserProfileDto;
 import com.drsanches.photobooth.app.app.dto.profile.response.UserInfoDto;
 import com.drsanches.photobooth.app.app.service.UserProfileWebService;
 import com.drsanches.photobooth.app.common.aspects.MonitorTime;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationPage;
 import com.drsanches.photobooth.app.common.swagger.ApiPaginationSize;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;
+import com.drsanches.photobooth.app.common.swagger.ApiResponseCode201;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode400;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode401;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode404;
@@ -14,12 +16,14 @@ import com.drsanches.photobooth.app.common.swagger.ApiTokenAuthorization;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -47,8 +51,18 @@ public class UserProfileController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "", method = RequestMethod.PUT)
-    public void changeCurrentProfile(@RequestBody ChangeUserProfileDto changeUserProfileDto) {
-        userProfileWebService.changeCurrentProfile(changeUserProfileDto);
+    public void updateCurrentProfile(@RequestBody UpdateUserProfileDto updateUserProfileDto) {
+        userProfileWebService.updateCurrentProfile(updateUserProfileDto);
+    }
+
+    @Operation(summary = "Returns user profile information")
+    @ApiTokenAuthorization
+    @ApiResponseCode200
+    @ApiResponseCode401
+    @ApiResponseCode404
+    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+    public UserInfoDto getProfile(@PathVariable String userId) {
+        return userProfileWebService.getProfile(userId);
     }
 
     @Operation(summary = "Returns a list of user profile information")
@@ -65,13 +79,23 @@ public class UserProfileController {
         return userProfileWebService.searchProfile(username, page, size);
     }
 
-    @Operation(summary = "Returns user profile information")
+    @Operation(summary = "Adds new profile photo")
+    @ApiTokenAuthorization
+    @ApiResponseCode201
+    @ApiResponseCode400
+    @ApiResponseCode401
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(path = "/photo", method = RequestMethod.POST)
+    public void uploadProfilePhoto(@RequestBody UploadProfilePhotoDto uploadProfilePhotoDto) {
+        userProfileWebService.uploadProfilePhoto(uploadProfilePhotoDto);
+    }
+
+    @Operation(summary = "Removes profile photo")
     @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode401
-    @ApiResponseCode404
-    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-    public UserInfoDto getProfile(@PathVariable String userId) {
-        return userProfileWebService.getProfile(userId);
+    @RequestMapping(path = "/photo", method = RequestMethod.DELETE)
+    public void deleteProfilePhoto() {
+        userProfileWebService.deleteProfilePhoto();
     }
 }

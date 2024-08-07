@@ -7,7 +7,6 @@ import com.drsanches.photobooth.app.app.data.friends.FriendsDomainService;
 import com.drsanches.photobooth.app.app.data.image.ImageDomainService;
 import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
 import com.drsanches.photobooth.app.app.utils.PaginationService;
-import com.drsanches.photobooth.app.app.dto.image.request.UploadAvatarDto;
 import com.drsanches.photobooth.app.app.dto.image.request.UploadPhotoDto;
 import com.drsanches.photobooth.app.app.dto.image.response.ImageInfoDto;
 import com.drsanches.photobooth.app.app.data.permission.ImagePermissionDomainService;
@@ -60,16 +59,6 @@ public class ImageWebService {
     @Autowired
     private ImageInfoMapper imageInfoMapper;
 
-    public void uploadAvatar(@Valid UploadAvatarDto uploadAvatarDto) {
-        var userId = authInfo.getUserId();
-        var image = Base64.getDecoder().decode(uploadAvatarDto.getFile());
-        new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
-            var imageId = imageDomainService.saveImage(image, userId).getId();
-            userProfileDomainService.updateImageId(userId, imageId);
-            log.info("User updated profile image. UserId: {}, newImageId: {}", userId, imageId);
-        });
-    }
-
     public ImageInfoDto getImageInfo(String imageId) {
         return imageInfoMapper.convert(imageDomainService.getImage(imageId));
     }
@@ -84,7 +73,7 @@ public class ImageWebService {
 
     public void uploadPhoto(@Valid UploadPhotoDto uploadPhotoDto) {
         var currentUserId = authInfo.getUserId();
-        var image = Base64.getDecoder().decode(uploadPhotoDto.getFile());
+        var image = Base64.getDecoder().decode(uploadPhotoDto.getImageData());
         var allowedUsers = CollectionUtils.isEmpty(uploadPhotoDto.getUserIds()) ?
                 getEnabledFriends(currentUserId) :
                 uploadPhotoDto.getUserIds();
@@ -111,12 +100,6 @@ public class ImageWebService {
         return paginationService.pagination(images, page, size)
                 .map(imageInfoMapper::convert)
                 .collect(Collectors.toList());
-    }
-
-    public void deleteAvatar() {
-        var userId = authInfo.getUserId();
-        userProfileDomainService.updateImageId(userId, null);
-        log.info("User deleted his profile image. UserId: {}", userId);
     }
 
     private List<String> getEnabledFriends(String currentUserId) {

@@ -58,8 +58,8 @@ class TestUser {
         return this
     }
 
-    TestUser uploadAvatar(byte[] image) {
-        RequestUtils.uploadAvatar(token, image)
+    TestUser uploadProfilePhoto(byte[] image) {
+        RequestUtils.uploadProfilePhoto(token, image)
         def userProfile = RequestUtils.getUserProfile(token)
         this.imagePath = userProfile["imagePath"]
         this.thumbnailPath = userProfile["thumbnailPath"]

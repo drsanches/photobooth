@@ -578,7 +578,6 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Add test profile with h2?
 - Always sent to notifier all info - email (if exists) and userId, then update email and send notification
 - Maybe use Spring Events
-- Rename avatar to profile photo and move it to /profile
 
 ### UI
 - Hide admin ui for users
