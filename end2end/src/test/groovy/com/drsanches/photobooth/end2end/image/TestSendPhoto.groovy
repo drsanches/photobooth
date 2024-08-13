@@ -167,7 +167,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
-                Map.of("field", "userIds", "message", "contains non friends")
+                Map.of("field", "userIds", "message", "user is not a friend")
         ])
     }
 
@@ -189,7 +189,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
-                Map.of("field", "userIds", "message", "contains nonexistent ids")
+                Map.of("field", "userIds", "message", "user not found")
         ])
     }
 
@@ -209,7 +209,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
-                Map.of("field", "userIds", "message", "contains non friends")
+                Map.of("field", "userIds", "message", "user is not a friend")
         ])
     }
 
@@ -230,7 +230,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
-                Map.of("field", "userIds", "message", "contains non friends")
+                Map.of("field", "userIds", "message", "user is not a friend")
         ])
     }
 
@@ -251,7 +251,7 @@ class TestSendPhoto extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
-                Map.of("field", "userIds", "message", "contains non friends")
+                Map.of("field", "userIds", "message", "user is not a friend")
         ])
     }
 

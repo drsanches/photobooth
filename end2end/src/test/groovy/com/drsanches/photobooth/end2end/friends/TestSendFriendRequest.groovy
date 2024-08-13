@@ -157,7 +157,7 @@ class TestSendFriendRequest extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
-                Map.of("field", "userId", "message", "the user does not exist")
+                Map.of("field", "userId", "message", "user not found")
         ])
     }
 
@@ -177,7 +177,7 @@ class TestSendFriendRequest extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
-                Map.of("field", "userId", "message", "the user does not exist")
+                Map.of("field", "userId", "message", "user not found")
         ])
     }
 
@@ -194,7 +194,7 @@ class TestSendFriendRequest extends Specification {
         then: "response is correct"
         assert response.status == 400
         assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
-                Map.of("field", "userId", "message", "the user can not be current")
+                Map.of("field", "userId", "message", "user can not be current")
         ])
     }
 
@@ -223,7 +223,7 @@ class TestSendFriendRequest extends Specification {
         message << [
                 "must not be empty",
                 "must not be empty",
-                "the user does not exist"
+                "user not found"
         ]
     }
 

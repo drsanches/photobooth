@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = NonexistentEmailValidator.class)
+@Deprecated //TODO
 public @interface NonexistentEmail {
 
     String message() default "user with this email already exists";

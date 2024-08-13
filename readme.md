@@ -572,7 +572,6 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Log userId even for public urls?
 - Use upsert
 - Check collisions for 2FA operations (create disabled user for registration and enable it on confirmation?)
-- Refactor validations. Validate closer to db operations (or use db exceptions)
 - Check swagger errors for all urls. Maybe group all swagger annotations in one using array?  
 - Add ObjectMapper bean
 - Add test profile with h2?

@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = NonexistentUsernameValidator.class)
+@Deprecated //TODO
 public @interface NonexistentUsername {
 
     String message() default "user with this username already exists";
