@@ -1,6 +1,5 @@
 package com.drsanches.photobooth.app.auth.dto.userauth.request;
 
-import com.drsanches.photobooth.app.auth.validation.annotation.NonexistentEmail;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -17,6 +16,5 @@ public class UpdateEmailDto {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty
     @Email
-    @NonexistentEmail
     private String newEmail;
 }

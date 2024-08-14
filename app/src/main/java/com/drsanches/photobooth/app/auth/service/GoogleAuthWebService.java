@@ -28,28 +28,22 @@ public class GoogleAuthWebService {
 
     @Autowired
     private UserAuthDomainService userAuthDomainService;
-
     @Autowired
     private AppIntegrationService appIntegrationService;
-
     @Autowired
     private GoogleUserInfoService googleUserInfoService;
-
     @Autowired
     private ConfirmationDomainService confirmationDomainService;
-
     @Autowired
     private TokenService tokenService;
-
     @Autowired
     private AuthInfo authInfo;
-
+    @Autowired
+    private AuthExistenceValidator authExistenceValidator;
     @Autowired
     private ConfirmationValidator confirmationValidator;
-
     @Autowired
     private NotificationService notificationService;
-
     @Autowired
     private TokenMapper tokenMapper;
 
@@ -78,9 +72,11 @@ public class GoogleAuthWebService {
                 );
                 log.info("New user created. Id: {}", userAuth.getId());
                 confirmationCode = confirmationDomainService.create(
-                        null,
+                        Operation.GOOGLE_USERNAME_CHANGE,
                         userAuth.getId(),
-                        Operation.GOOGLE_USERNAME_CHANGE
+                        null,
+                        null,
+                        null
                 ).getCode();
                 log.info("Google username changing process started. UserId: {}", userAuth.getId());
                 notificationService.notify(Action.REGISTRATION_COMPLETED, NotificationParams.builder()
@@ -95,6 +91,7 @@ public class GoogleAuthWebService {
     public void setUsername(@Valid GoogleSetUsernameDto googleSetUsernameDto) {
         var confirmation = confirmationDomainService.get(googleSetUsernameDto.getCode());
         confirmationValidator.validate(confirmation, Operation.GOOGLE_USERNAME_CHANGE);
+        authExistenceValidator.validateUsername(googleSetUsernameDto.getNewUsername());
         var userId = authInfo.getUserId();
         var oldUsername = userAuthDomainService.getEnabledById(userId).getUsername();
 

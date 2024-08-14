@@ -20,6 +20,10 @@ public interface ConfirmationRepository extends CrudRepository<Confirmation, Str
 
     Optional<Confirmation> findByCode(String code);
 
+    boolean existsByNewUsername(String newUsername);
+
+    boolean existsByNewEmail(String newEmail);
+
     List<Confirmation> findByExpiresLessThan(GregorianCalendar expires);
 
     @Override

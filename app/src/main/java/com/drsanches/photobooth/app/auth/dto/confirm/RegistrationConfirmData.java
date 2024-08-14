@@ -12,10 +12,6 @@ import lombok.ToString;
 @Builder
 public class RegistrationConfirmData {
 
-    private String username;
-
-    private String email;
-
     @ToString.Exclude
     private String encryptedPassword;
 

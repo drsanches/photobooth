@@ -49,6 +49,8 @@ class GoogleAuthWebServiceTest {
     @Mock
     private AppIntegrationService appIntegrationService;
     @Mock
+    private AuthExistenceValidator authExistenceValidator;
+    @Mock
     private ConfirmationValidator confirmationValidator;
     @Mock
     private NotificationService notificationService;
@@ -131,7 +133,8 @@ class GoogleAuthWebServiceTest {
         Mockito.when(userAuthDomainService.findEnabledByGoogleAuth(USER_EMAIL)).thenReturn(Optional.empty());
         Mockito.when(userAuthDomainService.findEnabledByEmail(USER_EMAIL)).thenReturn(Optional.empty());
         Mockito.when(userAuthDomainService.createUserByGoogle(USER_EMAIL)).thenReturn(userAuth);
-        Mockito.when(confirmationDomainService.create(null, USER_ID, Operation.GOOGLE_USERNAME_CHANGE))
+        Mockito.when(confirmationDomainService
+                        .create(Operation.GOOGLE_USERNAME_CHANGE, USER_ID, null, null, null))
                 .thenReturn(createConfirmation());
         Mockito.when(tokenService.createToken(USER_ID, Role.USER)).thenReturn(token);
         Mockito.when(tokenMapper.convert(token)).thenReturn(tokenDto);
@@ -159,6 +162,7 @@ class GoogleAuthWebServiceTest {
         request.setCode(CONFIRMATION_CODE);
         googleAuthWebService.setUsername(request);
 
+        Mockito.verify(authExistenceValidator).validateUsername(newUsername);
         Mockito.verify(confirmationValidator).validate(confirmation, Operation.GOOGLE_USERNAME_CHANGE);
         Mockito.verify(appIntegrationService).updateUsername(USER_ID, newUsername);
         Mockito.verify(userAuthDomainService).updateUsername(USER_ID, newUsername);

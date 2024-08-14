@@ -1,6 +1,5 @@
 package com.drsanches.photobooth.app.auth.dto.userauth.request;
 
-import com.drsanches.photobooth.app.auth.validation.annotation.NonexistentUsername;
 import com.drsanches.photobooth.app.auth.validation.annotation.Username;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -18,6 +17,5 @@ public class UpdateUsernameDto {
     @NotEmpty
     @Length(max = 20)
     @Username
-    @NonexistentUsername
     private String newUsername;
 }

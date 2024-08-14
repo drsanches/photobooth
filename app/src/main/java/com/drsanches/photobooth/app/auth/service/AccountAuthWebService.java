@@ -59,6 +59,8 @@ public class AccountAuthWebService {
     @Autowired
     private StringSerializer stringSerializer;
     @Autowired
+    private AuthExistenceValidator authExistenceValidator;
+    @Autowired
     private ConfirmationValidator confirmationValidator;
     @Autowired
     private UserAuthInfoMapper userAuthInfoMapper;
@@ -69,21 +71,25 @@ public class AccountAuthWebService {
 
     public AuthResponse<TokenDto> createAccount(@Valid CreateAccountDto createAccountDto) {
         var salt = UUID.randomUUID().toString();
-        var registrationConfirmData = RegistrationConfirmData.builder()
-                .username(createAccountDto.getUsername())
-                .email(createAccountDto.getEmail())
-                .encryptedPassword(credentialsHelper.encodePassword(createAccountDto.getPassword(), salt))
-                .salt(salt)
-                .build();
-        var data = stringSerializer.serialize(registrationConfirmData);
-        var confirmation = confirmationDomainService.create(data, null, Operation.REGISTRATION);
-
+        authExistenceValidator
+                .validateUsername(createAccountDto.getUsername())
+                .validateEmail(createAccountDto.getEmail());
+        var confirmation = confirmationDomainService.create(
+                Operation.REGISTRATION,
+                null,
+                createAccountDto.getUsername(),
+                createAccountDto.getEmail(),
+                stringSerializer.serialize(RegistrationConfirmData.builder()
+                        .encryptedPassword(credentialsHelper.encodePassword(createAccountDto.getPassword(), salt))
+                        .salt(salt)
+                        .build())
+        );
         if (twoFactorAuthenticationManager.isEnabled(Operation.REGISTRATION)) {
             notificationService.notify(Action.REGISTRATION_STARTED, NotificationParams.builder()
                     .email(createAccountDto.getEmail())
                     .code(confirmation.getCode())
                     .build());
-            log.info("User registration process started: {}", registrationConfirmData);
+            log.info("User registration process started: {}", confirmation);
             return new AuthResponse<>(true);
         } else {
             var tokenDto = (TokenDto) confirm(confirmation.getCode());
@@ -98,19 +104,23 @@ public class AccountAuthWebService {
     }
 
     public AuthResponse<Void> updateUsername(@Valid UpdateUsernameDto updateUsernameDto) {
-        var changeUsernameConfirmData = ChangeUsernameConfirmData.builder()
-                .username(updateUsernameDto.getNewUsername())
-                .build();
-        var data = stringSerializer.serialize(changeUsernameConfirmData);
         var userId = authInfo.getUserId();
-        var confirmation = confirmationDomainService.create(data, userId, Operation.USERNAME_CHANGE);
-
+        authExistenceValidator.validateUsername(updateUsernameDto.getNewUsername());
+        var confirmation = confirmationDomainService.create(
+                Operation.USERNAME_CHANGE,
+                userId,
+                updateUsernameDto.getNewUsername(),
+                null,
+                stringSerializer.serialize(ChangeUsernameConfirmData.builder()
+                        .username(updateUsernameDto.getNewUsername())
+                        .build())
+        );
         if (twoFactorAuthenticationManager.isEnabled(Operation.USERNAME_CHANGE)) {
             notificationService.notify(Action.USERNAME_CHANGE_STARTED, NotificationParams.builder()
                     .userId(confirmation.getUserId())
                     .code(confirmation.getCode())
                     .build());
-            log.info("Username changing process started: {}", changeUsernameConfirmData);
+            log.info("Username changing process started: {}", confirmation);
             return new AuthResponse<>(true);
         } else {
             confirm(confirmation.getCode());
@@ -120,20 +130,23 @@ public class AccountAuthWebService {
 
     public AuthResponse<Void> updatePassword(@Valid UpdatePasswordDto updatePasswordDto) {
         var salt = UUID.randomUUID().toString();
-        var changePasswordConfirmData = ChangePasswordConfirmData.builder()
-                .encryptedPassword(credentialsHelper.encodePassword(updatePasswordDto.getNewPassword(), salt))
-                .salt(salt)
-                .build();
-        var data = stringSerializer.serialize(changePasswordConfirmData);
         var userId = authInfo.getUserId();
-        var confirmation = confirmationDomainService.create(data, userId, Operation.PASSWORD_CHANGE);
-
+        var confirmation = confirmationDomainService.create(
+                Operation.PASSWORD_CHANGE,
+                userId,
+                null,
+                null,
+                stringSerializer.serialize(ChangePasswordConfirmData.builder()
+                        .encryptedPassword(credentialsHelper.encodePassword(updatePasswordDto.getNewPassword(), salt))
+                        .salt(salt)
+                        .build())
+        );
         if (twoFactorAuthenticationManager.isEnabled(Operation.PASSWORD_CHANGE)) {
             notificationService.notify(Action.PASSWORD_CHANGE_STARTED, NotificationParams.builder()
                     .userId(confirmation.getUserId())
                     .code(confirmation.getCode())
                     .build());
-            log.info("Password changing process started: {}", changePasswordConfirmData);
+            log.info("Password changing process started: {}", confirmation);
             return new AuthResponse<>(true);
         } else {
             confirm(confirmation.getCode());
@@ -142,19 +155,23 @@ public class AccountAuthWebService {
     }
 
     public AuthResponse<Void> updateEmail(@Valid UpdateEmailDto updateEmailDto) {
-        var changeEmailConfirmData = ChangeEmailConfirmData.builder()
-                .email(updateEmailDto.getNewEmail())
-                .build();
-        var data = stringSerializer.serialize(changeEmailConfirmData);
         var userId = authInfo.getUserId();
-        var confirmation = confirmationDomainService.create(data, userId, Operation.EMAIL_CHANGE);
-
+        authExistenceValidator.validateEmail(updateEmailDto.getNewEmail());
+        var confirmation = confirmationDomainService.create(
+                Operation.EMAIL_CHANGE,
+                userId,
+                null,
+                updateEmailDto.getNewEmail(),
+                stringSerializer.serialize(ChangeEmailConfirmData.builder()
+                        .email(updateEmailDto.getNewEmail())
+                        .build())
+        );
         if (twoFactorAuthenticationManager.isEnabled(Operation.EMAIL_CHANGE)) {
             notificationService.notify(Action.EMAIL_CHANGE_STARTED, NotificationParams.builder()
                     .userId(confirmation.getUserId())
                     .code(confirmation.getCode())
                     .build());
-            log.info("Email changing process started: {}", changeEmailConfirmData);
+            log.info("Email changing process started: {}", confirmation);
             return new AuthResponse<>(true);
         } else {
             confirm(confirmation.getCode());
@@ -164,8 +181,13 @@ public class AccountAuthWebService {
 
     public AuthResponse<Void> disableUser() {
         var userId = authInfo.getUserId();
-        var confirmation = confirmationDomainService.create(null, userId, Operation.DISABLE);
-
+        var confirmation = confirmationDomainService.create(
+                Operation.DISABLE,
+                userId,
+                null,
+                null,
+                null
+        );
         if (twoFactorAuthenticationManager.isEnabled(Operation.DISABLE)) {
             notificationService.notify(Action.DISABLE_STARTED, NotificationParams.builder()
                     .userId(confirmation.getUserId())
@@ -198,8 +220,8 @@ public class AccountAuthWebService {
                 RegistrationConfirmData.class
         );
         var userAuth = userAuthDomainService.createUser(
-                registrationConfirmData.getUsername(),
-                registrationConfirmData.getEmail(),
+                confirmation.getNewUsername(),
+                confirmation.getNewEmail(),
                 registrationConfirmData.getEncryptedPassword(),
                 registrationConfirmData.getSalt()
         );

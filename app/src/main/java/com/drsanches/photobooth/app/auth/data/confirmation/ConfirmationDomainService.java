@@ -28,19 +28,35 @@ public class ConfirmationDomainService {
     @Autowired
     private ConfirmationCodeGenerator confirmationCodeGenerator;
 
-    public Confirmation create(@Nullable String data, @Nullable String userId, Operation operation) {
+    public Confirmation create(
+            Operation operation,
+            @Nullable String userId,
+            @Nullable String newUsername,
+            @Nullable String newEmail,
+            @Nullable String data
+    ) {
         var expires = new GregorianCalendar();
         expires.add(CALENDAR_FIELD, CALENDAR_VALUE);
         var savedConfirmation = confirmationRepository.save(Confirmation.builder()
                 .id(UUID.randomUUID().toString())
                 .code(confirmationCodeGenerator.generate()) //TODO: Use as id?
                 .userId(userId)
+                .newUsername(newUsername)
+                .newEmail(newEmail)
                 .operation(operation)
                 .data(data)
                 .expires(expires)
                 .build());
         log.debug("Confirmation created: {}", savedConfirmation);
         return savedConfirmation;
+    }
+
+    public boolean existsByNewUsername(String newUsername) {
+        return confirmationRepository.existsByNewUsername(newUsername);
+    }
+
+    public boolean existsByNewEmail(String newEmail) {
+        return confirmationRepository.existsByNewEmail(newEmail);
     }
 
     public Confirmation get(String code) {

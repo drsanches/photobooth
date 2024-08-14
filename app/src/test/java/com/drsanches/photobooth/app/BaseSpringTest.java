@@ -84,6 +84,27 @@ public class BaseSpringTest {
         return token;
     }
 
+    protected Token createUserByGoogle(String username, String password, String email, String googleEmail) {
+        var user = userAuthDomainService.createUserByGoogle(googleEmail);
+        if (username != null) {
+            userAuthDomainService.updateUsername(user.getId(), username);
+        }
+        if (password != null) {
+            var salt = UUID.randomUUID().toString();
+            userAuthDomainService.updatePassword(
+                    user.getId(),
+                    credentialsHelper.encodePassword(password, salt),
+                    salt
+            );
+        }
+        if (email != null) {
+            userAuthDomainService.updateEmail(user.getId(), email);
+        }
+        var token = tokenService.createToken(user.getId(), user.getRole());
+        userProfileDomainService.create(user.getId(), username != null ? username : user.getUsername());
+        return token;
+    }
+
     protected String mockConfirmationCodeGenerator() {
         var confirmationCode = CONFIRMATION_CODE.get();
         when(confirmationCodeGenerator.generate()).thenReturn(confirmationCode);

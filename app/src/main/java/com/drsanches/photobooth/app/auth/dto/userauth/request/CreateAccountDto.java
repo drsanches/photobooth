@@ -1,7 +1,5 @@
 package com.drsanches.photobooth.app.auth.dto.userauth.request;
 
-import com.drsanches.photobooth.app.auth.validation.annotation.NonexistentEmail;
-import com.drsanches.photobooth.app.auth.validation.annotation.NonexistentUsername;
 import com.drsanches.photobooth.app.auth.validation.annotation.Username;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
@@ -21,7 +19,6 @@ public class CreateAccountDto {
     @NotEmpty
     @Length(max = 20)
     @Username
-    @NonexistentUsername
     private String username;
 
     @Schema(maxLength = 255, description = "password SHA256 hash", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -33,6 +30,5 @@ public class CreateAccountDto {
     @Schema(maxLength = 255)
     @NotEmpty
     @Email
-    @NonexistentEmail
     private String email;
 }

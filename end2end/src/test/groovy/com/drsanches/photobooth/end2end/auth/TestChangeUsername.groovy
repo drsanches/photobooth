@@ -58,9 +58,7 @@ class TestChangeUsername extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
-                Map.of("field", "newUsername", "message", "User with username '$user.username' already exists")
-        ])
+        assert Utils.validateErrorResponse(response.data as JSONObject, "Username already exists", null)
     }
 
     def "username change with existent username"() {
@@ -76,9 +74,7 @@ class TestChangeUsername extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
-                Map.of("field", "newUsername", "message", "User with username '$user2.username' already exists")
-        ])
+        assert Utils.validateErrorResponse(response.data as JSONObject, "Username already exists", null)
     }
 
     def "username change with invalid username"() {

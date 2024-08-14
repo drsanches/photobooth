@@ -25,6 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -121,6 +122,62 @@ class GoogleAuthControllerTest extends BaseSpringTest {
     }
 
     @Test
+    void createUserByGoogle_setExistingUsername_error() throws Exception {
+        var username1 = USERNAME.get();
+        var username2 = USERNAME.get();
+        createUser(username1, PASSWORD.get(), EMAIL.get());
+        mockConfirmationCodeGenerator();
+
+        mvc.perform(MockMvcRequestBuilders
+                        .post("/api/v1/auth/account")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(new CreateAccountDto(username2, PASSWORD.get(), EMAIL.get()))))
+                .andExpect(status().isOk());
+
+        verify(notificationService).notify(eq(Action.REGISTRATION_STARTED), any());
+        var email = EMAIL.get();
+        var googleToken = UUID.randomUUID().toString();
+        mockGoogle(email, googleToken);
+        var confirmationCode = mockConfirmationCodeGenerator();
+
+        var registrationResponse = mvc.perform(MockMvcRequestBuilders
+                        .post("/api/v1/auth/google/token")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(new GoogleTokenDto(googleToken))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("token").exists())
+                .andExpect(jsonPath("changeUsernameCode").value(confirmationCode))
+                .andReturn().getResponse().getContentAsString();
+
+        verify(notificationService).notify(eq(Action.REGISTRATION_COMPLETED), any());
+        var registrationResult = objectMapper.readValue(registrationResponse, GoogleGetTokenDto.class);
+
+        mvc.perform(MockMvcRequestBuilders
+                        .post("/api/v1/auth/google/username")
+                        .header("Authorization", "Bearer " + registrationResult.getToken().getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(
+                                new GoogleSetUsernameDto(username1, registrationResult.getChangeUsernameCode())
+                        )))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("uuid").exists())
+                .andExpect(jsonPath("message").value("Username already exists"));
+
+        mvc.perform(MockMvcRequestBuilders
+                        .post("/api/v1/auth/google/username")
+                        .header("Authorization", "Bearer " + registrationResult.getToken().getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(
+                                new GoogleSetUsernameDto(username2, registrationResult.getChangeUsernameCode())
+                        )))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("uuid").exists())
+                .andExpect(jsonPath("message").value("Username already exists"));
+
+        verifyNoMoreInteractions(notificationService);
+    }
+
+    @Test
     void createUser_loginByGoogleWithTheSameEmail() throws Exception {
         var username = USERNAME.get();
         var email = EMAIL.get();
@@ -178,6 +235,14 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                 .andExpect(jsonPath("email").value(email))
                 .andExpect(jsonPath("passwordExists").value(true))
                 .andExpect(jsonPath("googleAuth").value(googleEmail));
+
+        mvc.perform(MockMvcRequestBuilders
+                        .post("/api/v1/auth/account")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(new CreateAccountDto(USERNAME.get(), PASSWORD.get(), googleEmail))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("uuid").exists())
+                .andExpect(jsonPath("message").value("Email already exists"));
 
         mvc.perform(MockMvcRequestBuilders
                         .delete("/api/v1/auth/google/link")

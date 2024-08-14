@@ -44,9 +44,7 @@ class TestChangeEmail extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
-                Map.of("field", "newEmail", "message", "User with email '$user.email' already exists")
-        ])
+        assert Utils.validateErrorResponse(response.data as JSONObject, "Email already exists", null)
     }
 
     def "email change with existent email"() {
@@ -62,9 +60,7 @@ class TestChangeEmail extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", [
-                Map.of("field", "newEmail", "message", "User with email '$user2.email' already exists")
-        ])
+        assert Utils.validateErrorResponse(response.data as JSONObject, "Email already exists", null)
     }
 
     def "email change with invalid email"() {

@@ -39,6 +39,12 @@ public class Confirmation {
     @Column
     private String userId;
 
+    @Column(unique = true)
+    private String newUsername;
+
+    @Column(unique = true)
+    private String newEmail;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Operation operation;
