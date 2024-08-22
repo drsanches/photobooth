@@ -5,7 +5,7 @@ import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.app.validation.annotation.UserId;
 import com.drsanches.photobooth.app.common.auth.AuthInfo;
-import com.drsanches.photobooth.app.common.exception.server.ServerError;
+import com.drsanches.photobooth.app.common.exception.ServerError;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.apache.commons.lang3.StringUtils;

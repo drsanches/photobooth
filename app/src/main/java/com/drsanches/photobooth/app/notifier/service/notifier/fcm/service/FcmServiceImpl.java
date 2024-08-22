@@ -1,8 +1,8 @@
 package com.drsanches.photobooth.app.notifier.service.notifier.fcm.service;
 
 import com.drsanches.photobooth.app.common.aspects.MonitorTime;
+import com.drsanches.photobooth.app.common.exception.ServerError;
 import com.drsanches.photobooth.app.config.ImageConsts;
-import com.drsanches.photobooth.app.notifier.exception.NotificationException;
 import com.google.firebase.messaging.AndroidConfig;
 import com.google.firebase.messaging.AndroidNotification;
 import com.google.firebase.messaging.BatchResponse;
@@ -56,14 +56,14 @@ public class FcmServiceImpl implements FcmService {
             log.info("Push sent for {} tokens", tokens.size());
             return map(tokens, response);
         } catch (FirebaseMessagingException e) {
-            throw new NotificationException("Push notification error", e);
+            throw new ServerError("Push notification error", e);
         }
     }
 
     private List<FcmResult> map(List<String> tokens, BatchResponse batchResponse) {
         List<SendResponse> responses = batchResponse.getResponses();
         if (responses.size() != tokens.size()) {
-            throw new NotificationException("Fcm response size does not correspond to the number of tokens sent");
+            throw new ServerError("Fcm response size does not correspond to the number of tokens sent");
         }
         List<FcmResult> results = new LinkedList<>();
         for (int i = 0; i < responses.size(); i++) {

@@ -74,7 +74,7 @@ class Utils {
         return hexString.toString()
     }
 
-    static validateErrorResponse(JSONObject response, String message, List<Map<String, String>> expectedDetails) {
+    static validateErrorResponse(JSONObject response, String code, List<Map<String, String>> expectedDetails) {
         if (expectedDetails != null && !expectedDetails.isEmpty()) {
             var responseDetails = response.getJSONArray("details")
             if (expectedDetails.size() != responseDetails.size()) {
@@ -87,7 +87,7 @@ class Utils {
             }
         }
         return StringUtils.isNotEmpty(response["uuid"] as CharSequence)
-                && response["message"] == message
+                && response["code"] == code
                 && expectedDetails == null ? response.keySet().size() == 2 : response.keySet().size() == 3
     }
 

@@ -577,7 +577,9 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Always sent to notifier all info - email (if exists) and userId, then update email and send notification
 - Maybe use Spring Events
 - Refactor auth creation with google?
-- Refactor exceptions
+- Throw exceptions in web services, not in domain? Rename domain to dao?
+- Use Instant instead of GregorianCalendar?
+- Use docker swarm?
 
 ### UI
 - Hide admin ui for users

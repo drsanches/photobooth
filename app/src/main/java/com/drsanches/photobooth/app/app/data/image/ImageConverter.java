@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.app.data.image;
 
-import com.drsanches.photobooth.app.common.exception.server.ServerError;
+import com.drsanches.photobooth.app.common.exception.ServerError;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

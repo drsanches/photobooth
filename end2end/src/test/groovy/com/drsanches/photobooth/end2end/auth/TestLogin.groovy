@@ -115,7 +115,7 @@ class TestLogin extends Specification {
         ]
         message << [
                 //No user
-                "Wrong username or password",
+                "wrong.username",
 
                 //Invalid username
                 "validation.error",

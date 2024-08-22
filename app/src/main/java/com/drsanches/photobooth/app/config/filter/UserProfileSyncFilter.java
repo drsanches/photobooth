@@ -2,7 +2,7 @@ package com.drsanches.photobooth.app.config.filter;
 
 import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
-import com.drsanches.photobooth.app.auth.exception.AuthException;
+import com.drsanches.photobooth.app.auth.exception.WrongTokenAuthException;
 import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,8 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -40,13 +38,9 @@ public class UserProfileSyncFilter extends GenericFilterBean { //TODO: Rename
                         () -> userProfileDomainService.create(authInfo.getUserId(), authInfo.getUsername())
                 );
             }
-        } catch (AuthException e) {
-                log.info("Wrong token for uri. Uri: {}", uri, e);
-                httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                httpResponse.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-                httpResponse.getOutputStream().flush();
-                httpResponse.getOutputStream().println(e.getMessage());
-                return;
+        } catch (WrongTokenAuthException e) {
+            AuthFilter.setUnauthorizedResponse(httpRequest, httpResponse, e);
+            return;
         }
         chain.doFilter(request, response);
     }

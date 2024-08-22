@@ -128,7 +128,7 @@ class TestGetProfile extends Specification {
 
         then: "response is correct"
         assert response.status == 404
-        assert Utils.validateErrorResponse(response.data as JSONObject, "There is no user with id '$user2.id'", null)
+        assert Utils.validateErrorResponse(response.data as JSONObject, "user.not.found", null)
     }
 
     def "get nonexistent user profile"() {
@@ -143,11 +143,7 @@ class TestGetProfile extends Specification {
 
         then: "response is correct"
         assert response.status == 404
-        assert Utils.validateErrorResponse(
-                response.data as JSONObject,
-                "There is no user with id '$nonexistentId'",
-                null
-        )
+        assert Utils.validateErrorResponse(response.data as JSONObject, "user.not.found", null)
     }
 
     def "get user profile with invalid token"() {
@@ -162,6 +158,6 @@ class TestGetProfile extends Specification {
 
         then: "response is correct"
         assert response.status == 401
-        assert Utils.validateErrorResponse(response.data as JSONObject, "Wrong token", null)
+        assert Utils.validateErrorResponse(response.data as JSONObject, "wrong.token", null)
     }
 }

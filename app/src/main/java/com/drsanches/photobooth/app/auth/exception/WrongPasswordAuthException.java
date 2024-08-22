@@ -3,16 +3,16 @@ package com.drsanches.photobooth.app.auth.exception;
 import com.drsanches.photobooth.app.common.exception.BaseException;
 import org.springframework.http.HttpStatus;
 
-public class WrongConfirmCodeException extends BaseException {
+public class WrongPasswordAuthException extends BaseException {
 
-    private static final String MESSAGE = "wrong.confirmation.code";
+    public static final String MESSAGE = "wrong.password";
 
-    public WrongConfirmCodeException() {
+    public WrongPasswordAuthException() {
         super(MESSAGE);
     }
 
     @Override
     public HttpStatus getHttpCode() {
-        return HttpStatus.BAD_REQUEST;
+        return HttpStatus.UNAUTHORIZED;
     }
 }

@@ -2,7 +2,7 @@ package com.drsanches.photobooth.app.auth.service;
 
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
 import com.drsanches.photobooth.app.common.auth.AuthInfo;
-import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
+import com.drsanches.photobooth.app.auth.exception.WrongTokenAuthException;
 import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import com.drsanches.photobooth.app.auth.data.token.model.Token;
 import com.drsanches.photobooth.app.auth.data.token.TokenDomainService;
@@ -32,7 +32,8 @@ public class TokenService {
 
     public Token createToken(String userId, Role role) {
         var savedToken = tokenDomainService.createToken(userId, role);
-        var user = userAuthDomainService.getEnabledById(savedToken.getUserId());
+        var user = userAuthDomainService.findEnabledById(savedToken.getUserId())
+                .orElseThrow(WrongTokenAuthException::new);
         authInfo.init(userId, user.getUsername(), savedToken.getId(), savedToken.getRole());
         log.info("New token created. UserId: {}", userId);
         return savedToken;
@@ -40,9 +41,10 @@ public class TokenService {
 
     public AuthInfoDto validate(String accessToken) {
         var extractedAccessToken = extractToken(accessToken)
-                .orElseThrow(WrongTokenException::new);
+                .orElseThrow(WrongTokenAuthException::new);
         var token = tokenDomainService.getValidTokenByAccessToken(extractedAccessToken);
-        var user = userAuthDomainService.getEnabledById(token.getUserId());
+        var user = userAuthDomainService.findEnabledById(token.getUserId())
+                .orElseThrow(WrongTokenAuthException::new);
         return new AuthInfoDto(
                 token.getUserId(),
                 user.getUsername(),
@@ -53,7 +55,7 @@ public class TokenService {
 
     public Token refreshToken(@Nullable String refreshToken) {
         var extractedRefreshToken = extractToken(refreshToken)
-                .orElseThrow(WrongTokenException::new);
+                .orElseThrow(WrongTokenAuthException::new);
         var token = tokenDomainService.getValidTokenByRefreshToken(extractedRefreshToken);
         tokenDomainService.deleteById(token.getId());
         var refreshedToken = createToken(token.getUserId(), token.getRole());

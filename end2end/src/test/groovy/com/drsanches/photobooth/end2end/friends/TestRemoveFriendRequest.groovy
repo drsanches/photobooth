@@ -242,6 +242,6 @@ class TestRemoveFriendRequest extends Specification {
 
         then: "response is correct"
         assert response.status == 401
-        assert Utils.validateErrorResponse(response.data as JSONObject, "Wrong token", null)
+        assert Utils.validateErrorResponse(response.data as JSONObject, "wrong.token", null)
     }
 }

@@ -58,7 +58,7 @@ class TestChangeUsername extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert Utils.validateErrorResponse(response.data as JSONObject, "Username already exists", null)
+        assert Utils.validateErrorResponse(response.data as JSONObject, "username.already.in.use", null)
     }
 
     def "username change with existent username"() {
@@ -74,7 +74,7 @@ class TestChangeUsername extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert Utils.validateErrorResponse(response.data as JSONObject, "Username already exists", null)
+        assert Utils.validateErrorResponse(response.data as JSONObject, "username.already.in.use", null)
     }
 
     def "username change with invalid username"() {
@@ -119,6 +119,6 @@ class TestChangeUsername extends Specification {
 
         then: "response is correct"
         assert response.status == 401
-        assert Utils.validateErrorResponse(response.data as JSONObject, "Wrong token", null)
+        assert Utils.validateErrorResponse(response.data as JSONObject, "wrong.token", null)
     }
 }

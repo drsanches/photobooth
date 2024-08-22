@@ -2,8 +2,8 @@ package com.drsanches.photobooth.app.app.data.profile;
 
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.app.data.profile.repository.UserProfileRepository;
+import com.drsanches.photobooth.app.app.exception.UserNotFoundException;
 import com.drsanches.photobooth.app.app.utils.PaginationService;
-import com.drsanches.photobooth.app.app.exception.NoUserIdException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
@@ -67,7 +67,7 @@ public class UserProfileDomainService {
 
     public UserProfile getEnabledById(String userId) {
         return userProfileRepository.findByIdAndEnabled(userId, true)
-                .orElseThrow(() -> new NoUserIdException(userId));
+                .orElseThrow(UserNotFoundException::new);
     }
 
     //TODO: Sort?

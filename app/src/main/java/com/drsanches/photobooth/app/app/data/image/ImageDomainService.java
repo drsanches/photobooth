@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app.app.data.image;
 
 import com.drsanches.photobooth.app.app.data.image.repository.ImageRepository;
-import com.drsanches.photobooth.app.app.exception.NoImageException;
+import com.drsanches.photobooth.app.app.exception.ImageNotFoundException;
 import com.drsanches.photobooth.app.app.data.image.model.Image;
 import com.drsanches.photobooth.app.config.ImageConsts;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +49,7 @@ public class ImageDomainService {
 
     public Image getImage(String imageId) {
         return imageRepository.findById(imageId)
-                .orElseThrow(() -> new NoImageException(imageId));
+                .orElseThrow(() -> new ImageNotFoundException());
     }
 
     public List<Image> getImages(Collection<String> imageIds) {

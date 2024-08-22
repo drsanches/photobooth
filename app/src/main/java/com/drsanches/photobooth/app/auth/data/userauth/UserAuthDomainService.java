@@ -1,9 +1,8 @@
 package com.drsanches.photobooth.app.auth.data.userauth;
 
+import com.drsanches.photobooth.app.app.exception.UserNotFoundException;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.userauth.repository.UserAuthRepository;
-import com.drsanches.photobooth.app.app.exception.NoUserIdException;
-import com.drsanches.photobooth.app.app.exception.NoUsernameException;
 import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,15 +84,18 @@ public class UserAuthDomainService {
         log.debug("UserAuth googleAuth set: {}", userAuth);
     }
 
-    public UserAuth getEnabledById(String userId) {
+    public Optional<UserAuth> findEnabledById(String userId) {
         return userAuthRepository.findById(userId)
-                .filter(UserAuth::isEnabled)
-                .orElseThrow(() -> new NoUserIdException(userId));
+                .filter(UserAuth::isEnabled);
     }
 
-    public UserAuth getEnabledByUsername(String username) {
-        return userAuthRepository.findByUsernameAndEnabled(username, true)
-                .orElseThrow(() -> new NoUsernameException(username));
+    public UserAuth getEnabledById(String userId) {
+        return findEnabledById(userId)
+                .orElseThrow(UserNotFoundException::new);
+    }
+
+    public Optional<UserAuth> findEnabledByUsername(String username) {
+        return userAuthRepository.findByUsernameAndEnabled(username, true);
     }
 
     public Optional<UserAuth> findEnabledByEmail(String email) {

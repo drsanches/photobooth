@@ -28,7 +28,7 @@ public class ConfirmationValidator {
         if (confirmation.getExpires().before(new GregorianCalendar())) {
             confirmationDomainService.delete(confirmation.getId());
             log.info("Expired Confirmation deleted: {}", confirmation);
-            throw new WrongConfirmCodeException("Confirmation code expired");
+            throw new WrongConfirmCodeException();
         }
     }
 }

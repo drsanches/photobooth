@@ -1,12 +1,9 @@
 package com.drsanches.photobooth.app.auth.service;
 
-import com.drsanches.photobooth.app.app.exception.NoUsernameException;
 import com.drsanches.photobooth.app.auth.data.userauth.UserAuthDomainService;
-import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.GetTokenDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.TokenDto;
-import com.drsanches.photobooth.app.auth.exception.WrongPasswordException;
-import com.drsanches.photobooth.app.auth.exception.WrongUsernamePasswordException;
+import com.drsanches.photobooth.app.auth.exception.WrongUsernameAuthException;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import jakarta.validation.Valid;
@@ -30,13 +27,9 @@ public class TokenAuthWebService {
     private TokenMapper tokenMapper;
 
     public TokenDto getToken(@Valid GetTokenDto getTokenDto) {
-        UserAuth userAuth;
-        try {
-            userAuth = userAuthDomainService.getEnabledByUsername(getTokenDto.getUsername().toLowerCase());
-            credentialsHelper.checkPassword(getTokenDto.getPassword(), userAuth.getPassword(), userAuth.getSalt());
-        } catch (NoUsernameException | WrongPasswordException e) {
-            throw new WrongUsernamePasswordException(e);
-        }
+        var userAuth = userAuthDomainService.findEnabledByUsername(getTokenDto.getUsername().toLowerCase())
+                .orElseThrow(WrongUsernameAuthException::new);
+        credentialsHelper.checkPassword(getTokenDto.getPassword(), userAuth.getPassword(), userAuth.getSalt());
         var token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
         return tokenMapper.convert(token);
     }

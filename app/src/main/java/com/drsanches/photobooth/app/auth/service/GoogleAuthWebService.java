@@ -4,7 +4,7 @@ import com.drsanches.photobooth.app.auth.data.confirmation.model.Operation;
 import com.drsanches.photobooth.app.auth.dto.google.GoogleGetTokenDto;
 import com.drsanches.photobooth.app.auth.dto.google.GoogleSetUsernameDto;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
-import com.drsanches.photobooth.app.auth.exception.GoogleLinkAuthException;
+import com.drsanches.photobooth.app.auth.exception.EmailAlreadyInUseException;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.GoogleTokenDto;
@@ -108,12 +108,12 @@ public class GoogleAuthWebService {
     public void link(@Valid GoogleTokenDto googleTokenDto) {
         var userId = authInfo.getUserId();
         var email = googleUserInfoService.getGoogleInfo(googleTokenDto.getIdToken()).getEmail();
-        userAuthDomainService.findEnabledByEmail(email).ifPresent(it -> {throw new GoogleLinkAuthException();}); //TODO
+        userAuthDomainService.findEnabledByEmail(email).ifPresent(it -> {throw new EmailAlreadyInUseException();});
         link(userId, email);
     }
 
     private void link(String userId, String email) {
-        userAuthDomainService.findEnabledByGoogleAuth(email).ifPresent(it -> {throw new GoogleLinkAuthException();}); //TODO
+        userAuthDomainService.findEnabledByGoogleAuth(email).ifPresent(it -> {throw new EmailAlreadyInUseException();});
         userAuthDomainService.setGoogleAuth(userId, email);
         log.info("Google account linked. UserId: {}", userId);
         notificationService.notify(Action.ACCOUNT_LINKED, NotificationParams.builder()

@@ -69,7 +69,7 @@ class TestRegistration extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert Utils.validateErrorResponse(response.data as JSONObject, "Username already exists", null)
+        assert Utils.validateErrorResponse(response.data as JSONObject, "username.already.in.use", null)
     }
 
     def "registration with existing email"() {
@@ -87,7 +87,7 @@ class TestRegistration extends Specification {
 
         then: "response is correct"
         assert response.status == 400
-        assert Utils.validateErrorResponse(response.data as JSONObject, "Email already exists", null)
+        assert Utils.validateErrorResponse(response.data as JSONObject, "email.already.in.use", null)
     }
 
     def "registration with invalid data"() {

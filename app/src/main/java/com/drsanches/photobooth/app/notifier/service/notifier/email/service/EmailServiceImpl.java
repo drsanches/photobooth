@@ -1,7 +1,7 @@
 package com.drsanches.photobooth.app.notifier.service.notifier.email.service;
 
 import com.drsanches.photobooth.app.common.aspects.MonitorTime;
-import com.drsanches.photobooth.app.common.exception.server.ServerError;
+import com.drsanches.photobooth.app.common.exception.ServerError;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

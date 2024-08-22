@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.auth.utils;
 
-import com.drsanches.photobooth.app.auth.exception.WrongPasswordException;
+import com.drsanches.photobooth.app.auth.exception.WrongPasswordAuthException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ public class CredentialsHelper {
 
     public void checkPassword(String rawPassword, String encodedPassword, String salt) {
         if (!ENCODER.matches(rawPassword + salt, encodedPassword)) {
-            throw new WrongPasswordException();
+            throw new WrongPasswordAuthException();
         }
     }
 

@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.auth.utils;
 
-import com.drsanches.photobooth.app.common.exception.server.ServerError;
+import com.drsanches.photobooth.app.common.exception.ServerError;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;

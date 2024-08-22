@@ -87,11 +87,7 @@ class TestGetThumbnail extends Specification {
         def response = RequestUtils.getRestClient().get(path: THUMBNAIL_PATH(nonexistentImageId))
 
         then: "response is correct"
-        assert response.status == 400
-        assert Utils.validateErrorResponse(
-                response.data as JSONObject,
-                "There is no image with id '$nonexistentImageId'",
-                null
-        )
+        assert response.status == 404
+        assert Utils.validateErrorResponse(response.data as JSONObject, "image.not.found", null)
     }
 }

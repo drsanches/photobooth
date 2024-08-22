@@ -1,8 +1,11 @@
 package com.drsanches.photobooth.app.auth.exception;
 
-public class GoogleAuthException extends AuthException {
+import com.drsanches.photobooth.app.common.exception.BaseException;
+import org.springframework.http.HttpStatus;
 
-    private static final String MESSAGE = "Google auth error";
+public class GoogleAuthException extends BaseException {
+
+    private static final String MESSAGE = "google.auth.error";
 
     public GoogleAuthException() {
         super(MESSAGE);
@@ -10,5 +13,10 @@ public class GoogleAuthException extends AuthException {
 
     public GoogleAuthException(Exception cause) {
         super(MESSAGE, cause);
+    }
+
+    @Override
+    public HttpStatus getHttpCode() {
+        return HttpStatus.UNAUTHORIZED;
     }
 }

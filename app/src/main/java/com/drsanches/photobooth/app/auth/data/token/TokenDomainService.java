@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.auth.data.token;
 
-import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
+import com.drsanches.photobooth.app.auth.exception.WrongTokenAuthException;
 import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import com.drsanches.photobooth.app.auth.data.token.model.Token;
 import com.drsanches.photobooth.app.auth.data.token.repository.TokenRepository;
@@ -46,15 +46,17 @@ public class TokenDomainService {
     }
 
     public Token getValidTokenByAccessToken(String accessToken) {
+        //TODO: Remove expired
         return tokenRepository.findByAccessToken(accessToken)
                 .filter(it -> it.getExpires().after(new GregorianCalendar()))
-                .orElseThrow(WrongTokenException::new);
+                .orElseThrow(WrongTokenAuthException::new);
     }
 
     public Token getValidTokenByRefreshToken(String refreshToken) {
+        //TODO: Remove expired
         return tokenRepository.findByRefreshToken(refreshToken)
                 .filter(it -> it.getRefreshExpires().after(new GregorianCalendar()))
-                .orElseThrow(WrongTokenException::new);
+                .orElseThrow(WrongTokenAuthException::new);
     }
 
     public List<Token> getTokensByUserId(String userId) {

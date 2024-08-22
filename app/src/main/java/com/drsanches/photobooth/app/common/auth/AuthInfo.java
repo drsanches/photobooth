@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.common.auth;
 
-import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
+import com.drsanches.photobooth.app.auth.exception.WrongTokenAuthException;
 import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -39,21 +39,21 @@ public class AuthInfo {
     }
 
     /**
-     * Throws {@link com.drsanches.photobooth.app.auth.exception.WrongTokenException} if the user is not authorized.
+     * Throws {@link WrongTokenAuthException} if the user is not authorized.
      */
     public String getUserTokenId() {
         if (userTokenId == null) {
-            throw new WrongTokenException();
+            throw new WrongTokenAuthException();
         }
         return userTokenId;
     }
 
     /**
-     * Throws {@link com.drsanches.photobooth.app.auth.exception.WrongTokenException} if the user is not authorized.
+     * Throws {@link WrongTokenAuthException} if the user is not authorized.
      */
     public String getUserId() {
         if (userId == null) {
-            throw new WrongTokenException();
+            throw new WrongTokenAuthException();
         }
         return userId;
     }
@@ -63,21 +63,21 @@ public class AuthInfo {
     }
 
     /**
-     * Throws {@link com.drsanches.photobooth.app.auth.exception.WrongTokenException} if the user is not authorized.
+     * Throws {@link WrongTokenAuthException} if the user is not authorized.
      */
     public String getUsername() {
         if (username == null) {
-            throw new WrongTokenException();
+            throw new WrongTokenAuthException();
         }
         return username;
     }
 
     /**
-     * Throws {@link com.drsanches.photobooth.app.auth.exception.WrongTokenException} if the user is not authorized.
+     * Throws {@link WrongTokenAuthException} if the user is not authorized.
      */
     public Role getRole() {
         if (role == null) {
-            throw new WrongTokenException();
+            throw new WrongTokenAuthException();
         }
         return role;
     }

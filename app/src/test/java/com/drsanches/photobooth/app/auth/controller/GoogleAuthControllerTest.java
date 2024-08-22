@@ -161,7 +161,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                         )))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Username already exists"));
+                .andExpect(jsonPath("code").value("username.already.in.use"));
 
         mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/google/username")
@@ -172,7 +172,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                         )))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Username already exists"));
+                .andExpect(jsonPath("code").value("username.already.in.use"));
 
         verifyNoMoreInteractions(notificationService);
     }
@@ -242,7 +242,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                         .content(objectMapper.writeValueAsString(new CreateAccountDto(USERNAME.get(), PASSWORD.get(), googleEmail))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Email already exists"));
+                .andExpect(jsonPath("code").value("email.already.in.use"));
 
         mvc.perform(MockMvcRequestBuilders
                         .delete("/api/v1/auth/google/link")
@@ -312,7 +312,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                         .content(objectMapper.writeValueAsString(new GoogleTokenDto(googleToken))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Can not link Google account"));
+                .andExpect(jsonPath("code").value("email.already.in.use"));
     }
 
     @Test
@@ -343,7 +343,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                         .content(objectMapper.writeValueAsString(new GoogleTokenDto(googleToken))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Can not link Google account"));
+                .andExpect(jsonPath("code").value("email.already.in.use"));
     }
 
     private void mockGoogle(String email, String googleToken) {

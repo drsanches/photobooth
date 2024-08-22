@@ -61,7 +61,7 @@ public class ConfirmationDomainService {
 
     public Confirmation get(String code) {
         return confirmationRepository.findByCode(code)
-                .orElseThrow(() -> new WrongConfirmCodeException("Wrong confirmation code"));
+                .orElseThrow(WrongConfirmCodeException::new);
     }
 
     public List<Confirmation> getExpired() {

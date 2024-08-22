@@ -1,8 +1,7 @@
 package com.drsanches.photobooth.app.config.filter;
 
 import com.drsanches.photobooth.app.auth.data.token.model.Role;
-import com.drsanches.photobooth.app.auth.exception.AuthException;
-import com.drsanches.photobooth.app.auth.exception.WrongTokenException;
+import com.drsanches.photobooth.app.auth.exception.WrongTokenAuthException;
 import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import com.drsanches.photobooth.app.common.exception.dto.ExceptionDto;
 import com.drsanches.photobooth.app.common.integration.auth.AuthIntegrationService;
@@ -19,11 +18,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Slf4j
 @AllArgsConstructor
 public class AuthFilter extends GenericFilterBean {
+
+    private final static Function<HttpServletRequest, String> endpoint = httpRequest ->
+            httpRequest.getMethod() + " " + httpRequest.getRequestURI();
 
     private final AuthIntegrationService authIntegrationService;
     private final AuthInfo authInfo;
@@ -34,12 +37,11 @@ public class AuthFilter extends GenericFilterBean {
             throws IOException, ServletException {
         var httpRequest = (HttpServletRequest) request;
         var httpResponse = (HttpServletResponse) response;
-        var endpoint = httpRequest.getMethod() + " " + httpRequest.getRequestURI();
         try {
-            if (!publicEndpoint.test(endpoint)) {
+            if (!publicEndpoint.test(endpoint.apply(httpRequest))) {
                 var token = TokenExtractor.getAccessTokenFromRequest(httpRequest)
-                        .orElseThrow(WrongTokenException::new);
-                var authInfoDto = authIntegrationService.getAuthInfo(token).orElseThrow(WrongTokenException::new);
+                        .orElseThrow(WrongTokenAuthException::new);
+                var authInfoDto = authIntegrationService.getAuthInfo(token).orElseThrow(WrongTokenAuthException::new);
                 authInfo.init(
                         authInfoDto.userId(),
                         authInfoDto.username(),
@@ -47,14 +49,22 @@ public class AuthFilter extends GenericFilterBean {
                         Role.valueOf(authInfoDto.role())
                 );
             }
-        } catch (AuthException e) {
-            log.info("Wrong token. Endpoint: {}, uuid: {}", endpoint, e.getUuid(), e);
-            httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-            httpResponse.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-            httpResponse.getOutputStream().flush();
-            httpResponse.getOutputStream().println(new ExceptionDto(e).toString());
+        } catch (WrongTokenAuthException e) {
+            setUnauthorizedResponse(httpRequest, httpResponse, e);
             return;
         }
         chain.doFilter(request, response);
+    }
+
+    public static void setUnauthorizedResponse(
+            HttpServletRequest httpRequest,
+            HttpServletResponse httpResponse,
+            WrongTokenAuthException e
+    ) throws IOException {
+        log.info("Wrong token. Endpoint: {}, uuid: {}", endpoint.apply(httpRequest), e.getUuid(), e);
+        httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        httpResponse.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        httpResponse.getOutputStream().flush();
+        httpResponse.getOutputStream().println(new ExceptionDto(e).toString());
     }
 }

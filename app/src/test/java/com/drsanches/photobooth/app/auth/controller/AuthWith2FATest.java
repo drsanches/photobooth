@@ -97,7 +97,7 @@ class AuthWith2FATest extends BaseSpringTest {
                         .content(objectMapper.writeValueAsString(new CreateAccountDto(USERNAME.get(), PASSWORD.get(), email))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Email already exists"));
+                .andExpect(jsonPath("code").value("email.already.in.use"));
 
         mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/account")
@@ -105,7 +105,7 @@ class AuthWith2FATest extends BaseSpringTest {
                         .content(objectMapper.writeValueAsString(new CreateAccountDto(username, PASSWORD.get(), EMAIL.get()))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Username already exists"));
+                .andExpect(jsonPath("code").value("username.already.in.use"));
 
         mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/account")
@@ -113,7 +113,7 @@ class AuthWith2FATest extends BaseSpringTest {
                         .content(objectMapper.writeValueAsString(new CreateAccountDto(USERNAME.get(), PASSWORD.get(), googleEmail))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Email already exists"));
+                .andExpect(jsonPath("code").value("email.already.in.use"));
 
         verifyNoInteractions(notificationService);
     }
@@ -142,7 +142,7 @@ class AuthWith2FATest extends BaseSpringTest {
                         .content(objectMapper.writeValueAsString(new CreateAccountDto(username, password, EMAIL.get()))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Username already exists"));
+                .andExpect(jsonPath("code").value("username.already.in.use"));
 
         verifyNoMoreInteractions(notificationService);
         mockConfirmationCodeGenerator();
@@ -153,7 +153,7 @@ class AuthWith2FATest extends BaseSpringTest {
                         .content(objectMapper.writeValueAsString(new CreateAccountDto(USERNAME.get(), password, email))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Email already exists"));
+                .andExpect(jsonPath("code").value("email.already.in.use"));
 
         verifyNoMoreInteractions(notificationService);
 
@@ -216,7 +216,7 @@ class AuthWith2FATest extends BaseSpringTest {
                         .content(objectMapper.writeValueAsString(new UpdateUsernameDto(username))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Username already exists"));
+                .andExpect(jsonPath("code").value("username.already.in.use"));
 
         verifyNoInteractions(notificationService);
     }
@@ -249,7 +249,7 @@ class AuthWith2FATest extends BaseSpringTest {
                         .content(objectMapper.writeValueAsString(new UpdateUsernameDto(newUsername))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Username already exists"));
+                .andExpect(jsonPath("code").value("username.already.in.use"));
 
         verifyNoMoreInteractions(notificationService);
 
@@ -343,7 +343,7 @@ class AuthWith2FATest extends BaseSpringTest {
                         .content(objectMapper.writeValueAsString(new UpdateEmailDto(email))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Email already exists"));
+                .andExpect(jsonPath("code").value("email.already.in.use"));
 
         mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/account/email")
@@ -352,7 +352,7 @@ class AuthWith2FATest extends BaseSpringTest {
                         .content(objectMapper.writeValueAsString(new UpdateEmailDto(googleEmail))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Email already exists"));
+                .andExpect(jsonPath("code").value("email.already.in.use"));
 
         verifyNoInteractions(notificationService);
     }
@@ -385,7 +385,7 @@ class AuthWith2FATest extends BaseSpringTest {
                         .content(objectMapper.writeValueAsString(new UpdateEmailDto(newEmail))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
-                .andExpect(jsonPath("message").value("Email already exists"));
+                .andExpect(jsonPath("code").value("email.already.in.use"));
 
         verifyNoMoreInteractions(notificationService);
 
@@ -428,7 +428,7 @@ class AuthWith2FATest extends BaseSpringTest {
     }
 
     private Token getToken(String username, String password) {
-        var userAuth = userAuthDomainService.getEnabledByUsername(username);
+        var userAuth = userAuthDomainService.findEnabledByUsername(username).orElseThrow();
         credentialsHelper.checkPassword(password, userAuth.getPassword(), userAuth.getSalt());
         return tokenService.createToken(userAuth.getId(), userAuth.getRole());
     }

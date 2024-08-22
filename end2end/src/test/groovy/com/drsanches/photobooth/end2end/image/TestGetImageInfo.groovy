@@ -62,12 +62,8 @@ class TestGetImageInfo extends Specification {
                 headers: [Authorization: "Bearer $user.token"])
 
         then: "response is correct"
-        assert response.status == 400
-        assert Utils.validateErrorResponse(
-                response.data as JSONObject,
-                "There is no image with id '$nonexistentImageId'",
-                null
-        )
+        assert response.status == 404
+        assert Utils.validateErrorResponse(response.data as JSONObject, "image.not.found", null)
     }
 
     def "get profile photo info with invalid token"() {
@@ -81,6 +77,6 @@ class TestGetImageInfo extends Specification {
 
         then: "response is correct"
         assert response.status == 401
-        assert Utils.validateErrorResponse(response.data as JSONObject, "Wrong token", null)
+        assert Utils.validateErrorResponse(response.data as JSONObject, "wrong.token", null)
     }
 }

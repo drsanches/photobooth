@@ -23,14 +23,14 @@ public class ExceptionDto { //TODO: Rename to ErrorDto
     private final String uuid;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    private final String message;
+    private final String code;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Detail> details;
 
     public ExceptionDto(BaseException e) {
         this.uuid = e.getUuid();
-        this.message = e.getMessage();
+        this.code = e.getMessage();
     }
 
     public void addDetail(String field, String message) {

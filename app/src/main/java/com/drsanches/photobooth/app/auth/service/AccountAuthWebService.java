@@ -10,7 +10,7 @@ import com.drsanches.photobooth.app.auth.dto.userauth.response.UserAuthInfoDto;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Operation;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
-import com.drsanches.photobooth.app.common.exception.server.ServerError;
+import com.drsanches.photobooth.app.common.exception.ServerError;
 import com.drsanches.photobooth.app.common.integration.notifier.NotificationParams;
 import com.drsanches.photobooth.app.common.integration.app.AppIntegrationService;
 import com.drsanches.photobooth.app.common.integration.notifier.NotifierIntegrationService;
