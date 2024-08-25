@@ -18,7 +18,7 @@ public class ExpiredFcmTokenCleanupTask {
     @Scheduled(cron = "${application.scheduler.expired-fcm-token-cleanup-task.cron}")
     public void cleanup() {
         log.info("ExpiredFcmTokenCleanupTask started");
-        var expired = fcmTokenDomainService.getExpired();
+        var expired = fcmTokenDomainService.findAllExpired();
         if (!expired.isEmpty()) {
             fcmTokenDomainService.deleteAll(expired);
         }

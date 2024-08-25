@@ -18,7 +18,7 @@ public class ExpiredConfirmationCleanupTask {
     @Scheduled(cron = "${application.scheduler.expired-confirmation-cleanup-task.cron}")
     public void cleanup() {
         log.info("ExpiredConfirmationCleanupTask started");
-        var expired = confirmationDomainService.getExpired();
+        var expired = confirmationDomainService.findAllExpired();
         if (!expired.isEmpty()) {
             confirmationDomainService.deleteAll(expired);
         }

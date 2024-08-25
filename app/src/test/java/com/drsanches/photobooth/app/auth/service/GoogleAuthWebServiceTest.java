@@ -152,9 +152,9 @@ class GoogleAuthWebServiceTest {
     void setUsername() {
         var userAuth = createUserAuth();
         var confirmation = createConfirmation();
-        Mockito.when(confirmationDomainService.get(CONFIRMATION_CODE)).thenReturn(confirmation);
+        Mockito.when(confirmationDomainService.findByCode(CONFIRMATION_CODE)).thenReturn(Optional.of(confirmation));
         Mockito.when(authInfo.getUserId()).thenReturn(USER_ID);
-        Mockito.when(userAuthDomainService.getEnabledById(USER_ID)).thenReturn(userAuth);
+        Mockito.when(userAuthDomainService.findEnabledById(USER_ID)).thenReturn(Optional.of(userAuth));
 
         var newUsername = UUID.randomUUID().toString();
         var request = new GoogleSetUsernameDto();

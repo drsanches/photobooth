@@ -8,85 +8,105 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-//TODO: Refactor - too many db requests
 @Slf4j
 @Service
 public class FriendsDomainService {
 
+    public record Relationships(List<String> incoming, List<String> outgoing, List<String> friends) {}
+
     @Autowired
     private FriendRequestRepository friendRequestRepository;
 
-    public void saveFriendRequest(String fromUserId, String toUserId) {
+    public void create(String fromUserId, String toUserId) {
         var friendRequest = new FriendRequest(fromUserId, toUserId);
         friendRequestRepository.save(friendRequest);
-        log.debug("New FriendRequest created: {}", friendRequest);
+        log.info("New FriendRequest created: {}", friendRequest);
     }
 
     public int getIncomingRequestsCount(String userId) {
-        return getIncomingRequestIds(userId).size();
+        return findOnlyIncomingRequestIds(userId).size();
     }
 
     public int getOutgoingRequestsCount(String userId) {
-        return getOutgoingRequestIds(userId).size();
+        return findOnlyOutgoingRequestIds(userId).size();
     }
 
     public int getFriendsCount(String userId) {
-        return getFriendsIds(userId).size();
+        return findOnlyFriendIds(userId).size();
     }
 
-    public Set<String> getFriendsIds(String userId) {
-        var outgoing = getOutgoingRequestAndFriendIds(userId);
-        var incoming = getIncomingRequestAndFriendIds(userId);
-        return incoming.stream()
-                .filter(outgoing::contains)
-                .collect(Collectors.toSet());
+    public Set<String> findOnlyFriendIds(String userId) {
+        return friendRequestRepository.findFriends(userId);
     }
 
-    public Set<String> getIncomingRequestIds(String userId) {
-        var outgoing = getOutgoingRequestAndFriendIds(userId);
-        var incoming = getIncomingRequestAndFriendIds(userId);
-        return incoming.stream()
-                .filter(x -> !outgoing.contains(x))
-                .collect(Collectors.toSet());
+    public Set<String> findOnlyIncomingRequestIds(String userId) {
+        return friendRequestRepository.findIncoming(userId);
     }
 
-    public Set<String> getOutgoingRequestIds(String userId) {
-        var outgoing = getOutgoingRequestAndFriendIds(userId);
-        var incoming = getIncomingRequestAndFriendIds(userId);
-        return outgoing.stream()
-                .filter(x -> !incoming.contains(x))
-                .collect(Collectors.toSet());
+    public Set<String> findOnlyOutgoingRequestIds(String userId) {
+        return friendRequestRepository.findOutgoing(userId);
     }
 
-    public Set<String> getOutgoingRequestAndFriendIds(String userId) {
-        return friendRequestRepository.findByIdFromUserId(userId).stream()
-                .map(FriendRequest::getToUser)
-                .collect(Collectors.toSet());
+    public Relationships findAllRelationships(String userId) {
+        record Pair(boolean incoming, boolean outgoing) {}
+
+        var all = friendRequestRepository.findByIdFromUserIdOrIdToUserId(userId, userId);
+        Map<String, Pair> map = new HashMap<>();
+
+        all.forEach(it -> {
+            if (it.getToUser().equals(userId)) {
+                var another = it.getFromUserId();
+                if (!map.containsKey(another)) {
+                    map.put(another, new Pair(true, false));
+                } else {
+                    map.put(another, new Pair(true, map.get(another).outgoing()));
+                }
+            } else if (it.getFromUserId().equals(userId)) {
+                var another = it.getToUser();
+                if (!map.containsKey(another)) {
+                    map.put(another, new Pair(false, true));
+                } else {
+                    map.put(another, new Pair(map.get(another).incoming(), true));
+                }
+            }
+        });
+
+        var incoming = new ArrayList<String>();
+        var outgoing = new ArrayList<String>();
+        var friends = new ArrayList<String>();
+
+        map.forEach((key, pair) -> {
+            if (pair.incoming() && !pair.outgoing()) {
+                incoming.add(key);
+            } else if (pair.outgoing() && !pair.incoming()) {
+                outgoing.add(key);
+            } else {
+                friends.add(key);
+            }
+        });
+        return new Relationships(incoming, outgoing, friends);
     }
 
-    public Set<String> getIncomingRequestAndFriendIds(String userId) {
-        return friendRequestRepository.findByIdToUserId(userId).stream()
-                .map(FriendRequest::getFromUserId)
-                .collect(Collectors.toSet());
-    }
-
-    public void removeFriendRequest(String fromUserId, String toUserId) {
+    public void delete(String fromUserId, String toUserId) {
         var friendRequestKey = new FriendRequestKey(fromUserId, toUserId);
         try {
             friendRequestRepository.deleteById(friendRequestKey);
-            log.debug("FriendRequest removed: {}", friendRequestKey);
+            log.info("FriendRequest deleted: {}", friendRequestKey);
         } catch(EmptyResultDataAccessException e) {
             log.warn("FriendRequest does not exist. Key: {}", friendRequestKey, e);
         }
         var reversedFriendRequestKey = new FriendRequestKey(toUserId, fromUserId);
         try {
             friendRequestRepository.deleteById(reversedFriendRequestKey);
-            log.debug("Reversed FriendRequest removed: {}", reversedFriendRequestKey);
+            log.info("Reversed FriendRequest deleted: {}", reversedFriendRequestKey);
         } catch(EmptyResultDataAccessException e) {
-            log.debug("Reversed FriendRequest does not exist. Key: {}", reversedFriendRequestKey, e);
+            log.info("Reversed FriendRequest does not exist. Key: {}", reversedFriendRequestKey, e);
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.drsanches.photobooth.app.auth.data.userauth;
 
-import com.drsanches.photobooth.app.app.exception.UserNotFoundException;
 import com.drsanches.photobooth.app.auth.data.userauth.model.UserAuth;
 import com.drsanches.photobooth.app.auth.data.userauth.repository.UserAuthRepository;
 import com.drsanches.photobooth.app.auth.data.token.model.Role;
@@ -37,7 +36,7 @@ public class UserAuthDomainService {
                 .role(role)
                 .build();
         userAuthRepository.save(userAuth);
-        log.debug("UserAuth created: {}", userAuth);
+        log.info("New UserAuth created: {}", userAuth);
         return userAuth;
     }
 
@@ -51,47 +50,32 @@ public class UserAuthDomainService {
                 .role(Role.USER)
                 .build();
         userAuthRepository.save(userAuth);
-        log.debug("UserAuth created by Google: {}", userAuth);
+        log.info("New UserAuth created by Google: {}", userAuth);
         return userAuth;
     }
 
     public void updateUsername(String userId, String username) {
-        var userAuth = getEnabledById(userId);
-        userAuth.setUsername(username);
-        userAuthRepository.save(userAuth);
-        log.debug("UserAuth username updated: {}", userAuth);
+        userAuthRepository.updateUsername(userId, username);
+        log.info("UserAuth username updated. UserId: {}, username: {}", userId, username);
     }
 
     public void updatePassword(String userId, String password, String salt) {
-        var userAuth = getEnabledById(userId);
-        userAuth.setPassword(password);
-        userAuth.setSalt(salt);
-        userAuthRepository.save(userAuth);
-        log.debug("UserAuth password updated: {}", userAuth);
+        userAuthRepository.updatePassword(userId, password, salt);
+        log.info("UserAuth password updated. UserId: {}", userId);
     }
 
     public void updateEmail(String userId, String email) {
-        var userAuth = getEnabledById(userId);
-        userAuth.setEmail(email);
-        userAuthRepository.save(userAuth);
-        log.debug("UserAuth email updated: {}", userAuth);
+        userAuthRepository.updateEmail(userId, email);
+        log.info("UserAuth email updated. UserId: {}, email: {}", userId, email);
     }
 
-    public void setGoogleAuth(String userId, String googleAuth) {
-        var userAuth = getEnabledById(userId);
-        userAuth.setGoogleAuth(googleAuth);
-        userAuthRepository.save(userAuth);
-        log.debug("UserAuth googleAuth set: {}", userAuth);
+    public void updateGoogleAuth(String userId, String googleAuth) {
+        userAuthRepository.updateGoogleAuth(userId, googleAuth);
+        log.info("UserAuth googleAuth updated. UserId: {}, googleAuth: {}", userId, googleAuth);
     }
 
     public Optional<UserAuth> findEnabledById(String userId) {
-        return userAuthRepository.findById(userId)
-                .filter(UserAuth::isEnabled);
-    }
-
-    public UserAuth getEnabledById(String userId) {
-        return findEnabledById(userId)
-                .orElseThrow(UserNotFoundException::new);
+        return userAuthRepository.findByIdAndEnabled(userId, true);
     }
 
     public Optional<UserAuth> findEnabledByUsername(String username) {
@@ -119,7 +103,7 @@ public class UserAuthDomainService {
     }
 
     public void disableUser(String userId) {
-        var userAuth = getEnabledById(userId);
+        var userAuth = findEnabledById(userId).orElseThrow();
         userAuth = userAuth.toBuilder()
                 .enabled(false)
                 .username(UUID.randomUUID() + "_" + userAuth.getUsername())
@@ -127,6 +111,6 @@ public class UserAuthDomainService {
                 .googleAuth(UUID.randomUUID() + "_" + userAuth.getGoogleAuth())
                 .build();
         userAuthRepository.save(userAuth);
-        log.debug("UserAuth disabled: {}", userAuth);
+        log.info("UserAuth disabled: {}", userAuth);
     }
 }

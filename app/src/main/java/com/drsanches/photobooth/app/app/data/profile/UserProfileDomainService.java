@@ -2,7 +2,6 @@ package com.drsanches.photobooth.app.app.data.profile;
 
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.app.data.profile.repository.UserProfileRepository;
-import com.drsanches.photobooth.app.app.exception.UserNotFoundException;
 import com.drsanches.photobooth.app.app.utils.PaginationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,30 +30,23 @@ public class UserProfileDomainService {
                 .enabled(true)
                 .build();
         userProfileRepository.save(userProfile);
-        log.debug("UserProfile created: {}", userProfile);
+        log.info("New UserProfile saved: {}", userProfile);
         return userProfile;
     }
 
     public void updateUsername(String userId, String username) {
-        var userProfile = getEnabledById(userId);
-        userProfile.setUsername(username);
-        userProfileRepository.save(userProfile);
-        log.debug("UserProfile username updated: {}", userProfile);
+        userProfileRepository.updateUsername(userId, username);
+        log.info("UserProfile username updated. UserId: {}, username: {}", userId, username);
     }
 
     public void updateProfileData(String userId, @Nullable String name, @Nullable String status) {
-        var userProfile = getEnabledById(userId);
-        userProfile.setName(name);
-        userProfile.setStatus(status);
-        userProfileRepository.save(userProfile);
-        log.debug("UserProfile data updated: {}", userProfile);
+        userProfileRepository.updateNameAndStatus(userId, name, status);
+        log.info("UserProfile data updated. UserId: {}, name: {}, status: {}", userId, name, status);
     }
 
     public void updateImageId(String userId, @Nullable String imageId) {
-        var userProfile = getEnabledById(userId);
-        userProfile.setImageId(imageId);
-        userProfileRepository.save(userProfile);
-        log.debug("UserProfile imageId updated: {}", userProfile);
+        userProfileRepository.updateImageId(userId, imageId);
+        log.info("UserProfile imageId updated. UserId: {}, imageId: {}", userId, imageId);
     }
 
     public Optional<UserProfile> findById(String userId) {
@@ -65,39 +57,26 @@ public class UserProfileDomainService {
         return userProfileRepository.findByIdAndEnabled(userId, true);
     }
 
-    public UserProfile getEnabledById(String userId) {
-        return userProfileRepository.findByIdAndEnabled(userId, true)
-                .orElseThrow(UserNotFoundException::new);
-    }
-
     //TODO: Sort?
     public List<UserProfile> findEnabledByUsername(String username, Integer page, Integer size) {
         var pageable = paginationService.pageable(page, size);
         return userProfileRepository.findByUsernameContainingAndEnabled(username, true, pageable);
     }
 
-    public boolean enabledExistsById(String userId) {
-        return userProfileRepository.existsByIdAndEnabled(userId, true);
-    }
-
-    public boolean anyExistsById(String userId) {
-        return userProfileRepository.existsById(userId);
-    }
-
-    public List<UserProfile> getEnabledByIds(Collection<String> userIds) {
+    public List<UserProfile> findAllEnabledByIds(Collection<String> userIds) {
         return userProfileRepository.findAllByIdInAndEnabled(userIds, true);
     }
 
-    public List<UserProfile> getAllByIdsOrderByUsername(Collection<String> userIds) {
+    public List<UserProfile> findAllByIdsOrderByUsername(Collection<String> userIds) {
         return userProfileRepository.findAllByIdInOrderByUsername(userIds);
     }
 
     public void disableUser(String userId) {
-        var userProfile = getEnabledById(userId);
+        var userProfile = findEnabledById(userId).orElseThrow();
         var savedUserProfile = userProfileRepository.save(userProfile.toBuilder()
                 .username(UUID.randomUUID() + "_" + userProfile.getUsername())
                 .enabled(false)
                 .build());
-        log.debug("UserProfile disabled: {}", savedUserProfile);
+        log.info("UserProfile disabled: {}", savedUserProfile);
     }
 }

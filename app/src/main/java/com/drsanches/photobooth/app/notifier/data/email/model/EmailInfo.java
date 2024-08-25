@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Table(name="email_info", indexes = {
         @Index(name = "email_info_user_id_index", columnList = "userId")
 })
+//TODO: Refactor - move fields from id
 public class EmailInfo {
 
     @EmbeddedId

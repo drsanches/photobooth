@@ -18,7 +18,7 @@ public class ExpiredTokenCleanupTask {
     @Scheduled(cron = "${application.scheduler.expired-token-cleanup-task.cron}")
     public void cleanup() {
         log.info("ExpiredTokenCleanupTask started");
-        var expired = tokenDomainService.getExpired();
+        var expired = tokenDomainService.findAllExpired();
         if (!expired.isEmpty()) {
             tokenDomainService.deleteAll(expired);
         }

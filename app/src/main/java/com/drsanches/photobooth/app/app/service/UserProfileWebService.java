@@ -4,6 +4,7 @@ import com.drsanches.photobooth.app.app.data.image.ImageDomainService;
 import com.drsanches.photobooth.app.app.dto.profile.request.UploadProfilePhotoDto;
 import com.drsanches.photobooth.app.app.dto.profile.request.UpdateUserProfileDto;
 import com.drsanches.photobooth.app.app.dto.profile.response.UserInfoDto;
+import com.drsanches.photobooth.app.app.exception.UserNotFoundException;
 import com.drsanches.photobooth.app.app.mapper.UserInfoMapper;
 import com.drsanches.photobooth.app.app.data.friends.FriendsDomainService;
 import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
@@ -45,7 +46,7 @@ public class UserProfileWebService {
 
     public UserInfoDto getCurrentProfile() {
         var userId = authInfo.getUserId();
-        var userProfile = userProfileDomainService.getEnabledById(userId);
+        var userProfile = userProfileDomainService.findEnabledById(userId).orElseThrow();
         return userInfoMapper.convertCurrent(
                 userProfile,
                 friendsDomainService.getIncomingRequestsCount(userId),
@@ -66,21 +67,20 @@ public class UserProfileWebService {
 
     public UserInfoDto getProfile(String userId) {
         var currentUserId = authInfo.getUserId();
-        var userProfile = userProfileDomainService.getEnabledById(userId);
-        var incomingIds = friendsDomainService.getIncomingRequestAndFriendIds(currentUserId);
-        var outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIds(currentUserId);
-        return userInfoMapper.convert(userProfile, incomingIds, outgoingIds);
+        var userProfile = userProfileDomainService.findEnabledById(userId)
+                .orElseThrow(UserNotFoundException::new);
+        var relationships = friendsDomainService.findAllRelationships(currentUserId);
+        return userInfoMapper.convert(userProfile, relationships);
     }
 
     public List<UserInfoDto> searchProfile(String username, Integer page, Integer size) {
         var currentUserId = authInfo.getUserId();
         var userProfile = userProfileDomainService.findEnabledByUsername(username.toLowerCase(), page, size);
-        var incomingIds = friendsDomainService.getIncomingRequestAndFriendIds(currentUserId);
-        var outgoingIds = friendsDomainService.getOutgoingRequestAndFriendIds(currentUserId);
+        var relationships = friendsDomainService.findAllRelationships(currentUserId);
         return userProfile.stream()
                 .filter(x -> !x.getId().equals(currentUserId))
-                .map(x -> userInfoMapper.convert(x, incomingIds, outgoingIds))
-                .collect(Collectors.toList());
+                .map(x -> userInfoMapper.convert(x, relationships))
+                .toList();
     }
 
     public void uploadProfilePhoto(@Valid UploadProfilePhotoDto uploadProfilePhotoDto) {
@@ -89,7 +89,7 @@ public class UserProfileWebService {
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
             var imageId = imageDomainService.saveImage(image, userId).getId();
             userProfileDomainService.updateImageId(userId, imageId);
-            log.info("User updated profile image. UserId: {}, newImageId: {}", userId, imageId);
+            log.info("User updated his profile image. UserId: {}, imageId: {}", userId, imageId);
         });
     }
 

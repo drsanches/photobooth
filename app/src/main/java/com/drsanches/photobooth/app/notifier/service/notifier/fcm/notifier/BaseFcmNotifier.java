@@ -19,7 +19,7 @@ public abstract class BaseFcmNotifier implements Notifier {
     private FcmTokenDomainService fcmTokenDomainService;
 
     protected void sendPushWithImage(String userId, String title, String body, String imageId) {
-        var fcmTokens = fcmTokenDomainService.getByUserId(userId).stream()
+        var fcmTokens = fcmTokenDomainService.findAllByUserId(userId).stream()
                 .map(FcmToken::getToken)
                 .toList();
         if (fcmTokens.isEmpty()) {
@@ -36,7 +36,7 @@ public abstract class BaseFcmNotifier implements Notifier {
                 .map(FcmService.FcmResult::fcmToken)
                 .toList();
         if (!fcmTokensToDelete.isEmpty()) {
-            fcmTokenDomainService.deleteByTokens(fcmTokensToDelete);
+            fcmTokenDomainService.deleteAllByTokens(fcmTokensToDelete);
             log.info("Deleted wrong fcm tokens. Count: {}, userId: {}", fcmTokensToDelete.size(), userId);
         }
     }

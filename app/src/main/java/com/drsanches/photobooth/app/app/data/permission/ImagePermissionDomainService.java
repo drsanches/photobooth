@@ -18,14 +18,14 @@ public class ImagePermissionDomainService {
     @Autowired
     private ImagePermissionRepository imagePermissionRepository;
 
-    public void savePermissions(String imageId, List<String> userIds) {
+    public void saveAll(String imageId, List<String> userIds) {
         var imagePermissions = new ArrayList<ImagePermission>(userIds.size());
         userIds.forEach(userId -> imagePermissions.add(new ImagePermission(imageId, userId)));
         imagePermissionRepository.saveAll(imagePermissions);
-        log.debug("New image permissions saved: {}", imagePermissions);
+        log.info("New image permissions saved: {}", imagePermissions);
     }
 
-    public Set<String> getImageIds(String userId) {
+    public Set<String> findAllByImageId(String userId) {
         return imagePermissionRepository.findByIdUserId(userId).stream()
                 .map(ImagePermission::getImageId)
                 .collect(Collectors.toSet());

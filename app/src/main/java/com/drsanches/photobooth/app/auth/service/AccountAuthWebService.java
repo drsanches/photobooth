@@ -8,6 +8,7 @@ import com.drsanches.photobooth.app.auth.dto.confirm.RegistrationConfirmData;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.CreateAccountDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.UserAuthInfoDto;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Operation;
+import com.drsanches.photobooth.app.auth.exception.WrongConfirmCodeException;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.common.exception.ServerError;
@@ -99,7 +100,7 @@ public class AccountAuthWebService {
 
     public UserAuthInfoDto getAccount() {
         var userId = authInfo.getUserId();
-        var current = userAuthDomainService.getEnabledById(userId);
+        var current = userAuthDomainService.findEnabledById(userId).orElseThrow();
         return userAuthInfoMapper.convert(current);
     }
 
@@ -202,7 +203,8 @@ public class AccountAuthWebService {
     }
 
     public Object confirm(@Valid String confirmationCode) {
-        var confirmation = confirmationDomainService.get(confirmationCode);
+        var confirmation = confirmationDomainService.findByCode(confirmationCode)
+                .orElseThrow(WrongConfirmCodeException::new);
         confirmationValidator.validate(confirmation);
         return switch (confirmation.getOperation()) {
             case REGISTRATION -> registrationConfirm(confirmation);
@@ -240,7 +242,9 @@ public class AccountAuthWebService {
                 ChangeUsernameConfirmData.class
         );
         var userId = confirmation.getUserId();
-        var oldUsername = userAuthDomainService.getEnabledById(userId).getUsername();
+        var oldUsername = userAuthDomainService.findEnabledById(userId)
+                .orElseThrow()
+                .getUsername();
 
         //TODO: Transaction
         appIntegrationService.updateUsername(userId, changeUsernameConfirmData.getUsername()); //TODO: Is it needed?
@@ -284,7 +288,7 @@ public class AccountAuthWebService {
         var userId = confirmation.getUserId();
 
         //TODO: Transaction
-        notifierIntegrationService.setEmail(userId, changeEmailConfirmData.getEmail());
+        notifierIntegrationService.updateEmail(userId, changeEmailConfirmData.getEmail());
         userAuthDomainService.updateEmail(userId, changeEmailConfirmData.getEmail());
 
         confirmationDomainService.delete(confirmation.getId());
@@ -297,7 +301,9 @@ public class AccountAuthWebService {
 
     public Object disableUserConfirm(Confirmation confirmation) {
         var userId = confirmation.getUserId();
-        var email = userAuthDomainService.getEnabledById(userId).getEmail();
+        var email = userAuthDomainService.findEnabledById(userId)
+                .orElseThrow()
+                .getEmail();
 
         //TODO: Transaction
         appIntegrationService.disable(userId);

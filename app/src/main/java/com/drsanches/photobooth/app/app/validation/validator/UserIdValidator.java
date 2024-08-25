@@ -39,7 +39,7 @@ public class UserIdValidator implements ConstraintValidator<UserId, Object> {
     public boolean isValid(Object object, ConstraintValidatorContext context) {
         Set<String> friendIds = null;
         if (authInfo.isAuthorized() && violations.contains(UserId.Violation.FRIEND)) {
-            friendIds = friendsDomainService.getFriendsIds(authInfo.getUserId());
+            friendIds = friendsDomainService.findOnlyFriendIds(authInfo.getUserId());
         }
         Set<UserId.Violation> badViolationResults;
         if (object == null) {

@@ -1,5 +1,6 @@
 package com.drsanches.photobooth.app.app.mapper;
 
+import com.drsanches.photobooth.app.app.data.friends.FriendsDomainService;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.app.dto.profile.response.RelationshipDto;
 import com.drsanches.photobooth.app.app.dto.profile.response.UserInfoDto;
@@ -48,9 +49,9 @@ public class UserInfoMapper {
                 .build();
     }
 
-    public UserInfoDto convert(UserProfile userProfile, Collection<String> incomingIds, Collection<String> outgoingIds) {
+    public UserInfoDto convert(UserProfile userProfile, FriendsDomainService.Relationships relationships) {
         return convert(userProfile).toBuilder()
-                .relationship(getRelationship(userProfile.getId(), incomingIds, outgoingIds))
+                .relationship(getRelationship(userProfile.getId(), relationships))
                 .build();
     }
 
@@ -76,17 +77,17 @@ public class UserInfoMapper {
                 .build();
     }
 
-    private RelationshipDto getRelationship(String userId, Collection<String> incomingIds, Collection<String> outgoingIds) {
+    private RelationshipDto getRelationship(String userId, FriendsDomainService.Relationships relationships) {
         if (authInfo.getUserId().equals(userId)) {
             return RelationshipDto.CURRENT;
         }
-        if (incomingIds.contains(userId) && outgoingIds.contains(userId)) {
+        if (relationships.friends().contains(userId)) {
             return RelationshipDto.FRIEND;
         }
-        if (incomingIds.contains(userId) && !outgoingIds.contains(userId)) {
+        if (relationships.incoming().contains(userId)) {
             return RelationshipDto.INCOMING_FRIEND_REQUEST;
         }
-        if (!incomingIds.contains(userId) && outgoingIds.contains(userId)) {
+        if (relationships.outgoing().contains(userId)) {
             return RelationshipDto.OUTGOING_FRIEND_REQUEST;
         }
         return RelationshipDto.STRANGER;

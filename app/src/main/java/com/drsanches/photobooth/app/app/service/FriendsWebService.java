@@ -39,40 +39,40 @@ public class FriendsWebService {
 
     public List<UserInfoDto> getFriends(Integer page, Integer size) {
         var userId = authInfo.getUserId();
-        var friends = friendsDomainService.getFriendsIds(userId);
-        var result = userProfileDomainService.getAllByIdsOrderByUsername(friends).stream();
+        var friends = friendsDomainService.findOnlyFriendIds(userId);
+        var result = userProfileDomainService.findAllByIdsOrderByUsername(friends).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convertFriend)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<UserInfoDto> getIncomingRequests(Integer page, Integer size) {
         var userId = authInfo.getUserId();
-        var incoming = friendsDomainService.getIncomingRequestIds(userId);
-        var result = userProfileDomainService.getAllByIdsOrderByUsername(incoming).stream();
+        var incoming = friendsDomainService.findOnlyIncomingRequestIds(userId);
+        var result = userProfileDomainService.findAllByIdsOrderByUsername(incoming).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convertIncoming)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<UserInfoDto> getOutgoingRequests(Integer page, Integer size) {
         var userId = authInfo.getUserId();
-        var outgoing = friendsDomainService.getOutgoingRequestIds(userId);
-        var result = userProfileDomainService.getAllByIdsOrderByUsername(outgoing).stream();
+        var outgoing = friendsDomainService.findOnlyOutgoingRequestIds(userId);
+        var result = userProfileDomainService.findAllByIdsOrderByUsername(outgoing).stream();
         return paginationService.pagination(result, page, size)
                 .map(userInfoMapper::convertOutgoing)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public void sendRequest(@Valid SendRequestDto sendRequestDto) {
         var fromUserId = authInfo.getUserId();
-        friendsDomainService.saveFriendRequest(fromUserId, sendRequestDto.getUserId());
+        friendsDomainService.create(fromUserId, sendRequestDto.getUserId());
         log.info("Friend request sent. FromUserId: {}, toUserId: {}", fromUserId, sendRequestDto.getUserId());
     }
 
     public void removeRequest(@Valid RemoveRequestDto removeRequestDto) {
         var currentUserId = authInfo.getUserId();
-        friendsDomainService.removeFriendRequest(currentUserId, removeRequestDto.getUserId());
+        friendsDomainService.delete(currentUserId, removeRequestDto.getUserId());
         log.info("Friendship canceled. ByUserId: {}, forUserId: {}", currentUserId, removeRequestDto.getUserId());
     }
 }

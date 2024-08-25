@@ -565,7 +565,6 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Fix error "host not found in upstream" if nginx started without app and elk
 - Fix certs
 - Add test controller for admin with ui
-- Update entities without getting?
 - Merge web and domain layers?
 - Use login for auth and username for profile?
 - Move ImageConsts to app
@@ -578,8 +577,12 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Maybe use Spring Events
 - Refactor auth creation with google?
 - Throw exceptions in web services, not in domain? Rename domain to dao?
-- Use Instant instead of GregorianCalendar?
 - Use docker swarm?
+- Check all orElseThrow()
+- Refactor paging and soring. Use Page for responses?
+- Use JpaRepository instead of CrudRepository?
+- Refactor notifier flow with email
+- Use Instant instead of GregorianCalendar?
 
 ### UI
 - Hide admin ui for users

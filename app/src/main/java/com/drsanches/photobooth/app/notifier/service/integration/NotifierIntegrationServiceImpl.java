@@ -11,13 +11,15 @@ public class NotifierIntegrationServiceImpl implements NotifierIntegrationServic
     @Autowired
     private EmailInfoDomainService emailInfoDomainService;
 
+    //TODO: Refactor
     @Override
-    public void setEmail(String userId, String email) {
-        emailInfoDomainService.setEmail(userId, email);
+    public void updateEmail(String userId, String email) {
+        emailInfoDomainService.deleteByUserId(userId);
+        emailInfoDomainService.create(userId, email);
     }
 
     @Override
     public void removeEmail(String userId) {
-        emailInfoDomainService.removeEmail(userId);
+        emailInfoDomainService.deleteByUserId(userId);
     }
 }

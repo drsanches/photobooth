@@ -29,6 +29,8 @@ public class AuthIntegrationServiceImpl implements AuthIntegrationService {
 
     @Override
     public String getEmail(String userId) {
-        return userAuthDomainService.getEnabledById(userId).getEmail();
+        return userAuthDomainService.findEnabledById(userId)
+                .orElseThrow()
+                .getEmail();
     }
 }

@@ -1,6 +1,5 @@
 package com.drsanches.photobooth.app.auth.data.token;
 
-import com.drsanches.photobooth.app.auth.exception.WrongTokenAuthException;
 import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import com.drsanches.photobooth.app.auth.data.token.model.Token;
 import com.drsanches.photobooth.app.auth.data.token.repository.TokenRepository;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -41,40 +41,34 @@ public class TokenDomainService {
                 .userId(userId)
                 .role(role)
                 .build());
-        log.debug("New token saved: {}", savedToken);
+        log.info("New token saved: {}", savedToken);
         return savedToken;
     }
 
-    public Token getValidTokenByAccessToken(String accessToken) {
-        //TODO: Remove expired
-        return tokenRepository.findByAccessToken(accessToken)
-                .filter(it -> it.getExpires().after(new GregorianCalendar()))
-                .orElseThrow(WrongTokenAuthException::new);
+    public Optional<Token> findByAccessToken(String accessToken) {
+        return tokenRepository.findByAccessToken(accessToken);
     }
 
-    public Token getValidTokenByRefreshToken(String refreshToken) {
-        //TODO: Remove expired
-        return tokenRepository.findByRefreshToken(refreshToken)
-                .filter(it -> it.getRefreshExpires().after(new GregorianCalendar()))
-                .orElseThrow(WrongTokenAuthException::new);
+    public Optional<Token> findByRefreshToken(String refreshToken) {
+        return tokenRepository.findByRefreshToken(refreshToken);
     }
 
-    public List<Token> getTokensByUserId(String userId) {
+    public List<Token> findAllByUserId(String userId) {
         return tokenRepository.findByUserId(userId);
     }
 
-    public List<Token> getExpired() {
+    public List<Token> findAllExpired() {
         var now = new GregorianCalendar();
         return tokenRepository.findByExpiresLessThanAndRefreshExpiresLessThan(now, now);
     }
 
     public void deleteById(String tokenId) {
         tokenRepository.deleteById(tokenId);
-        log.debug("Token deleted. Id: {}", tokenId);
+        log.info("Token deleted. Id: {}", tokenId);
     }
 
     public void deleteAll(List<Token> tokens) {
         tokenRepository.deleteAll(tokens);
-        log.debug("Tokens deleted: {}", tokens);
+        log.info("Tokens deleted: {}", tokens);
     }
 }

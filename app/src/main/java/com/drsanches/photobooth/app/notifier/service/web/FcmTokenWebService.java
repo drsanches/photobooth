@@ -25,7 +25,7 @@ public class FcmTokenWebService {
     public FcmTokenExpiresDto addToken(@Valid FcmTokenDto fcmTokenDto) {
         var userId = authInfo.getUserId();
         var fcmToken = fcmTokenDomainService.getOrCreate(userId, fcmTokenDto.getFcmToken());
-        log.info("New fcm token added. UserId: {}, fcmToken: {}", userId, fcmTokenDto.getFcmToken());
+        log.info("FcmToken added or exists: " + fcmToken);
         return new FcmTokenExpiresDto(GregorianCalendarConvertor.convert(fcmToken.getExpires()));
     }
 }

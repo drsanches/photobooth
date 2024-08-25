@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.util.GregorianCalendar;
 import java.util.Optional;
 
 @Slf4j
@@ -42,7 +43,10 @@ public class TokenService {
     public AuthInfoDto validate(String accessToken) {
         var extractedAccessToken = extractToken(accessToken)
                 .orElseThrow(WrongTokenAuthException::new);
-        var token = tokenDomainService.getValidTokenByAccessToken(extractedAccessToken);
+        var token = tokenDomainService.findByAccessToken(extractedAccessToken)
+                .orElseThrow(WrongTokenAuthException::new);
+        token = getValidOrRemove(token)
+                .orElseThrow(WrongTokenAuthException::new);
         var user = userAuthDomainService.findEnabledById(token.getUserId())
                 .orElseThrow(WrongTokenAuthException::new);
         return new AuthInfoDto(
@@ -56,7 +60,12 @@ public class TokenService {
     public Token refreshToken(@Nullable String refreshToken) {
         var extractedRefreshToken = extractToken(refreshToken)
                 .orElseThrow(WrongTokenAuthException::new);
-        var token = tokenDomainService.getValidTokenByRefreshToken(extractedRefreshToken);
+        var token = tokenDomainService.findByRefreshToken(extractedRefreshToken)
+                .orElseThrow(WrongTokenAuthException::new);
+        token = getValidOrRemove(token)
+                .orElseThrow(WrongTokenAuthException::new);
+        userAuthDomainService.findEnabledById(token.getUserId())
+                .orElseThrow(WrongTokenAuthException::new);
         tokenDomainService.deleteById(token.getId());
         var refreshedToken = createToken(token.getUserId(), token.getRole());
         log.info("Token refreshed. UserId: {}", refreshedToken.getUserId());
@@ -71,7 +80,7 @@ public class TokenService {
     }
 
     public void removeAllTokens(String userId) {
-        var tokens = tokenDomainService.getTokensByUserId(userId);
+        var tokens = tokenDomainService.findAllByUserId(userId);
         tokenDomainService.deleteAll(tokens);
         authInfo.clean();
         log.info("Tokens deleted. UserId: {}", userId);
@@ -86,6 +95,14 @@ public class TokenService {
         } else if (token.contains(TOKEN_TYPE + "%20")) {
             return Optional.of(token.substring(TOKEN_TYPE.length() + 3));
         }
+        return Optional.empty();
+    }
+
+    private Optional<Token> getValidOrRemove(Token token) {
+        if (token.getExpires().after(new GregorianCalendar())) {
+            return Optional.of(token);
+        }
+        tokenDomainService.deleteById(token.getId());
         return Optional.empty();
     }
 }

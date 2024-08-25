@@ -16,19 +16,19 @@ public class EmailInfoDomainService {
     private EmailInfoRepository emailInfoRepository;
 
     public EmailInfo create(String userId, String email) {
-        return emailInfoRepository.save(new EmailInfo(userId, email));
-    }
-
-    public void setEmail(String userId, String email) {
-        emailInfoRepository.findByIdUserId(userId).ifPresent(it -> emailInfoRepository.delete(it));
-        emailInfoRepository.save(new EmailInfo(userId, email));
+        var emailInfo = emailInfoRepository.save(new EmailInfo(userId, email));
+        log.info("New EmailInfo saved: " + emailInfo);
+        return emailInfo;
     }
 
     public Optional<EmailInfo> findByUserId(String userId) {
         return emailInfoRepository.findByIdUserId(userId);
     }
 
-    public void removeEmail(String userId) {
-        emailInfoRepository.findByIdUserId(userId).ifPresent(it -> emailInfoRepository.delete(it));
+    public void deleteByUserId(String userId) {
+        emailInfoRepository.findByIdUserId(userId).ifPresent(it -> {
+            emailInfoRepository.delete(it);
+            log.info("EmailInfo deleted: " + it);
+        });
     }
 }

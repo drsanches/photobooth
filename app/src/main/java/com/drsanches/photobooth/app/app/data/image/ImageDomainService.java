@@ -1,7 +1,6 @@
 package com.drsanches.photobooth.app.app.data.image;
 
 import com.drsanches.photobooth.app.app.data.image.repository.ImageRepository;
-import com.drsanches.photobooth.app.app.exception.ImageNotFoundException;
 import com.drsanches.photobooth.app.app.data.image.model.Image;
 import com.drsanches.photobooth.app.config.ImageConsts;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -24,35 +24,30 @@ public class ImageDomainService {
     private ImageConverter imageConverter;
 
     public Image saveImage(byte[] imageData, String ownerId) {
+        return save(UUID.randomUUID().toString(), imageData, ownerId);
+    }
+
+    public Image saveSystemImage(String id, byte[] imageData) {
+        return save(id, imageData, ImageConsts.SYSTEM_OWNER_ID);
+    }
+
+    private Image save(String id, byte[] imageData, String ownerId) {
         var savedImage = imageRepository.save(Image.builder()
-                .id(UUID.randomUUID().toString())
+                .id(id)
                 .data(imageData)
                 .thumbnailData(imageConverter.toThumbnail(imageData))
                 .ownerId(ownerId)
                 .created(new GregorianCalendar())
                 .build());
-        log.debug("New image saved: {}", savedImage);
+        log.info("New image saved: {}", savedImage);
         return savedImage;
     }
 
-    public Image saveSystemImage(String id, byte[] imageData) {
-        var savedImage = imageRepository.save(Image.builder()
-                .id(id)
-                .data(imageData)
-                .thumbnailData(imageConverter.toThumbnail(imageData))
-                .ownerId(ImageConsts.SYSTEM_OWNER_ID)
-                .created(new GregorianCalendar())
-                .build());
-        log.debug("New image saved: {}", savedImage);
-        return savedImage;
+    public Optional<Image> findImage(String imageId) {
+        return imageRepository.findById(imageId);
     }
 
-    public Image getImage(String imageId) {
-        return imageRepository.findById(imageId)
-                .orElseThrow(() -> new ImageNotFoundException());
-    }
-
-    public List<Image> getImages(Collection<String> imageIds) {
+    public List<Image> findAllImagesByIds(Collection<String> imageIds) {
         var images = imageRepository.findAllByIdInOrderByCreatedDesc(imageIds);
         if (images.size() != imageIds.size()) {
             var foundIds = images.stream()

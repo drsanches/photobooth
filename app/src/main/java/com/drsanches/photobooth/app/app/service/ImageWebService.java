@@ -1,5 +1,6 @@
 package com.drsanches.photobooth.app.app.service;
 
+import com.drsanches.photobooth.app.app.exception.ImageNotFoundException;
 import com.drsanches.photobooth.app.app.mapper.ImageInfoMapper;
 import com.drsanches.photobooth.app.app.data.image.model.Image;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
@@ -60,15 +61,21 @@ public class ImageWebService {
     private ImageInfoMapper imageInfoMapper;
 
     public ImageInfoDto getImageInfo(String imageId) {
-        return imageInfoMapper.convert(imageDomainService.getImage(imageId));
+        var image = imageDomainService.findImage(imageId)
+                .orElseThrow(ImageNotFoundException::new);
+        return imageInfoMapper.convert(image);
     }
 
     public byte[] getImage(String imageId) {
-        return imageDomainService.getImage(imageId).getData();
+        return imageDomainService.findImage(imageId)
+                .orElseThrow(ImageNotFoundException::new)
+                .getData();
     }
 
     public byte[] getThumbnail(String imageId) {
-        return imageDomainService.getImage(imageId).getThumbnailData();
+        return imageDomainService.findImage(imageId)
+                .orElseThrow(ImageNotFoundException::new)
+                .getThumbnailData();
     }
 
     public void uploadPhoto(@Valid UploadPhotoDto uploadPhotoDto) {
@@ -81,7 +88,7 @@ public class ImageWebService {
         allowedUsers.add(currentUserId);
         var imageId = new TransactionTemplate(transactionManager).execute(status -> {
             var savedImageId = imageDomainService.saveImage(image, currentUserId).getId();
-            imagePermissionDomainService.savePermissions(savedImageId, allowedUsers);
+            imagePermissionDomainService.saveAll(savedImageId, allowedUsers);
             log.info("User uploaded new image. UserId: {}, imageId: {}, allowedUserIds: {}",
                     currentUserId, savedImageId, allowedUsers);
             return savedImageId;
@@ -95,16 +102,16 @@ public class ImageWebService {
 
     public List<ImageInfoDto> getAllInfo(Integer page, Integer size) {
         var currentUserId = authInfo.getUserId();
-        var imageIds = imagePermissionDomainService.getImageIds(currentUserId);
-        var images = imageDomainService.getImages(imageIds).stream();
+        var imageIds = imagePermissionDomainService.findAllByImageId(currentUserId);
+        var images = imageDomainService.findAllImagesByIds(imageIds).stream();
         return paginationService.pagination(images, page, size)
                 .map(imageInfoMapper::convert)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<String> getEnabledFriends(String currentUserId) {
-        var friendIds = friendsDomainService.getFriendsIds(currentUserId);
-        return userProfileDomainService.getEnabledByIds(friendIds).stream()
+        var friendIds = friendsDomainService.findOnlyFriendIds(currentUserId);
+        return userProfileDomainService.findAllEnabledByIds(friendIds).stream()
                 .map(UserProfile::getId)
                 .collect(Collectors.toList());
     }

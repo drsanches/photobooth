@@ -5,6 +5,7 @@ import com.drsanches.photobooth.app.auth.dto.google.GoogleGetTokenDto;
 import com.drsanches.photobooth.app.auth.dto.google.GoogleSetUsernameDto;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
 import com.drsanches.photobooth.app.auth.exception.EmailAlreadyInUseException;
+import com.drsanches.photobooth.app.auth.exception.WrongConfirmCodeException;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.GoogleTokenDto;
@@ -89,11 +90,14 @@ public class GoogleAuthWebService {
     }
 
     public void setUsername(@Valid GoogleSetUsernameDto googleSetUsernameDto) {
-        var confirmation = confirmationDomainService.get(googleSetUsernameDto.getCode());
+        var confirmation = confirmationDomainService.findByCode(googleSetUsernameDto.getCode())
+                .orElseThrow(WrongConfirmCodeException::new);
         confirmationValidator.validate(confirmation, Operation.GOOGLE_USERNAME_CHANGE);
         authExistenceValidator.validateUsername(googleSetUsernameDto.getNewUsername());
         var userId = authInfo.getUserId();
-        var oldUsername = userAuthDomainService.getEnabledById(userId).getUsername();
+        var oldUsername = userAuthDomainService.findEnabledById(userId)
+                .orElseThrow()
+                .getUsername();
 
         //TODO: Transaction
         appIntegrationService.updateUsername(userId, googleSetUsernameDto.getNewUsername()); //TODO: Is it needed?
@@ -114,7 +118,7 @@ public class GoogleAuthWebService {
 
     private void link(String userId, String email) {
         userAuthDomainService.findEnabledByGoogleAuth(email).ifPresent(it -> {throw new EmailAlreadyInUseException();});
-        userAuthDomainService.setGoogleAuth(userId, email);
+        userAuthDomainService.updateGoogleAuth(userId, email);
         log.info("Google account linked. UserId: {}", userId);
         notificationService.notify(Action.ACCOUNT_LINKED, NotificationParams.builder()
                 .userId(userId)
@@ -124,7 +128,7 @@ public class GoogleAuthWebService {
 
     public void unlink() {
         var userId = authInfo.getUserId();
-        userAuthDomainService.setGoogleAuth(userId, null);
+        userAuthDomainService.updateGoogleAuth(userId, null);
         log.info("Google account unlinked. UserId: {}", userId);
         notificationService.notify(Action.ACCOUNT_UNLINKED, NotificationParams.builder()
                 .userId(userId)

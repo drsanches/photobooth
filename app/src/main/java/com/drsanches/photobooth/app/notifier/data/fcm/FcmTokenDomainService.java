@@ -21,10 +21,11 @@ public class FcmTokenDomainService {
     @Autowired
     private FcmTokenRepository fcmTokenRepository;
 
+    //TODO: Refactor?
     public FcmToken getOrCreate(String userId, String token) {
         var existingFcmToken = fcmTokenRepository.findByToken(token);
         if (existingFcmToken.isPresent()) {
-            log.debug("FcmToken already exists. UserId: {}", userId);
+            log.info("FcmToken already exists. UserId: {}, fcmToken: {}", userId, existingFcmToken.get());
             return existingFcmToken.get();
         } else {
             var expires = new GregorianCalendar();
@@ -35,28 +36,28 @@ public class FcmTokenDomainService {
                     .token(token)
                     .expires(expires)
                     .build());
-            log.debug("FcmToken created. FcmToken: {}", createdFcmToken);
+            log.info("FcmToken created: {}", createdFcmToken);
             return createdFcmToken;
         }
     }
 
-    public List<FcmToken> getByUserId(String userId) {
+    public List<FcmToken> findAllByUserId(String userId) {
         return fcmTokenRepository.findByUserId(userId);
     }
 
-    public List<FcmToken> getExpired() {
-        var now = new GregorianCalendar();
-        return fcmTokenRepository.findByExpiresLessThan(now);
+    public List<FcmToken> findAllExpired() {
+        return fcmTokenRepository.findByExpiresLessThan(new GregorianCalendar());
     }
 
-    public void deleteByTokens(List<String> tokens) {
+    //TODO: Use one db operation
+    public void deleteAllByTokens(List<String> tokens) {
         var tokensToDelete = fcmTokenRepository.findByTokenIn(tokens);
         fcmTokenRepository.deleteAll(tokensToDelete);
-        log.debug("FcmToken objects deleted. FcmTokenList: {}", tokensToDelete);
+        log.debug("FcmToken objects deleted: {}", tokensToDelete);
     }
 
     public void deleteAll(List<FcmToken> tokens) {
         fcmTokenRepository.deleteAll(tokens);
-        log.debug("FcmToken objects deleted. FcmTokenList: {}", tokens);
+        log.debug("FcmToken objects deleted: {}", tokens);
     }
 }
