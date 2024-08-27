@@ -48,7 +48,7 @@ public class UserIdValidator implements ConstraintValidator<UserId, Object> {
         if (object instanceof String) {
             badViolationResults = getBadValidationResults((String) object, friendIds);
         } else if (object instanceof Collection<?>) {
-            badViolationResults = getBadValidationResults((Collection<String>) object, friendIds); //TODO
+            badViolationResults = getBadValidationResults(castToCollectionOfString(object), friendIds);
         } else {
             throw new ServerError("Wrong validation object");
         }
@@ -61,6 +61,11 @@ public class UserIdValidator implements ConstraintValidator<UserId, Object> {
             return false;
         }
         return true;
+    }
+
+    @SuppressWarnings("unchecked") //TODO
+    private Collection<String> castToCollectionOfString(Object object) {
+        return (Collection<String>) object;
     }
 
     private Set<UserId.Violation> getBadValidationResults(Collection<String> userIds, Set<String> friendIds) {
