@@ -5,12 +5,13 @@ import com.drsanches.photobooth.app.notifier.data.fcm.FcmTokenDomainService;
 import com.drsanches.photobooth.app.notifier.dto.FcmTokenDto;
 import com.drsanches.photobooth.app.notifier.dto.FcmTokenExpiresDto;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-@Slf4j
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 @Service
 @Validated
 public class FcmTokenWebService {
@@ -23,8 +24,12 @@ public class FcmTokenWebService {
 
     public FcmTokenExpiresDto addToken(@Valid FcmTokenDto fcmTokenDto) {
         var userId = authInfo.getUserId();
-        var fcmToken = fcmTokenDomainService.getOrCreate(userId, fcmTokenDto.getFcmToken());
-        log.info("FcmToken added or exists: " + fcmToken);
+        var fcmToken = fcmTokenDomainService.findByToken(fcmTokenDto.getFcmToken())
+                .orElseGet(() -> fcmTokenDomainService.create(
+                        userId,
+                        fcmTokenDto.getFcmToken(),
+                        Instant.now().plus(60, ChronoUnit.DAYS)
+                ));
         return new FcmTokenExpiresDto(fcmToken.getExpires().toString());
     }
 }

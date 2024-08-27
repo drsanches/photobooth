@@ -13,6 +13,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Slf4j
@@ -32,7 +33,12 @@ public class TokenService {
     private AuthInfo authInfo;
 
     public Token createToken(String userId, Role role) {
-        var savedToken = tokenDomainService.createToken(userId, role);
+        var savedToken = tokenDomainService.createToken(
+                userId,
+                role,
+                Instant.now().plus(10, ChronoUnit.DAYS),
+                Instant.now().plus(100, ChronoUnit.DAYS)
+        );
         var user = userAuthDomainService.findEnabledById(savedToken.getUserId())
                 .orElseThrow(WrongTokenAuthException::new);
         authInfo.init(userId, user.getUsername(), savedToken.getId(), savedToken.getRole());

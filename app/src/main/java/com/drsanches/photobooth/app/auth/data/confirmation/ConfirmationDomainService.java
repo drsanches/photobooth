@@ -26,6 +26,7 @@ public class ConfirmationDomainService {
 
     public Confirmation create(
             Operation operation,
+            Instant expires,
             @Nullable String userId,
             @Nullable String newUsername,
             @Nullable String newEmail,
@@ -39,7 +40,7 @@ public class ConfirmationDomainService {
                 .newEmail(newEmail)
                 .operation(operation)
                 .data(data)
-                .expires(Instant.now().plus(5, ChronoUnit.MINUTES))
+                .expires(expires)
                 .build());
         log.info("New confirmation saved: {}", savedConfirmation);
         return savedConfirmation;

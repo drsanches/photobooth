@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,15 +21,14 @@ public class TokenDomainService {
     @Autowired
     private TokenRepository tokenRepository;
 
-
-    public Token createToken(String userId, Role role) {
+    public Token createToken(String userId, Role role, Instant expires, Instant refreshExpires) {
         var savedToken = tokenRepository.save(Token.builder()
                 .id(UUID.randomUUID().toString())
                 .accessToken(UUID.randomUUID().toString())
                 .refreshToken(UUID.randomUUID().toString())
                 .tokenType(TOKEN_TYPE)
-                .expires(Instant.now().plus(10, ChronoUnit.DAYS))
-                .refreshExpires(Instant.now().plus(100, ChronoUnit.DAYS))
+                .expires(expires)
+                .refreshExpires(refreshExpires)
                 .userId(userId)
                 .role(role)
                 .build());

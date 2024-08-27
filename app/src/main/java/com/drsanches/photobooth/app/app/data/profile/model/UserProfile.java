@@ -37,7 +37,6 @@ public class UserProfile {
     @Column
     private String name;
 
-    //TODO: May be use enum
     @Column
     private String status;
 

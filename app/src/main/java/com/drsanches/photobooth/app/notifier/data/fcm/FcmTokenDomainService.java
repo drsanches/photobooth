@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -18,22 +18,19 @@ public class FcmTokenDomainService {
     @Autowired
     private FcmTokenRepository fcmTokenRepository;
 
-    //TODO: Refactor?
-    public FcmToken getOrCreate(String userId, String token) {
-        var existingFcmToken = fcmTokenRepository.findByToken(token);
-        if (existingFcmToken.isPresent()) {
-            log.info("FcmToken already exists. UserId: {}, fcmToken: {}", userId, existingFcmToken.get());
-            return existingFcmToken.get();
-        } else {
-            var createdFcmToken = fcmTokenRepository.save(FcmToken.builder()
-                    .id(UUID.randomUUID().toString())
-                    .userId(userId)
-                    .token(token)
-                    .expires(Instant.now().plus(60, ChronoUnit.DAYS))
-                    .build());
-            log.info("FcmToken created: {}", createdFcmToken);
-            return createdFcmToken;
-        }
+    public FcmToken create(String userId, String token, Instant expires) {
+        var createdFcmToken = fcmTokenRepository.save(FcmToken.builder()
+                .id(UUID.randomUUID().toString())
+                .userId(userId)
+                .token(token)
+                .expires(expires)
+                .build());
+        log.info("New FcmToken created: {}", createdFcmToken);
+        return createdFcmToken;
+    }
+
+    public Optional<FcmToken> findByToken(String token) {
+        return fcmTokenRepository.findByToken(token);
     }
 
     public List<FcmToken> findAllByUserId(String userId) {

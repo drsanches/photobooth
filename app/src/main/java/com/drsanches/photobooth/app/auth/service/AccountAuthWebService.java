@@ -34,7 +34,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @Slf4j
 @Service
@@ -70,6 +73,8 @@ public class AccountAuthWebService {
     @Autowired
     private TwoFactorAuthenticationManager twoFactorAuthenticationManager;
 
+    private final static Supplier<Instant> EXPIRES = () -> Instant.now().plus(5, ChronoUnit.MINUTES);
+
     public AuthResponse<TokenDto> createAccount(@Valid CreateAccountDto createAccountDto) {
         var salt = UUID.randomUUID().toString();
         authExistenceValidator
@@ -77,6 +82,7 @@ public class AccountAuthWebService {
                 .validateEmail(createAccountDto.getEmail());
         var confirmation = confirmationDomainService.create(
                 Operation.REGISTRATION,
+                EXPIRES.get(),
                 null,
                 createAccountDto.getUsername(),
                 createAccountDto.getEmail(),
@@ -109,6 +115,7 @@ public class AccountAuthWebService {
         authExistenceValidator.validateUsername(updateUsernameDto.getNewUsername());
         var confirmation = confirmationDomainService.create(
                 Operation.USERNAME_CHANGE,
+                EXPIRES.get(),
                 userId,
                 updateUsernameDto.getNewUsername(),
                 null,
@@ -134,6 +141,7 @@ public class AccountAuthWebService {
         var userId = authInfo.getUserId();
         var confirmation = confirmationDomainService.create(
                 Operation.PASSWORD_CHANGE,
+                EXPIRES.get(),
                 userId,
                 null,
                 null,
@@ -160,6 +168,7 @@ public class AccountAuthWebService {
         authExistenceValidator.validateEmail(updateEmailDto.getNewEmail());
         var confirmation = confirmationDomainService.create(
                 Operation.EMAIL_CHANGE,
+                EXPIRES.get(),
                 userId,
                 null,
                 updateEmailDto.getNewEmail(),
@@ -184,6 +193,7 @@ public class AccountAuthWebService {
         var userId = authInfo.getUserId();
         var confirmation = confirmationDomainService.create(
                 Operation.DISABLE,
+                EXPIRES.get(),
                 userId,
                 null,
                 null,

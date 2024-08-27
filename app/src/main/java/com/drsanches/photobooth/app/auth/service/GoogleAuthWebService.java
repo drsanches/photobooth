@@ -22,6 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.function.Supplier;
+
 @Slf4j
 @Service
 @Validated
@@ -47,6 +51,8 @@ public class GoogleAuthWebService {
     private NotificationService notificationService;
     @Autowired
     private TokenMapper tokenMapper;
+
+    private final static Supplier<Instant> EXPIRES = () -> Instant.now().plus(5, ChronoUnit.MINUTES);
 
     public GoogleGetTokenDto getToken(@Valid GoogleTokenDto googleTokenDto) {
         var googleInfo = googleUserInfoService.getGoogleInfo(googleTokenDto.getIdToken());
@@ -74,6 +80,7 @@ public class GoogleAuthWebService {
                 log.info("New user created. Id: {}", userAuth.getId());
                 confirmationCode = confirmationDomainService.create(
                         Operation.GOOGLE_USERNAME_CHANGE,
+                        EXPIRES.get(),
                         userAuth.getId(),
                         null,
                         null,
