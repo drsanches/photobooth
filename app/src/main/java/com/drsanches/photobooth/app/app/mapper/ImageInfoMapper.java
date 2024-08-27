@@ -2,7 +2,6 @@ package com.drsanches.photobooth.app.app.mapper;
 
 import com.drsanches.photobooth.app.app.dto.image.response.ImageInfoDto;
 import com.drsanches.photobooth.app.app.data.image.model.Image;
-import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
 import com.drsanches.photobooth.app.config.ImageConsts;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +18,7 @@ public class ImageInfoMapper {
             return imageInfoDto;
         }
         return imageInfoDto.toBuilder()
-                .created(GregorianCalendarConvertor.convert(image.getCreated()))
+                .created(image.getCreated().toString())
                 .ownerId(image.getOwnerId())
                 .build();
     }

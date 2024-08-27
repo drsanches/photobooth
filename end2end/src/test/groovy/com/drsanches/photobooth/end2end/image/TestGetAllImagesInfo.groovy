@@ -8,6 +8,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import spock.lang.Specification
 
+import java.time.Instant
+
 class TestGetAllImagesInfo extends Specification {
 
     String PATH = "/api/v1/app/image/all"
@@ -38,11 +40,11 @@ class TestGetAllImagesInfo extends Specification {
         def user2 = new TestUser().register()
         user1.sendFriendRequest(user2.id)
         user2.sendFriendRequest(user1.id)
-        def date1 = new Date()
+        def time1 = Instant.now()
         user1.sendPhoto([user2.id], image1)
-        def date2 = new Date()
+        def time2 = Instant.now()
         user2.sendPhoto([user1.id], image2)
-        def date3 = new Date()
+        def time3 = Instant.now()
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
@@ -57,12 +59,12 @@ class TestGetAllImagesInfo extends Specification {
         assert data[0]["path"] == IMAGE_PATH(data[0]["id"] as String)
         assert data[0]["thumbnailPath"] == THUMBNAIL_PATH(data[0]["id"] as String)
         assert data[0]["ownerId"] == user2.id
-        assert Utils.checkTimestamp(date2, data[0]["created"] as String, date3)
+        assert Utils.checkTimestamp(time2, data[0]["created"] as String, time3)
         assert data.get(1)["id"] != JSONObject.NULL
         assert data.get(1)["path"] == IMAGE_PATH(data.get(1)["id"] as String)
         assert data.get(1)["thumbnailPath"] == THUMBNAIL_PATH(data.get(1)["id"] as String)
         assert data.get(1)["ownerId"] == user1.id
-        assert Utils.checkTimestamp(date1, data.get(1)["created"] as String, date2)
+        assert Utils.checkTimestamp(time1, data.get(1)["created"] as String, time2)
 
         and: "images are correct"
         assert image2 == RequestUtils.getImage(user1.token, IMAGE_PATH(data[0]["id"] as String))

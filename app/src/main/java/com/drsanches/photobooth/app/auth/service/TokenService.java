@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.GregorianCalendar;
+import java.time.Instant;
 import java.util.Optional;
 
 @Slf4j
@@ -99,7 +99,7 @@ public class TokenService {
     }
 
     private Optional<Token> getValidOrRemove(Token token) {
-        if (token.getExpires().after(new GregorianCalendar())) {
+        if (token.getExpires().isAfter(Instant.now())) {
             return Optional.of(token);
         }
         tokenDomainService.deleteById(token.getId());

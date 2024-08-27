@@ -2,23 +2,22 @@ package com.drsanches.photobooth.app.notification.controller;
 
 import com.drsanches.photobooth.app.BaseSpringTest;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.UserAuthInfoDto;
-import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
 import com.drsanches.photobooth.app.notifier.data.fcm.repository.FcmTokenRepository;
 import com.drsanches.photobooth.app.notifier.dto.FcmTokenDto;
 import com.drsanches.photobooth.app.notifier.dto.FcmTokenExpiresDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.sql.Date;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,7 +38,7 @@ class FcmTokenControllerTest extends BaseSpringTest {
         var token = createUser(username, password, email);
         var userId = getUserAuthInfo(token.getAccessToken()).getId();
 
-        var before = new GregorianCalendar();
+        var before = Instant.now().plus(60, ChronoUnit.DAYS);
         var result = mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/notification/fcm/token")
                         .header("Authorization", "Bearer " + token.getAccessToken())
@@ -48,20 +47,18 @@ class FcmTokenControllerTest extends BaseSpringTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("expires").exists())
                 .andReturn().getResponse().getContentAsString();
-        var after = new GregorianCalendar();
+        var after = Instant.now().plus(60, ChronoUnit.DAYS);
 
-        var expires = convertToGregorianCalendar(objectMapper.readValue(result, FcmTokenExpiresDto.class).getExpires());
-        before.add(Calendar.MONTH, 2);
-        after.add(Calendar.MONTH, 2);
-        Assertions.assertTrue(expires.after(before));
-        Assertions.assertTrue(expires.before(after));
+        var expires = convertToInstant(objectMapper.readValue(result, FcmTokenExpiresDto.class).getExpires());
+        Assertions.assertTrue(expires.isAfter(before));
+        Assertions.assertTrue(expires.isBefore(after));
 
         var fcmTokenList = fcmTokenRepository.findByUserId(userId);
         Assertions.assertEquals(fcmTokenList.size(), 1);
         Assertions.assertEquals(fcmTokenList.get(0).getToken(), fcmToken);
         Assertions.assertEquals(fcmTokenList.get(0).getUserId(), userId);
-        Assertions.assertTrue(fcmTokenList.get(0).getExpires().after(before));
-        Assertions.assertTrue(fcmTokenList.get(0).getExpires().before(after));
+        Assertions.assertTrue(fcmTokenList.get(0).getExpires().isAfter(before));
+        Assertions.assertTrue(fcmTokenList.get(0).getExpires().isBefore(after));
     }
 
     @Test
@@ -82,15 +79,23 @@ class FcmTokenControllerTest extends BaseSpringTest {
                 .andExpect(jsonPath("expires").exists())
                 .andReturn().getResponse().getContentAsString();
 
-        var expires = objectMapper.readValue(result, FcmTokenExpiresDto.class).getExpires();
+        var expires = convertToInstant(objectMapper.readValue(result, FcmTokenExpiresDto.class).getExpires());
 
-        mvc.perform(MockMvcRequestBuilders
+        var result2 = mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/notification/fcm/token")
                         .header("Authorization", "Bearer " + token.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new FcmTokenDto(fcmToken))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("expires").value(expires));
+                .andReturn().getResponse().getContentAsString();
+
+        var expires2 = convertToInstant(objectMapper.readValue(result2, FcmTokenExpiresDto.class).getExpires());
+
+        //TODO
+        Assertions.assertEquals(
+                DateUtils.truncate(Date.from(expires), Calendar.SECOND),
+                DateUtils.truncate(Date.from(expires2), Calendar.SECOND)
+        );
 
         var fcmTokenList = fcmTokenRepository.findByUserId(userId);
         Assertions.assertEquals(fcmTokenList.size(), 1);
@@ -101,11 +106,7 @@ class FcmTokenControllerTest extends BaseSpringTest {
         return objectMapper.readValue(result, UserAuthInfoDto.class);
     }
 
-    private GregorianCalendar convertToGregorianCalendar(String source) throws ParseException {
-        DateFormat df = new SimpleDateFormat(GregorianCalendarConvertor.PATTERN);
-        Date parsed = df.parse(source);
-        GregorianCalendar result = new GregorianCalendar();
-        result.setTime(parsed);
-        return result;
+    private Instant convertToInstant(String source) {
+        return Instant.from(DateTimeFormatter.ISO_INSTANT.parse(source));
     }
 }

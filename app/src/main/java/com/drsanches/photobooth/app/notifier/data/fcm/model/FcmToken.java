@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.GregorianCalendar;
+import java.time.Instant;
 
 @Data
 @Builder(toBuilder = true)
@@ -39,5 +39,5 @@ public class FcmToken {
 
     @Column(nullable = false)
     @ToString.Exclude
-    private GregorianCalendar expires;
+    private Instant expires;
 }

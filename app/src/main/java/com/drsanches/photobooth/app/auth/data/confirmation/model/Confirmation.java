@@ -1,6 +1,5 @@
 package com.drsanches.photobooth.app.auth.data.confirmation.model;
 
-import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,7 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.GregorianCalendar;
+import java.time.Instant;
 
 @Data
 @Builder(toBuilder = true)
@@ -54,11 +53,5 @@ public class Confirmation {
     private String data;
 
     @Column(nullable = false)
-    @ToString.Exclude
-    private GregorianCalendar expires;
-
-    @ToString.Include
-    private String expires() {
-        return GregorianCalendarConvertor.convert(expires);
-    }
+    private Instant expires;
 }

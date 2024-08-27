@@ -1,7 +1,6 @@
 package com.drsanches.photobooth.app.auth.mapper;
 
 import com.drsanches.photobooth.app.auth.data.token.model.Token;
-import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.TokenDto;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,7 @@ public class TokenMapper {
                 .accessToken(token.getAccessToken())
                 .refreshToken(token.getRefreshToken())
                 .tokenType(token.getTokenType())
-                .expires(GregorianCalendarConvertor.convert(token.getExpires()))
+                .expires(token.getExpires().toString())
                 .build();
     }
 }

@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,7 +37,7 @@ public class ImageDomainService {
                 .data(imageData)
                 .thumbnailData(imageConverter.toThumbnail(imageData))
                 .ownerId(ownerId)
-                .created(new GregorianCalendar())
+                .created(Instant.now())
                 .build());
         log.info("New image saved: {}", savedImage);
         return savedImage;

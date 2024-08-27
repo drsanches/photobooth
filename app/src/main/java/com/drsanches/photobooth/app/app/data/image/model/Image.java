@@ -1,6 +1,5 @@
 package com.drsanches.photobooth.app.app.data.image.model;
 
-import com.drsanches.photobooth.app.common.utils.GregorianCalendarConvertor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -12,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.GregorianCalendar;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -38,16 +37,10 @@ public class Image {
     private byte[] thumbnailData;
 
     @Column(nullable = false)
-    @ToString.Exclude
-    private GregorianCalendar created;
+    private Instant created;
 
     @Column(nullable = false)
     private String ownerId;
-
-    @ToString.Include
-    private String created() {
-        return GregorianCalendarConvertor.convert(created);
-    }
 
     @ToString.Include
     private int dataLength() {

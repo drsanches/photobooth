@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FcmTokenExpiresDto {
 
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(pattern = "ISO-8601 (YYYY-MM-DDThh:mm:ss.sssZ)", requiredMode = Schema.RequiredMode.REQUIRED)
     private String expires;
 }

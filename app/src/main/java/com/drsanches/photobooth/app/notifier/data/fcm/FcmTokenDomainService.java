@@ -6,17 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
 @Slf4j
 @Service
 public class FcmTokenDomainService {
-
-    private static final int CALENDAR_FIELD = Calendar.MONTH;
-    private static final int EXPIRES_CALENDAR_VALUE = 2;
 
     @Autowired
     private FcmTokenRepository fcmTokenRepository;
@@ -28,13 +25,11 @@ public class FcmTokenDomainService {
             log.info("FcmToken already exists. UserId: {}, fcmToken: {}", userId, existingFcmToken.get());
             return existingFcmToken.get();
         } else {
-            var expires = new GregorianCalendar();
-            expires.add(CALENDAR_FIELD, EXPIRES_CALENDAR_VALUE);
             var createdFcmToken = fcmTokenRepository.save(FcmToken.builder()
                     .id(UUID.randomUUID().toString())
                     .userId(userId)
                     .token(token)
-                    .expires(expires)
+                    .expires(Instant.now().plus(60, ChronoUnit.DAYS))
                     .build());
             log.info("FcmToken created: {}", createdFcmToken);
             return createdFcmToken;
@@ -46,7 +41,7 @@ public class FcmTokenDomainService {
     }
 
     public List<FcmToken> findAllExpired() {
-        return fcmTokenRepository.findByExpiresLessThan(new GregorianCalendar());
+        return fcmTokenRepository.findByExpiresLessThan(Instant.now());
     }
 
     //TODO: Use one db operation

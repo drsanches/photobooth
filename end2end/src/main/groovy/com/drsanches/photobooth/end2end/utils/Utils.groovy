@@ -9,7 +9,8 @@ import java.awt.image.BufferedImage
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 
 class Utils {
 
@@ -38,10 +39,9 @@ class Utils {
         return new File(filename).getBytes()
     }
 
-    static boolean checkTimestamp(Date dateBefore, String timestamp, Date dateAfter) {
-        def df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS z")
-        def date = df.parse(timestamp)
-        return dateBefore.before(date) && dateAfter.after(date)
+    static boolean checkTimestamp(Instant before, String timestamp, Instant after) {
+        def time = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(timestamp))
+        return before.isBefore(time) && after.isAfter(time)
     }
 
     static String toBase64(byte[] source) {

@@ -569,20 +569,17 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Use login for auth and username for profile?
 - Move ImageConsts to app
 - Log userId even for public urls?
-- Use upsert
 - Check swagger errors for all urls. Maybe group all swagger annotations in one using array?  
 - Add ObjectMapper bean
 - Add test profile with h2?
 - Always sent to notifier all info - email (if exists) and userId, then update email and send notification
 - Maybe use Spring Events
 - Refactor auth creation with google?
-- Throw exceptions in web services, not in domain? Rename domain to dao?
+- Rename domain to dao?
 - Use docker swarm?
-- Check all orElseThrow()
 - Refactor paging and soring. Use Page for responses?
 - Use JpaRepository instead of CrudRepository?
 - Refactor notifier flow with email
-- Use Instant instead of GregorianCalendar?
 
 ### UI
 - Hide admin ui for users

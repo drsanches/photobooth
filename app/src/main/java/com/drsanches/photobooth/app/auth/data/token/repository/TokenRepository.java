@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
-import java.util.GregorianCalendar;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +24,7 @@ public interface TokenRepository extends CrudRepository<Token, String> {
 
     List<Token> findByUserId(String userId);
 
-    List<Token> findByExpiresLessThanAndRefreshExpiresLessThan(GregorianCalendar expires, GregorianCalendar refreshExpires);
+    List<Token> findByExpiresLessThanAndRefreshExpiresLessThan(Instant expires, Instant refreshExpires);
 
     @Override
     void deleteById(@NonNull String s);

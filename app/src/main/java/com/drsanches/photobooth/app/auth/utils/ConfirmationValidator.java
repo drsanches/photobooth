@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.GregorianCalendar;
+import java.time.Instant;
 
 @Slf4j
 @Component
@@ -25,7 +25,7 @@ public class ConfirmationValidator {
     }
 
     public void validate(Confirmation confirmation) {
-        if (confirmation.getExpires().before(new GregorianCalendar())) {
+        if (confirmation.getExpires().isBefore(Instant.now())) {
             confirmationDomainService.delete(confirmation.getId());
             log.info("Expired Confirmation deleted: {}", confirmation);
             throw new WrongConfirmCodeException();

@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,10 +17,6 @@ import java.util.UUID;
 @Slf4j
 @Component
 public class ConfirmationDomainService {
-
-    private static final int CALENDAR_FIELD = Calendar.MINUTE;
-
-    private static final int CALENDAR_VALUE = 5;
 
     @Autowired
     private ConfirmationRepository confirmationRepository;
@@ -35,8 +31,6 @@ public class ConfirmationDomainService {
             @Nullable String newEmail,
             @Nullable String data
     ) {
-        var expires = new GregorianCalendar();
-        expires.add(CALENDAR_FIELD, CALENDAR_VALUE);
         var savedConfirmation = confirmationRepository.save(Confirmation.builder()
                 .id(UUID.randomUUID().toString())
                 .code(confirmationCodeGenerator.generate())
@@ -45,7 +39,7 @@ public class ConfirmationDomainService {
                 .newEmail(newEmail)
                 .operation(operation)
                 .data(data)
-                .expires(expires)
+                .expires(Instant.now().plus(5, ChronoUnit.MINUTES))
                 .build());
         log.info("New confirmation saved: {}", savedConfirmation);
         return savedConfirmation;
@@ -64,7 +58,7 @@ public class ConfirmationDomainService {
     }
 
     public List<Confirmation> findAllExpired() {
-        return confirmationRepository.findByExpiresLessThan(new GregorianCalendar());
+        return confirmationRepository.findByExpiresLessThan(Instant.now());
     }
 
     public void delete(String id) {

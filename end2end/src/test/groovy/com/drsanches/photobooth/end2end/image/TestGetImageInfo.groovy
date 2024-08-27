@@ -7,6 +7,8 @@ import com.drsanches.photobooth.end2end.utils.Utils
 import org.json.JSONObject
 import spock.lang.Specification
 
+import java.time.Instant
+
 class TestGetImageInfo extends Specification {
 
     String PATH = "/api/v1/app/image/info/"
@@ -33,9 +35,9 @@ class TestGetImageInfo extends Specification {
         given: "two users"
         def user1 = new TestUser().register()
         def user2 = new TestUser().register()
-        def dateBefore = new Date()
+        def before = Instant.now()
         user2.uploadProfilePhoto(DataGenerator.createValidImage())
-        def dateAfter = new Date()
+        def after = Instant.now()
 
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
@@ -48,7 +50,7 @@ class TestGetImageInfo extends Specification {
         assert response.data["path"] == user2.imagePath
         assert response.data["thumbnailPath"] == user2.thumbnailPath
         assert response.data["ownerId"] == user2.id
-        assert Utils.checkTimestamp(dateBefore, response.data["created"] as String, dateAfter)
+        assert Utils.checkTimestamp(before, response.data["created"] as String, after)
     }
 
     def "get nonexistent image info"() {

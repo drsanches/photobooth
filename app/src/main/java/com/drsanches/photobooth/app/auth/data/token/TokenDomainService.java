@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,26 +18,19 @@ import java.util.UUID;
 public class TokenDomainService {
 
     private static final String TOKEN_TYPE = "Bearer";
-    private static final int CALENDAR_FIELD = Calendar.DAY_OF_YEAR;
-    private static final int EXPIRES_CALENDAR_VALUE = 10;
-    private static final int REFRESH_EXPIRES_CALENDAR_VALUE = 100;
 
     @Autowired
     private TokenRepository tokenRepository;
 
 
     public Token createToken(String userId, Role role) {
-        var expires = new GregorianCalendar();
-        expires.add(CALENDAR_FIELD, EXPIRES_CALENDAR_VALUE);
-        var refreshExpires = new GregorianCalendar();
-        refreshExpires.add(CALENDAR_FIELD, REFRESH_EXPIRES_CALENDAR_VALUE);
         var savedToken = tokenRepository.save(Token.builder()
                 .id(UUID.randomUUID().toString())
                 .accessToken(UUID.randomUUID().toString())
                 .refreshToken(UUID.randomUUID().toString())
                 .tokenType(TOKEN_TYPE)
-                .expires(expires)
-                .refreshExpires(refreshExpires)
+                .expires(Instant.now().plus(10, ChronoUnit.DAYS))
+                .refreshExpires(Instant.now().plus(100, ChronoUnit.DAYS))
                 .userId(userId)
                 .role(role)
                 .build());
@@ -58,7 +51,7 @@ public class TokenDomainService {
     }
 
     public List<Token> findAllExpired() {
-        var now = new GregorianCalendar();
+        var now = Instant.now();
         return tokenRepository.findByExpiresLessThanAndRefreshExpiresLessThan(now, now);
     }
 

@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
-import java.util.GregorianCalendar;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +24,7 @@ public interface ConfirmationRepository extends CrudRepository<Confirmation, Str
 
     boolean existsByNewEmail(String newEmail);
 
-    List<Confirmation> findByExpiresLessThan(GregorianCalendar expires);
+    List<Confirmation> findByExpiresLessThan(Instant expires);
 
     @Override
     void deleteById(@NonNull String s);

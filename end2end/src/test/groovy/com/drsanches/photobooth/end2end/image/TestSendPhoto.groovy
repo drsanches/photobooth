@@ -7,6 +7,8 @@ import com.drsanches.photobooth.end2end.utils.Utils
 import org.json.JSONObject
 import spock.lang.Specification
 
+import java.time.Instant
+
 class TestSendPhoto extends Specification {
 
     String PATH = "/api/v1/app/image/photo"
@@ -27,13 +29,13 @@ class TestSendPhoto extends Specification {
         def image = DataGenerator.createValidImage()
 
         when: "request is sent"
-        def dateBefore = new Date()
+        def before = Instant.now()
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
                 body: [imageData: Utils.toBase64(image),
                        userIds: [friend1.id]])
-        def dateAfter = new Date()
+        def after = Instant.now()
 
         then: "response is correct"
         assert response.status == 201
@@ -45,7 +47,7 @@ class TestSendPhoto extends Specification {
         assert userImages[0]["path"] == IMAGE_PATH(userImages[0]["id"] as String)
         assert userImages[0]["thumbnailPath"] == THUMBNAIL_PATH(userImages[0]["id"] as String)
         assert userImages[0]["ownerId"] == user.id
-        assert Utils.checkTimestamp(dateBefore, userImages[0]["created"] as String, dateAfter)
+        assert Utils.checkTimestamp(before, userImages[0]["created"] as String, after)
 
         and: "one friend has similar photo"
         def friendImages = friend1.getAllImagesInfo()
@@ -76,13 +78,13 @@ class TestSendPhoto extends Specification {
         def image = DataGenerator.createValidImage()
 
         when: "request is sent"
-        def dateBefore = new Date()
+        def before = Instant.now()
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
                 body: [imageData: Utils.toBase64(image),
                        userIds: all])
-        def dateAfter = new Date()
+        def after = Instant.now()
 
         then: "response is correct"
         assert response.status == 201
@@ -94,7 +96,7 @@ class TestSendPhoto extends Specification {
         assert userImages[0]["path"] == IMAGE_PATH(userImages[0]["id"] as String)
         assert userImages[0]["thumbnailPath"] == THUMBNAIL_PATH(userImages[0]["id"] as String)
         assert userImages[0]["ownerId"] == user.id
-        assert Utils.checkTimestamp(dateBefore, userImages[0]["created"] as String, dateAfter)
+        assert Utils.checkTimestamp(before, userImages[0]["created"] as String, after)
 
         and: "image data is correct"
         assert image == RequestUtils.getImage(user.token, IMAGE_PATH(userImages[0]["id"] as String))
@@ -124,13 +126,13 @@ class TestSendPhoto extends Specification {
         def image = DataGenerator.createValidImage()
 
         when: "request is sent"
-        def dateBefore = new Date()
+        def before = Instant.now()
         def response = RequestUtils.getRestClient().post(
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
                 body: [imageData: Utils.toBase64(image),
                        userIds: all])
-        def dateAfter = new Date()
+        def after = Instant.now()
 
         then: "response is correct"
         assert response.status == 201
@@ -142,7 +144,7 @@ class TestSendPhoto extends Specification {
         assert userImages[0]["path"] == IMAGE_PATH(userImages[0]["id"] as String)
         assert userImages[0]["thumbnailPath"] == THUMBNAIL_PATH(userImages[0]["id"] as String)
         assert userImages[0]["ownerId"] == user.id
-        assert Utils.checkTimestamp(dateBefore, userImages[0]["created"] as String, dateAfter)
+        assert Utils.checkTimestamp(before, userImages[0]["created"] as String, after)
 
         and: "image data is correct"
         assert image == RequestUtils.getImage(user.token, IMAGE_PATH(userImages[0]["id"] as String))

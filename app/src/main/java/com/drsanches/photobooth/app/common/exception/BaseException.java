@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-import java.util.GregorianCalendar;
 import java.util.UUID;
 
 @Getter
@@ -12,8 +11,6 @@ import java.util.UUID;
 public abstract class BaseException extends RuntimeException {
 
     private final String uuid = UUID.randomUUID().toString();
-
-    private final GregorianCalendar timestamp = new GregorianCalendar();
 
     public BaseException(String message) {
         super(message);

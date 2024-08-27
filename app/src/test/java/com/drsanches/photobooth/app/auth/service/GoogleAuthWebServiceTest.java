@@ -26,7 +26,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.GregorianCalendar;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -193,13 +194,11 @@ class GoogleAuthWebServiceTest {
     }
 
     private Confirmation createConfirmation() {
-        var expires = new GregorianCalendar();
-        expires.add(GregorianCalendar.MINUTE, 5);
         return Confirmation.builder()
                 .id(CONFIRMATION_ID)
                 .code(CONFIRMATION_CODE)
                 .userId(USER_ID)
-                .expires(expires)
+                .expires(Instant.now().plus(5, ChronoUnit.MINUTES))
                 .operation(Operation.GOOGLE_USERNAME_CHANGE)
                 .build();
     }
