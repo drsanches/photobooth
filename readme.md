@@ -584,6 +584,7 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Use docker swarm?
 - Limit container resources
 - Test indexes
+- Check docker container user permissions
 - Fix error "host not found in upstream" if nginx started without app and elk
 - Fix certs
 - Add test controller for admin with ui
