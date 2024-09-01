@@ -1,0 +1,49 @@
+server.port: ${APP_PORT}
+
+application:
+  address: ${APPLICATION_ADDRESS} # With protocol and port. For push images and email confirms
+  admin:
+    username: admin
+    password: ${ADMIN_PASSWORD}
+  2fa:
+    actions: ${TWO_FA_ACTIONS:}
+  notifications:
+    email:
+      enabled: true # false to use stub
+      2fa-enabled: true
+      info-enabled: false
+    push:
+      enabled: true
+      firebase-credentials-path: firebase/firebase-service-account.json # Required if push.enabled
+  scheduler:
+    expired-token-cleanup-task:
+      enabled: true
+      cron: 0 0 1 * * * # at 1 AM every day
+    expired-confirmation-cleanup-task:
+      enabled: true
+      cron: 0 0 3 * * * # at 3 AM every day
+    expired-fcm-token-cleanup-task:
+      enabled: true
+      cron: 0 0 5 * * * # at 5 AM every day
+
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: ${JDBC_DATABASE_URL}
+    username: ${JDBC_DATABASE_USERNAME}
+    password: ${JDBC_DATABASE_PASSWORD}
+  jpa:
+    database-platform: postgres
+    generate-ddl: true
+    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # Required if application.notifications.email.enabled
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_ADDRESS}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.trust: smtp.gmail.com
+      mail.smtp.starttls.enable: true

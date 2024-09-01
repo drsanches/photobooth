@@ -388,14 +388,28 @@ Before using email notifications it is needed to configure gmail (turn on POP an
 
 Before using push notifications it is needed to add `firebase/firebase-service-account.json`.
 
+### Profiles
+Application has 2 profiles:
+
+- **dev** - for local run, debug and tests:
+  - Using by default 
+  - Using in-memory database h2
+  - 2FA is disabled
+  - Email notifications is disabled
+  - ELK is disabled
+  - Schedulers are disabled 
+- **prod** - can bе configured by env variables (described in `.env.app.dev`):
+  - Can be set with env variable SPRING_PROFILES_ACTIVE = prod
+  - Using PostgreSQL as database (before run it is needed to create a database)
+  - 2FA can be configured
+  - Email notifications can be configured
+  - ELK can be configured
+  - Schedulers are enabled
+
 ### How to run
-App can be run locally by JVM, but for production it is recommended to use docker.
+App can be run locally by **JVM**, but for production it is recommended to use **docker**.
 
 #### JVM
-
-##### Database
-By default, the application works with PostgreSQL.
-Before run, it is needed to create a database for the application.
 
 ##### Build
 Removes all previous builds and builds executable jar:
@@ -404,9 +418,16 @@ gradlew clean bootJar
 ```
 
 ##### Run
-Run application by the command with custom environment variables (the variables are described in `.env.app.dev`):
+
+Run application with dev profile:
+```commandline
+java -jar app/build/libs/photobooth-1.0.jar
+```
+
+Run application with prod profile and custom environment variables (the variables are described in `.env.app.dev`):
 ```commandline
 java -jar \
+    -DSPRING_PROFILES_ACTIVE=prod \
     -DAPP_PORT=8080 \
     -DAPPLICATION_ADDRESS=http://localhost:8080 \
     -DADMIN_PASSWORD=pswd \
@@ -553,33 +574,27 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 ### Back
 - Add cache?
 - Use AOP or spring security mechanism for auth?
-- Do not create UserProfile for admin?
+- Use JpaRepository instead of CrudRepository?
 - Use only cookies instead of authorization header for token?
 - Separate app, auth and notifier to different modules?
 - Add stub for Google auth?
-- Use records instead of DTO classes?
-- Use requestId instead of UUID in errors?
-- Remove APPLICATION_ADDRESS from requirements?
+- Use login for auth and username for profile?
+- Use Spring Events for integrations before modules?
+- Log userId even for public urls?
+- Use docker swarm?
 - Limit container resources
 - Test indexes
 - Fix error "host not found in upstream" if nginx started without app and elk
 - Fix certs
 - Add test controller for admin with ui
-- Merge web and domain layers?
-- Use login for auth and username for profile?
 - Move ImageConsts to app
-- Log userId even for public urls?
 - Check swagger errors for all urls. Maybe group all swagger annotations in one using array?  
 - Add ObjectMapper bean
-- Add test profile with h2?
-- Always sent to notifier all info - email (if exists) and userId, then update email and send notification
-- Maybe use Spring Events
 - Refactor auth creation with google?
 - Rename domain to dao?
-- Use docker swarm?
 - Refactor paging and soring. Use Page for responses?
-- Use JpaRepository instead of CrudRepository?
 - Refactor notifier flow with email
+- Describe all functions of the applications
 
 ### UI
 - Hide admin ui for users

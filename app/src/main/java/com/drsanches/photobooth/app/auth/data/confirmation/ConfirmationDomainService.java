@@ -46,16 +46,16 @@ public class ConfirmationDomainService {
         return savedConfirmation;
     }
 
+    public Optional<Confirmation> findByCode(String code) {
+        return confirmationRepository.findByCode(code);
+    }
+
     public boolean existsByNewUsername(String newUsername) {
         return confirmationRepository.existsByNewUsername(newUsername);
     }
 
     public boolean existsByNewEmail(String newEmail) {
         return confirmationRepository.existsByNewEmail(newEmail);
-    }
-
-    public Optional<Confirmation> findByCode(String code) {
-        return confirmationRepository.findByCode(code);
     }
 
     public List<Confirmation> findAllExpired() {

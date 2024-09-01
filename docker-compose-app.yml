@@ -6,6 +6,7 @@ services:
     restart: unless-stopped
     environment:
       # [Required]
+      SPRING_PROFILES_ACTIVE: prod
       APP_PORT: ${APP_PORT:?}
       APPLICATION_ADDRESS: ${APPLICATION_ADDRESS:?}
       JDBC_DATABASE_URL: ${JDBC_DATABASE_URL:?}
@@ -14,7 +15,7 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?}
       # [Optional]
       CONSOLE_LOGS_IN_JSON: ${CONSOLE_LOGS_IN_JSON}
-      2FA_ACTIONS: ${2FA_ACTIONS}
+      TWO_FA_ACTIONS: ${TWO_FA_ACTIONS}
       EMAIL_ADDRESS: ${EMAIL_ADDRESS}
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
       LOGSTASH_HOST: ${LOGSTASH_HOST}

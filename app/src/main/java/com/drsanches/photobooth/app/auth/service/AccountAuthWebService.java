@@ -3,7 +3,6 @@ package com.drsanches.photobooth.app.auth.service;
 import com.drsanches.photobooth.app.auth.data.confirmation.model.Confirmation;
 import com.drsanches.photobooth.app.auth.dto.AuthResponse;
 import com.drsanches.photobooth.app.auth.dto.confirm.ChangePasswordConfirmData;
-import com.drsanches.photobooth.app.auth.dto.confirm.ChangeUsernameConfirmData;
 import com.drsanches.photobooth.app.auth.dto.confirm.RegistrationConfirmData;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.CreateAccountDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.response.UserAuthInfoDto;
@@ -16,7 +15,6 @@ import com.drsanches.photobooth.app.common.integration.notifier.NotificationPara
 import com.drsanches.photobooth.app.common.integration.app.AppIntegrationService;
 import com.drsanches.photobooth.app.common.integration.notifier.NotifierIntegrationService;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
-import com.drsanches.photobooth.app.auth.dto.confirm.ChangeEmailConfirmData;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdateEmailDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdatePasswordDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdateUsernameDto;
@@ -119,9 +117,7 @@ public class AccountAuthWebService {
                 userId,
                 updateUsernameDto.getNewUsername(),
                 null,
-                stringSerializer.serialize(ChangeUsernameConfirmData.builder()
-                        .username(updateUsernameDto.getNewUsername())
-                        .build())
+                null
         );
         if (twoFactorAuthenticationManager.isEnabled(Operation.USERNAME_CHANGE)) {
             notificationService.notify(Action.USERNAME_CHANGE_STARTED, NotificationParams.builder()
@@ -172,9 +168,7 @@ public class AccountAuthWebService {
                 userId,
                 null,
                 updateEmailDto.getNewEmail(),
-                stringSerializer.serialize(ChangeEmailConfirmData.builder()
-                        .email(updateEmailDto.getNewEmail())
-                        .build())
+                null
         );
         if (twoFactorAuthenticationManager.isEnabled(Operation.EMAIL_CHANGE)) {
             notificationService.notify(Action.EMAIL_CHANGE_STARTED, NotificationParams.builder()
@@ -247,23 +241,19 @@ public class AccountAuthWebService {
     }
 
     public Object changeUsernameConfirm(Confirmation confirmation) {
-        var changeUsernameConfirmData = stringSerializer.deserialize(
-                confirmation.getData(),
-                ChangeUsernameConfirmData.class
-        );
         var userId = confirmation.getUserId();
         var oldUsername = userAuthDomainService.findEnabledById(userId)
                 .orElseThrow()
                 .getUsername();
 
         //TODO: Transaction
-        appIntegrationService.updateUsername(userId, changeUsernameConfirmData.getUsername()); //TODO: Is it needed?
-        userAuthDomainService.updateUsername(userId, changeUsernameConfirmData.getUsername());
+        appIntegrationService.updateUsername(userId, confirmation.getNewUsername()); //TODO: Is it needed?
+        userAuthDomainService.updateUsername(userId, confirmation.getNewUsername());
 
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User changed username. UserId: {}, oldUsername: {}, newUsername: {}",
-                userId, oldUsername, changeUsernameConfirmData.getUsername());
+                userId, oldUsername, confirmation.getNewUsername());
         notificationService.notify(Action.USERNAME_CHANGE_COMPLETED, NotificationParams.builder()
                 .userId(userId)
                 .build());
@@ -291,15 +281,11 @@ public class AccountAuthWebService {
     }
 
     public Object changeEmailConfirm(Confirmation confirmation) {
-        var changeEmailConfirmData = stringSerializer.deserialize(
-                confirmation.getData(),
-                ChangeEmailConfirmData.class
-        );
         var userId = confirmation.getUserId();
 
         //TODO: Transaction
-        notifierIntegrationService.updateEmail(userId, changeEmailConfirmData.getEmail());
-        userAuthDomainService.updateEmail(userId, changeEmailConfirmData.getEmail());
+        notifierIntegrationService.updateEmail(userId, confirmation.getNewEmail());
+        userAuthDomainService.updateEmail(userId, confirmation.getNewEmail());
 
         confirmationDomainService.delete(confirmation.getId());
         log.info("User changed email. UserId: {}", userId);

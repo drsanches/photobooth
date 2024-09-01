@@ -39,7 +39,7 @@ dependencies {
 
     //DB
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
-    implementation group: 'com.h2database', name: 'h2', version: '2.2.220' //For H2-console
+    implementation group: 'com.h2database', name: 'h2', version: '2.3.232' //For H2-console and dev profile
 
     //Lombok
     implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
