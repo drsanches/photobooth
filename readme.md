@@ -602,6 +602,8 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 ### Tests
 - Use another framework?
 - Rewrite e2e with spring context and mocks?
+- Test paging
 - Test sorting
 - Test transactions
 - Configure gradlew env in command line for spring tests
+- Remove redundant checks in e2e (such as status in friend tests)

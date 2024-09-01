@@ -5,6 +5,10 @@ import java.awt.image.BufferedImage
 
 class DataGenerator {
 
+    static String createValidUsername(String prefix) {
+        return "username-" + prefix + "-" + UUID.randomUUID().toString().substring(0, 8)
+    }
+
     static String createValidUsername() {
         return "username-" + UUID.randomUUID().toString().substring(0, 8)
     }

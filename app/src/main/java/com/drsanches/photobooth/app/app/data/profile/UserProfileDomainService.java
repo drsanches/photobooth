@@ -2,9 +2,9 @@ package com.drsanches.photobooth.app.app.data.profile;
 
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.app.data.profile.repository.UserProfileRepository;
-import com.drsanches.photobooth.app.app.utils.PaginationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +19,6 @@ public class UserProfileDomainService {
 
     @Autowired
     private UserProfileRepository userProfileRepository;
-
-    @Autowired
-    private PaginationService<UserProfile> paginationService; //TODO: Exclude?
 
     public UserProfile create(String userId, String username) {
         var userProfile = UserProfile.builder()
@@ -58,8 +55,7 @@ public class UserProfileDomainService {
     }
 
     //TODO: Sort?
-    public List<UserProfile> findEnabledByUsername(String username, Integer page, Integer size) {
-        var pageable = paginationService.pageable(page, size);
+    public List<UserProfile> findEnabledByUsername(String username, Pageable pageable) {
         return userProfileRepository.findByUsernameContainingAndEnabled(username, true, pageable);
     }
 
@@ -67,8 +63,8 @@ public class UserProfileDomainService {
         return userProfileRepository.findAllByIdInAndEnabled(userIds, true);
     }
 
-    public List<UserProfile> findAllByIdsOrderByUsername(Collection<String> userIds) {
-        return userProfileRepository.findAllByIdInOrderByUsername(userIds);
+    public List<UserProfile> findAllByIdsOrderByUsername(Collection<String> userIds, Pageable pageable) {
+        return userProfileRepository.findAllByIdInOrderByUsername(userIds, pageable);
     }
 
     public void disableUser(String userId) {

@@ -2,12 +2,11 @@ package com.drsanches.photobooth.app.app.service;
 
 import com.drsanches.photobooth.app.app.exception.ImageNotFoundException;
 import com.drsanches.photobooth.app.app.mapper.ImageInfoMapper;
-import com.drsanches.photobooth.app.app.data.image.model.Image;
 import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.app.data.friends.FriendsDomainService;
 import com.drsanches.photobooth.app.app.data.image.ImageDomainService;
 import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
-import com.drsanches.photobooth.app.app.utils.PaginationService;
+import com.drsanches.photobooth.app.app.utils.PagingService;
 import com.drsanches.photobooth.app.app.dto.image.request.UploadPhotoDto;
 import com.drsanches.photobooth.app.app.dto.image.response.ImageInfoDto;
 import com.drsanches.photobooth.app.app.data.permission.ImagePermissionDomainService;
@@ -55,7 +54,7 @@ public class ImageWebService {
     private AuthInfo authInfo;
 
     @Autowired
-    private PaginationService<Image> paginationService;
+    private PagingService pagingService;
 
     @Autowired
     private ImageInfoMapper imageInfoMapper;
@@ -103,8 +102,8 @@ public class ImageWebService {
     public List<ImageInfoDto> getAllInfo(Integer page, Integer size) {
         var currentUserId = authInfo.getUserId();
         var imageIds = imagePermissionDomainService.findAllByImageId(currentUserId);
-        var images = imageDomainService.findAllImagesByIds(imageIds).stream();
-        return paginationService.pagination(images, page, size)
+        var pageable = pagingService.pageable(page, size);
+        return imageDomainService.findAllImagesByIds(imageIds, pageable).stream()
                 .map(imageInfoMapper::convert)
                 .toList();
     }

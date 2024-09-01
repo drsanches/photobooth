@@ -282,7 +282,9 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                         .post("/api/v1/auth/account")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new CreateAccountDto(username, password, email))))
-                .andExpect(status().isBadRequest()); //TODO: Check error message
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("uuid").exists())
+                .andExpect(jsonPath("code").value("email.already.in.use"));
     }
 
     @Test

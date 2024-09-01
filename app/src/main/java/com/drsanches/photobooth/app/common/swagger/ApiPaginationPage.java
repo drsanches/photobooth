@@ -15,7 +15,7 @@ import static java.lang.annotation.ElementType.PARAMETER;
 @Target({PARAMETER, METHOD, FIELD, ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-@Parameter(name = "page", description = "Page number")
+@Parameter(name = "page", description = "Page number (starts from 0)")
 public @interface ApiPaginationPage {
 
 }

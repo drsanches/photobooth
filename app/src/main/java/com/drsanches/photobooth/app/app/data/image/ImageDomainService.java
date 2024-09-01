@@ -5,6 +5,7 @@ import com.drsanches.photobooth.app.app.data.image.model.Image;
 import com.drsanches.photobooth.app.config.ImageConsts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -47,8 +48,8 @@ public class ImageDomainService {
         return imageRepository.findById(imageId);
     }
 
-    public List<Image> findAllImagesByIds(Collection<String> imageIds) {
-        var images = imageRepository.findAllByIdInOrderByCreatedDesc(imageIds);
+    public List<Image> findAllImagesByIds(Collection<String> imageIds, Pageable pageable) {
+        var images = imageRepository.findAllByIdInOrderByCreatedDesc(imageIds, pageable);
         if (images.size() != imageIds.size()) {
             var foundIds = images.stream()
                     .map(Image::getId)

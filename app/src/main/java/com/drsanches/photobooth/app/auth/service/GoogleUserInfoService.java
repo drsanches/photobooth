@@ -30,7 +30,6 @@ public class GoogleUserInfoService {
         }
     }
 
-    //TODO: Move in special service?
     public byte[] safetyGetPicture(String url) {
         if (StringUtils.isEmpty(url)) {
             return null;

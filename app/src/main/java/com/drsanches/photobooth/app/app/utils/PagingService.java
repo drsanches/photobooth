@@ -5,23 +5,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import java.util.stream.Stream;
 
 @Service
-public class PaginationService<T> {
+public class PagingService {
 
     @Value("${application.pagination.default-page-size}")
     private Integer defaultPageSize;
 
     @Value("${application.pagination.max-page-size}")
     private Integer maxPageSize;
-
-    //TODO: Use pagination on database layer
-    public Stream<T> pagination(Stream<T> stream, @Nullable Integer page, @Nullable Integer size) {
-        page = page(page);
-        size = size(size);
-        return stream.skip((long) page * size).limit(size);
-    }
 
     public Pageable pageable(@Nullable Integer page, @Nullable Integer size) {
         return PageRequest.of(page(page), size(size));

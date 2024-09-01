@@ -2,10 +2,9 @@ package com.drsanches.photobooth.app.app.service;
 
 import com.drsanches.photobooth.app.app.dto.friends.request.RemoveRequestDto;
 import com.drsanches.photobooth.app.app.mapper.UserInfoMapper;
-import com.drsanches.photobooth.app.app.data.profile.model.UserProfile;
 import com.drsanches.photobooth.app.app.data.friends.FriendsDomainService;
 import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
-import com.drsanches.photobooth.app.app.utils.PaginationService;
+import com.drsanches.photobooth.app.app.utils.PagingService;
 import com.drsanches.photobooth.app.app.dto.friends.request.SendRequestDto;
 import com.drsanches.photobooth.app.app.dto.profile.response.UserInfoDto;
 import com.drsanches.photobooth.app.common.auth.AuthInfo;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -32,7 +30,7 @@ public class FriendsWebService {
     private AuthInfo authInfo;
 
     @Autowired
-    private PaginationService<UserProfile> paginationService;
+    private PagingService pagingService;
 
     @Autowired
     private UserInfoMapper userInfoMapper;
@@ -40,8 +38,8 @@ public class FriendsWebService {
     public List<UserInfoDto> getFriends(Integer page, Integer size) {
         var userId = authInfo.getUserId();
         var friends = friendsDomainService.findOnlyFriendIds(userId);
-        var result = userProfileDomainService.findAllByIdsOrderByUsername(friends).stream();
-        return paginationService.pagination(result, page, size)
+        var pageable = pagingService.pageable(page, size);
+        return userProfileDomainService.findAllByIdsOrderByUsername(friends, pageable).stream()
                 .map(userInfoMapper::convertFriend)
                 .toList();
     }
@@ -49,8 +47,8 @@ public class FriendsWebService {
     public List<UserInfoDto> getIncomingRequests(Integer page, Integer size) {
         var userId = authInfo.getUserId();
         var incoming = friendsDomainService.findOnlyIncomingRequestIds(userId);
-        var result = userProfileDomainService.findAllByIdsOrderByUsername(incoming).stream();
-        return paginationService.pagination(result, page, size)
+        var pageable = pagingService.pageable(page, size);
+        return userProfileDomainService.findAllByIdsOrderByUsername(incoming, pageable).stream()
                 .map(userInfoMapper::convertIncoming)
                 .toList();
     }
@@ -58,8 +56,8 @@ public class FriendsWebService {
     public List<UserInfoDto> getOutgoingRequests(Integer page, Integer size) {
         var userId = authInfo.getUserId();
         var outgoing = friendsDomainService.findOnlyOutgoingRequestIds(userId);
-        var result = userProfileDomainService.findAllByIdsOrderByUsername(outgoing).stream();
-        return paginationService.pagination(result, page, size)
+        var pageable = pagingService.pageable(page, size);
+        return userProfileDomainService.findAllByIdsOrderByUsername(outgoing, pageable).stream()
                 .map(userInfoMapper::convertOutgoing)
                 .toList();
     }

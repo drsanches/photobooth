@@ -2,6 +2,7 @@ package com.drsanches.photobooth.app.app.data.image.repository;
 
 import com.drsanches.photobooth.app.app.data.image.model.Image;
 import com.drsanches.photobooth.app.common.aspects.MonitorTime;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
@@ -22,7 +23,7 @@ public interface ImageRepository extends CrudRepository<Image, String> {
     @NonNull
     Optional<Image> findById(@NonNull String s);
 
-    List<Image> findAllByIdInOrderByCreatedDesc(Collection<String> imageIds);
+    List<Image> findAllByIdInOrderByCreatedDesc(Collection<String> imageIds, Pageable pageable);
 
     @Override
     boolean existsById(@NonNull String id);

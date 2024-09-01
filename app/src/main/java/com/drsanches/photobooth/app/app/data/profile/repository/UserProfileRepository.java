@@ -28,7 +28,7 @@ public interface UserProfileRepository extends CrudRepository<UserProfile, Strin
 
     Optional<UserProfile> findByIdAndEnabled(String userId, boolean enabled);
 
-    List<UserProfile> findAllByIdInOrderByUsername(Collection<String> userIds);
+    List<UserProfile> findAllByIdInOrderByUsername(Collection<String> userIds, Pageable pageable);
 
     List<UserProfile> findByUsernameContainingAndEnabled(String username, boolean enabled, Pageable pageable);
 

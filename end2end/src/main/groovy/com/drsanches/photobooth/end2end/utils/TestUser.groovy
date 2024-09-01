@@ -40,13 +40,25 @@ class TestUser {
     }
 
     TestUser register() {
-        username = DataGenerator.createValidUsername()
-        password = DataGenerator.createValidPassword()
-        email = DataGenerator.createValidEmail()
-        token = RequestUtils.registerUser(username, password, email)
-        id = RequestUtils.getAuthInfo(token)["id"]
-        imagePath = Utils.DEFAULT_IMAGE_PATH
-        thumbnailPath = Utils.DEFAULT_THUMBNAIL_PATH
+        this.username = DataGenerator.createValidUsername()
+        this.password = DataGenerator.createValidPassword()
+        this.email = DataGenerator.createValidEmail()
+        this.token = RequestUtils.registerUser(username, password, email)
+        this.id = RequestUtils.getAuthInfo(token)["id"]
+        this.imagePath = Utils.DEFAULT_IMAGE_PATH
+        this.thumbnailPath = Utils.DEFAULT_THUMBNAIL_PATH
+        this.getUserProfile()
+        return this
+    }
+
+    TestUser register(String username) {
+        this.username = username
+        this.password = DataGenerator.createValidPassword()
+        this.email = DataGenerator.createValidEmail()
+        this.token = RequestUtils.registerUser(username, password, email)
+        this.id = RequestUtils.getAuthInfo(token)["id"]
+        this.imagePath = Utils.DEFAULT_IMAGE_PATH
+        this.thumbnailPath = Utils.DEFAULT_THUMBNAIL_PATH
         this.getUserProfile()
         return this
     }
