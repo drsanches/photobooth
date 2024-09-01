@@ -3,7 +3,7 @@ package com.drsanches.photobooth.app.config.filter;
 import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import com.drsanches.photobooth.app.auth.exception.WrongTokenAuthException;
 import com.drsanches.photobooth.app.common.auth.AuthInfo;
-import com.drsanches.photobooth.app.common.exception.dto.ExceptionDto;
+import com.drsanches.photobooth.app.common.exception.dto.ErrorResponseDto;
 import com.drsanches.photobooth.app.common.integration.auth.AuthIntegrationService;
 import com.drsanches.photobooth.app.common.utils.TokenExtractor;
 import jakarta.servlet.FilterChain;
@@ -65,6 +65,6 @@ public class AuthFilter extends GenericFilterBean {
         httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
         httpResponse.setHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         httpResponse.getOutputStream().flush();
-        httpResponse.getOutputStream().println(new ExceptionDto(e).toString());
+        httpResponse.getOutputStream().println(new ErrorResponseDto(e).toString());
     }
 }

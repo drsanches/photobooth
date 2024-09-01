@@ -19,7 +19,7 @@ import java.util.function.Predicate;
 
 @Slf4j
 @AllArgsConstructor
-public class UserProfileSyncFilter extends GenericFilterBean { //TODO: Rename
+public class UserProfileSyncFilter extends GenericFilterBean {
 
     private final AuthInfo authInfo;
     private final UserProfileDomainService userProfileDomainService;

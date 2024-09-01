@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 @RequiredArgsConstructor
-public class ExceptionDto { //TODO: Rename to ErrorDto
+public class ErrorResponseDto {
 
     record Detail(String field, String message) {}
 
@@ -28,7 +28,7 @@ public class ExceptionDto { //TODO: Rename to ErrorDto
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Detail> details;
 
-    public ExceptionDto(BaseException e) {
+    public ErrorResponseDto(BaseException e) {
         this.uuid = e.getUuid();
         this.code = e.getMessage();
     }

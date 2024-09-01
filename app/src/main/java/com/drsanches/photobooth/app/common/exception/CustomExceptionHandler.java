@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.common.exception;
 
-import com.drsanches.photobooth.app.common.exception.dto.ExceptionDto;
+import com.drsanches.photobooth.app.common.exception.dto.ErrorResponseDto;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,8 +17,8 @@ import java.util.stream.StreamSupport;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ExceptionDto> handleConstraintViolationException(ConstraintViolationException e) {
-        var result = new ExceptionDto(UUID.randomUUID().toString(), "validation.error");
+    public ResponseEntity<ErrorResponseDto> handleConstraintViolationException(ConstraintViolationException e) {
+        var result = new ErrorResponseDto(UUID.randomUUID().toString(), "validation.error");
         e.getConstraintViolations().forEach(it -> {
             var message = it.getMessage();
             var field = StreamSupport.stream(it.getPropertyPath().spliterator(), false)
@@ -32,19 +32,19 @@ public class CustomExceptionHandler {
     }
 
     @ExceptionHandler(ServerError.class)
-    public ResponseEntity<ExceptionDto> handleServerError(ServerError e) {
+    public ResponseEntity<ErrorResponseDto> handleServerError(ServerError e) {
         log.error("Server error. Uuid: {}, info: {}", e.getUuid(), e.getLogMessage(), e);
-        return new ResponseEntity<>(new ExceptionDto(e), e.getHttpCode());
+        return new ResponseEntity<>(new ErrorResponseDto(e), e.getHttpCode());
     }
 
     @ExceptionHandler(BaseException.class)
-    public ResponseEntity<ExceptionDto> handleBaseException(BaseException e) {
+    public ResponseEntity<ErrorResponseDto> handleBaseException(BaseException e) {
         log.warn("Base exception. Uuid: {}", e.getUuid(), e);
-        return new ResponseEntity<>(new ExceptionDto(e), e.getHttpCode());
+        return new ResponseEntity<>(new ErrorResponseDto(e), e.getHttpCode());
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ExceptionDto> handleRuntimeException(RuntimeException e) {
+    public ResponseEntity<ErrorResponseDto> handleRuntimeException(RuntimeException e) {
         return handleServerError(new ServerError(e.getMessage(), e));
     }
 }

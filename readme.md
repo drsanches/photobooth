@@ -598,6 +598,7 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 
 ### UI
 - Hide admin ui for users
+- Create AppApiClient with all requests
 
 ### Tests
 - Use another framework?

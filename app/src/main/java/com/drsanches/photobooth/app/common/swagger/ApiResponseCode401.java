@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.common.swagger;
 
-import com.drsanches.photobooth.app.common.exception.dto.ExceptionDto;
+import com.drsanches.photobooth.app.common.exception.dto.ErrorResponseDto;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,7 +18,11 @@ import static java.lang.annotation.ElementType.TYPE;
 @Target({METHOD, TYPE, ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-@ApiResponse(responseCode = "401", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionDto.class)))
-public @interface ApiResponseCode401 {
-
-}
+@ApiResponse(
+        responseCode = "401",
+        content = @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = ErrorResponseDto.class)
+        )
+)
+public @interface ApiResponseCode401 {}
