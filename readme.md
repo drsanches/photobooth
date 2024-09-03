@@ -587,7 +587,6 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Check docker container user permissions
 - Fix error "host not found in upstream" if nginx started without app and elk
 - Fix certs
-- Add test controller for admin with ui
 - Move ImageConsts to app
 - Check swagger errors for all urls. Maybe group all swagger annotations in one using array?  
 - Add ObjectMapper bean
@@ -599,7 +598,7 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 
 ### UI
 - Hide admin ui for users
-- Create AppApiClient with all requests
+- Add UI for admin controller
 
 ### Tests
 - Use another framework?
@@ -609,3 +608,4 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Test transactions
 - Configure gradlew env in command line for spring tests
 - Remove redundant checks in e2e (such as status in friend tests)
+- Add more tests for admin controller

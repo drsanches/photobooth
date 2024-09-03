@@ -63,6 +63,18 @@ class RequestUtils {
         }
     }
 
+    static JSONObject getAnotherUserProfile(String userId, String token) {
+        try {
+            def response = getRestClient().get(
+                    path: "/api/v1/app/profile/" + userId,
+                    headers: [Authorization: "Bearer $token"])
+            return response.status == 200 ? response.data as JSONObject : null
+        } catch(Exception e) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
     static void changeUserProfile(String token, String name, String status) {
         getRestClient().put(
                 path: "/api/v1/app/profile",

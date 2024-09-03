@@ -38,6 +38,11 @@ public class AppIntegrationServiceImpl implements AppIntegrationService {
     }
 
     @Override
+    public void createProfile(String userId, String username) {
+        userProfileDomainService.create(userId, username);
+    }
+
+    @Override
     public void updateUsername(String userId, String username) {
         userProfileDomainService.updateUsername(userId, username);
     }

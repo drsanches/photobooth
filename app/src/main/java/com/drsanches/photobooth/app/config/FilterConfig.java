@@ -51,7 +51,8 @@ public class FilterConfig {
                 "/api/v1/app/profile/*",
                 "/api/v1/app/friends/*",
                 "/api/v1/app/image/*",
-                "/api/v1/notification/*"
+                "/api/v1/notification/*",
+                "/api/v1/admin/*"
         );
         registrationBean.setOrder(1);
         return registrationBean;
@@ -63,6 +64,7 @@ public class FilterConfig {
         FilterRegistrationBean<AdminFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new AdminFilter(authInfo, publicUri));
         registrationBean.addUrlPatterns(
+                "/api/v1/admin/*",
                 "/actuator/*",
                 "/h2-console/*",
                 "/swagger-ui/*"

@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.auth.dto.userauth.request;
 
-import com.drsanches.photobooth.app.auth.validation.annotation.Username;
+import com.drsanches.photobooth.app.common.validation.annotation.Username;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

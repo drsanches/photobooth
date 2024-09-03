@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.auth.dto.google;
+package com.drsanches.photobooth.app.admin.dto;
 
 import com.drsanches.photobooth.app.common.validation.annotation.Username;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -6,20 +6,23 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GoogleSetUsernameDto {
+public class CreateTestUserDto {
 
-    @Schema(maxLength = 20, requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(maxLength = 20, pattern = Username.PATTERN, requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty
     @Length(max = 20)
     @Username
-    private String newUsername;
+    private String username;
 
-    @Schema(description = "Confirmation code from registration request", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(maxLength = 255, description = "password SHA256 hash", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotEmpty
-    private String code;
+    @Length(max = 255)
+    @ToString.Exclude
+    private String password;
 }

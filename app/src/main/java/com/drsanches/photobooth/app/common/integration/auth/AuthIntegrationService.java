@@ -4,6 +4,8 @@ import java.util.Optional;
 
 public interface AuthIntegrationService {
 
+    UserInfoDto createAccount(String username, String email, String password);
+
     Optional<AuthInfoDto> getAuthInfo(String token);
 
     String getEmail(String userId);

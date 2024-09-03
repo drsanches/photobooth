@@ -31,7 +31,7 @@ class TestAdminUrls extends Specification {
     }
 
     def "successful user url access"() {
-        given: "admin token"
+        given: "user token"
         def user = new TestUser().register()
 
         when: "request is sent"
@@ -58,7 +58,7 @@ class TestAdminUrls extends Specification {
     }
 
     def "user url access denial"() {
-        given: "admin token"
+        given: "user token"
         def user = new TestUser().register()
 
         when: "request is sent"

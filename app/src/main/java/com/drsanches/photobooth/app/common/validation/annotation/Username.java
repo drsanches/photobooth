@@ -1,4 +1,4 @@
-package com.drsanches.photobooth.app.auth.validation.annotation;
+package com.drsanches.photobooth.app.common.validation.annotation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
