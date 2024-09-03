@@ -1,13 +1,21 @@
 import Cookies from "/ui/js/lib/js.cookie.m.js";
 
-export function setToken(token) {
+function setToken(token) {
     Cookies.set("Authorization", "Bearer " + token);
 }
 
-export function getToken() {
+function getToken() {
     return Cookies.get("Authorization");
 }
 
-export function deleteToken() {
+function removeToken() {
     Cookies.remove("Authorization");
 }
+
+var Token = {
+    set: setToken,
+    get: getToken,
+    remove: removeToken
+}
+
+export default Token;

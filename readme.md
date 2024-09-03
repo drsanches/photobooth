@@ -599,6 +599,7 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 ### UI
 - Hide admin ui for users
 - Add UI for admin controller
+- Refactor UI using bootstrap (https://bootstrap-vue.org/docs#browser)
 
 ### Tests
 - Use another framework?

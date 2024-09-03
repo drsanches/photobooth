@@ -2,26 +2,17 @@
 <html>
     <head>
         <title>PhotoBooth</title>
-        <link rel="stylesheet" type="text/css" href="/ui/css/header.css"/>
-        <link rel="stylesheet" type="text/css" href="/ui/css/admin_content.css"/>
-        <script src="/ui/js/lib/vue.js"></script>
-        <script type="module" src="/ui/js/header.js"></script>
-        <script type="module" src="/ui/js/admin_content.js"></script>
+        <!--TODO-->
+        <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+        <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <script src="https://unpkg.com/vuex@4.0.0/dist/vuex.global.js"></script>
+        <script src="https://unpkg.com/vue-router@4.0.15/dist/vue-router.global.js"></script>
     </head>
     <body>
         <div id="app">
-            <custom-header></custom-header>
-            <admin-content></admin-content>
+            <app></app>
         </div>
-
-        <script type="module">
-            import {header} from '/ui/js/header.js';
-            import {adminContent} from '/ui/js/admin_content.js';
-
-            var app = Vue.createApp({});
-            app.component('custom-header', header);
-            app.component('admin-content', adminContent);
-            app.mount("#app");
-        </script>
+        <script type="module" src="/ui/js/index.js"></script>
     </body>
 </html>
