@@ -5,7 +5,7 @@ export var app = {
         <div class="app">
             <custom-header></custom-header>
             <main class="m-5">
-                <RouterView />
+                <router-view />
             </main>
         </div>
     `

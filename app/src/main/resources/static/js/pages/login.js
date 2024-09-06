@@ -26,11 +26,10 @@ export var login = {
                     AppClient.getInfo(
                         data => {
                             this.$store.commit('update', data);
-                            this.$router.push('/');
+                            this.$router.push('/'); //TODO: Go to the previous or default
                         },
                         data => {
                             this.authError();
-                            this.$router.push('/login');
                         }
                     );
                 },
@@ -57,21 +56,21 @@ export var login = {
             <div class="d-grid col-6 mx-auto">
                 <div class="border border-primary border-2 rounded">
                     <div class="m-3">
-                        <label for="inputUsername" class="form-label">Username</label>
-                        <input v-model="username" type="text" class="form-control" id="inputUsername" placeholder="username">
+                        <label class="form-label">Username</label>
+                        <input v-model="username" type="text" class="form-control" placeholder="username">
                     </div>
                     <div class="m-3">
-                        <label for="inputPassword" class="form-label">Password</label>
-                        <input v-model="password" type="password" class="form-control" id="inputPassword">
+                        <label class="form-label">Password</label>
+                        <input v-model="password" type="password" class="form-control">
                     </div>
-                    <div v-if="emptyInputAlert" class="alert alert-danger d-grid col-10 mx-auto m-3" role="alert">
+                    <div v-if="emptyInputAlert" class="alert alert-danger d-grid col-10 mx-auto m-3">
                         Enter username and password!
                     </div>
-                    <div v-if="authErrorAlert" class="alert alert-danger d-grid col-10 mx-auto m-3" role="alert">
+                    <div v-if="authErrorAlert" class="alert alert-danger d-grid col-10 mx-auto m-3">
                         Authentication error!
                     </div>
                     <div class="d-grid col-6 mx-auto m-3">
-                        <button v-on:click="login" type="button" class="btn btn-primary">Login</button>
+                        <button v-on:click="login" class="btn btn-primary">Login</button>
                     </div>
                 </div>
             </div>

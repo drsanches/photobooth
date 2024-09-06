@@ -9,8 +9,10 @@ export var header = {
             AppClient.logout(() => {
                 Token.remove();
                 this.$store.commit('update', null);
-                this.$router.push('/login');
             });
+        },
+        login: function() {
+            this.$router.push('/login');
         }
     },
     computed: {
@@ -18,20 +20,22 @@ export var header = {
             return this.$store.state.authInfo == null ? null : this.$store.state.authInfo.username;
         },
         authorized() {
-            var authorized = this.$store.state.authInfo != null;
-            if (!authorized) {
-                this.$router.push('/login');
-            }
-            return authorized;
+            return this.$store.state.authInfo != null;
         }
     },
     template: `
         <div class="header">
             <div class="d-flex ms-5 me-5">
-                <div class="ms-3 mt-3 mb-3 me-auto">
+                <div class="mt-3 mb-3 me-auto">
                     <span class="h1" v-on:click="home">PhotoBooth admin</span>
                 </div>
                 <div class="mt-3 mb-3">
+
+                    <!-- Unauthorized -->
+                    <div v-if="!authorized">
+                        <button v-on:click="login" type="button" class="btn btn-primary">Login</button>
+                    </div>
+
                     <!-- Authorized -->
                     <div v-if="authorized">
                         <span class="align-middle fs-5 me-3" v-if="username != null">Welcome, {{username}}</span>
