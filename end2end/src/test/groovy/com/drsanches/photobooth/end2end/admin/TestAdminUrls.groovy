@@ -3,6 +3,7 @@ package com.drsanches.photobooth.end2end.admin
 import com.drsanches.photobooth.end2end.utils.RequestUtils
 import com.drsanches.photobooth.end2end.utils.TestUser
 import com.drsanches.photobooth.end2end.utils.Utils
+import org.json.JSONObject
 import spock.lang.Specification
 
 class TestAdminUrls extends Specification {
@@ -68,6 +69,7 @@ class TestAdminUrls extends Specification {
 
         then: "access"
         assert response.status == 403
+        assert Utils.validateErrorResponse(response.data as JSONObject, "forbidden", null)
 
         where:
         path << ADMIN_PATHS
@@ -79,6 +81,7 @@ class TestAdminUrls extends Specification {
 
         then: "access"
         assert response.status == 401
+        assert Utils.validateErrorResponse(response.data as JSONObject, "wrong.token", null)
 
         where:
         path << ADMIN_PATHS

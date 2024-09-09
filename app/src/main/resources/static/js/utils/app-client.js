@@ -62,10 +62,34 @@ function logout(onResult) {
         .catch(error => console.error(error));
 }
 
+function createTestUser(username, password, onSuccess, onError) {
+    var request = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": Token.get()
+        },
+        body: JSON.stringify({
+            username: username,
+            password: sha256(password),
+        })
+    };
+    fetch(API_BASE_URL + "/admin/test/user", request)
+        .then(response => {
+            if (response.ok) {
+                response.json().then(data => onSuccess(data));
+            } else {
+                response.json().then(data => onError(data));
+            }
+        })
+        .catch(error => console.error(error));
+}
+
 var AppClient = {
     login: login,
     getInfo: getInfo,
-    logout: logout
+    logout: logout,
+    createTestUser: createTestUser
 }
 
 export default AppClient;

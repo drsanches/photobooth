@@ -21,10 +21,15 @@ public class AuthIntegrationServiceImpl implements AuthIntegrationService {
     private TokenService tokenService;
     @Autowired
     private CredentialsHelper credentialsHelper;
+    @Autowired
+    private AuthExistenceValidator authExistenceValidator;
 
     @Override
     public UserInfoDto createAccount(String username, String email, String password) {
         var salt = UUID.randomUUID().toString();
+        authExistenceValidator
+                .validateUsername(username)
+                .validateEmail(email);
         var user = userAuthDomainService.createUser(
                 username,
                 email,

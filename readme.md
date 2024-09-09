@@ -594,12 +594,11 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Rename domain to dao?
 - Refactor paging and soring. Use Page for responses?
 - Refactor notifier flow with email
-- Describe all functions of the applications
+- Describe all features of the applications
 
 ### UI
-- Hide admin ui for users
-- Add UI for admin controller
-- Refactor UI using bootstrap (https://bootstrap-vue.org/docs#browser)
+- Hide admin ui for users?
+- Add icon
 
 ### Tests
 - Use another framework?
@@ -609,4 +608,3 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Test transactions
 - Configure gradlew env in command line for spring tests
 - Remove redundant checks in e2e (such as status in friend tests)
-- Add more tests for admin controller

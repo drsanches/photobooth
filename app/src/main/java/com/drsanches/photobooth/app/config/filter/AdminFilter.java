@@ -1,7 +1,9 @@
 package com.drsanches.photobooth.app.config.filter;
 
 import com.drsanches.photobooth.app.auth.data.token.model.Role;
+import com.drsanches.photobooth.app.auth.exception.ForbiddenException;
 import com.drsanches.photobooth.app.common.auth.AuthInfo;
+import com.drsanches.photobooth.app.common.exception.dto.ErrorResponseDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -36,7 +38,7 @@ public class AdminFilter extends GenericFilterBean {
             );
             httpResponse.setStatus(HttpStatus.FORBIDDEN.value());
             httpResponse.getOutputStream().flush();
-            httpResponse.getOutputStream().println("You do not have permission");
+            httpResponse.getOutputStream().println(new ErrorResponseDto(new ForbiddenException()).toString());
             return;
         }
         chain.doFilter(request, response);
