@@ -27,7 +27,7 @@ export var header = {
         <div class="header">
             <div class="d-flex ms-5 me-5">
                 <div class="mt-3 mb-3 me-auto">
-                    <span class="h1" v-on:click="home">PhotoBooth admin</span>
+                    <span v-on:click="home" class="h1" role="button">PhotoBooth admin</span>
                 </div>
                 <div class="mt-3 mb-3">
 
@@ -38,7 +38,7 @@ export var header = {
 
                     <!-- Authorized -->
                     <div v-if="authorized">
-                        <span class="align-middle fs-5 me-3" v-if="username != null">Welcome, {{username}}</span>
+                        <span v-if="username != null" class="align-middle fs-5 me-3">Welcome, {{username}}</span>
                         <button v-on:click="logout" type="button" class="btn btn-secondary">Logout</button>
                     </div>
                 </div>
