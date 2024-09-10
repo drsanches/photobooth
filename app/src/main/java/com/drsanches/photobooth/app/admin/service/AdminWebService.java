@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.UUID;
-
 @Slf4j
 @Service
 @Validated
@@ -25,10 +23,11 @@ public class AdminWebService {
     public UserInfoDto createUser(@Valid CreateTestUserDto createTestUserDto) {
         var user = authIntegrationService.createAccount(
                 createTestUserDto.getUsername(),
-                UUID.randomUUID() + "@example.com",
+                createTestUserDto.getEmail(),
                 createTestUserDto.getPassword()
         );
         appIntegrationService.createProfile(user.id(), user.username());
+        log.info("User was created by admin. UserInfo: {}", user);
         return user;
     }
 }

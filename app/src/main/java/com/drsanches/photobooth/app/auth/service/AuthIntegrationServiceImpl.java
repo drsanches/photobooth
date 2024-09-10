@@ -36,7 +36,7 @@ public class AuthIntegrationServiceImpl implements AuthIntegrationService {
                 credentialsHelper.encodePassword(password, salt),
                 salt
         );
-        return new UserInfoDto(user.getId(), user.getUsername());
+        return new UserInfoDto(user.getId(), user.getUsername(), user.getEmail());
     }
 
     @Override

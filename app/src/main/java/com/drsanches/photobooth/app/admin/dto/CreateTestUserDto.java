@@ -2,6 +2,7 @@ package com.drsanches.photobooth.app.admin.dto;
 
 import com.drsanches.photobooth.app.common.validation.annotation.Username;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,4 +26,10 @@ public class CreateTestUserDto {
     @Length(max = 255)
     @ToString.Exclude
     private String password;
+
+    @Schema(maxLength = 255, requiredMode = Schema.RequiredMode.REQUIRED)
+    //TODO: Length?
+    @NotEmpty
+    @Email
+    private String email;
 }

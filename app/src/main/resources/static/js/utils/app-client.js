@@ -62,7 +62,7 @@ function logout(onResult) {
         .catch(error => console.error(error));
 }
 
-function createTestUser(username, password, onSuccess, onError) {
+function createTestUser(username, password, email, onSuccess, onError) {
     var request = {
         method: "POST",
         headers: {
@@ -72,6 +72,7 @@ function createTestUser(username, password, onSuccess, onError) {
         body: JSON.stringify({
             username: username,
             password: sha256(password),
+            email: email
         })
     };
     fetch(API_BASE_URL + "/admin/test/user", request)

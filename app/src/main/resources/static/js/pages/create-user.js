@@ -8,9 +8,9 @@ export var createUser = {
             successAlert: false,
             username: "",
             password: "",
-            createdId: "",
-            createdUsername: "",
-            responseError: ""
+            email: "",
+            successResponse: {},
+            errorResponse: {}
         }
     },
     methods: {
@@ -18,26 +18,27 @@ export var createUser = {
             this.emptyInputAlert = false;
             this.responseErrorAlert = false;
             this.successAlert = false;
-            if (this.username == "" || this.password == "") {
+            if (this.username == "" || this.password == "" || this.email == "") {
                 this.emptyInputAlert = true;
                 return;
             }
             AppClient.createTestUser(
                 this.username,
                 this.password,
+                this.email,
                 data => {
                     this.username = "";
                     this.password = "";
-                    this.createdId = data.id;
-                    this.createdUsername = data.username;
+                    this.email = "";
+                    this.successResponse = data;
                     this.successAlert = true;
                 },
                 data => {
                     this.username = "";
                     this.password = "";
-                    this.createdId = "";
+                    this.email = "";
+                    this.errorResponse = data;
                     this.responseErrorAlert = true;
-                    this.responseError = data.code;
                 }
             );
         },
@@ -61,14 +62,15 @@ export var createUser = {
                     </div>
                     <div v-if="responseErrorAlert" class="alert alert-danger alert-dismissible show col-sm-12">
                         <b>User creation error!</b><br>
-                        {{responseError}}
+                        {{errorResponse.code}}
                         <button v-on:click="closeResponseErrorAlert" class="btn-close"></button>
                     </div>
                     <div v-if="successAlert" class="alert alert-success alert-dismissible show col-sm-12">
                         <b>The user has been created successfully!</b><br>
                         <br>
-                        <b>Id:</b> {{createdId}} <br>
-                        <b>Username:</b> {{createdUsername}}
+                        <b>Id:</b> {{successResponse.id}} <br>
+                        <b>Username:</b> {{successResponse.username}} <br>
+                        <b>Email:</b> {{successResponse.email}}
                         <button v-on:click="closeSuccessAlert" class="btn-close"></button>
                     </div>
                 </div>
@@ -85,6 +87,12 @@ export var createUser = {
                     <label class="col-sm-3 col-form-label">Password:</label>
                     <div class="col-sm-9">
                         <input v-model="password" type="password" class="form-control">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-sm-3 col-form-label">Email:</label>
+                    <div class="col-sm-9">
+                        <input v-model="email" type="text" class="form-control">
                     </div>
                 </div>
                 <div class="mb-3 row">

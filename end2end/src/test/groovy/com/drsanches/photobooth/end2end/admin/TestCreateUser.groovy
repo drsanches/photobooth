@@ -19,6 +19,7 @@ class TestCreateUser extends Specification {
         given: "username, password, email and admin token"
         def username = DataGenerator.createValidUsername()
         def password = DataGenerator.createValidPassword()
+        def email = DataGenerator.createValidEmail()
         def adminToken = RequestUtils.getToken(USERNAME, PASSWORD)
 
         when: "request is sent"
@@ -26,13 +27,15 @@ class TestCreateUser extends Specification {
                 path: PATH,
                 headers: [Authorization: "Bearer $adminToken"],
                 body: [username: username,
-                       password: password])
+                       password: password,
+                       email: email])
 
         then: "response is correct"
         assert response.status == 200
         var userId = response.data["id"] as String
         assert userId != JSONObject.NULL
         assert response.data["username"] == username
+        assert response.data["email"] == email
 
         and: "user account exists"
         var userAuth = RequestUtils.getAuthInfo(username, password)
@@ -44,7 +47,7 @@ class TestCreateUser extends Specification {
         assert RequestUtils.getAnotherUserProfile(userId, anotherUserToken) != null
     }
 
-    def "existing user creation"() {
+    def "user creation with existing username"() {
         given: "user and admin token"
         var user = new TestUser().register()
         def adminToken = RequestUtils.getToken(USERNAME, PASSWORD)
@@ -54,11 +57,30 @@ class TestCreateUser extends Specification {
                 path: PATH,
                 headers: [Authorization: "Bearer $adminToken"],
                 body: [username: user.username,
-                       password: DataGenerator.createValidPassword()])
+                       password: DataGenerator.createValidPassword(),
+                       email: DataGenerator.createValidEmail()])
 
         then: "response is correct"
         assert response.status == 400
         assert Utils.validateErrorResponse(response.data as JSONObject, "username.already.in.use", null)
+    }
+
+    def "user creation with existing email"() {
+        given: "user and admin token"
+        var user = new TestUser().register()
+        def adminToken = RequestUtils.getToken(USERNAME, PASSWORD)
+
+        when: "request is sent"
+        def response = RequestUtils.getRestClient().post(
+                path: PATH,
+                headers: [Authorization: "Bearer $adminToken"],
+                body: [username: DataGenerator.createValidEmail(),
+                       password: DataGenerator.createValidPassword(),
+                       email: user.email])
+
+        then: "response is correct"
+        assert response.status == 400
+        assert Utils.validateErrorResponse(response.data as JSONObject, "email.already.in.use", null)
     }
 
     def "user creation with user token"() {

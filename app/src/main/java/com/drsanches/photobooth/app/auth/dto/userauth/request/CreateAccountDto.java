@@ -27,7 +27,8 @@ public class CreateAccountDto {
     @ToString.Exclude
     private String password;
 
-    @Schema(maxLength = 255)
+    @Schema(maxLength = 255, requiredMode = Schema.RequiredMode.REQUIRED)
+    //TODO: Length?
     @NotEmpty
     @Email
     private String email;

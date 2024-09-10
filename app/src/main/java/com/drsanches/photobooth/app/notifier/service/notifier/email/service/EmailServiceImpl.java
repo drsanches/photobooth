@@ -10,16 +10,25 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import java.util.function.Predicate;
+
 @Slf4j
 @Component
 @MonitorTime
 @ConditionalOnProperty(name = "application.notifications.email.enabled")
 public class EmailServiceImpl implements EmailService {
 
+    //TODO
+    private static final Predicate<String> TEST_ADDRESS = x -> x.matches(".*@example\\.com");
+
     @Autowired
     private JavaMailSender emailSender;
 
     public void sendHtmlMessage(String to, String subject, String message) {
+        if (TEST_ADDRESS.test(to)) {
+            log.info("Test address {}, ignoring", to);
+            return;
+        }
         var mimeMessage = emailSender.createMimeMessage();
         try {
             var helper = new MimeMessageHelper(mimeMessage, true);
