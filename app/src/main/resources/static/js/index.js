@@ -6,6 +6,7 @@ import {info} from '/ui/js/pages/info.js';
 import {createUser} from '/ui/js/pages/create-user.js';
 import {createUserManual} from '/ui/js/pages/components/create-user-manual.js';
 import {createUserRandom} from '/ui/js/pages/components/create-user-random.js';
+import {copyText} from '/ui/js/pages/components/copy-text.js';
 import AppClient from "/ui/js/utils/app-client.js";
 import Token from "/ui/js/utils/token.js";
 
@@ -55,4 +56,5 @@ vueApp.component('info', info);
 vueApp.component('create-user', createUser);
 vueApp.component('create-user-manual', createUserManual);
 vueApp.component('create-user-random', createUserRandom);
+vueApp.component('copy-text', copyText);
 vueApp.mount("#app");

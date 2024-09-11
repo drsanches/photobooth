@@ -70,9 +70,9 @@ export var createUserManual = {
                 <div v-if="successAlert" class="alert alert-success alert-dismissible show col-sm-12">
                     <b>The user has been created successfully!</b><br>
                     <br>
-                    <b>Id:</b> {{successResponse.id}} <br>
-                    <b>Username:</b> {{successResponse.username}} <br>
-                    <b>Email:</b> {{successResponse.email}}
+                    <b>Id:</b> <copy-text>{{successResponse.id}}</copy-text> <br>
+                    <b>Username:</b> <copy-text>{{successResponse.username}}</copy-text> <br>
+                    <b>Email:</b> <copy-text>{{successResponse.email}}</copy-text>
                     <button v-on:click="closeSuccessAlert" class="btn-close"></button>
                 </div>
             </div>
@@ -85,14 +85,14 @@ export var createUserManual = {
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Password:</label>
                 <div class="col-sm-9">
-                    <input v-model="password" type="password" class="form-control">
+                    <input v-model="password" type="password" class="form-control" placeholder="password">
                 </div>
             </div>
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Email:</label>
                 <div class="col-sm-9">
                     <div class="input-group">
-                        <input v-model="email" type="text" class="form-control">
+                        <input v-model="email" type="text" class="form-control" placeholder="email">
                         <span class="input-group-text">@example.com</span>
                     </div>
                 </div>
