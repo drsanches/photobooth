@@ -3,7 +3,7 @@ package com.drsanches.photobooth.app.admin.controller;
 import com.drsanches.photobooth.app.admin.dto.CreateTestUserDto;
 import com.drsanches.photobooth.app.admin.service.AdminWebService;
 import com.drsanches.photobooth.app.common.aspects.MonitorTime;
-import com.drsanches.photobooth.app.common.integration.auth.UserInfoDto;
+import com.drsanches.photobooth.app.common.integration.auth.UserCreationInfoDto;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode400;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode401;
@@ -30,7 +30,7 @@ public class AdminController {
     @ApiResponseCode400
     @ApiResponseCode401
     @RequestMapping(value = "/test/user", method = RequestMethod.POST)
-    public UserInfoDto createUser(@RequestBody CreateTestUserDto createTestUserDto) {
+    public UserCreationInfoDto createUser(@RequestBody CreateTestUserDto createTestUserDto) {
         return adminWebService.createUser(createTestUserDto);
     }
 }

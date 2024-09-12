@@ -5,7 +5,7 @@ import com.drsanches.photobooth.app.auth.exception.WrongTokenAuthException;
 import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.common.integration.auth.AuthInfoDto;
 import com.drsanches.photobooth.app.common.integration.auth.AuthIntegrationService;
-import com.drsanches.photobooth.app.common.integration.auth.UserInfoDto;
+import com.drsanches.photobooth.app.common.integration.auth.UserCreationInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class AuthIntegrationServiceImpl implements AuthIntegrationService {
     private AuthExistenceValidator authExistenceValidator;
 
     @Override
-    public UserInfoDto createAccount(String username, String email, String password) {
+    public UserCreationInfoDto createAccount(String username, String email, String password) {
         var salt = UUID.randomUUID().toString();
         authExistenceValidator
                 .validateUsername(username)
@@ -36,7 +36,7 @@ public class AuthIntegrationServiceImpl implements AuthIntegrationService {
                 credentialsHelper.encodePassword(password, salt),
                 salt
         );
-        return new UserInfoDto(user.getId(), user.getUsername(), user.getEmail());
+        return new UserCreationInfoDto(user.getId(), user.getUsername(), user.getEmail());
     }
 
     @Override

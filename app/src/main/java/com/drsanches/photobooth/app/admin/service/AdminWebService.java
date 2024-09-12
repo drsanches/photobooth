@@ -3,7 +3,7 @@ package com.drsanches.photobooth.app.admin.service;
 import com.drsanches.photobooth.app.admin.dto.CreateTestUserDto;
 import com.drsanches.photobooth.app.common.integration.app.AppIntegrationService;
 import com.drsanches.photobooth.app.common.integration.auth.AuthIntegrationService;
-import com.drsanches.photobooth.app.common.integration.auth.UserInfoDto;
+import com.drsanches.photobooth.app.common.integration.auth.UserCreationInfoDto;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class AdminWebService {
     @Autowired
     private AppIntegrationService appIntegrationService;
 
-    public UserInfoDto createUser(@Valid CreateTestUserDto createTestUserDto) {
+    public UserCreationInfoDto createUser(@Valid CreateTestUserDto createTestUserDto) {
         var user = authIntegrationService.createAccount(
                 createTestUserDto.getUsername(),
                 createTestUserDto.getEmail(),

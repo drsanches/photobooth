@@ -1,6 +1,6 @@
 package com.drsanches.photobooth.app.common.integration.auth;
 
-public record UserInfoDto(
+public record UserCreationInfoDto(
         String id,
         String username,
         String email
