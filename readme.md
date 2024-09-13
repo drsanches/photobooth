@@ -598,8 +598,7 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 
 ### UI
 - Hide admin ui for users?
-- Add icon
-- Night mode 
+- Night mode
 
 ### Tests
 - Use another framework?
