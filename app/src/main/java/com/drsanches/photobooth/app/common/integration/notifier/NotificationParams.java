@@ -17,7 +17,7 @@ public class NotificationParams {
 
     private String userId;
 
-    private String code;
+    private String confirmationLink;
 
     private String account;
 

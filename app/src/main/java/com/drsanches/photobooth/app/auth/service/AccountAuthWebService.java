@@ -92,7 +92,7 @@ public class AccountAuthWebService {
         if (twoFactorAuthenticationManager.isEnabled(Operation.REGISTRATION)) {
             notificationService.notify(Action.REGISTRATION_STARTED, NotificationParams.builder()
                     .email(createAccountDto.getEmail())
-                    .code(confirmation.getCode())
+                    .confirmationLink(twoFactorAuthenticationManager.getConfirmationLink(confirmation.getCode()))
                     .build());
             log.info("User registration process started: {}", confirmation);
             return new AuthResponse<>(true);
@@ -122,7 +122,7 @@ public class AccountAuthWebService {
         if (twoFactorAuthenticationManager.isEnabled(Operation.USERNAME_CHANGE)) {
             notificationService.notify(Action.USERNAME_CHANGE_STARTED, NotificationParams.builder()
                     .userId(confirmation.getUserId())
-                    .code(confirmation.getCode())
+                    .confirmationLink(twoFactorAuthenticationManager.getConfirmationLink(confirmation.getCode()))
                     .build());
             log.info("Username changing process started: {}", confirmation);
             return new AuthResponse<>(true);
@@ -149,7 +149,7 @@ public class AccountAuthWebService {
         if (twoFactorAuthenticationManager.isEnabled(Operation.PASSWORD_CHANGE)) {
             notificationService.notify(Action.PASSWORD_CHANGE_STARTED, NotificationParams.builder()
                     .userId(confirmation.getUserId())
-                    .code(confirmation.getCode())
+                    .confirmationLink(twoFactorAuthenticationManager.getConfirmationLink(confirmation.getCode()))
                     .build());
             log.info("Password changing process started: {}", confirmation);
             return new AuthResponse<>(true);
@@ -173,7 +173,7 @@ public class AccountAuthWebService {
         if (twoFactorAuthenticationManager.isEnabled(Operation.EMAIL_CHANGE)) {
             notificationService.notify(Action.EMAIL_CHANGE_STARTED, NotificationParams.builder()
                     .userId(confirmation.getUserId())
-                    .code(confirmation.getCode())
+                    .confirmationLink(twoFactorAuthenticationManager.getConfirmationLink(confirmation.getCode()))
                     .build());
             log.info("Email changing process started: {}", confirmation);
             return new AuthResponse<>(true);
@@ -196,7 +196,7 @@ public class AccountAuthWebService {
         if (twoFactorAuthenticationManager.isEnabled(Operation.DISABLE)) {
             notificationService.notify(Action.DISABLE_STARTED, NotificationParams.builder()
                     .userId(confirmation.getUserId())
-                    .code(confirmation.getCode())
+                    .confirmationLink(twoFactorAuthenticationManager.getConfirmationLink(confirmation.getCode()))
                     .build());
             log.info("User disabling process started. UserId: {}", userId);
             return new AuthResponse<>(true);

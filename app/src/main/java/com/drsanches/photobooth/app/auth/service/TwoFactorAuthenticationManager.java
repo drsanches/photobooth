@@ -11,8 +11,14 @@ public class TwoFactorAuthenticationManager {
 
     @Value("${application.2fa.actions}")
     private List<Operation> actions;
+    @Value("${application.address}")
+    private String host;
 
     public boolean isEnabled(Operation operation) {
         return actions.contains(operation);
+    }
+
+    public String getConfirmationLink(String code) {
+        return host + "/api/v1/auth/confirm/" + code;
     }
 }
