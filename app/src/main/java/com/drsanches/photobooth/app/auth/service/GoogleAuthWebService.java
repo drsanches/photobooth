@@ -5,6 +5,7 @@ import com.drsanches.photobooth.app.auth.dto.google.GoogleGetTokenDto;
 import com.drsanches.photobooth.app.auth.dto.google.GoogleSetUsernameDto;
 import com.drsanches.photobooth.app.auth.data.confirmation.ConfirmationDomainService;
 import com.drsanches.photobooth.app.auth.exception.EmailAlreadyInUseException;
+import com.drsanches.photobooth.app.auth.exception.ForbiddenException;
 import com.drsanches.photobooth.app.auth.exception.WrongConfirmCodeException;
 import com.drsanches.photobooth.app.auth.utils.ConfirmationValidator;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
@@ -135,6 +136,9 @@ public class GoogleAuthWebService {
 
     public void unlink() {
         var userId = authInfo.getUserId();
+        if (userAuthDomainService.findEnabledById(userId).orElseThrow().getPassword() == null) {
+            throw new ForbiddenException();
+        }
         userAuthDomainService.updateGoogleAuth(userId, null);
         log.info("Google account unlinked. UserId: {}", userId);
         notificationService.notify(Action.ACCOUNT_UNLINKED, NotificationParams.builder()

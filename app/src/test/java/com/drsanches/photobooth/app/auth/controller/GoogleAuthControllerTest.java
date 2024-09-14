@@ -275,8 +275,7 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                         .content(objectMapper.writeValueAsString(new GoogleTokenDto(googleToken))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("token").exists())
-                .andExpect(jsonPath("changeUsernameCode").value(confirmationCode))
-                .andReturn().getResponse().getContentAsString();
+                .andExpect(jsonPath("changeUsernameCode").value(confirmationCode));
 
         mvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/account")
@@ -315,6 +314,34 @@ class GoogleAuthControllerTest extends BaseSpringTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("uuid").exists())
                 .andExpect(jsonPath("code").value("email.already.in.use"));
+    }
+
+    @Test
+    public void createUserByGoogle_unlinkAccount_error() throws Exception {
+        var googleToken = UUID.randomUUID().toString();
+        var email = EMAIL.get();
+        var confirmationCode = mockConfirmationCodeGenerator();
+        mockGoogle(email, googleToken);
+
+        var registrationResponse = mvc.perform(MockMvcRequestBuilders
+                        .post("/api/v1/auth/google/token")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(new GoogleTokenDto(googleToken))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("token").exists())
+                .andExpect(jsonPath("changeUsernameCode").value(confirmationCode))
+                .andReturn().getResponse().getContentAsString();
+
+        var registrationResult = objectMapper.readValue(registrationResponse, GoogleGetTokenDto.class);
+
+        mvc.perform(MockMvcRequestBuilders
+                        .delete("/api/v1/auth/google/link")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header("Authorization", "Bearer " + registrationResult.getToken().getAccessToken())
+                        .content(objectMapper.writeValueAsString(new GoogleTokenDto(googleToken))))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("uuid").exists())
+                .andExpect(jsonPath("code").value("forbidden"));
     }
 
     @Test
