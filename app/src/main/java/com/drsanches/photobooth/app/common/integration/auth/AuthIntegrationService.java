@@ -7,6 +7,4 @@ public interface AuthIntegrationService {
     UserCreationInfoDto createAccount(String username, String email, String password);
 
     Optional<AuthInfoDto> getAuthInfo(String token);
-
-    String getEmail(String userId);
 }

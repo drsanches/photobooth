@@ -89,7 +89,7 @@ public class GoogleAuthWebService {
                 ).getCode();
                 log.info("Google username changing process started. UserId: {}", userAuth.getId());
                 notificationService.notify(Action.REGISTRATION_COMPLETED, NotificationParams.builder()
-                        .userId(userAuth.getId())
+                        .email(userAuth.getEmail())
                         .build());
             }
         }
@@ -128,21 +128,23 @@ public class GoogleAuthWebService {
         userAuthDomainService.findEnabledByGoogleAuth(email).ifPresent(it -> {throw new EmailAlreadyInUseException();});
         userAuthDomainService.updateGoogleAuth(userId, email);
         log.info("Google account linked. UserId: {}", userId);
+        var user = userAuthDomainService.findEnabledById(userId).orElseThrow();
         notificationService.notify(Action.ACCOUNT_LINKED, NotificationParams.builder()
-                .userId(userId)
-                .email(email)
+                .email(user.getEmail())
+                .account(email)
                 .build());
     }
 
     public void unlink() {
         var userId = authInfo.getUserId();
-        if (userAuthDomainService.findEnabledById(userId).orElseThrow().getPassword() == null) {
+        var user = userAuthDomainService.findEnabledById(userId).orElseThrow();
+        if (user.getPassword() == null) {
             throw new ForbiddenException();
         }
         userAuthDomainService.updateGoogleAuth(userId, null);
         log.info("Google account unlinked. UserId: {}", userId);
         notificationService.notify(Action.ACCOUNT_UNLINKED, NotificationParams.builder()
-                .userId(userId)
+                .email(user.getEmail())
                 .account("Google")
                 .build());
     }

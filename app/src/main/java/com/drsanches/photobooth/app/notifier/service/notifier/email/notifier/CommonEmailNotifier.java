@@ -37,7 +37,7 @@ public class CommonEmailNotifier extends BaseEmailNotifier {
     @Override
     public void notify(Action action, NotificationParams params) {
         sendEmail(
-                getEmail(params.getUserId()),
+                params.getEmail(),
                 content.getEmailContent(action).subject(),
                 content.getEmailContent(action).text()
         );

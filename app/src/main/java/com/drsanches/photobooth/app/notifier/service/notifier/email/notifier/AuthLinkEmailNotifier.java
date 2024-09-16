@@ -35,7 +35,7 @@ public class AuthLinkEmailNotifier extends BaseEmailNotifier {
     @Override
     public void notify(Action action, NotificationParams params) {
         sendEmail(
-                getEmail(params.getUserId()),
+                params.getEmail(),
                 content.getEmailContent(action).subject(),
                 String.format(content.getEmailContent(action).text(), params.getAccount())
         );

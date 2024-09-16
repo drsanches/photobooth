@@ -13,7 +13,6 @@ import com.drsanches.photobooth.app.auth.utils.CredentialsHelper;
 import com.drsanches.photobooth.app.common.exception.ServerError;
 import com.drsanches.photobooth.app.common.integration.notifier.NotificationParams;
 import com.drsanches.photobooth.app.common.integration.app.AppIntegrationService;
-import com.drsanches.photobooth.app.common.integration.notifier.NotifierIntegrationService;
 import com.drsanches.photobooth.app.auth.mapper.TokenMapper;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdateEmailDto;
 import com.drsanches.photobooth.app.auth.dto.userauth.request.UpdatePasswordDto;
@@ -48,8 +47,6 @@ public class AccountAuthWebService {
     private ConfirmationDomainService confirmationDomainService;
     @Autowired
     private AppIntegrationService appIntegrationService;
-    @Autowired
-    private NotifierIntegrationService notifierIntegrationService;
     @Autowired
     private TokenService tokenService;
     @Autowired
@@ -120,8 +117,9 @@ public class AccountAuthWebService {
                 null
         );
         if (twoFactorAuthenticationManager.isEnabled(Operation.USERNAME_CHANGE)) {
+            var user = userAuthDomainService.findEnabledById(userId).orElseThrow();
             notificationService.notify(Action.USERNAME_CHANGE_STARTED, NotificationParams.builder()
-                    .userId(confirmation.getUserId())
+                    .email(user.getEmail())
                     .confirmationLink(twoFactorAuthenticationManager.getConfirmationLink(confirmation.getCode()))
                     .build());
             log.info("Username changing process started: {}", confirmation);
@@ -147,8 +145,9 @@ public class AccountAuthWebService {
                         .build())
         );
         if (twoFactorAuthenticationManager.isEnabled(Operation.PASSWORD_CHANGE)) {
+            var user = userAuthDomainService.findEnabledById(userId).orElseThrow();
             notificationService.notify(Action.PASSWORD_CHANGE_STARTED, NotificationParams.builder()
-                    .userId(confirmation.getUserId())
+                    .email(user.getEmail())
                     .confirmationLink(twoFactorAuthenticationManager.getConfirmationLink(confirmation.getCode()))
                     .build());
             log.info("Password changing process started: {}", confirmation);
@@ -171,8 +170,9 @@ public class AccountAuthWebService {
                 null
         );
         if (twoFactorAuthenticationManager.isEnabled(Operation.EMAIL_CHANGE)) {
+            var user = userAuthDomainService.findEnabledById(userId).orElseThrow();
             notificationService.notify(Action.EMAIL_CHANGE_STARTED, NotificationParams.builder()
-                    .userId(confirmation.getUserId())
+                    .email(user.getEmail())
                     .confirmationLink(twoFactorAuthenticationManager.getConfirmationLink(confirmation.getCode()))
                     .build());
             log.info("Email changing process started: {}", confirmation);
@@ -194,8 +194,9 @@ public class AccountAuthWebService {
                 null
         );
         if (twoFactorAuthenticationManager.isEnabled(Operation.DISABLE)) {
+            var user = userAuthDomainService.findEnabledById(userId).orElseThrow();
             notificationService.notify(Action.DISABLE_STARTED, NotificationParams.builder()
-                    .userId(confirmation.getUserId())
+                    .email(user.getEmail())
                     .confirmationLink(twoFactorAuthenticationManager.getConfirmationLink(confirmation.getCode()))
                     .build());
             log.info("User disabling process started. UserId: {}", userId);
@@ -235,16 +236,15 @@ public class AccountAuthWebService {
         var token = tokenService.createToken(userAuth.getId(), userAuth.getRole());
         log.info("New user created. UserId: {}", userAuth.getId());
         notificationService.notify(Action.REGISTRATION_COMPLETED, NotificationParams.builder()
-                .userId(userAuth.getId())
+                .email(userAuth.getEmail())
                 .build());
         return tokenMapper.convert(token);
     }
 
     public Object changeUsernameConfirm(Confirmation confirmation) {
         var userId = confirmation.getUserId();
-        var oldUsername = userAuthDomainService.findEnabledById(userId)
-                .orElseThrow()
-                .getUsername();
+        var user = userAuthDomainService.findEnabledById(userId).orElseThrow();
+        var oldUsername = user.getUsername();
 
         //TODO: Transaction
         appIntegrationService.updateUsername(userId, confirmation.getNewUsername()); //TODO: Is it needed?
@@ -255,7 +255,7 @@ public class AccountAuthWebService {
         log.info("User changed username. UserId: {}, oldUsername: {}, newUsername: {}",
                 userId, oldUsername, confirmation.getNewUsername());
         notificationService.notify(Action.USERNAME_CHANGE_COMPLETED, NotificationParams.builder()
-                .userId(userId)
+                .email(user.getEmail())
                 .build());
         return null;
     }
@@ -274,23 +274,21 @@ public class AccountAuthWebService {
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);
         log.info("User changed password. UserId: {}", userId);
+        var user = userAuthDomainService.findEnabledById(userId).orElseThrow();
         notificationService.notify(Action.PASSWORD_CHANGE_COMPLETED, NotificationParams.builder()
-                .userId(userId)
+                .email(user.getEmail())
                 .build());
         return null;
     }
 
     public Object changeEmailConfirm(Confirmation confirmation) {
         var userId = confirmation.getUserId();
-
-        //TODO: Transaction
-        notifierIntegrationService.updateEmail(userId, confirmation.getNewEmail());
         userAuthDomainService.updateEmail(userId, confirmation.getNewEmail());
-
         confirmationDomainService.delete(confirmation.getId());
         log.info("User changed email. UserId: {}", userId);
+        var user = userAuthDomainService.findEnabledById(userId).orElseThrow();
         notificationService.notify(Action.EMAIL_CHANGE_COMPLETED, NotificationParams.builder()
-                .userId(userId)
+                .email(user.getEmail())
                 .build());
         return null;
     }
@@ -304,7 +302,6 @@ public class AccountAuthWebService {
         //TODO: Transaction
         appIntegrationService.disable(userId);
         userAuthDomainService.disableUser(userId);
-        notifierIntegrationService.removeEmail(userId);
 
         confirmationDomainService.delete(confirmation.getId());
         tokenService.removeAllTokens(userId);

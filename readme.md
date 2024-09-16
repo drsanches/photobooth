@@ -5,7 +5,6 @@
 ### Registration
 - add UserAuth
 - add UserProfile (lazy, when profile url is called)
-- add EmailInfo (lazy, when notification is sent)
 
 ### Delete user
 - UserAuth.enable = false
@@ -14,7 +13,6 @@
 - UserAuth.googleAuth = UUID_googleAuth
 - UserProfile.enable = false
 - UserProfile.username = UUID_username
-- Remove EmailInfo
 
 ### Other operations
 - The user is taken from UserProfile, with `isEnabled` check
@@ -76,7 +74,7 @@ sequenceDiagram
     user -->> FilterChain: POST /api/v1/auth/account/create
     FilterChain ->> auth: 
     auth ->> auth: creates UserAuth
-    auth ->> notifier: notify
+    auth ->> notifier: notify(email)
     activate notifier
     notifier ->> auth: 
     auth -->> user: token
@@ -97,7 +95,7 @@ sequenceDiagram
     app ->> auth: 
     auth ->> auth: updates username
     auth ->> auth: removes all tokens
-    auth ->> notifier: notify
+    auth ->> notifier: notify(email)
     activate notifier
     notifier ->> auth: 
     auth -->> user: 200
@@ -109,7 +107,7 @@ sequenceDiagram
     FilterChain ->> auth: 
     auth ->> auth: changes password
     auth ->> auth: removes all tokens
-    auth ->> notifier: notify
+    auth ->> notifier: notify(email)
     activate notifier
     notifier ->> auth: 
     auth -->> user: 200
@@ -119,12 +117,9 @@ sequenceDiagram
     note right of user: Updates email
     user -->> FilterChain: POST /api/v1/auth/account/email
     FilterChain ->> auth: 
-    auth ->> notifier: 
-    notifier ->> notifier: updates email
-    notifier ->> auth: 
     auth ->> auth: updates email
     auth ->> auth: removes all tokens
-    auth ->> notifier: notify
+    auth ->> notifier: notify(email)
     activate notifier
     notifier ->> auth: 
     auth -->> user: 200
@@ -142,7 +137,7 @@ sequenceDiagram
     notifier ->> notifier: removes email
     notifier ->> auth: 
     auth ->> auth: removes all tokens
-    auth ->> notifier: notify
+    auth ->> notifier: notify(email)
     activate notifier
     notifier ->> auth: 
     auth -->> user: 200
@@ -251,26 +246,6 @@ sequenceDiagram
     AuthFilter ->> AdminFilter: 
     AdminFilter ->> AdminFilter: Check permission
     AdminFilter -->> user: 403
-```
-
-### Notifier
-```mermaid
-sequenceDiagram
-    participant service as Some service
-    participant notifier
-    participant auth as auth package
-
-    note right of service: Email notification for new user
-    service ->> notifier: notify
-    notifier ->> auth: get email
-    auth ->> notifier: email
-    notifier ->> notifier: save email
-    notifier ->> notifier: sends notification
-
-    note right of service: Email notification for existent user
-    service ->> notifier: notify
-    notifier ->> notifier: gets email
-    notifier ->> notifier: sends notification
 ```
 
 ### Auth with multiple methods
@@ -582,6 +557,8 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Use Spring Events for integrations before modules?
 - Log userId even for public urls?
 - Use docker swarm?
+- Own database for each module?
+- Add notificationEmail to confirmation model?
 - Limit container resources
 - Test indexes
 - Check docker container user permissions
@@ -593,8 +570,8 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Refactor auth creation with google?
 - Rename domain to dao?
 - Refactor paging and soring. Use Page for responses?
-- Refactor notifier flow with email
 - Describe all features of the applications
+- Check Spring Security dependency
 
 ### UI
 - Hide admin ui for users?
@@ -608,3 +585,4 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Test transactions
 - Configure gradlew env in command line for spring tests
 - Remove redundant checks in e2e (such as status in friend tests)
+- Remove service Spring tests

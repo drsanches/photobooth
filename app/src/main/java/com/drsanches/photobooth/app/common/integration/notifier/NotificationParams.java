@@ -15,8 +15,6 @@ public class NotificationParams {
 
     private String email;
 
-    private String userId;
-
     private String confirmationLink;
 
     private String account;

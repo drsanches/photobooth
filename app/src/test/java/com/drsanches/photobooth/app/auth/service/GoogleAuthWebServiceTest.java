@@ -84,6 +84,7 @@ class GoogleAuthWebServiceTest {
         var tokenDto = createTokenDto();
         Mockito.when(googleUserInfoService.getGoogleInfo(any())).thenReturn(googleInfo);
         Mockito.when(userAuthDomainService.findEnabledByEmail(USER_EMAIL)).thenReturn(Optional.of(userAuth));
+        Mockito.when(userAuthDomainService.findEnabledById(userAuth.getId())).thenReturn(Optional.of(userAuth));
         Mockito.when(tokenService.createToken(USER_ID, Role.USER)).thenReturn(token);
         Mockito.when(tokenMapper.convert(token)).thenReturn(tokenDto);
 
@@ -147,7 +148,7 @@ class GoogleAuthWebServiceTest {
         var result = googleAuthWebService.getToken(new GoogleTokenDto(ID_TOKEN));
 
         Mockito.verify(notificationService).notify(Action.REGISTRATION_COMPLETED, NotificationParams.builder()
-                .userId(userAuth.getId())
+                .email(userAuth.getEmail())
                 .build());
         Assertions.assertEquals(tokenDto, result.getToken());
         Assertions.assertEquals(CONFIRMATION_CODE, result.getChangeUsernameCode());
