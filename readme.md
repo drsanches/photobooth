@@ -435,14 +435,18 @@ After that, the application can be launched with the commands:
     ```
 
 ### How to test
-- Runs unit-tests and integration tests (database and environment variables should be configured):
-    ```commandline
-    gradlew app:test
-    ```
+- Runs unit-tests and integration tests (using dev profile by default):
+  ```commandline
+  gradlew app:test
+  ```
 - Runs end-to-end tests (the application must be started)
-    ```commandline
-    gradlew end2end:test
-    ```
+  ```commandline
+  gradlew end2end:test
+  ```
+- Cleans test results (can be used before tests rerun)
+  ```commandline
+  gradlew cleanTest
+  ```
 ---
 
 ## Nginx
@@ -583,6 +587,5 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Test paging
 - Test sorting
 - Test transactions
-- Configure gradlew env in command line for spring tests
 - Remove redundant checks in e2e (such as status in friend tests)
 - Remove service Spring tests

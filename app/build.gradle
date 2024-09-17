@@ -14,6 +14,19 @@ bootJar {
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events "SKIPPED",
+                "FAILED"
+                //"PASSED"
+    }
+    afterSuite { desc, result ->
+        if (!desc.parent)
+            println("Result: ${result.resultType}\n" +
+                    "Total: ${result.testCount}\n" +
+                    "Successful: ${result.successfulTestCount}\n" +
+                    "Failed: ${result.failedTestCount}\n" +
+                    "Scipped: ${result.skippedTestCount}")
+    }
 }
 
 repositories {

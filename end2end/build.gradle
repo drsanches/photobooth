@@ -7,6 +7,23 @@ version '1.0'
 
 sourceCompatibility = JavaVersion.VERSION_17
 
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "SKIPPED",
+                "FAILED"
+                //"PASSED"
+    }
+    afterSuite { desc, result ->
+        if (!desc.parent)
+            println("Result: ${result.resultType}\n" +
+                    "Total: ${result.testCount}\n" +
+                    "Successful: ${result.successfulTestCount}\n" +
+                    "Failed: ${result.failedTestCount}\n" +
+                    "Scipped: ${result.skippedTestCount}")
+    }
+}
+
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
@@ -20,8 +37,4 @@ dependencies {
     implementation group: 'org.apache.groovy', name: 'groovy', version: '4.0.5'
     testImplementation group: 'org.spockframework', name: 'spock-core', version: '2.4-M1-groovy-4.0'
     implementation group: 'org.json', name: 'json', version: '20230618'
-}
-
-test {
-    useJUnitPlatform()
 }
