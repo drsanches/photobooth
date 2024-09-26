@@ -34,7 +34,8 @@ class TestSendPhoto extends Specification {
                 path: PATH,
                 headers: [Authorization: "Bearer $user.token"],
                 body: [imageData: Utils.toBase64(image),
-                       userIds: [friend1.id]])
+                       userIds: [friend1.id],
+                       geo: geo])
         def after = Instant.now()
 
         then: "response is correct"
@@ -48,6 +49,11 @@ class TestSendPhoto extends Specification {
         assert userImages[0]["thumbnailPath"] == THUMBNAIL_PATH(userImages[0]["id"] as String)
         assert userImages[0]["ownerId"] == user.id
         assert Utils.checkTimestamp(before, userImages[0]["created"] as String, after)
+        if (geoResult == JSONObject.NULL) {
+            assert userImages[0]["geo"] == JSONObject.NULL
+        } else {
+            assert userImages[0]["geo"].toString() == geo.toString()
+        }
 
         and: "one friend has similar photo"
         def friendImages = friend1.getAllImagesInfo()
@@ -60,6 +66,15 @@ class TestSendPhoto extends Specification {
 
         and: "another friend doesn't have a new photo"
         assert friend2.getAllImagesInfo().size() == 0
+
+        where:
+        geo                                               || geoResult
+        null                                              || JSONObject.NULL
+        new JSONObject()                                  || JSONObject.NULL
+        new JSONObject([lat: 12.34])                      || JSONObject.NULL
+        new JSONObject([lng: 56.78])                      || JSONObject.NULL
+        new JSONObject([lat: 12.34, lng: 56.78])          || new JSONObject([lat: 12.34, lng: 56.78])
+        new JSONObject([lat: 12.123456, lng: 123.123456]) || new JSONObject([lat: 12.123456, lng: 123.123456])
     }
 
     def "successful photo send to all friends"() {
@@ -291,6 +306,39 @@ class TestSendPhoto extends Specification {
                 "invalid base64 image",
                 "invalid image data",
                 "base64 string is too long, max image size is 300000 bytes"
+        ]
+    }
+
+    def "photo send with invalid geo"() {
+        given: "user"
+        def user = new TestUser().register()
+        def image = DataGenerator.createValidImage()
+
+        when: "request is sent"
+        def response = RequestUtils.getRestClient().post(
+                path: PATH,
+                headers: [Authorization: "Bearer $user.token"],
+                body: [imageData: Utils.toBase64(image),
+                       geo: geo])
+
+        then: "response is correct"
+        assert response.status == 400
+        assert Utils.validateErrorResponse(response.data as JSONObject, "validation.error", details)
+
+        where:
+        geo << [
+                [lat: 112.111111, lng: 1112.111111],
+                [lat: 11.1111112, lng: 111.1111112]
+        ]
+        details << [
+                [
+                        ["field": "geo.lat", "message": "numeric value out of bounds (<2 digits>.<6 digits> expected)"],
+                        ["field": "geo.lng", "message": "numeric value out of bounds (<3 digits>.<6 digits> expected)"]
+                ],
+                [
+                        ["field": "geo.lat", "message": "numeric value out of bounds (<2 digits>.<6 digits> expected)"],
+                        ["field": "geo.lng", "message": "numeric value out of bounds (<3 digits>.<6 digits> expected)"]
+                ]
         ]
     }
 

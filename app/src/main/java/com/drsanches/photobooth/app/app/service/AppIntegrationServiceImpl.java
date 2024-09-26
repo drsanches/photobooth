@@ -28,7 +28,7 @@ public class AppIntegrationServiceImpl implements AppIntegrationService {
                 userProfileDomainService.updateProfileData(userId, name, null);
             }
             if (imageData != null) {
-                var image = imageDomainService.saveImage(imageData, userId);
+                var image = imageDomainService.saveImage(imageData, userId, null, null);
                 userProfileDomainService.updateImageId(userId, image.getId());
             }
             log.debug("Profile initialized. UserId: {}", userId);

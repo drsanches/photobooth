@@ -1,5 +1,6 @@
 package com.drsanches.photobooth.app.app.dto.image.response;
 
+import com.drsanches.photobooth.app.app.dto.image.common.GeolocationDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -22,4 +23,7 @@ public class ImageInfoDto {
 
     @Schema(description = "null for system image")
     private String ownerId;
+
+    @Schema(description = "Geolocation")
+    private GeolocationDto geo;
 }

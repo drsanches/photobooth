@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Data
@@ -41,6 +42,12 @@ public class Image {
 
     @Column(nullable = false)
     private String ownerId;
+
+    @Column(precision = 8, scale = 6)
+    private BigDecimal lat;
+
+    @Column(precision = 9, scale = 6)
+    private BigDecimal lng;
 
     @ToString.Include
     private int dataLength() {

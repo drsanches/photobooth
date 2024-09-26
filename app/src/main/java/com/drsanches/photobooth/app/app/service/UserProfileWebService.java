@@ -85,7 +85,7 @@ public class UserProfileWebService {
         var userId = authInfo.getUserId();
         var image = Base64.getDecoder().decode(uploadProfilePhotoDto.getImageData());
         new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
-            var imageId = imageDomainService.saveImage(image, userId).getId();
+            var imageId = imageDomainService.saveImage(image, userId, null, null).getId();
             userProfileDomainService.updateImageId(userId, imageId);
             log.info("User updated his profile image. UserId: {}, imageId: {}", userId, imageId);
         });

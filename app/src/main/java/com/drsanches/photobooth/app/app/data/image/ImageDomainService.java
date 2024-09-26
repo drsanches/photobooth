@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
@@ -24,21 +26,34 @@ public class ImageDomainService {
     @Autowired
     private ImageConverter imageConverter;
 
-    public Image saveImage(byte[] imageData, String ownerId) {
-        return save(UUID.randomUUID().toString(), imageData, ownerId);
+    public Image saveImage(
+            byte[] imageData,
+            String ownerId,
+            @Nullable BigDecimal lat,
+            @Nullable BigDecimal lng
+    ) {
+        return save(UUID.randomUUID().toString(), imageData, ownerId, lat, lng);
     }
 
     public Image saveSystemImage(String id, byte[] imageData) {
-        return save(id, imageData, ImageConsts.SYSTEM_OWNER_ID);
+        return save(id, imageData, ImageConsts.SYSTEM_OWNER_ID, null, null);
     }
 
-    private Image save(String id, byte[] imageData, String ownerId) {
+    private Image save(
+            String id,
+            byte[] imageData,
+            String ownerId,
+            @Nullable BigDecimal lat,
+            @Nullable BigDecimal lng
+    ) {
         var savedImage = imageRepository.save(Image.builder()
                 .id(id)
                 .data(imageData)
                 .thumbnailData(imageConverter.toThumbnail(imageData))
                 .ownerId(ownerId)
                 .created(Instant.now())
+                .lat(lat)
+                .lng(lng)
                 .build());
         log.info("New image saved: {}", savedImage);
         return savedImage;

@@ -86,7 +86,12 @@ public class ImageWebService {
         var imageRecipients = List.copyOf(allowedUsers);
         allowedUsers.add(currentUserId);
         var imageId = new TransactionTemplate(transactionManager).execute(status -> {
-            var savedImageId = imageDomainService.saveImage(image, currentUserId).getId();
+            var savedImageId = imageDomainService.saveImage(
+                    image,
+                    currentUserId,
+                    uploadPhotoDto.getGeo() == null ? null : uploadPhotoDto.getGeo().getLat(),
+                    uploadPhotoDto.getGeo() == null ? null : uploadPhotoDto.getGeo().getLng()
+            ).getId();
             imagePermissionDomainService.saveAll(savedImageId, allowedUsers);
             log.info("User uploaded new image. UserId: {}, imageId: {}, allowedUserIds: {}",
                     currentUserId, savedImageId, allowedUsers);
