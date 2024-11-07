@@ -9,7 +9,6 @@ import com.drsanches.photobooth.app.common.swagger.ApiResponseCode400;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode401;
 import com.drsanches.photobooth.app.common.swagger.ApiTokenAuthorization;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,13 +35,12 @@ public class TokenAuthController {
     }
 
     @Operation(summary = "Returns authorization token")
+    @ApiTokenAuthorization //TODO: Add info to swagger
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(value = "/refresh", method = RequestMethod.GET)
     public TokenDto refreshToken(
-            @RequestHeader("Authorization")
-            @Parameter(description = "Refresh token", required = true)
-            String refreshToken
+            @RequestHeader("Authorization") String refreshToken
     ) {
         return tokenAuthWebService.refreshToken(refreshToken);
     }

@@ -11,8 +11,8 @@ export var copyText = {
         }
     },
     template: `
-        <span>
-            <span v-on:click="copy" ref="textToCopy" role="button" class="font-monospace me-2">
+        <span v-on:click="copy" role="button">
+            <span ref="textToCopy" class="font-monospace me-2">
                 <slot></slot>
             </span>
             <i v-if="!copied" class="bi bi-clipboard" title="Copy to clipboard"></i>

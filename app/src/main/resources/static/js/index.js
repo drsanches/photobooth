@@ -3,6 +3,7 @@ import {header} from '/ui/js/pages/components/header.js';
 import {login} from "/ui/js/pages/login.js";
 import {contentContainer} from '/ui/js/pages/components/content-container.js';
 import {info} from '/ui/js/pages/info.js';
+import {authInfo} from '/ui/js/pages/auth-info.js';
 import {createUser} from '/ui/js/pages/create-user.js';
 import {createUserManual} from '/ui/js/pages/components/create-user-manual.js';
 import {createUserRandom} from '/ui/js/pages/components/create-user-random.js';
@@ -13,6 +14,7 @@ import Token from "/ui/js/utils/token.js";
 const routes = [
     {path: '/', redirect: "/info"},
     {path: '/info', component: info},
+    {path: '/auth-info', component: authInfo},
     {path: '/create-user', component: createUser},
     {path: '/login', component: login}
 ];
@@ -53,6 +55,7 @@ vueApp.component('custom-header', header);
 vueApp.component('login', login);
 vueApp.component('content-container', contentContainer);
 vueApp.component('info', info);
+vueApp.component('authInfo', authInfo);
 vueApp.component('create-user', createUser);
 vueApp.component('create-user-manual', createUserManual);
 vueApp.component('create-user-random', createUserRandom);

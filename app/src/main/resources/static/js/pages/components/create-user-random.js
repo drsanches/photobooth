@@ -15,9 +15,9 @@ export var createUserRandom = {
             this.responseErrorAlert = false;
             this.successAlert = false;
             AppClient.createTestUser(
-                crypto.randomUUID().substring(0, 18),
+                uuid.v4().substring(0, 18),
                 this.password,
-                crypto.randomUUID().substring(0, 23) + "@example.com",
+                uuid.v4().substring(0, 23) + "@example.com",
                 data => {
                     this.successResponse = data;
                     this.successAlert = true;
@@ -52,7 +52,9 @@ export var createUserRandom = {
                     <b>Id:</b> <copy-text>{{successResponse.id}}</copy-text> <br>
                     <b>Username:</b> <copy-text>{{successResponse.username}}</copy-text> <br>
                     <b>Password:</b> <copy-text>{{password}}</copy-text> <br>
-                    <b>Email:</b> <copy-text>{{successResponse.email}}</copy-text>
+                    <b>Email:</b> <copy-text>{{successResponse.email}}</copy-text> <br>
+                    <b>Access token:</b> <copy-text>{{successResponse.accessToken}}</copy-text> <br>
+                    <b>Refresh token:</b> <copy-text>{{successResponse.refreshToken}}</copy-text>
                     <button v-on:click="closeSuccessAlert" class="btn-close"></button>
                 </div>
             </div>

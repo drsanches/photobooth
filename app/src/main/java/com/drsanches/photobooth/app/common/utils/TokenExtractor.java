@@ -2,7 +2,6 @@ package com.drsanches.photobooth.app.common.utils;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.lang.Nullable;
 
 import java.util.Optional;
 
@@ -10,15 +9,16 @@ public class TokenExtractor {
 
     private final static String AUTHORIZATION = "Authorization";
 
-    public static Optional<String> getAccessTokenFromRequest(HttpServletRequest httpRequest) {
+    public static Optional<String> getAccessTokenFromHeaders(HttpServletRequest httpRequest) {
         var token = httpRequest.getHeader(AUTHORIZATION);
         if (token != null) {
             return Optional.of(token);
         }
-        return getAccessTokenFromCookies(httpRequest.getCookies());
+        return Optional.empty();
     }
 
-    private static Optional<String> getAccessTokenFromCookies(@Nullable Cookie[] cookies) {
+    public static Optional<String> getAccessTokenFromCookies(HttpServletRequest httpRequest) {
+        var cookies = httpRequest.getCookies();
         if (cookies == null) {
             return Optional.empty();
         }

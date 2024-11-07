@@ -1,7 +1,6 @@
 package com.drsanches.photobooth.app.common.swagger;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -16,7 +15,7 @@ import static java.lang.annotation.ElementType.PARAMETER;
 @Target({PARAMETER, METHOD, FIELD, ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-@Parameter(name = "Authorization", description = "Access token", in = ParameterIn.HEADER, required = true)
+@SecurityRequirement(name = "Auth token")
 public @interface ApiTokenAuthorization {
 
 }

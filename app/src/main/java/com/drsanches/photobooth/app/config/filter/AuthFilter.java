@@ -31,6 +31,7 @@ public class AuthFilter extends GenericFilterBean {
     private final AuthIntegrationService authIntegrationService;
     private final AuthInfo authInfo;
     private final Predicate<String> publicEndpoint;
+    private final Predicate<String> cookiesAuth;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -39,8 +40,10 @@ public class AuthFilter extends GenericFilterBean {
         var httpResponse = (HttpServletResponse) response;
         try {
             if (!publicEndpoint.test(endpoint.apply(httpRequest))) {
-                var token = TokenExtractor.getAccessTokenFromRequest(httpRequest)
-                        .orElseThrow(WrongTokenAuthException::new);
+                var token = (cookiesAuth.test(httpRequest.getRequestURI()) ?
+                        TokenExtractor.getAccessTokenFromCookies(httpRequest) :
+                        TokenExtractor.getAccessTokenFromHeaders(httpRequest)
+                ).orElseThrow(WrongTokenAuthException::new);
                 var authInfoDto = authIntegrationService.getAuthInfo(token).orElseThrow(WrongTokenAuthException::new);
                 authInfo.init(
                         authInfoDto.userId(),

@@ -36,7 +36,14 @@ public class AuthIntegrationServiceImpl implements AuthIntegrationService {
                 credentialsHelper.encodePassword(password, salt),
                 salt
         );
-        return new UserCreationInfoDto(user.getId(), user.getUsername(), user.getEmail());
+        var token = tokenService.createToken(user.getId(), user.getRole());
+        return new UserCreationInfoDto(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                token.getAccessToken(),
+                token.getRefreshToken()
+        );
     }
 
     @Override

@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class AuthResponse<T> {
 
-    @Schema(description = "Result of operation. Exists if with2FA is false")
+    @Schema(description = "Result of operation, can be empty. Exists if with2FA is false")
     private T result;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)

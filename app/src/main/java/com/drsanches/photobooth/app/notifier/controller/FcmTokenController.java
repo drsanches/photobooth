@@ -4,6 +4,7 @@ import com.drsanches.photobooth.app.common.aspects.MonitorTime;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode400;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode401;
+import com.drsanches.photobooth.app.common.swagger.ApiTokenAuthorization;
 import com.drsanches.photobooth.app.notifier.dto.FcmTokenDto;
 import com.drsanches.photobooth.app.notifier.dto.FcmTokenExpiresDto;
 import com.drsanches.photobooth.app.notifier.service.web.FcmTokenWebService;
@@ -24,6 +25,7 @@ public class FcmTokenController {
     private FcmTokenWebService fcmTokenWebService;
 
     @Operation(summary = "Adds new fcm token")
+    @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401

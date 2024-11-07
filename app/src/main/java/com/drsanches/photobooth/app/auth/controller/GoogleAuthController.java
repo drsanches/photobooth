@@ -8,6 +8,7 @@ import com.drsanches.photobooth.app.common.aspects.MonitorTime;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode400;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode401;
 import com.drsanches.photobooth.app.common.swagger.ApiResponseCode200;
+import com.drsanches.photobooth.app.common.swagger.ApiTokenAuthorization;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -34,6 +35,7 @@ public class GoogleAuthController {
     }
 
     @Operation(summary = "Sets new username after account creation")
+    @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
@@ -43,6 +45,7 @@ public class GoogleAuthController {
     }
 
     @Operation(summary = "Links with google account")
+    @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode400
     @ApiResponseCode401
@@ -52,6 +55,7 @@ public class GoogleAuthController {
     }
 
     @Operation(summary = "Removes link with google account")
+    @ApiTokenAuthorization
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(value = "/link", method = RequestMethod.DELETE)

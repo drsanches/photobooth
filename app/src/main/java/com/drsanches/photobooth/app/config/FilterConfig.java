@@ -32,7 +32,6 @@ public class FilterConfig {
 
     @Bean
     public FilterRegistrationBean<AuthFilter> authFilter() {
-        var imageIdPattern = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
         var publicEndpoint = ((Predicate<String>)
                 x -> x.matches("GET /actuator/health.*"))
                 .or(x -> x.matches("POST /api/v1/auth/account/?"))
@@ -41,8 +40,12 @@ public class FilterConfig {
                 .or(x -> x.matches("GET /api/v1/auth/token/refresh/?"))
                 .or(x -> x.matches("POST /api/v1/auth/google/token/?"))
                 .or(x -> x.matches("GET /api/v1/app/image/data/.*"));
+        var cookiesAuth = ((Predicate<String>)
+                x -> x.matches("/actuator.*"))
+                .or(x -> x.matches("/h2-console.*"))
+                .or(x -> x.matches("/swagger-ui.*"));
         FilterRegistrationBean<AuthFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new AuthFilter(authIntegrationService, authInfo, publicEndpoint));
+        registrationBean.setFilter(new AuthFilter(authIntegrationService, authInfo, publicEndpoint, cookiesAuth));
         registrationBean.addUrlPatterns(
                 "/actuator/*",
                 "/h2-console/*",

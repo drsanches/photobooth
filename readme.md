@@ -580,6 +580,7 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 ### UI
 - Hide admin ui for users?
 - Night mode
+- Fix uuid generation for remote app (works only on localhost https://github.com/parcel-bundler/parcel/issues/8820)
 
 ### Tests
 - Use another framework?

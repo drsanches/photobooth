@@ -36,6 +36,9 @@ class TestCreateUser extends Specification {
         assert userId != JSONObject.NULL
         assert response.data["username"] == username
         assert response.data["email"] == email
+        var accessToken = response.data["accessToken"] as String
+        assert accessToken != JSONObject.NULL
+        assert response.data["refreshToken"] != JSONObject.NULL
 
         and: "user account exists"
         var userAuth = RequestUtils.getAuthInfo(username, password)
@@ -45,6 +48,9 @@ class TestCreateUser extends Specification {
         and: "user profile exists"
         var anotherUserToken = new TestUser().register().getToken()
         assert RequestUtils.getAnotherUserProfile(userId, anotherUserToken) != null
+
+        and: "token is correct"
+        assert RequestUtils.getAuthInfo(accessToken) != null
     }
 
     def "user creation with existing username"() {

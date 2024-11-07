@@ -221,7 +221,7 @@ public class AccountAuthWebService {
         };
     }
 
-    public TokenDto registrationConfirm(Confirmation confirmation) {
+    private TokenDto registrationConfirm(Confirmation confirmation) {
         var registrationConfirmData = stringSerializer.deserialize(
                 confirmation.getData(),
                 RegistrationConfirmData.class
@@ -241,7 +241,7 @@ public class AccountAuthWebService {
         return tokenMapper.convert(token);
     }
 
-    public Object changeUsernameConfirm(Confirmation confirmation) {
+    private Object changeUsernameConfirm(Confirmation confirmation) {
         var userId = confirmation.getUserId();
         var user = userAuthDomainService.findEnabledById(userId).orElseThrow();
         var oldUsername = user.getUsername();
@@ -260,7 +260,7 @@ public class AccountAuthWebService {
         return null;
     }
 
-    public Object changePasswordConfirm(Confirmation confirmation) {
+    private Object changePasswordConfirm(Confirmation confirmation) {
         var changePasswordConfirmData = stringSerializer.deserialize(
                 confirmation.getData(),
                 ChangePasswordConfirmData.class
@@ -281,7 +281,7 @@ public class AccountAuthWebService {
         return null;
     }
 
-    public Object changeEmailConfirm(Confirmation confirmation) {
+    private Object changeEmailConfirm(Confirmation confirmation) {
         var userId = confirmation.getUserId();
         userAuthDomainService.updateEmail(userId, confirmation.getNewEmail());
         confirmationDomainService.delete(confirmation.getId());
@@ -293,7 +293,7 @@ public class AccountAuthWebService {
         return null;
     }
 
-    public Object disableUserConfirm(Confirmation confirmation) {
+    private Object disableUserConfirm(Confirmation confirmation) {
         var userId = confirmation.getUserId();
         var email = userAuthDomainService.findEnabledById(userId)
                 .orElseThrow()

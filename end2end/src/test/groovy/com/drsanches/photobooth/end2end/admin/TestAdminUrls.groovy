@@ -22,7 +22,7 @@ class TestAdminUrls extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: path,
-                headers: [Authorization: "Bearer $token"])
+                headers: [Cookie: "Authorization=Bearer%20$token"])
 
         then: "access"
         assert response.status == 200
@@ -38,7 +38,7 @@ class TestAdminUrls extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: path,
-                headers: [Authorization: "Bearer $user.token"])
+                headers: [Cookie: "Authorization=Bearer%20$user.token"])
 
         then: "access"
         assert response.status == 200
@@ -65,7 +65,7 @@ class TestAdminUrls extends Specification {
         when: "request is sent"
         def response = RequestUtils.getRestClient().get(
                 path: path,
-                headers: [Authorization: "Bearer $user.token"])
+                headers: [Cookie: "Authorization=Bearer%20$user.token"])
 
         then: "access"
         assert response.status == 403
