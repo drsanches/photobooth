@@ -1,38 +1,6 @@
 # PhotoBooth - a social network for sharing photos
 
-## Key provisions for implementation
-
-### Registration
-- add UserAuth
-- add UserProfile (lazy, when profile url is called)
-
-### Delete user
-- UserAuth.enable = false
-- UserAuth.username = UUID_username
-- UserAuth.email = UUID_email
-- UserAuth.googleAuth = UUID_googleAuth
-- UserProfile.enable = false
-- UserProfile.username = UUID_username
-
-### Other operations
-- The user is taken from UserProfile, with `isEnabled` check
-
-### Get list of friends or friend requests
-- All users are sent, even removed ones
-
-### Friend request
-- Send to friend - does nothing
-- Delete for not friend - does nothing
-- Delete for a friend - removes both requests
-
-### Send a photo
-- Only to enabled friends
-
-### Get photo by id
-- Without permissions and deletion check?
-
-
-## Architecture
+## Some notes
 
 ### Auth
 
@@ -580,7 +548,7 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 ### UI
 - Hide admin ui for users?
 - Night mode
-- Fix uuid generation for remote app (works only on localhost https://github.com/parcel-bundler/parcel/issues/8820)
+- Copying doesn't work without https (https://stackoverflow.com/questions/71873824/copy-text-to-clipboard-cannot-read-properties-of-undefined-reading-writetext)
 
 ### Tests
 - Use another framework?
