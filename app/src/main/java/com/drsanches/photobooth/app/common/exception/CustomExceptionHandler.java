@@ -1,10 +1,12 @@
 package com.drsanches.photobooth.app.common.exception;
 
+import com.drsanches.photobooth.app.auth.exception.ForbiddenException;
 import com.drsanches.photobooth.app.common.exception.dto.ErrorResponseDto;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -41,6 +43,13 @@ public class CustomExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleBaseException(BaseException e) {
         log.warn("Base exception. Uuid: {}", e.getUuid(), e);
         return new ResponseEntity<>(new ErrorResponseDto(e), e.getHttpCode());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponseDto> handleAccessDeniedException(AccessDeniedException e) {
+        var forbiddenException = new ForbiddenException();
+        log.warn("Forbidden exception. Uuid: {}", forbiddenException.getUuid(), e);
+        return new ResponseEntity<>(new ErrorResponseDto(forbiddenException), forbiddenException.getHttpCode());
     }
 
     @ExceptionHandler(RuntimeException.class)

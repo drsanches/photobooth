@@ -138,48 +138,48 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     actor user
-    participant AuthFilter
-    participant AdminFilter
+    participant TokenAuthenticationFilter
+    participant spring as Spring Security filter chain 
     participant LogFilter
     participant UserProfileSyncFilter
     participant auth as auth package
     participant app as app package
     
     note right of user: Public auth account operation
-    user -->> AuthFilter: 
-    AuthFilter ->> LogFilter: 
+    user -->> TokenAuthenticationFilter: 
+    TokenAuthenticationFilter ->> spring: 
+    spring ->> spring: authenticate as anonymous
+    spring ->> LogFilter:  
     LogFilter ->> LogFilter: writes log
     LogFilter ->> auth: 
     auth ->> auth: do something
     auth -->> user: 200
     
-    note right of user: Private auth account operation without (with invalid) token
-    user -->> AuthFilter: 
-    AuthFilter ->> AuthFilter: checks auth
-    AuthFilter -->> user: 401
+    note right of user: Private operation without (with invalid) token
+    user -->> TokenAuthenticationFilter: 
+    TokenAuthenticationFilter ->> TokenAuthenticationFilter: can't authenticate, do nothing
+    TokenAuthenticationFilter ->> spring: 
+    spring ->> spring: authenticate as anonymous
+    spring ->> spring: reject request for anonymous
+    spring -->> user: 401
 
-    note right of user: Private auth account operation with valid token
-    user -->> AuthFilter: 
-    AuthFilter ->> AuthFilter: checks auth
-    AuthFilter ->>  LogFilter: 
+    note right of user: Private auth account operation with valid user token
+    user -->> TokenAuthenticationFilter: 
+    TokenAuthenticationFilter ->> TokenAuthenticationFilter: authenticate as user
+    TokenAuthenticationFilter ->>  spring: 
+    spring ->>  spring: checks permissions
+    spring ->>  LogFilter: 
     LogFilter ->> LogFilter: writes log
     LogFilter ->> auth: 
     auth ->> auth: do something
     auth -->> user: 200
 
-    note right of user: Public user profile operation (get image)
-    user -->> AuthFilter: 
-    AuthFilter ->> LogFilter: 
-    LogFilter ->> LogFilter: writes log
-    LogFilter ->> UserProfileSyncFilter: 
-    UserProfileSyncFilter ->> app: 
-    app ->> app: do something
-    app -->> user: 200
-
-    note right of user: Private user profile operation with valid token first time
-    user -->> AuthFilter: 
-    AuthFilter ->> AuthFilter: checks auth
-    AuthFilter ->> LogFilter: 
+    note right of user: Private user profile operation with valid user token first time
+    user -->> TokenAuthenticationFilter: 
+    TokenAuthenticationFilter ->> TokenAuthenticationFilter: authenticate as user
+    TokenAuthenticationFilter ->> spring: 
+    spring ->> spring: checks permissions
+    spring ->> LogFilter: 
     LogFilter ->> LogFilter: writes log
     LogFilter ->> UserProfileSyncFilter: 
     UserProfileSyncFilter ->> UserProfileSyncFilter: create user profile
@@ -187,20 +187,24 @@ sequenceDiagram
     app ->> app: do something
     app -->> user: 200
 
-    note right of user: Private user profile operation with valid token and actual profile
-    user -->> AuthFilter: 
-    AuthFilter ->> AuthFilter: checks auth
-    AuthFilter ->> LogFilter: 
+    note right of user: Private user profile operation with valid user token and actual profile
+    user -->> TokenAuthenticationFilter: 
+    TokenAuthenticationFilter ->> TokenAuthenticationFilter: authenticate as user
+    TokenAuthenticationFilter ->> spring: 
+    spring ->> spring: checks permissions
+    spring ->> LogFilter: 
     LogFilter ->> LogFilter: writes log
     LogFilter ->> UserProfileSyncFilter: 
     UserProfileSyncFilter ->> app: 
     app ->> app: do something
     app -->> user: 200
 
-    note right of user: Private user profile operation with valid token after email update
-    user -->> AuthFilter: 
-    AuthFilter ->> AuthFilter: checks auth
-    AuthFilter ->> LogFilter: 
+    note right of user: Private user profile operation with valid user token after username update
+    user -->> TokenAuthenticationFilter: 
+    TokenAuthenticationFilter ->> TokenAuthenticationFilter: authenticate as user
+    TokenAuthenticationFilter ->> spring: 
+    spring ->> spring: checks permissions
+    spring ->> LogFilter: 
     LogFilter ->> LogFilter: writes log
     LogFilter ->> UserProfileSyncFilter: 
     UserProfileSyncFilter ->> UserProfileSyncFilter: update username in profile
@@ -208,12 +212,12 @@ sequenceDiagram
     app ->> app: do something
     app -->> user: 200
 
-    note right of user: Admin url with user token
-    user -->> AuthFilter: 
-    AuthFilter ->> AuthFilter: Checks auth
-    AuthFilter ->> AdminFilter: 
-    AdminFilter ->> AdminFilter: Check permission
-    AdminFilter -->> user: 403
+    note right of user: Admin operation with user token
+    user -->> TokenAuthenticationFilter: 
+    TokenAuthenticationFilter ->> TokenAuthenticationFilter: authenticate as user
+    TokenAuthenticationFilter ->> spring: 
+    spring ->> spring: reject request for user
+    spring -->> user: 403
 ```
 
 ### Auth with multiple methods
@@ -520,9 +524,8 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 
 ### Back
 - Add cache?
-- Use AOP or spring security mechanism for auth?
+- Use annotations for authentication?
 - Use JpaRepository instead of CrudRepository?
-- Use only cookies instead of authorization header for token?
 - Separate app, auth and notifier to different modules?
 - Add stub for Google auth?
 - Use login for auth and username for profile?
@@ -543,7 +546,7 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Rename domain to dao?
 - Refactor paging and soring. Use Page for responses?
 - Describe all features of the applications
-- Check Spring Security dependency
+- Review log levels
 
 ### UI
 - Hide admin ui for users?
@@ -557,4 +560,3 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Test sorting
 - Test transactions
 - Remove redundant checks in e2e (such as status in friend tests)
-- Remove service Spring tests

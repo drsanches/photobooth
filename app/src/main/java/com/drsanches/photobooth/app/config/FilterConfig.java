@@ -3,10 +3,6 @@ package com.drsanches.photobooth.app.config;
 import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import com.drsanches.photobooth.app.config.filter.UserProfileSyncFilter;
 import com.drsanches.photobooth.app.app.data.profile.UserProfileDomainService;
-import com.drsanches.photobooth.app.auth.service.TokenService;
-import com.drsanches.photobooth.app.common.integration.auth.AuthIntegrationService;
-import com.drsanches.photobooth.app.config.filter.AdminFilter;
-import com.drsanches.photobooth.app.config.filter.AuthFilter;
 import com.drsanches.photobooth.app.config.filter.LogFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -19,62 +15,10 @@ import java.util.function.Predicate;
 public class FilterConfig {
 
     @Autowired
-    private TokenService tokenService;
-
-    @Autowired
     private AuthInfo authInfo;
 
     @Autowired
-    private AuthIntegrationService authIntegrationService;
-
-    @Autowired
     private UserProfileDomainService userProfileDomainService;
-
-    @Bean
-    public FilterRegistrationBean<AuthFilter> authFilter() {
-        var publicEndpoint = ((Predicate<String>)
-                x -> x.matches("GET /actuator/health.*"))
-                .or(x -> x.matches("POST /api/v1/auth/account/?"))
-                .or(x -> x.matches("GET /api/v1/auth/account/confirm/.*"))
-                .or(x -> x.matches("POST /api/v1/auth/token/?"))
-                .or(x -> x.matches("GET /api/v1/auth/token/refresh/?"))
-                .or(x -> x.matches("POST /api/v1/auth/google/token/?"))
-                .or(x -> x.matches("GET /api/v1/app/image/data/.*"));
-        var cookiesAuth = ((Predicate<String>)
-                x -> x.matches("/actuator.*"))
-                .or(x -> x.matches("/h2-console.*"))
-                .or(x -> x.matches("/swagger-ui.*"));
-        FilterRegistrationBean<AuthFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new AuthFilter(authIntegrationService, authInfo, publicEndpoint, cookiesAuth));
-        registrationBean.addUrlPatterns(
-                "/actuator/*",
-                "/h2-console/*",
-                "/swagger-ui/*",
-                "/api/v1/auth/*",
-                "/api/v1/app/profile/*",
-                "/api/v1/app/friends/*",
-                "/api/v1/app/image/*",
-                "/api/v1/notification/*",
-                "/api/v1/admin/*"
-        );
-        registrationBean.setOrder(1);
-        return registrationBean;
-    }
-
-    @Bean
-    public FilterRegistrationBean<AdminFilter> adminFilter() {
-        var publicUri = (Predicate<String>) x -> x.matches("/actuator/health.*");
-        FilterRegistrationBean<AdminFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new AdminFilter(authInfo, publicUri));
-        registrationBean.addUrlPatterns(
-                "/api/v1/admin/*",
-                "/actuator/*",
-                "/h2-console/*",
-                "/swagger-ui/*"
-        );
-        registrationBean.setOrder(2);
-        return registrationBean;
-    }
 
     @Bean
     public FilterRegistrationBean<LogFilter> logFilter() {
@@ -88,7 +32,7 @@ public class FilterConfig {
         FilterRegistrationBean<LogFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new LogFilter(authInfo, excludeUri));
         registrationBean.addUrlPatterns("/*");
-        registrationBean.setOrder(3);
+        registrationBean.setOrder(1);
         return registrationBean;
     }
 
@@ -106,7 +50,7 @@ public class FilterConfig {
                 "/api/v1/app/friends/*",
                 "/api/v1/app/image/*"
         );
-        registrationBean.setOrder(4);
+        registrationBean.setOrder(2);
         return registrationBean;
     }
 }
