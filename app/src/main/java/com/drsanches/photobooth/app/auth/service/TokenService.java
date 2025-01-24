@@ -41,7 +41,7 @@ public class TokenService {
         );
         var user = userAuthDomainService.findEnabledById(savedToken.getUserId())
                 .orElseThrow(WrongTokenAuthException::new);
-        authInfo.init(userId, user.getUsername(), savedToken.getId(), savedToken.getRole());
+        authInfo.init(userId, user.getUsername(), savedToken.getId());
         log.info("New token created. UserId: {}", userId);
         return savedToken;
     }

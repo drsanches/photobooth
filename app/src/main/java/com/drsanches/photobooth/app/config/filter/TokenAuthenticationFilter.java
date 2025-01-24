@@ -48,8 +48,7 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
         authInfo.init(
                 authInfoDto.get().userId(),
                 authInfoDto.get().username(),
-                authInfoDto.get().tokenId(),
-                Role.valueOf(authInfoDto.get().role())
+                authInfoDto.get().tokenId()
         );
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();

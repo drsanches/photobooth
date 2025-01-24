@@ -1,7 +1,6 @@
 package com.drsanches.photobooth.app.common.auth;
 
 import com.drsanches.photobooth.app.auth.exception.WrongTokenAuthException;
-import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
@@ -18,24 +17,19 @@ public class AuthInfo {
 
     private String username;
 
-    private Role role;
-
     public void init(
             @NonNull String userId,
             @NonNull String username,
-            @NonNull String userTokenId,
-            @NonNull Role role
+            @NonNull String userTokenId
     ) {
         this.userId = userId;
         this.username = username;
         this.userTokenId = userTokenId;
-        this.role = role;
     }
 
     public void clean() {
         this.userTokenId = null;
         this.userId = null;
-        this.role = null;
     }
 
     /**
@@ -72,17 +66,7 @@ public class AuthInfo {
         return username;
     }
 
-    /**
-     * Throws {@link WrongTokenAuthException} if the user is not authorized.
-     */
-    public Role getRole() {
-        if (role == null) {
-            throw new WrongTokenAuthException();
-        }
-        return role;
-    }
-
     public boolean isAuthorized() {
-        return userTokenId != null && userId != null && role != null;
+        return userTokenId != null && userId != null;
     }
 }
