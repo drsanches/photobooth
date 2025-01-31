@@ -1,72 +1,65 @@
 package com.drsanches.photobooth.app.common.auth;
 
 import com.drsanches.photobooth.app.auth.exception.WrongTokenAuthException;
-import org.springframework.lang.NonNull;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Optional;
 
 @Component
-@RequestScope
+@RequestScope //TODO: Remove @RequestScope?
 public class AuthInfo {
 
-    private String userTokenId;
-
-    private String userId;
-
-    private String username;
-
-    public void init(
-            @NonNull String userId,
-            @NonNull String username,
-            @NonNull String userTokenId
-    ) {
-        this.userId = userId;
-        this.username = username;
-        this.userTokenId = userTokenId;
+    public void setAuthorization(String userId, String username, String tokenId, String role) {
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        Authentication authentication = new TokenAuthentication(
+                userId,
+                username,
+                tokenId,
+                new String[] {role}
+        );
+        context.setAuthentication(authentication);
+        SecurityContextHolder.setContext(context);
     }
 
-    public void clean() {
-        this.userTokenId = null;
-        this.userId = null;
+    public void cancelAuthorization() {
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+        }
     }
 
-    /**
-     * Throws {@link WrongTokenAuthException} if the user is not authorized.
-     */
     public String getUserTokenId() {
-        if (userTokenId == null) {
-            throw new WrongTokenAuthException();
-        }
-        return userTokenId;
+        return (String) getAuthentication().getCredentials();
     }
 
-    /**
-     * Throws {@link WrongTokenAuthException} if the user is not authorized.
-     */
     public String getUserId() {
-        if (userId == null) {
-            throw new WrongTokenAuthException();
-        }
-        return userId;
+        return (String) getAuthentication().getPrincipal();
     }
 
     public Optional<String> getUserIdOptional() {
-        return Optional.ofNullable(userId);
+        return getAuthenticationOptional().map(it -> (String) it.getPrincipal());
     }
 
-    /**
-     * Throws {@link WrongTokenAuthException} if the user is not authorized.
-     */
     public String getUsername() {
-        if (username == null) {
-            throw new WrongTokenAuthException();
-        }
-        return username;
+        return (String) getAuthentication().getDetails();
     }
 
     public boolean isAuthorized() {
-        return userTokenId != null && userId != null;
+        return getAuthenticationOptional().isPresent();
+    }
+
+    private Authentication getAuthentication() {
+        return getAuthenticationOptional().orElseThrow(WrongTokenAuthException::new); //TODO: Use another exception?
+    }
+
+    private Optional<Authentication> getAuthenticationOptional() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof TokenAuthentication && authentication.isAuthenticated()) {
+            return Optional.of(authentication);
+        }
+        return Optional.empty();
     }
 }

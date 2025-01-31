@@ -1,6 +1,5 @@
 package com.drsanches.photobooth.app.config.filter;
 
-import com.drsanches.photobooth.app.auth.data.token.model.Role;
 import com.drsanches.photobooth.app.common.auth.AuthInfo;
 import com.drsanches.photobooth.app.common.integration.auth.AuthIntegrationService;
 import com.drsanches.photobooth.app.common.utils.TokenExtractor;
@@ -10,10 +9,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -45,20 +40,12 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
             return;
         }
 
-        authInfo.init(
+        authInfo.setAuthorization(
                 authInfoDto.get().userId(),
-                authInfoDto.get().username(),
-                authInfoDto.get().tokenId()
-        );
-
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        Authentication authentication = new TestingAuthenticationToken( //TODO
                 authInfoDto.get().username(),
                 authInfoDto.get().tokenId(),
                 authInfoDto.get().role()
         );
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
 
         filterChain.doFilter(request, response);
     }

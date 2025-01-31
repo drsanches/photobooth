@@ -50,7 +50,7 @@ public class TokenAuthController {
     @ApiResponseCode200
     @ApiResponseCode401
     @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public void logout() {
+    public void removeToken() {
         tokenAuthWebService.removeToken();
     }
 }

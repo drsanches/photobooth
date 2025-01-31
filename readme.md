@@ -547,6 +547,7 @@ docker compose -f docker-compose-dozzle.yml --env-file .env.dozzle.dev up
 - Refactor paging and soring. Use Page for responses?
 - Describe all features of the applications
 - Review log levels
+- Use unauthorized instead of wrong.token error?
 
 ### UI
 - Hide admin ui for users?

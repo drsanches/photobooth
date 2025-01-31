@@ -41,7 +41,12 @@ public class TokenService {
         );
         var user = userAuthDomainService.findEnabledById(savedToken.getUserId())
                 .orElseThrow(WrongTokenAuthException::new);
-        authInfo.init(userId, user.getUsername(), savedToken.getId());
+        authInfo.setAuthorization(
+                userId,
+                user.getUsername(),
+                savedToken.getId(),
+                savedToken.getRole().name()
+        );
         log.info("New token created. UserId: {}", userId);
         return savedToken;
     }
@@ -81,14 +86,14 @@ public class TokenService {
     public void removeCurrentToken() {
         var tokenId = authInfo.getUserTokenId();
         tokenDomainService.deleteById(tokenId);
-        authInfo.clean();
+        authInfo.cancelAuthorization();
         log.info("Token deleted. UserId: {}", tokenId);
     }
 
     public void removeAllTokens(String userId) {
         var tokens = tokenDomainService.findAllByUserId(userId);
         tokenDomainService.deleteAll(tokens);
-        authInfo.clean();
+        authInfo.cancelAuthorization();
         log.info("Tokens deleted. UserId: {}", userId);
     }
 
